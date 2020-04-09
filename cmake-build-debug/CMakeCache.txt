@@ -218,6 +218,21 @@ ProcessorCount_cmd_nproc:FILEPATH=/usr/bin/nproc
 ProcessorCount_cmd_sysctl:FILEPATH=/sbin/sysctl
 
 //Value Computed by CMake
+SDL2Test_BINARY_DIR:STATIC=/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug
+
+//Value Computed by CMake
+SDL2Test_SOURCE_DIR:STATIC=/home/lorenzo/Desktop/repos/cucurucho
+
+//The directory containing a CMake configuration file for SDL2.
+SDL2_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2
+
+//Path to a file.
+SDL2_INCLUDE_DIR:FILEPATH=SDL2_INCLUDE_DIR-NOTFOUND
+
+//Path to a library.
+SDL2_LIBRARY:FILEPATH=SDL2_LIBRARY-NOTFOUND
+
+//Value Computed by CMake
 cucurucho_BINARY_DIR:STATIC=/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug
 
 //Value Computed by CMake

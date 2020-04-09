@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lorenzo/Desktop/repos/cucurucho/main.cpp" "/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug/CMakeFiles/cucurucho.dir/main.cpp.o"
+  "/home/lorenzo/Desktop/repos/cucurucho/main.cpp" "/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug/CMakeFiles/SDL2Test.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
