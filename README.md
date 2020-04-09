@@ -1,12 +1,12 @@
-Rodrigo SoutoRodrigo Souto# cucurucho
-Repositorio creado para la realizacion del TP Grupal de la materia Taller de Programación
+# Cucurucho
+## Repositorio creado para la realizacion del TP Grupal de la materia Taller de Programación
 
 75.42 / 95.08 - Taller de Programación I - Azcurra
 
-Integrantes:
+### Integrantes:
 
-Di Santo, Javier
-Dvorkin, Camila
-Garcia, Ailen
-Gimenez, Lorenzo
-Souto, Rodrigo
+<p> Di Santo, Javier
+<p> Dvorkin, Camila
+<p> Garcia, Ailen
+<p> Gimenez, Lorenzo
+<p> Souto, Rodrigo
