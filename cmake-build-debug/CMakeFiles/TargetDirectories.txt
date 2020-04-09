@@ -1,0 +1,3 @@
+/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug/CMakeFiles/cucurucho.dir
+/home/lorenzo/Desktop/repos/cucurucho/cmake-build-debug/CMakeFiles/edit_cache.dir
