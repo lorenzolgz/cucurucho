@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    std::cout << "Hello, Cucuruchos! Deberian ver una pantalla negra por tres segundos" << std::endl;
+    std::cout << "Hello, Cucuruchos++! Deberian ver una pantalla negra por tres segundos" << std::endl;
 
     SDL_Delay(3000);
 
