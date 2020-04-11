@@ -85,6 +85,6 @@ void Jugador::render() {
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
     colorGlow();
-    srcrect = {0 + 64 * (contadorVelocidadY > 10) + 128 * (contadorVelocidadY < -10), 0, 32, 16};
+    srcrect = {0 + 64 * (contadorVelocidadY < -10) + 128 * (contadorVelocidadY > 10), 0, 32, 16};
     SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
 }
