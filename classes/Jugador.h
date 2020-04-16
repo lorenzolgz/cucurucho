@@ -16,6 +16,12 @@ public:
     void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
     Jugador(SDL_Renderer* gRenderer, int x, int y);
 
+    const Vector &getPosicion() const;
+
+    const Vector getVelocidad() const;
+
+    int getContador() const;
+
 private:
     Vector posicion;
     Vector velocidad;

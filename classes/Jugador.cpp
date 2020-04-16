@@ -80,11 +80,26 @@ void Jugador::colorGlow() {
 
 void Jugador::render() {
     SDL_Rect srcrect = {32 + 64 * (contadorVelocidadY < -10) + 128 * (contadorVelocidadY > 10), 0, 32, 16};
-    SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), 32, 16};
+    SDL_Rect dstrect = {(int) posicion.getX(),
+                (int) posicion.getY(),
+                32,
+                16};
 
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
     colorGlow();
     srcrect = {0 + 64 * (contadorVelocidadY < -10) + 128 * (contadorVelocidadY > 10), 0, 32, 16};
     SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
+}
+
+const Vector &Jugador::getPosicion() const {
+    return posicion;
+}
+
+const Vector Jugador::getVelocidad() const {
+    return velocidad;
+}
+
+int Jugador::getContador() const {
+    return contador;
 }

@@ -6,6 +6,7 @@
 #include "classes/VentanaJuego.h"
 #include "classes/Jugador.h"
 #include "classes/Hud.h"
+#include "classes/Helper.h"
 
 const int SCREEN_WIDTH = 960;
 const int SCREEN_HEIGHT = 672;
@@ -52,7 +53,11 @@ bool init() {
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_RenderSetScale(gRenderer, 3, 3);
+    // Original corre a: 320x224
+    // Ventana minima: 800x600
 
+    // Logica nuestra: 320x224
+    // Muestra a: 320x224 * 3
     return true;
 }
 
@@ -112,9 +117,10 @@ void mainLoop() {
     bool quit = false;
     SDL_Event e;
 
-    // SDL_Renderer* gRenderer, std::string &file_name, int y, int xOffset, float modVelocidad
     VentanaJuego ventana = crearVentanaJuego();
-    Jugador jugador = Jugador(gRenderer, 40, SCREEN_WIDTH / 6);
+    Jugador jugador = Jugador(gRenderer, 40, SCREEN_HEIGHT / 6);
+    Helper helper = Helper(gRenderer, &jugador, Vector(14, -15));
+    Helper helper2 = Helper(gRenderer, &jugador, Vector(14, 32));
     Hud hud = Hud(gRenderer);
 
     while (!quit) {
@@ -140,6 +146,8 @@ void mainLoop() {
 
         //Render texture to screen
         ventana.render();
+        helper.render();
+        helper2.render();
         jugador.render();
         hud.render();
 

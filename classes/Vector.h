@@ -13,6 +13,8 @@ public:
     Vector(double x, double y);
     Vector();
     friend Vector operator+(const Vector& lhs, const Vector& rhs);
+    friend Vector operator-(const Vector& lhs, const Vector& rhs);
+    friend Vector operator*(const Vector& lhs, const double& rhs);
 
     double getX() const;
 
@@ -21,6 +23,10 @@ public:
     double getY() const;
 
     void setY(double y);
+
+    double arg() const;
+
+    bool esNulo() const;
 };
 
 
