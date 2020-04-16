@@ -6,11 +6,6 @@
 #include "Helper.h"
 #include "Utils.h"
 
-const int RADIO_BALL = 8;
-const int DISTANCE_HELPER = 9;
-
-const double VEL_ANGULAR = 15;
-const double ACELERACION = 0.2;
 
 Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     Helper::gRenderer = gRenderer;
@@ -18,8 +13,8 @@ Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     Helper::posRelativa = posRelativa;
     Helper::posicion = posRelativa + jugador->getPosicion();
     Helper::velocidad = Vector(0, 0);
-    Helper::velAngular = VEL_ANGULAR;
-    Helper::aceleracion = ACELERACION;
+    Helper::velAngular = HELPER_VEL_ANGULAR;
+    Helper::aceleracion = HELPER_ACELERACION;
     Helper::angulo = 0;
     textura = cargarTextura(gRenderer, "helper.png");
 
@@ -49,10 +44,10 @@ void Helper::renderGlow() {
 
     SDL_SetTextureColorMod(textura, COLORES[contador % 16][0], COLORES[contador % 16][1], COLORES[contador % 16][2]);
 
-    SDL_Rect glowsrc = { 0, 16, 16, 16};
-    SDL_Rect glowdst = {(int) posicion.getX() - RADIO_BALL,
-                        (int) posicion.getY() - RADIO_BALL,
-                        16, 16};
+    SDL_Rect glowsrc = { 0, HELPER_ANCHO, HELPER_ALTO, HELPER_ANCHO};
+    SDL_Rect glowdst = {(int) posicion.getX() - HELPER_RADIO_BALL,
+                        (int) posicion.getY() - HELPER_RADIO_BALL,
+                        HELPER_ALTO, HELPER_ANCHO};
 
     SDL_RenderCopy(gRenderer, textura, &glowsrc, &glowdst);
 
@@ -60,10 +55,10 @@ void Helper::renderGlow() {
     if (contador % 6 < 3) {
         // Una de las tres posibles particulas [0, 1, 2]
         int glow = contador % 6;
-        glowsrc = {16 * glow, 32, 16, 16};
-        glowdst = { (int) recorrido[6 * (glow + 1)].getX() - RADIO_BALL,
-                    (int) recorrido[6 * (glow + 1)].getY() - RADIO_BALL,
-                    16, 16};
+        glowsrc = {HELPER_ANCHO * glow, HELPER_ALTO * 2, HELPER_ANCHO, HELPER_ALTO};
+        glowdst = {(int) recorrido[6 * (glow + 1)].getX() - HELPER_RADIO_BALL,
+                   (int) recorrido[6 * (glow + 1)].getY() - HELPER_RADIO_BALL,
+                   HELPER_ANCHO, HELPER_ALTO };
         SDL_RenderCopy(gRenderer, textura, &glowsrc, &glowdst);
     }
 
@@ -72,10 +67,10 @@ void Helper::renderGlow() {
 
 
 void Helper::renderBall() {
-    SDL_Rect ballsrc = { 16, 16, 16, 16};
-    SDL_Rect balldst = {(int) posicion.getX() - RADIO_BALL,
-                        (int) posicion.getY() - RADIO_BALL,
-                        16, 16};
+    SDL_Rect ballsrc = { HELPER_ANCHO, HELPER_ALTO, HELPER_ANCHO, HELPER_ALTO};
+    SDL_Rect balldst = {(int) posicion.getX() - HELPER_RADIO_BALL,
+                        (int) posicion.getY() - HELPER_RADIO_BALL,
+                        HELPER_ANCHO, HELPER_ALTO};
 
     SDL_RenderCopy(gRenderer, textura, &ballsrc, &balldst);
 }
@@ -107,16 +102,19 @@ void Helper::calcularAngulo(){
 void Helper::renderHelper() {
 
 
-    int renderPosX = (int) posicion.getX() - RADIO_BALL + (int) (cos_d(angulo) * DISTANCE_HELPER);
-    int renderPosY = (int) posicion.getY() - RADIO_BALL - (int) (sin_d(angulo) * DISTANCE_HELPER);
+    int renderPosX = (int) posicion.getX() - HELPER_RADIO_BALL + (int) (cos_d(angulo) * HELPER_DISTANCIA);
+    int renderPosY = (int) posicion.getY() - HELPER_RADIO_BALL - (int) (sin_d(angulo) * HELPER_DISTANCIA);
 
     int angulo_trunc = ((int) angulo % 90) - 11;
 
-    SDL_Rect helpersrc = { 16 * (angulo_trunc >= 11) + 16 * (angulo_trunc >= 33) + 16 * (angulo_trunc >= 56) - 48 * (angulo_trunc >= 78),
-                           0, 16, 16};
+    SDL_Rect helpersrc = { HELPER_ANCHO * (angulo_trunc >= 11)
+                           + HELPER_ANCHO * (angulo_trunc >= 33)
+                           + HELPER_ANCHO * (angulo_trunc >= 56)
+                           - HELPER_ANCHO * 3 * (angulo_trunc >= 78),
+                           0, HELPER_ANCHO, HELPER_ALTO};
     SDL_Rect helperdst = { renderPosX,
                            renderPosY,
-                           16, 16};
+                           HELPER_ANCHO, HELPER_ALTO};
 
     SDL_RenderCopyEx(gRenderer, textura, &helpersrc, &helperdst, -(int) (angulo / 90) * 90, nullptr, SDL_FLIP_NONE);
 

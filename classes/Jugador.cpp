@@ -2,14 +2,12 @@
 // Created by javier on 10/4/20.
 //
 
-#include <string>
-#include <SDL_image.h>
 #include "Jugador.h"
 #include "Utils.h"
 
 
 Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
-    velocidadEscalar = 1.5;
+    velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
     posicion = Vector(x, y);
     velocidad = Vector(0, 0);
     contador = 0;
@@ -79,16 +77,18 @@ void Jugador::colorGlow() {
 
 
 void Jugador::render() {
-    SDL_Rect srcrect = {32 + 64 * (contadorVelocidadY < -10) + 128 * (contadorVelocidadY > 10), 0, 32, 16};
+    SDL_Rect srcrect = {JUGADOR_ANCHO + JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
+                        0, JUGADOR_ANCHO, JUGADOR_ALTO};
     SDL_Rect dstrect = {(int) posicion.getX(),
-                (int) posicion.getY(),
-                32,
-                16};
+                        (int) posicion.getY(),
+                        JUGADOR_ANCHO,
+                        JUGADOR_ALTO};
 
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
     colorGlow();
-    srcrect = {0 + 64 * (contadorVelocidadY < -10) + 128 * (contadorVelocidadY > 10), 0, 32, 16};
+    srcrect = {JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
+               0, JUGADOR_ANCHO, JUGADOR_ALTO};
     SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
 }
 

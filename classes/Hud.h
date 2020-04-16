@@ -8,6 +8,9 @@
 
 #include <SDL_render.h>
 
+const int HUD_ANCHO = 960;
+const int HUD_ALTO = 96;
+
 class Hud {
 public:
     Hud(SDL_Renderer* gRenderer);

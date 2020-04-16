@@ -8,9 +8,9 @@
 #include "classes/Hud.h"
 #include "classes/Helper.h"
 
-const int SCREEN_WIDTH = 960;
-const int SCREEN_HEIGHT = 672;
-const int SCREEN_FPS = 60;
+const int SCREEN_ANCHO = 960;
+const int SCREEN_ALTO = 672;
+const int SCREEN_RENDER_SCALE = 1;
 
 
 //The window we'll be rendering to
@@ -38,7 +38,8 @@ bool init() {
         return false;
     }
 
-    gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            SCREEN_ANCHO / SCREEN_RENDER_SCALE, SCREEN_ALTO / SCREEN_RENDER_SCALE, SDL_WINDOW_SHOWN);
     if(gWindow == nullptr) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return false;
@@ -52,12 +53,7 @@ bool init() {
     }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    SDL_RenderSetScale(gRenderer, 3, 3);
-    // Original corre a: 320x224
-    // Ventana minima: 800x600
-
-    // Logica nuestra: 320x224
-    // Muestra a: 320x224 * 3
+    SDL_RenderSetScale(gRenderer, SCREEN_RENDER_SCALE, SCREEN_RENDER_SCALE);
     return true;
 }
 
@@ -79,35 +75,35 @@ void close() {
 VentanaJuego crearVentanaJuego() {
     SDL_Rect rect_ventana;
     rect_ventana.x = 0;
-    rect_ventana.y = 32;
-    rect_ventana.w = SCREEN_WIDTH;
-    rect_ventana.h = SCREEN_HEIGHT - rect_ventana.y;
+    rect_ventana.y = HUD_ALTO;
+    rect_ventana.w = SCREEN_ANCHO;
+    rect_ventana.h = SCREEN_ALTO - rect_ventana.y;
 
     VentanaJuego ventana(gRenderer, rect_ventana);
 
-    int y_inicial = -8;
-    Fondo* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 3);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 0, fondo->getY() + fondo->getHeight(), 2.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 0, fondo->getY() + fondo->getHeight(), 2);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 0, fondo->getY() + fondo->getHeight(), 1.5);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 0, fondo->getY() + fondo->getHeight(), 1.25);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 0, fondo->getY() + fondo->getHeight(), 1);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 0, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 0, fondo->getY() + fondo->getHeight(), 0.45);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 0, fondo->getY() + fondo->getHeight(), 0.25);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 0, fondo->getY() + fondo->getHeight(), 0.12);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 300, fondo->getY() + fondo->getHeight(), 0.15);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 300, fondo->getY() + fondo->getHeight(), 0.25);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 300, fondo->getY() + fondo->getHeight(), 0.45);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 300, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 300, fondo->getY() + fondo->getHeight(), 1);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 300, fondo->getY() + fondo->getHeight(), 1.25);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 300, fondo->getY() + fondo->getHeight(), 1.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 300, fondo->getY() + fondo->getHeight(), 2);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 300, fondo->getY() + fondo->getHeight(), 2.5);
-    fondo = ventana.nuevoFondo("asteroids_0.png", 300, fondo->getY() + fondo->getHeight(), 3);
+    int y_inicial = -24;
+    Fondo* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
+    fondo = ventana.nuevoFondo("asteroids_1.png", 0, fondo->getY() + fondo->getHeight(), 7.5);
+    fondo = ventana.nuevoFondo("asteroids_2.png", 0, fondo->getY() + fondo->getHeight(), 6);
+    fondo = ventana.nuevoFondo("asteroids_3.png", 0, fondo->getY() + fondo->getHeight(), 4.5);
+    fondo = ventana.nuevoFondo("asteroids_4.png", 0, fondo->getY() + fondo->getHeight(), 3.75);
+    fondo = ventana.nuevoFondo("asteroids_5.png", 0, fondo->getY() + fondo->getHeight(), 3);
+    fondo = ventana.nuevoFondo("asteroids_6.png", 0, fondo->getY() + fondo->getHeight(), 2.25);
+    fondo = ventana.nuevoFondo("asteroids_7.png", 0, fondo->getY() + fondo->getHeight(), 1.35);
+    fondo = ventana.nuevoFondo("asteroids_8.png", 0, fondo->getY() + fondo->getHeight(), 0.75);
+    fondo = ventana.nuevoFondo("asteroids_9.png", 0, fondo->getY() + fondo->getHeight(), 0.36);
+    fondo = ventana.nuevoFondo("asteroids_9.png", 900, fondo->getY() + fondo->getHeight(), 0.45);
+    fondo = ventana.nuevoFondo("asteroids_8.png", 900, fondo->getY() + fondo->getHeight(), 0.75);
+    fondo = ventana.nuevoFondo("asteroids_7.png", 900, fondo->getY() + fondo->getHeight(), 1.35);
+    fondo = ventana.nuevoFondo("asteroids_6.png", 900, fondo->getY() + fondo->getHeight(), 2.25);
+    fondo = ventana.nuevoFondo("asteroids_5.png", 900, fondo->getY() + fondo->getHeight(), 3);
+    fondo = ventana.nuevoFondo("asteroids_4.png", 900, fondo->getY() + fondo->getHeight(), 3.75);
+    fondo = ventana.nuevoFondo("asteroids_3.png", 900, fondo->getY() + fondo->getHeight(), 4.5);
+    fondo = ventana.nuevoFondo("asteroids_2.png", 900, fondo->getY() + fondo->getHeight(), 6);
+    fondo = ventana.nuevoFondo("asteroids_1.png", 900, fondo->getY() + fondo->getHeight(), 7.5);
+    fondo = ventana.nuevoFondo("asteroids_0.png", 900, fondo->getY() + fondo->getHeight(), 9);
 
-    ventana.nuevoFondo("bg.png", 450, 0, 0.1);
+    ventana.nuevoFondo("bg.png", 450, 0, 0.3);
 
     return ventana;
 }
@@ -118,9 +114,9 @@ void mainLoop() {
     SDL_Event e;
 
     VentanaJuego ventana = crearVentanaJuego();
-    Jugador jugador = Jugador(gRenderer, 40, SCREEN_HEIGHT / 6);
-    Helper helper = Helper(gRenderer, &jugador, Vector(14, -15));
-    Helper helper2 = Helper(gRenderer, &jugador, Vector(14, 32));
+    Jugador jugador = Jugador(gRenderer, SCREEN_ANCHO / 8, SCREEN_ALTO / 2);
+    Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+    Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
     Hud hud = Hud(gRenderer);
 
     while (!quit) {
