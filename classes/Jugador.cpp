@@ -4,6 +4,7 @@
 
 #include "Jugador.h"
 #include "Utils.h"
+#include "Log.h"
 
 
 Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
@@ -15,6 +16,7 @@ Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
     textura = cargarTextura(gRenderer, "player.png");
     texturaGlow = cargarTextura(gRenderer, "player.png");
     Jugador::gRenderer = gRenderer;
+    l.info("Player created");
 }
 
 void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha) {
@@ -90,6 +92,8 @@ void Jugador::render() {
     srcrect = {JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
                0, JUGADOR_ANCHO, JUGADOR_ALTO};
     SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
+
+    l.info(("Position PLAYER:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
 }
 
 const Vector &Jugador::getPosicion() const {

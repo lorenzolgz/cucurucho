@@ -43,7 +43,6 @@ SDL_Rect calcularCoords(float* x, int y, int width, int height, float speed, flo
 void Fondo::render(SDL_Renderer *gRenderer, float velocidad) {
     SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, modVelocidad * velocidad, xOffset);
     SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, modVelocidad * velocidad, xOffset);
-
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect1);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect2);
 }

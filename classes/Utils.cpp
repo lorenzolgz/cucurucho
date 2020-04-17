@@ -4,8 +4,10 @@
 
 #include <SDL_render.h>
 #include <SDL_image.h>
-#include <tkInt.h>
 #include "Utils.h"
+
+#define PI 3.14159265358979323846
+
 
 SDL_Texture * cargarTextura(SDL_Renderer* gRenderer, const std::string& path) {
 

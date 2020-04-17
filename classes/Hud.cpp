@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 #include "Hud.h"
 #include "Utils.h"
+#include "Log.h"
 
 
 Hud::Hud(SDL_Renderer *gRenderer) {
@@ -13,6 +14,7 @@ Hud::Hud(SDL_Renderer *gRenderer) {
     posHud = {0, 0, HUD_ANCHO, HUD_ALTO};
 
     textura = cargarTextura(gRenderer, "hud.png");
+    l.info("Hud created");
 }
 
 void Hud::render() {

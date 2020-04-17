@@ -1,5 +1,4 @@
 
-
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -7,11 +6,13 @@
 #include "classes/Jugador.h"
 #include "classes/Hud.h"
 #include "classes/Helper.h"
+#include "classes/Enemigo2.h"
+#include "classes/Log.h"
+#include "classes/Enemigo1.h"
 
 const int SCREEN_ANCHO = 960;
 const int SCREEN_ALTO = 672;
 const int SCREEN_RENDER_SCALE = 1;
-
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
@@ -19,41 +20,45 @@ SDL_Window* gWindow = nullptr;
 //The window renderer
 SDL_Renderer* gRenderer = nullptr;
 
+Log l = Log();
+
 bool init() {
     //Initialize SDL
     if(SDL_Init( SDL_INIT_VIDEO ) < 0) {
-        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        l.error(("SDL could not initialize! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
 
     // Set texture filtering to linear
     if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
     {
-        printf( "Warning: Linear texture filtering not enabled!" );
+        l.warning( "Linear texture filtering not enabled!" );
     }
 
     //Initialize SDL_image
     if(!(IMG_Init(IMG_INIT_PNG))) {
-        printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+        l.error(( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() ));
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            SCREEN_ANCHO / SCREEN_RENDER_SCALE, SCREEN_ALTO / SCREEN_RENDER_SCALE, SDL_WINDOW_SHOWN);
+            SCREEN_ANCHO * SCREEN_RENDER_SCALE, SCREEN_ALTO * SCREEN_RENDER_SCALE, SDL_WINDOW_SHOWN);
     if(gWindow == nullptr) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        l.error(("Window could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
     //Get window surface
 
     gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
-        printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+        l.error(("Renderer could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_RenderSetScale(gRenderer, SCREEN_RENDER_SCALE, SCREEN_RENDER_SCALE);
+
+    l.info("Window was successfully created");
     return true;
 }
 
@@ -66,9 +71,11 @@ void close() {
     //Destroy window
     SDL_DestroyWindow(gWindow);
 
+    l.info("Memory released ( todo:( )");
     //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
+    l.info("Window was successfully closed");
 }
 
 
@@ -105,6 +112,7 @@ VentanaJuego crearVentanaJuego() {
 
     ventana.nuevoFondo("bg.png", 450, 0, 0.3);
 
+    l.info("Parallax Stage 1 created");
     return ventana;
 }
 
@@ -118,6 +126,10 @@ void mainLoop() {
     Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
     Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
     Hud hud = Hud(gRenderer);
+
+    Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
+    Enemigo2 enemigo2 = Enemigo2(gRenderer, 600, 45);
+    l.info("Objects are initialized according to the initial configuration");
 
     while (!quit) {
 
@@ -145,6 +157,8 @@ void mainLoop() {
         helper.render();
         helper2.render();
         jugador.render();
+        enemigo1.render();
+        enemigo2.render();
         hud.render();
 
         //Update screen
