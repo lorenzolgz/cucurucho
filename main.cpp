@@ -3,15 +3,16 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "classes/VentanaJuego.h"
-#include "classes/Jugador.h"
+#include "classes/model/Jugador.h"
 #include "classes/Hud.h"
 #include "classes/Helper.h"
 #include "classes/Enemigo2.h"
 #include "classes/Log.h"
 #include "classes/Enemigo1.h"
+#include "constants.h"
 
-const int SCREEN_ANCHO = 960;
-const int SCREEN_ALTO = 672;
+using namespace constants;
+
 const int SCREEN_RENDER_SCALE = 1;
 
 //The window we'll be rendering to
