@@ -6,11 +6,12 @@
 #define CUCURUCHO_CONFIGURACION_H
 
 #include <string>
+#include <jsoncpp/json/json.h>
 
 class Configuracion {
 public:
     Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, int enemigosTipoUno,
-            int enemigosTipoDos, std::string nivelLog);
+            int enemigosTipoDos, std::string nivelLog, Json::Value recursosNiveles);
 
     int getAltoPantalla();
     int getAnchoPantalla();
@@ -18,6 +19,7 @@ public:
     int getEnemigosTipoUno();
     int getEnemigosTipoDos();
     std::string getNivelLog();
+    Json::Value getRecursos(std::string nivel);
 
 private:
     int altoPantalla;
@@ -26,6 +28,7 @@ private:
     int enemigosTipoUno;
     int enemigosTipoDos;
     std::string nivelLog;
+    Json::Value recursosNiveles;
 };
 
 #endif //CUCURUCHO_CONFIGURACION_H

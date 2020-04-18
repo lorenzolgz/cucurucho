@@ -21,20 +21,23 @@ SDL_Renderer* gRenderer = nullptr;
 
 Log l = Log();
 
-
 Configuracion* leerJson(){
 
     Json::Value root;
     Json::Reader reader;
     std::ifstream file("../config/config.json");
     file >> root;
+
+    auto entriesArray = root["configuracion"]["niveles"]["1"];
+
     return new Configuracion(
             root["configuracion"]["resolucion"]["alto"].asInt64(),
             root["configuracion"]["resolucion"]["ancho"].asInt64(),
             root["configuracion"]["resolucion"]["escala"].asInt64(),
             root["configuracion"]["enemigos"]["tipoUno"].asInt64(),
             root["configuracion"]["enemigos"]["tipoDos"].asInt64(),
-            root["configuracion"]["log"]["nivel"].asString());
+            root["configuracion"]["log"]["nivel"].asString(),
+            root["configuracion"]["niveles"]);
 }
 
 
@@ -103,7 +106,11 @@ void close(Configuracion* config) {
 }
 
 
-VentanaJuego crearVentanaJuego(int altoPantalla, int anchoPantalla) {
+VentanaJuego crearVentanaJuego(Configuracion* config){
+
+    int altoPantalla = config->getAltoPantalla();
+    int anchoPantalla = config->getAnchoPantalla();
+
     SDL_Rect rect_ventana;
     rect_ventana.x = 0;
     rect_ventana.y = HUD_ALTO;
@@ -112,27 +119,16 @@ VentanaJuego crearVentanaJuego(int altoPantalla, int anchoPantalla) {
 
     VentanaJuego ventana(gRenderer, rect_ventana);
 
+    // Primer fondo se carga fuera del JSON
     int y_inicial = -24;
     Fondo* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 0, fondo->getY() + fondo->getHeight(), 7.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 0, fondo->getY() + fondo->getHeight(), 6);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 0, fondo->getY() + fondo->getHeight(), 4.5);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 0, fondo->getY() + fondo->getHeight(), 3.75);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 0, fondo->getY() + fondo->getHeight(), 3);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 0, fondo->getY() + fondo->getHeight(), 2.25);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 0, fondo->getY() + fondo->getHeight(), 1.35);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 0, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 0, fondo->getY() + fondo->getHeight(), 0.36);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 900, fondo->getY() + fondo->getHeight(), 0.45);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 900, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 900, fondo->getY() + fondo->getHeight(), 1.35);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 900, fondo->getY() + fondo->getHeight(), 2.25);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 900, fondo->getY() + fondo->getHeight(), 3);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 900, fondo->getY() + fondo->getHeight(), 3.75);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 900, fondo->getY() + fondo->getHeight(), 4.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 900, fondo->getY() + fondo->getHeight(), 6);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 900, fondo->getY() + fondo->getHeight(), 7.5);
-    fondo = ventana.nuevoFondo("asteroids_0.png", 900, fondo->getY() + fondo->getHeight(), 9);
+
+    // Resto de los fondos salen del JSON y se mapean
+    Json::Value fondosAPresentar = config->getRecursos("1");
+    for(Json::Value f : fondosAPresentar) {
+        fondo = ventana.nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
+                fondo->getY() + fondo->getHeight(),f["velocidad"].asFloat());
+    }
 
     ventana.nuevoFondo("bg.png", 450, 0, 0.3);
 
@@ -148,7 +144,7 @@ void mainLoop(Configuracion* config) {
     int altoPantalla = config->getAltoPantalla();
     int anchoPantalla = config->getAnchoPantalla();
 
-    VentanaJuego ventana = crearVentanaJuego(altoPantalla, anchoPantalla);
+    VentanaJuego ventana = crearVentanaJuego(config);
     Jugador jugador = Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
     Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
     Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
@@ -203,6 +199,8 @@ int main(int, char**) {
         //  log.error("Configuracion invalida");
         //  config = configHardcodeadaValida;
         // }
+
+        // std::cout << config->getRecursos("1");
 
     if (!init(config)) return 1;
     mainLoop(config);

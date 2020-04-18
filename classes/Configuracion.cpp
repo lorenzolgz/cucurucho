@@ -4,13 +4,15 @@
 
 #include "Configuracion.h"
 
-Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, int enemigosTipoUno, int enemigosTipoDos, std::string nivelLog) {
+Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, int enemigosTipoUno, int enemigosTipoDos,
+        std::string nivelLog, Json::Value recursosNiveles) {
     this->altoPantalla = altoPantalla;
     this->anchoPantalla = anchoPantalla;
     this->escalaPantalla = escalaPantalla;
     this->enemigosTipoUno = enemigosTipoUno;
     this->enemigosTipoDos = enemigosTipoDos;
     this->nivelLog = nivelLog;
+    this->recursosNiveles = recursosNiveles;
 };
 
 int Configuracion::getAltoPantalla(){
@@ -35,4 +37,8 @@ int Configuracion::getEnemigosTipoDos(){
 
 std::string Configuracion::getNivelLog() {
     return this->nivelLog;
+}
+
+Json::Value Configuracion::getRecursos(std::string nivel) {
+    return this->recursosNiveles[nivel];
 }
