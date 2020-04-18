@@ -9,7 +9,7 @@
 #include <array>
 #include <deque>
 #include "Vector.h"
-#include "Jugador.h"
+#include "model/Jugador.h"
 
 const int HELPER_RADIO_BALL = 24;
 const int HELPER_DISTANCIA = 27;

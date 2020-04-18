@@ -7,8 +7,11 @@
 
 
 #include <SDL_render.h>
+#include "../constants.h"
 
-const int HUD_ANCHO = 960;
+using namespace constants;
+
+const int HUD_ANCHO = SCREEN_ANCHO;
 const int HUD_ALTO = 96;
 
 class Hud {
