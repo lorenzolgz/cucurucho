@@ -16,7 +16,7 @@
 Instalar las siguientes dependencias:
 
 ```sh
-sudo apt install cmake libsdl2-dev libsdl2-image-dev g++
+sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev g++
 ```
 
 

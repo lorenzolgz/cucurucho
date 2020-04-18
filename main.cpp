@@ -1,7 +1,9 @@
 
 #include <iostream>
+#include <fstream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <jsoncpp/json/json.h>
 #include "classes/VentanaJuego.h"
 #include "classes/Jugador.h"
 #include "classes/Hud.h"
@@ -9,10 +11,7 @@
 #include "classes/Enemigo2.h"
 #include "classes/Log.h"
 #include "classes/Enemigo1.h"
-
-const int SCREEN_ANCHO = 960;
-const int SCREEN_ALTO = 672;
-const int SCREEN_RENDER_SCALE = 1;
+#include "classes/Configuracion.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
@@ -22,7 +21,29 @@ SDL_Renderer* gRenderer = nullptr;
 
 Log l = Log();
 
-bool init() {
+
+Configuracion* leerJson(){
+
+    Json::Value root;
+    Json::Reader reader;
+    std::ifstream file("../config/config.json");
+    file >> root;
+    return new Configuracion(
+            root["configuracion"]["resolucion"]["alto"].asInt64(),
+            root["configuracion"]["resolucion"]["ancho"].asInt64(),
+            root["configuracion"]["resolucion"]["escala"].asInt64(),
+            root["configuracion"]["enemigos"]["tipoUno"].asInt64(),
+            root["configuracion"]["enemigos"]["tipoDos"].asInt64(),
+            root["configuracion"]["log"]["nivel"].asString());
+}
+
+
+bool init(Configuracion* config) {
+
+    int anchoPantalla = config->getAnchoPantalla();
+    int altoPantalla = config->getAltoPantalla();
+    int escalaPantalla = config->getEscalaPantalla();
+
     //Initialize SDL
     if(SDL_Init( SDL_INIT_VIDEO ) < 0) {
         l.error(("SDL could not initialize! SDL_Error: %s\n", SDL_GetError()));
@@ -42,7 +63,7 @@ bool init() {
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            SCREEN_ANCHO * SCREEN_RENDER_SCALE, SCREEN_ALTO * SCREEN_RENDER_SCALE, SDL_WINDOW_SHOWN);
+            anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
     if(gWindow == nullptr) {
         l.error(("Window could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
@@ -56,20 +77,23 @@ bool init() {
     }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    SDL_RenderSetScale(gRenderer, SCREEN_RENDER_SCALE, SCREEN_RENDER_SCALE);
+    SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
     l.info("Window was successfully created");
     return true;
 }
 
 
-void close() {
+void close(Configuracion* config) {
 
     //Deallocate textures
     SDL_DestroyRenderer(gRenderer);
 
     //Destroy window
     SDL_DestroyWindow(gWindow);
+
+    //Free Configuration
+    delete(config);
 
     l.info("Memory released ( todo:( )");
     //Quit SDL subsystems
@@ -79,12 +103,12 @@ void close() {
 }
 
 
-VentanaJuego crearVentanaJuego() {
+VentanaJuego crearVentanaJuego(int altoPantalla, int anchoPantalla) {
     SDL_Rect rect_ventana;
     rect_ventana.x = 0;
     rect_ventana.y = HUD_ALTO;
-    rect_ventana.w = SCREEN_ANCHO;
-    rect_ventana.h = SCREEN_ALTO - rect_ventana.y;
+    rect_ventana.w = anchoPantalla;
+    rect_ventana.h = altoPantalla - rect_ventana.y;
 
     VentanaJuego ventana(gRenderer, rect_ventana);
 
@@ -117,12 +141,15 @@ VentanaJuego crearVentanaJuego() {
 }
 
 
-void mainLoop() {
+void mainLoop(Configuracion* config) {
     bool quit = false;
     SDL_Event e;
 
-    VentanaJuego ventana = crearVentanaJuego();
-    Jugador jugador = Jugador(gRenderer, SCREEN_ANCHO / 8, SCREEN_ALTO / 2);
+    int altoPantalla = config->getAltoPantalla();
+    int anchoPantalla = config->getAnchoPantalla();
+
+    VentanaJuego ventana = crearVentanaJuego(altoPantalla, anchoPantalla);
+    Jugador jugador = Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
     Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
     Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
     Hud hud = Hud(gRenderer);
@@ -168,9 +195,18 @@ void mainLoop() {
 
 
 int main(int, char**) {
-    if (!init()) return 1;
 
-    mainLoop();
-    close();
+    // Agregar logica de error al no poder leer el JSON o que este sea invalido (TBD)
+    Configuracion* config = leerJson();
+        // CONCEPTO VALIDACION
+        // if(!validarConfiguracion(config)){
+        //  log.error("Configuracion invalida");
+        //  config = configHardcodeadaValida;
+        // }
+
+    if (!init(config)) return 1;
+    mainLoop(config);
+
+    close(config);
     return 0;
 }
