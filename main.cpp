@@ -21,11 +21,11 @@ SDL_Renderer* gRenderer = nullptr;
 
 Log l = Log();
 
-Configuracion* leerJson(){
+Configuracion* leerJson(std::string ruta){
 
     Json::Value root;
     Json::Reader reader;
-    std::ifstream file("../config/config.json");
+    std::ifstream file(ruta);
     file >> root;
 
     auto entriesArray = root["configuracion"]["niveles"]["1"];
@@ -192,17 +192,21 @@ void mainLoop(Configuracion* config) {
 
 int main(int, char**) {
 
-    // Agregar logica de error al no poder leer el JSON o que este sea invalido (TBD)
-    Configuracion* config = leerJson();
-        // CONCEPTO VALIDACION
-        // if(!validarConfiguracion(config)){
-        //  log.error("Configuracion invalida");
-        //  config = configHardcodeadaValida;
-        // }
+    Configuracion* config;
 
-        // std::cout << config->getRecursos("1");
+    try {
+        config = leerJson("../config/config.json");
+    }
+    catch (const std::exception& exc) {
+        l.error(exc.what());
+        l.warning("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
+        config = leerJson("../config/backup.json");
+    }
 
+    // Inicializa con la configuracion
     if (!init(config)) return 1;
+
+    // Comienza el juego con la configuracion
     mainLoop(config);
 
     close(config);
