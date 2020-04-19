@@ -1,0 +1,10 @@
+#ifndef CUCURUCHO_ENEMIGO1VISTA_H
+#define CUCURUCHO_ENEMIGO1VISTA_H
+
+
+class Enemigo1Vista {
+
+};
+
+
+#endif //CUCURUCHO_ENEMIGO1VISTA_H

@@ -1,12 +1,8 @@
-//
-// Created by camix on 16/4/20.
-//
-
 #ifndef CUCURUCHO_ENEMIGO1_H
 #define CUCURUCHO_ENEMIGO1_H
 #include <SDL_render.h>
 #include <string>
-#include "Vector.h"
+#include "../Vector.h"
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;

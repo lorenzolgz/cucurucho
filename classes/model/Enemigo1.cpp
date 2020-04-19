@@ -1,11 +1,7 @@
-//
-// Created by camix on 16/4/20.
-//
-
 #include "Enemigo1.h"
 #include <SDL_image.h>
-#include "Utils.h"
-#include "Log.h"
+#include "../Utils.h"
+#include "../Log.h"
 
 
 Enemigo1::Enemigo1(SDL_Renderer* gRenderer, float x, float y) {

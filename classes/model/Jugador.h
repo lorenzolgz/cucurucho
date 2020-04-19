@@ -1,7 +1,3 @@
-//
-// Created by javier on 10/4/20.
-//
-
 #ifndef CPP_SANDBOX_JUGADOR_H
 #define CPP_SANDBOX_JUGADOR_H
 
@@ -9,7 +5,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "../Vector.h"
-#include "../view/JugadorView.h"
+#include "../view/JugadorVista.h"
 
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
@@ -31,7 +27,7 @@ private:
     double velocidadEscalar;
     int contadorVelocidadY;
 
-	JugadorView *view;
+	JugadorVista *vista;
 };
 
 

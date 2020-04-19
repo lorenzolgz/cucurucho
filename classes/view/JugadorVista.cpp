@@ -1,20 +1,16 @@
-//
-// Created by rodrigosouto on 18/4/20.
-//
-
-#include "JugadorView.h"
+#include "JugadorVista.h"
 #include "../Utils.h"
 #include "../Log.h"
 
-JugadorView::JugadorView(SDL_Renderer* gRenderer) {
-	JugadorView::gRenderer = gRenderer;
-	JugadorView::textura = cargarTextura(gRenderer, "player.png");
-	JugadorView::texturaGlow = cargarTextura(gRenderer, "player.png");
-	JugadorView::contador = 0;
+JugadorVista::JugadorVista(SDL_Renderer* gRenderer) {
+	JugadorVista::gRenderer = gRenderer;
+	JugadorVista::textura = cargarTextura(gRenderer, "player.png");
+	JugadorVista::texturaGlow = cargarTextura(gRenderer, "player.png");
+	JugadorVista::contador = 0;
 	l.info("Player view created");
 }
 
-void JugadorView::render(Vector posicion, int contadorVelocidadY) {
+void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
 	SDL_Rect srcrect = {JUGADOR_ANCHO + JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
 						0, JUGADOR_ANCHO, JUGADOR_ALTO};
 
@@ -33,7 +29,7 @@ void JugadorView::render(Vector posicion, int contadorVelocidadY) {
 	l.info(("Position PLAYER:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
 }
 
-void JugadorView::colorGlow() {
+void JugadorVista::colorGlow() {
 	contador++;
 
 	Uint8 COLORES[16][3] = {{206, 160, 239},
@@ -56,6 +52,6 @@ void JugadorView::colorGlow() {
 	SDL_SetTextureColorMod(texturaGlow, COLORES[contador % 16][0], COLORES[contador % 16][1], COLORES[contador % 16][2]);
 }
 
-int JugadorView::getContador() const {
+int JugadorVista::getContador() const {
 	return contador;
 }

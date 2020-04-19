@@ -1,9 +1,5 @@
-//
-// Created by rodrigosouto on 18/4/20.
-//
-
-#ifndef CUCURUCHO_JUGADORVIEW_H
-#define CUCURUCHO_JUGADORVIEW_H
+#ifndef CUCURUCHO_JUGADORVISTA_H
+#define CUCURUCHO_JUGADORVISTA_H
 
 #include <SDL_render.h>
 #include <string>
@@ -13,9 +9,9 @@
 const int JUGADOR_ALTO = 48;
 const int JUGADOR_ANCHO = 96;
 
-class JugadorView {
+class JugadorVista {
 public:
-	JugadorView(SDL_Renderer* gRenderer);
+	JugadorVista(SDL_Renderer* gRenderer);
 	void render(Vector posicion, int contadorVelocidadY);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 
@@ -35,4 +31,4 @@ private:
 };
 
 
-#endif //CUCURUCHO_JUGADORVIEW_H
+#endif //CUCURUCHO_JUGADORVISTA_H

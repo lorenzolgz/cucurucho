@@ -1,7 +1,3 @@
-//
-// Created by javier on 10/4/20.
-//
-
 #include "Jugador.h"
 #include "../Utils.h"
 #include "../Log.h"
@@ -12,7 +8,7 @@ Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
 	Jugador::contadorVelocidadY = 0;
-	Jugador::view = new JugadorView(gRenderer);
+	Jugador::vista = new JugadorVista(gRenderer);
     l.info("Player created");
 }
 
@@ -51,7 +47,7 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
 }
 
 void Jugador::render() {
-	view->render(posicion, contadorVelocidadY);
+	vista->render(posicion, contadorVelocidadY);
 }
 
 const Vector &Jugador::getPosicion() const {
@@ -63,5 +59,5 @@ const Vector Jugador::getVelocidad() const {
 }
 
 int Jugador::getContador() const {
-    return view->getContador();
+    return vista->getContador();
 }
