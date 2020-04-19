@@ -4,9 +4,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <jsoncpp/json/json.h>
-#include "classes/VentanaJuego.h"
+#include "classes/model/VentanaJuego.h"
 #include "classes/model/Jugador.h"
-#include "classes/Hud.h"
+#include "classes/model/Hud.h"
 #include "classes/model/Helper.h"
 #include "classes/model/Enemigo2.h"
 #include "classes/Log.h"
