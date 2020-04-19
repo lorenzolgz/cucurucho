@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 19/4/20.
-//
-
 #ifndef CUCURUCHO_ENEMIGO1VISTA_H
 #define CUCURUCHO_ENEMIGO1VISTA_H
 

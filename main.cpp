@@ -7,7 +7,7 @@
 #include "classes/VentanaJuego.h"
 #include "classes/model/Jugador.h"
 #include "classes/Hud.h"
-#include "classes/Helper.h"
+#include "classes/model/Helper.h"
 #include "classes/model/Enemigo2.h"
 #include "classes/Log.h"
 #include "classes/model/Enemigo1.h"

@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 18/4/20.
-//
-
 #ifndef CUCURUCHO_CONSTANTS_H
 #define CUCURUCHO_CONSTANTS_H
 
