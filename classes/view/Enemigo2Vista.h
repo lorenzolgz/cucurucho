@@ -20,6 +20,8 @@ public:
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+
+	SDL_Rect generarDstrect(Vector posicion, int ancho, int alto);
 };
 
 

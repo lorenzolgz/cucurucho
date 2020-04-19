@@ -8,7 +8,7 @@
 #include "classes/model/Jugador.h"
 #include "classes/Hud.h"
 #include "classes/Helper.h"
-#include "classes/Enemigo2.h"
+#include "classes/model/Enemigo2.h"
 #include "classes/Log.h"
 #include "classes/model/Enemigo1.h"
 #include "classes/Configuracion.h"
