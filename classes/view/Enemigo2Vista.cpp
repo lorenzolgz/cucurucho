@@ -13,21 +13,9 @@ Enemigo2Vista::Enemigo2Vista(SDL_Renderer* gRenderer) {
 	l.info("Enemy 02 created");
 };
 
-void Enemigo2Vista::render(Vector posicion, int VelocidadX) {
-	SDL_Rect srcrect = {0, 0 + ENEMIGO2_ALTOS * (VelocidadX), ENEMIGO2_ANCHOS, ENEMIGO2_ALTOS};
-	SDL_Rect dstrect = generarDstrect(posicion, ENEMIGO2_ANCHOS, ENEMIGO2_ALTOS);
+void Enemigo2Vista::render(Vector posicion, int velocidadX) {
+	SDL_Rect srcrect = {0, 0 + ENEMIGO2_SRC_ALTOS * (velocidadX), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
+	SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
 
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-	l.info(("Position ENEMY 02:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
-}
-
-
-SDL_Rect Enemigo2Vista::generarDstrect(Vector posicion, int ancho, int alto) {
-	SDL_Rect dstrect;
-	dstrect.x = (int) posicion.getX();
-	dstrect.y = (int) posicion.getY();
-	dstrect.w = ancho;
-	dstrect.h = alto;
-
-	return dstrect;
 }

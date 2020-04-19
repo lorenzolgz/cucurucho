@@ -3,6 +3,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "../Vector.h"
+#include "../view/Enemigo1Vista.h"
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;
@@ -15,14 +16,9 @@ public:
 
 private:
     Vector posicion;
-    float velocidadEscalar;
-    int VelocidadX;
-    SDL_Texture* textura;
-    SDL_Texture* texturaGlow;
-    SDL_Renderer* gRenderer;
+    int velocidadX;
 
-
-    SDL_Rect calcularMovimiento(int width, int height);
+    Enemigo1Vista *vista;
 };
 
 

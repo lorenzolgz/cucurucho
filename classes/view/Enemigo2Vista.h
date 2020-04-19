@@ -9,19 +9,17 @@
 #include <string>
 #include "../Vector.h"
 
-const int ENEMIGO2_ANCHOS = 285;
-const int ENEMIGO2_ALTOS = 147;
+const int ENEMIGO2_SRC_ANCHO = 285;
+const int ENEMIGO2_SRC_ALTOS = 147;
 
 class Enemigo2Vista {
 public:
 	Enemigo2Vista(SDL_Renderer* gRenderer);
-	void render(Vector posicion, int velociadadX);
+	void render(Vector posicion, int velocidadX);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
-
-	SDL_Rect generarDstrect(Vector posicion, int ancho, int alto);
 };
 
 
