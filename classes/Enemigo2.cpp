@@ -10,14 +10,13 @@
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
-Enemigo2::Enemigo2(SDL_Renderer* gRenderer,float x,float y) {
+Enemigo2::Enemigo2(SDL_Renderer* gRenderer, float x,float y) {
     velocidadEscalar = 1;
     posicion = Vector(x, y);
     VelocidadX = true;
-    textura = cargarTextura(gRenderer, "enemy02.png");
-    Enemigo2::gRenderer = gRenderer;
+    vista = new Enemigo2Vista(gRenderer);
     l.info("Enemy 02 created");
-};
+}
 
 SDL_Rect Enemigo2::calcularMovimiento(int width, int height) {
 
@@ -45,9 +44,15 @@ SDL_Rect Enemigo2::calcularMovimiento(int width, int height) {
 }
 
 void Enemigo2::render() {
+
+	calcularMovimiento(ENEMIGO2_ANCHO, ENEMIGO2_ALTO);
+	vista->render(posicion, VelocidadX);
+
+/*
     SDL_Rect srcrect = {0, 0 + ENEMIGO2_ALTO * (VelocidadX), ENEMIGO2_ANCHO, ENEMIGO2_ALTO};
     SDL_Rect dstrect = calcularMovimiento(ENEMIGO2_ANCHO, ENEMIGO2_ALTO);
 
-    SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+ */
     l.info(("Position ENEMY 02:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
 }

@@ -8,6 +8,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "Vector.h"
+#include "view/Enemigo2Vista.h"
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
@@ -22,9 +23,8 @@ private:
     Vector velocidad;
     float velocidadEscalar;
     bool VelocidadX;
-    SDL_Texture* textura;
-    SDL_Renderer* gRenderer;
 
+    Enemigo2Vista *vista;
 
     SDL_Rect calcularMovimiento(int width, int height);
 };
