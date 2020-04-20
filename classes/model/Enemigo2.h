@@ -9,6 +9,7 @@
 #include <string>
 #include "../Vector.h"
 #include "../view/Enemigo2Vista.h"
+#include "../GeneradorDeTexturas.h"
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;

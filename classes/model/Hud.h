@@ -8,6 +8,7 @@
 
 #include <SDL_render.h>
 #include "../view/HudVista.h"
+#include "../GeneradorDeTexturas.h"
 
 const int HUD_ANCHO = 960;
 const int HUD_ALTO = 96;

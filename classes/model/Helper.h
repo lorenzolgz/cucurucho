@@ -11,6 +11,7 @@
 #include "../Vector.h"
 #include "Jugador.h"
 #include "../view/HelperVista.h"
+#include "../GeneradorDeTexturas.h"
 
 const int HELPER_BALL_RADIO = 24;
 const int HELPER_DISTANCIA = 27;

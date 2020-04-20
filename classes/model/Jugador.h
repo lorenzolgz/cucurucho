@@ -6,19 +6,18 @@
 #include <string>
 #include "../Vector.h"
 #include "../view/JugadorVista.h"
+#include "../GeneradorDeTexturas.h"
 
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador {
 public:
 	Jugador(SDL_Renderer* gRenderer, int x, int y);
-	void render();
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
+	void render();
 
     const Vector &getPosicion() const;
-
     const Vector getVelocidad() const;
-
     int getContador() const;
 
 private:
@@ -26,7 +25,6 @@ private:
     Vector velocidad;
     double velocidadEscalar;
     int contadorVelocidadY;
-
 	JugadorVista *vista;
 };
 
