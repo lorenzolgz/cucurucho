@@ -3,9 +3,9 @@
 #include "../GraphicRenderer.h"
 #include "../Log.h"
 
-CampoVista::CampoVista(SDL_Rect rectCampo) {
+CampoVista::CampoVista(int ancho, int alto, int inicioEnEjeY) {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();
-	CampoVista::posCampo = rectCampo;
+	CampoVista::posCampo = { 0, inicioEnEjeY, ancho, alto };
 	l.info("Campo created");
 }
 

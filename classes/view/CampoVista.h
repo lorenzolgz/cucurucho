@@ -8,7 +8,7 @@
 
 class CampoVista {
 public:
-	CampoVista(SDL_Rect rectCampo);
+	CampoVista(int ancho, int alto, int inicioEnEjeY);
 	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
 	void render(float velocidad);
 

@@ -1,16 +1,16 @@
 {
-   "configuracion":{
-      "resolucion":{
-         "alto":672,
-         "ancho":960,
-         "escala":1
+   "configuracion": {
+      "resolucion": {
+         "alto": 672,
+         "ancho": 960,
+         "escala": 1
       },
-      "log":{
-         "nivel":"info"
+      "log": {
+         "nivel": "info"
       },
-      "enemigos":{
-        "tipoUno":10,
-        "tipoDos":10
+      "enemigos": {
+         "tipoUno": 8,
+         "tipoDos": 2
       },
       "niveles": {
          "1": [

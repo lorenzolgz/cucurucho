@@ -13,6 +13,7 @@
 class VentanaJuego {
 public:
 	VentanaJuego(Configuracion* config, Jugador* jugador);
+	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick();
 
 private:

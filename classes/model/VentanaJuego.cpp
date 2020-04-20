@@ -11,16 +11,19 @@ VentanaJuego::VentanaJuego(Configuracion* config, Jugador* jugador) {
 	VentanaJuego::campo = crearCampo(config, jugador);
 }
 
+void VentanaJuego::crearEnemigos(int cantClase1, int cantClase2) {
+	campo->crearNEnemigo2(cantClase2);
+	campo->crearNEnemigo1(cantClase1);
+}
+
 void VentanaJuego::tick() {
 	hud->tick();
 	campo->tick();
 }
 
 Campo* VentanaJuego::crearCampo(Configuracion* config, Jugador* jugador){
-	int inicioRectCampo = HUD_ALTO;
-	SDL_Rect rectCampo = {0, inicioRectCampo, config->getAnchoPantalla(), config->getAltoPantalla() - inicioRectCampo };
-
-	Campo* campo = new Campo(rectCampo, jugador);
+	int inicioCampoEnEjeY = HUD_ALTO;
+	Campo* campo = new Campo(jugador, config->getAnchoPantalla(), config->getAltoPantalla() - inicioCampoEnEjeY, inicioCampoEnEjeY);
 
 	// Primer fondo se carga fuera del JSON
 	int y_inicial = -24;

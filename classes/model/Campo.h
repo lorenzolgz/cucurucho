@@ -15,11 +15,15 @@
 
 class Campo {
 public:
-	Campo(SDL_Rect rectCampo, Jugador* jugador);
+	Campo(Jugador* jugador, int ancho, int alto, int inicioEnEjeY);
     FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
+	void crearNEnemigo1(int n);
+	void crearNEnemigo2(int n);
     void tick();
 
 private:
+	int ancho;
+	int alto;
 	float velocidad;
 
 	Jugador* jugador;

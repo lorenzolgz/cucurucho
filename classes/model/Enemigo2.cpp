@@ -15,7 +15,7 @@ Enemigo2::Enemigo2(float x,float y) {
 }
 
 void Enemigo2::tick() {
-	recalcularPosicion();
+	// recalcularPosicion();
 	vista->render(posicion, velocidadX);
 	l.info(("Position ENEMY 02:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
 }

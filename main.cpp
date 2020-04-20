@@ -112,6 +112,7 @@ void mainLoop(Configuracion* config) {
 
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	VentanaJuego* ventanaJuego = new VentanaJuego(config, jugador);
+	ventanaJuego->crearEnemigos(config->getEnemigosTipoUno(), config->getEnemigosTipoDos());
 
     l.info("Objects are initialized according to the initial configuration");
 
