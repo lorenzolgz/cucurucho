@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <jsoncpp/json/json.h>
-#include "classes/model/VentanaJuego.h"
+#include "classes/model/Campo.h"
 #include "classes/model/Jugador.h"
 #include "classes/model/Hud.h"
 #include "classes/model/Helper.h"
@@ -106,31 +106,31 @@ void close(Configuracion* config) {
 }
 
 
-VentanaJuego crearVentanaJuego(Configuracion* config){
+Campo* crearCampo(Configuracion* config, Jugador* jugador){
 
     int altoPantalla = config->getAltoPantalla();
     int anchoPantalla = config->getAnchoPantalla();
 
-    int inicioRectVentana = HUD_ALTO;
-    SDL_Rect rect_ventana = { 0, inicioRectVentana, anchoPantalla, altoPantalla - inicioRectVentana };
+    int inicioRectCampo = HUD_ALTO;
+    SDL_Rect rectCampo = {0, inicioRectCampo, anchoPantalla, altoPantalla - inicioRectCampo };
 
-    VentanaJuego ventana(gRenderer, rect_ventana);
+    Campo* campo = new Campo(gRenderer, rectCampo, jugador);
 
     // Primer fondo se carga fuera del JSON
     int y_inicial = -24;
-    FondoVista* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
+    FondoVista* fondo = campo->nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
 
     // Resto de los fondos salen del JSON y se mapean
     Json::Value fondosAPresentar = config->getRecursos("1");
     for(Json::Value f : fondosAPresentar) {
-        fondo = ventana.nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
-        		fondo->getY() + fondo->getHeight(),f["velocidad"].asFloat());
+        fondo = campo->nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
+        		fondo->getY() + fondo->getHeight(), f["velocidad"].asFloat());
     }
 
-    ventana.nuevoFondo("bg.png", 450, 0, 0.3);
+    campo->nuevoFondo("bg.png", 450, 0, 0.3);
 
     l.info("Parallax Stage 1 created");
-    return ventana;
+    return campo;
 }
 
 
@@ -145,10 +145,10 @@ void mainLoop(Configuracion* config) {
 
     GeneradorDeTexturas generadorDeTexturas = GeneradorDeTexturas();
 
-    VentanaJuego ventana = crearVentanaJuego(config);
-    Jugador jugador = Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
-    Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-    Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+    Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
+	Campo* campo = crearCampo(config, jugador);
+	Helper helper = Helper(gRenderer, jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+    Helper helper2 = Helper(gRenderer, jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
     Hud hud = Hud(gRenderer);
 
     Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
@@ -170,7 +170,7 @@ void mainLoop(Configuracion* config) {
 
         }
         const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
-        jugador.calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
+        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                         currentKeyStates[SDL_SCANCODE_DOWN],
                                         currentKeyStates[SDL_SCANCODE_LEFT],
                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
@@ -179,10 +179,10 @@ void mainLoop(Configuracion* config) {
         SDL_RenderClear(gRenderer);
 
         //Render texture to screen
-        ventana.render();
+		campo->tick();
         helper.render();
         helper2.render();
-        jugador.render();
+		// jugador.tick();
         enemigo1.render();
         enemigo2.render();
         hud.render();

@@ -14,7 +14,7 @@ class Jugador {
 public:
 	Jugador(SDL_Renderer* gRenderer, int x, int y);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
-	void render();
+	void tick();
 
     const Vector &getPosicion() const;
     const Vector getVelocidad() const;
