@@ -144,15 +144,21 @@ void mainLoop(Configuracion* config) {
     int altoPantalla = config->getAltoPantalla();
     int anchoPantalla = config->getAnchoPantalla();
 
-    VentanaJuego ventana = crearVentanaJuego(config);
-    Jugador jugador = Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
-    Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-    Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
-    Hud hud = Hud(gRenderer);
+    //Prueba
 
-    Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
-    Enemigo2 enemigo2 = Enemigo2(gRenderer, 600, 45);
+    GeneradorDeTexturas generadorDeTexturas = GeneradorDeTexturas();
+
+    VentanaJuego ventana = crearVentanaJuego(config);
+    Jugador jugador = Jugador(generadorDeTexturas, gRenderer, anchoPantalla / 8, altoPantalla / 2);
+    Helper helper = Helper(generadorDeTexturas, gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+    Helper helper2 = Helper(generadorDeTexturas, gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+    Hud hud = Hud(generadorDeTexturas, gRenderer);
+
+    Enemigo1 enemigo1 = Enemigo1(generadorDeTexturas, gRenderer, 825, 420);
+    Enemigo2 enemigo2 = Enemigo2(generadorDeTexturas, gRenderer, 600, 45);
     l.info("Objects are initialized according to the initial configuration");
+
+    //FinPrueba
 
     while (!quit) {
 
@@ -211,4 +217,5 @@ int main(int, char**) {
 
     close(config);
     return 0;
+
 }

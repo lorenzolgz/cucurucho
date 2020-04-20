@@ -9,11 +9,13 @@
 #include "Log.h"
 
 
-Hud::Hud(SDL_Renderer *gRenderer) {
+Hud::Hud(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer *gRenderer) {
     Hud::gRenderer = gRenderer;
     posHud = {0, 0, HUD_ANCHO, HUD_ALTO};
 
-    textura = cargarTextura(gRenderer, "hud.png");
+    //textura = cargarTextura(gRenderer, "hud.png");
+    //generadorDeTexturas =  GeneradorDeTexturas();
+    textura = generadorDeTexturas.generarTextura(gRenderer, "Hud");
     l.info("Hud created");
 }
 

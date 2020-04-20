@@ -7,14 +7,17 @@
 #include "Log.h"
 
 
-Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
+Jugador::Jugador(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer* gRenderer, int x, int y) {
     velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
     posicion = Vector(x, y);
     velocidad = Vector(0, 0);
     contador = 0;
     contadorVelocidadY = 0;
-    textura = cargarTextura(gRenderer, "player.png");
-    texturaGlow = cargarTextura(gRenderer, "player.png");
+    //textura = cargarTextura(gRenderer, "player.png");
+    //texturaGlow = cargarTextura(gRenderer, "player.png");
+   // generadorDeTexturas = GeneradorDeTexturas();
+    textura = generadorDeTexturas.generarTextura(gRenderer, "Jugador");
+    texturaGlow = generadorDeTexturas.generarTextura(gRenderer, "Jugador");
     Jugador::gRenderer = gRenderer;
     l.info("Player created");
 }

@@ -8,6 +8,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "Vector.h"
+#include "GeneradorDeTexturas.h"
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
@@ -15,7 +16,7 @@ const int ENEMIGO2_ALTO = 147;
 class Enemigo2 {
 public:
     void render();
-    Enemigo2(SDL_Renderer* gRenderer, float x, float y);
+    Enemigo2(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer* gRenderer, float x, float y);
 
 private:
     Vector posicion;
@@ -24,6 +25,7 @@ private:
     bool VelocidadX;
     SDL_Texture* textura;
     SDL_Renderer* gRenderer;
+    //GeneradorDeTexturas generadorDeTexturas;
 
 
     SDL_Rect calcularMovimiento(int width, int height);

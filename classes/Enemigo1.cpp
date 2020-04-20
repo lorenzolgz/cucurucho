@@ -8,12 +8,16 @@
 #include "Log.h"
 
 
-Enemigo1::Enemigo1(SDL_Renderer* gRenderer, float x, float y) {
+Enemigo1::Enemigo1(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer* gRenderer, float x, float y) {
     velocidadEscalar = 0.01;
     posicion = Vector(x, y);
     VelocidadX = 7; // Posición 2 de sprite
-    textura = cargarTextura(gRenderer, "enemy01.png");
-    texturaGlow = cargarTextura(gRenderer, "enemy01.png");
+    //textura = cargarTextura(gRenderer, "enemy01.png");
+    //texturaGlow = cargarTextura(gRenderer, "enemy01.png");
+    //generadorDeTexturas = GeneradorDeTexturas();
+    textura = generadorDeTexturas.generarTextura(gRenderer, "Enemigo1");
+    texturaGlow = generadorDeTexturas.generarTextura(gRenderer, "Enemigo1");
+
     Enemigo1::gRenderer = gRenderer;
     l.info("Enemy 01 created");
 };

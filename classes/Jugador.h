@@ -9,6 +9,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "Vector.h"
+#include "GeneradorDeTexturas.h"
 
 const int JUGADOR_ALTO = 48;
 const int JUGADOR_ANCHO = 96;
@@ -18,7 +19,7 @@ class Jugador {
 public:
     void render();
     void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
-    Jugador(SDL_Renderer* gRenderer, int x, int y);
+    Jugador(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer* gRenderer, int x, int y);
 
     const Vector &getPosicion() const;
 
@@ -35,6 +36,7 @@ private:
     SDL_Texture* textura;
     SDL_Texture* texturaGlow;
     SDL_Renderer* gRenderer;
+    //GeneradorDeTexturas generadorDeTexturas;
 
     void colorGlow();
 };

@@ -10,11 +10,13 @@
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
-Enemigo2::Enemigo2(SDL_Renderer* gRenderer,float x,float y) {
+Enemigo2::Enemigo2(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer* gRenderer,float x,float y) {
     velocidadEscalar = 1;
     posicion = Vector(x, y);
     VelocidadX = true;
-    textura = cargarTextura(gRenderer, "enemy02.png");
+    //textura = cargarTextura(gRenderer, "enemy02.png");
+    //generadorDeTexturas = GeneradorDeTexturas();
+    textura = generadorDeTexturas.generarTextura(gRenderer, "Enemigo2");
     Enemigo2::gRenderer = gRenderer;
     l.info("Enemy 02 created");
 };

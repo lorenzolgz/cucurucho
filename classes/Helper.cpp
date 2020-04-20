@@ -7,7 +7,7 @@
 #include "Utils.h"
 
 
-Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
+Helper::Helper(GeneradorDeTexturas generadorDeTexturas, SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     Helper::gRenderer = gRenderer;
     Helper::jugador = jugador;
     Helper::posRelativa = posRelativa;
@@ -16,7 +16,10 @@ Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     Helper::velAngular = HELPER_VEL_ANGULAR;
     Helper::aceleracion = HELPER_ACELERACION;
     Helper::angulo = 0;
-    textura = cargarTextura(gRenderer, "helper.png");
+    //textura = cargarTextura(gRenderer, "helper.png");
+
+    //generadorDeTexturas = GeneradorDeTexturas();
+    textura = generadorDeTexturas.generarTextura(gRenderer, "Helper");
 
     for (int i = 0; i < 19; i++) {
         recorrido.push_front(posicion);
