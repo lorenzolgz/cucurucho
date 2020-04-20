@@ -138,8 +138,8 @@ void mainLoop(Configuracion* config) {
     bool quit = false;
     SDL_Event e;
 
-    int altoPantalla = config->getAltoPantalla();
     int anchoPantalla = config->getAnchoPantalla();
+	int altoPantalla = config->getAltoPantalla();
 
     //Prueba
 
@@ -147,8 +147,6 @@ void mainLoop(Configuracion* config) {
 
     Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
 	Campo* campo = crearCampo(config, jugador);
-	Helper helper = Helper(gRenderer, jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-    Helper helper2 = Helper(gRenderer, jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
     Hud hud = Hud(gRenderer);
 
     Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
@@ -180,9 +178,6 @@ void mainLoop(Configuracion* config) {
 
         //Render texture to screen
 		campo->tick();
-        helper.render();
-        helper2.render();
-		// jugador.tick();
         enemigo1.render();
         enemigo2.render();
         hud.render();

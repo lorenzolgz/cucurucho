@@ -7,6 +7,13 @@
 #include "../Vector.h"
 #include "../view/JugadorVista.h"
 #include "../GeneradorDeTexturas.h"
+#include "Helper.h"
+
+class Helper;
+class HelperVista;
+
+const int JUGADOR_ANCHO = 96;
+const int JUGADOR_ALTO = 48;
 
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
@@ -25,6 +32,10 @@ private:
     Vector velocidad;
     double velocidadEscalar;
     int contadorVelocidadY;
+
+	Helper* helperAbove;
+	Helper* helperBelow;
+
 	JugadorVista *vista;
 };
 

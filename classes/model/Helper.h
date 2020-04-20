@@ -13,6 +13,9 @@
 #include "../view/HelperVista.h"
 #include "../GeneradorDeTexturas.h"
 
+class Jugador;
+class HelperVista;
+
 const int HELPER_BALL_RADIO = 24;
 const int HELPER_DISTANCIA = 27;
 
@@ -25,7 +28,7 @@ const int HELPER_ALTO = 48;
 class Helper {
 public:
     Helper(SDL_Renderer * gRenderer, Jugador* jugador, Vector posRelativa);
-    void render();
+    void tick();
 
 private:
     Vector posicion;
@@ -36,6 +39,7 @@ private:
     double velAngular;
     double angulo;
     double aceleracion;
+
     HelperVista* vista;
 
     void calcularAngulo();

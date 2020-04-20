@@ -6,7 +6,9 @@
 
 Campo::Campo(SDL_Renderer *gRenderer, SDL_Rect rectCampo, Jugador* jugador) {
 	velocidad = 2;
+
 	Campo::jugador = jugador;
+
 	vista = new CampoVista(gRenderer, rectCampo);
 }
 

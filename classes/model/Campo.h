@@ -20,6 +20,7 @@ public:
 
 private:
 	float velocidad;
+
 	Jugador* jugador;
 
 	CampoVista* vista;

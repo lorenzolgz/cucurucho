@@ -8,6 +8,10 @@ Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
 	Jugador::contadorVelocidadY = 0;
+
+	Jugador::helperAbove = new Helper(gRenderer, this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+	Jugador::helperBelow = new Helper(gRenderer, this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+
 	Jugador::vista = new JugadorVista(gRenderer);
     l.info("Player created");
 }
@@ -47,6 +51,8 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
 }
 
 void Jugador::tick() {
+	helperAbove->tick();
+	helperBelow->tick();
 	vista->render(posicion, contadorVelocidadY);
 }
 

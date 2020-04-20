@@ -5,20 +5,13 @@
 #include <string>
 #include "../Vector.h"
 
-
-const int JUGADOR_ALTO = 48;
-const int JUGADOR_ANCHO = 96;
+const int JUGADOR_SRC_ANCHO = 96;
+const int JUGADOR_SRC_ALTO = 48;
 
 class JugadorVista {
 public:
 	JugadorVista(SDL_Renderer* gRenderer);
 	void render(Vector posicion, int contadorVelocidadY);
-	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
-
-	const Vector &getPosicion() const;
-
-	const Vector getVelocidad() const;
-
 	int getContador() const;
 
 private:

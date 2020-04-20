@@ -11,19 +11,19 @@ JugadorVista::JugadorVista(SDL_Renderer* gRenderer) {
 }
 
 void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
-	SDL_Rect srcrect = {JUGADOR_ANCHO + JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
-						0, JUGADOR_ANCHO, JUGADOR_ALTO};
+	SDL_Rect srcrect = {JUGADOR_SRC_ANCHO + JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
+						0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
 
 	SDL_Rect dstrect = {(int) posicion.getX(),
 						(int) posicion.getY(),
-						JUGADOR_ANCHO,
-						JUGADOR_ALTO};
+						JUGADOR_SRC_ANCHO,
+						JUGADOR_SRC_ALTO};
 
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
 	colorGlow();
-	srcrect = {JUGADOR_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_ANCHO * 4 * (contadorVelocidadY > 10),
-			   0, JUGADOR_ANCHO, JUGADOR_ALTO};
+	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
+			   0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
 }
 

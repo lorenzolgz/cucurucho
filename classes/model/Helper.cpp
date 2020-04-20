@@ -6,7 +6,6 @@
 #include "Helper.h"
 #include "../Utils.h"
 
-
 Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     Helper::jugador = jugador;
     Helper::posRelativa = posRelativa;
@@ -21,7 +20,7 @@ Helper::Helper(SDL_Renderer *gRenderer, Jugador* jugador, Vector posRelativa) {
     }
 }
 
-void Helper::render() {
+void Helper::tick() {
 	calcularAngulo();
 	calcularVelocidad();
 
