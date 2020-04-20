@@ -5,7 +5,10 @@
 HelperVista::HelperVista(SDL_Renderer *gRenderer, Jugador* jugador) {
 	HelperVista::gRenderer = gRenderer;
 	HelperVista::jugador = jugador;
-	textura = cargarTextura(gRenderer, "helper.png");
+	//textura = cargarTextura(gRenderer, "helper.png");
+
+    GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
+    HelperVista::textura = generadorDeTexturas->generarTextura(gRenderer, "helper.png");
 
 	for (int i = 0; i < 19; i++) {
 		// recorrido.push_front(posicion);

@@ -4,19 +4,32 @@
 
 #include "GeneradorDeTexturas.h"
 
-GeneradorDeTexturas::GeneradorDeTexturas(){
+GeneradorDeTexturas* GeneradorDeTexturas::instance=NULL;
 
+GeneradorDeTexturas* GeneradorDeTexturas::getInstance(){
+
+    if(instance==NULL)
+        instance = new GeneradorDeTexturas();
+    else
+        cout << "Getting existing instance" << endl;
+
+    return instance;
+
+};
+
+GeneradorDeTexturas::GeneradorDeTexturas(){
+    cout << "Creating singleton" << endl;
 };
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(SDL_Renderer* gRenderer, string entidadDelJuego) {
 
     map<string, SDL_Texture*> texturas;
 
-    texturas["Enemigo1"] = cargarTextura(gRenderer, "enemy01.png");
-    texturas["Enemigo2"] = cargarTextura(gRenderer, "enemy02.png");
-    texturas["Helper"] = cargarTextura(gRenderer, "helper.png");
-    texturas["Hud"] = cargarTextura(gRenderer, "hud.png");
-    texturas["Jugador"] = cargarTextura(gRenderer, "player.png");
+    texturas["enemy01.png"] = cargarTextura(gRenderer, "enemy01.png");
+    texturas["enemy02.png"] = cargarTextura(gRenderer, "enemy02.png");
+    texturas["helper.png"] = cargarTextura(gRenderer, "helper.png");
+    texturas["hud.png"] = cargarTextura(gRenderer, "hud.png");
+    texturas["player.png"] = cargarTextura(gRenderer, "player.png");
 
 
     return texturas[entidadDelJuego];
