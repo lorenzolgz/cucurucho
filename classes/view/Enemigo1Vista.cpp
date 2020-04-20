@@ -2,11 +2,14 @@
 #include <SDL_image.h>
 #include "../Utils.h"
 #include "../Log.h"
+#include "../GeneradorDeTexturas.h"
 
 Enemigo1Vista::Enemigo1Vista(SDL_Renderer* gRenderer) {
 	Enemigo1Vista::gRenderer = gRenderer;
-	Enemigo1Vista::textura = cargarTextura(gRenderer, "enemy01.png");
-	l.info("Enemy 02 created");
+	//Enemigo1Vista::textura = cargarTextura(gRenderer, "enemy01.png");
+    GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
+	Enemigo1Vista::textura = generadorDeTexturas->generarTextura(gRenderer, "enemy01.png");
+	l.info("Enemy 01 created");
 };
 
 void Enemigo1Vista::render(Vector posicion, int velocidadX) {
