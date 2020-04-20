@@ -46,7 +46,7 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
     posicion = posicion + velocidad;
 }
 
-void Jugador::render() {
+void Jugador::tick() {
 	vista->render(posicion, contadorVelocidadY);
 }
 

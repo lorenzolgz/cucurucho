@@ -2,24 +2,27 @@
 // Created by javier on 9/4/20.
 //
 
-#ifndef CPP_SANDBOX_VENTANAJUEGO_H
-#define CPP_SANDBOX_VENTANAJUEGO_H
+#ifndef CPP_SANDBOX_CAMPO_H
+#define CPP_SANDBOX_CAMPO_H
 
 
 #include <vector>
 #include "../view/FondoVista.h"
-#include "../view/VentanaJuegoVista.h"
+#include "../view/CampoVista.h"
+#include "Jugador.h"
 #include <list>
 
-class VentanaJuego {
+class Campo {
 public:
-	VentanaJuego(SDL_Renderer* gRenderer, SDL_Rect rectVentana);
+	Campo(SDL_Renderer* gRenderer, SDL_Rect rectCampo, Jugador* jugador);
     FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
-    void render();
+    void tick();
 
 private:
 	float velocidad;
-	VentanaJuegoVista* vista;
+	Jugador* jugador;
+
+	CampoVista* vista;
 
 
     // Posicion X, para la logica del juego (no se usa aun)
@@ -27,4 +30,4 @@ private:
 };
 
 
-#endif //CPP_SANDBOX_VENTANAJUEGO_H
+#endif //CPP_SANDBOX_CAMPO_H
