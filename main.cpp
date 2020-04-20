@@ -12,6 +12,7 @@
 #include "classes/Log.h"
 #include "classes/model/Enemigo1.h"
 #include "classes/Configuracion.h"
+#include "classes/model/VentanaJuego.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
@@ -105,35 +106,6 @@ void close(Configuracion* config) {
     l.info("Window was successfully closed");
 }
 
-
-Campo* crearCampo(Configuracion* config, Jugador* jugador){
-
-    int altoPantalla = config->getAltoPantalla();
-    int anchoPantalla = config->getAnchoPantalla();
-
-    int inicioRectCampo = HUD_ALTO;
-    SDL_Rect rectCampo = {0, inicioRectCampo, anchoPantalla, altoPantalla - inicioRectCampo };
-
-    Campo* campo = new Campo(gRenderer, rectCampo, jugador);
-
-    // Primer fondo se carga fuera del JSON
-    int y_inicial = -24;
-    FondoVista* fondo = campo->nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
-
-    // Resto de los fondos salen del JSON y se mapean
-    Json::Value fondosAPresentar = config->getRecursos("1");
-    for(Json::Value f : fondosAPresentar) {
-        fondo = campo->nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
-        		fondo->getY() + fondo->getHeight(), f["velocidad"].asFloat());
-    }
-
-    campo->nuevoFondo("bg.png", 450, 0, 0.3);
-
-    l.info("Parallax Stage 1 created");
-    return campo;
-}
-
-
 void mainLoop(Configuracion* config) {
     bool quit = false;
     SDL_Event e;
@@ -141,15 +113,10 @@ void mainLoop(Configuracion* config) {
     int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
 
-    //Prueba
-
-    Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
-	Campo* campo = crearCampo(config, jugador);
-    Hud hud = Hud(gRenderer);
+	Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
+	VentanaJuego* ventanaJuego = new VentanaJuego(gRenderer, config, jugador);
 
     l.info("Objects are initialized according to the initial configuration");
-
-    //FinPrueba
 
     while (!quit) {
 
@@ -173,8 +140,7 @@ void mainLoop(Configuracion* config) {
         SDL_RenderClear(gRenderer);
 
         //Render texture to screen
-		campo->tick();
-		hud.tick();
+        ventanaJuego->tick();
 
         //Update screen
         SDL_RenderPresent(gRenderer);
