@@ -21,8 +21,7 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
 
     if ((arriba || abajo) && (izquierda || derecha)) {
         vParcial = velocidadEscalar / sqrt(2);
-    }
-    else if (arriba || abajo || izquierda || derecha) {
+    } else if (arriba || abajo || izquierda || derecha) {
         vParcial = velocidadEscalar;
     }
 
@@ -30,19 +29,16 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
     if (arriba) {
         vy = -vParcial;
         contadorVelocidadY += contadorVelocidadY < 14;
-    }
-    else if (abajo) {
+    } else if (abajo) {
         vy = vParcial;
         contadorVelocidadY -= contadorVelocidadY > -14;
-    }
-    else {
+    } else {
         contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);
     }
 
     if (izquierda) {
         vx = -vParcial;
-    }
-    else if (derecha) {
+    } else if (derecha) {
         vx = vParcial;
     }
 

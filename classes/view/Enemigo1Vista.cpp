@@ -10,7 +10,7 @@ Enemigo1Vista::Enemigo1Vista(SDL_Renderer* gRenderer) {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	Enemigo1Vista::textura = generadorDeTexturas->generarTextura(gRenderer, "enemy01.png");
 	l.info("Enemy 01 created");
-};
+}
 
 void Enemigo1Vista::render(Vector posicion, int velocidadX) {
 	SDL_Rect srcrect = {0 + ENEMIGO1_SRC_ANCHO * (velocidadX < 10) * (velocidadX > 5)

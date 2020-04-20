@@ -13,7 +13,7 @@ Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPant
     this->enemigosTipoDos = enemigosTipoDos;
     this->nivelLog = nivelLog;
     this->recursosNiveles = recursosNiveles;
-};
+}
 
 int Configuracion::getAltoPantalla(){
     return this->altoPantalla;

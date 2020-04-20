@@ -3,9 +3,9 @@
 //
 
 #include <algorithm>
+#include <string>
 #include "Campo.h"
 #include "Enemigo1.h"
-#include "../Log.h"
 #include "Enemigo2.h"
 
 Campo::Campo(SDL_Renderer *gRenderer, SDL_Rect rectCampo, Jugador* jugador) {

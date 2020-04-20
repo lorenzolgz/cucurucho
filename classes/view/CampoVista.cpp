@@ -1,3 +1,4 @@
+#include <string>
 #include "CampoVista.h"
 
 CampoVista::CampoVista(SDL_Renderer *gRenderer, SDL_Rect rectCampo) {

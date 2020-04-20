@@ -10,7 +10,7 @@ Enemigo2Vista::Enemigo2Vista(SDL_Renderer* gRenderer) {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     Enemigo2Vista::textura = generadorDeTexturas->generarTextura(gRenderer, "enemy02.png");
 	l.info("Enemy 02 created");
-};
+}
 
 void Enemigo2Vista::render(Vector posicion, int velocidadX) {
 	SDL_Rect srcrect = {0, 0 + ENEMIGO2_SRC_ALTOS * (velocidadX), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};

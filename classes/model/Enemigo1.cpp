@@ -9,7 +9,7 @@ Enemigo1::Enemigo1(SDL_Renderer* gRenderer, float x, float y) {
 	velocidadX = 7; // Posición 2 de sprite
     vista = new Enemigo1Vista(gRenderer);
     l.info("Enemy 01 created");
-};
+}
 
 void Enemigo1::tick() {
 	vista->render(posicion, velocidadX);

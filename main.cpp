@@ -23,7 +23,6 @@ SDL_Renderer* gRenderer = nullptr;
 Log l = Log();
 
 Configuracion* leerJson(std::string ruta){
-
     Json::Value root;
     Json::Reader reader;
     std::ifstream file(ruta);
@@ -43,38 +42,37 @@ Configuracion* leerJson(std::string ruta){
 
 
 bool init(Configuracion* config) {
-
     int anchoPantalla = config->getAnchoPantalla();
     int altoPantalla = config->getAltoPantalla();
     int escalaPantalla = config->getEscalaPantalla();
 
     //Initialize SDL
-    if(SDL_Init( SDL_INIT_VIDEO ) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         l.error(("SDL could not initialize! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
 
     // Set texture filtering to linear
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
     {
-        l.warning( "Linear texture filtering not enabled!" );
+        l.warning("Linear texture filtering not enabled!");
     }
 
     //Initialize SDL_image
-    if(!(IMG_Init(IMG_INIT_PNG))) {
-        l.error(( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() ));
+    if (!(IMG_Init(IMG_INIT_PNG))) {
+        l.error(("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError()));
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
-    if(gWindow == nullptr) {
+    if (gWindow == nullptr) {
         l.error(("Window could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
     //Get window surface
 
-    gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
         l.error(("Renderer could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
@@ -89,7 +87,6 @@ bool init(Configuracion* config) {
 
 
 void close(Configuracion* config) {
-
     //Deallocate textures
     SDL_DestroyRenderer(gRenderer);
 
@@ -119,18 +116,17 @@ void mainLoop(Configuracion* config) {
     l.info("Objects are initialized according to the initial configuration");
 
     while (!quit) {
-
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while (SDL_PollEvent( &e ) != 0)
         {
             //User requests quit
-            if( e.type == SDL_QUIT )
+            if (e.type == SDL_QUIT)
             {
                 quit = true;
             }
-
         }
-        const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
         jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                         currentKeyStates[SDL_SCANCODE_DOWN],
                                         currentKeyStates[SDL_SCANCODE_LEFT],
@@ -149,7 +145,6 @@ void mainLoop(Configuracion* config) {
 
 
 int main(int, char**) {
-
     Configuracion* config;
 
     try {
@@ -169,5 +164,4 @@ int main(int, char**) {
 
     close(config);
     return 0;
-
 }

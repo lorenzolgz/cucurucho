@@ -20,17 +20,14 @@ void Enemigo2::tick() {
 	l.info(("Position ENEMY 02:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
 }
 
-
 void Enemigo2::recalcularPosicion() {
-
 // Por si queremos mostrar como entra y sale en loop, moficando el sprite dependiendo
 // si avanza o retrocede
 //
     if (posicion.getX() > OFFSET_A and velocidadX) {
         posicion = posicion + Vector(-velocidadEscalar, 0);
         if (posicion.getX() <= OFFSET_A) velocidadX = false;
-    }
-    else{
+    } else{
         posicion = posicion + Vector(velocidadEscalar, 0);
         if (posicion.getX() >= OFFSET_B) velocidadX = true;
     }

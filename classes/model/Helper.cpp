@@ -43,8 +43,7 @@ void Helper::calcularAngulo(){
 
     if (abs(angulo_d) < velAngular) {
         angulo += angulo_d;
-    }
-    else {
+    } else {
         angulo += velAngular * ((angulo_d > 0) - (angulo_d < 0));
     }
     angulo = ((int) angulo + 360) % 360;
