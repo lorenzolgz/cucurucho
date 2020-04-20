@@ -11,6 +11,14 @@ Enemigo1::Enemigo1(float x, float y) {
     l.info("Enemy 01 created");
 }
 
+int Enemigo1::getAncho() {
+	return ENEMIGO1_ANCHO;
+}
+
+int Enemigo1::getAlto() {
+	return ENEMIGO1_ALTO;
+}
+
 void Enemigo1::tick() {
 	vista->render(posicion, velocidadX);
 	l.info(("Position ENEMY 01:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getX())+ ")"));

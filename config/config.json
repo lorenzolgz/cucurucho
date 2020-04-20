@@ -9,8 +9,8 @@
          "nivel": "info"
       },
       "enemigos": {
-         "tipoUno": 8,
-         "tipoDos": 2
+         "tipoUno": 10,
+         "tipoDos":3
       },
       "niveles": {
          "1": [

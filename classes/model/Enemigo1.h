@@ -8,14 +8,17 @@
 #include "../view/Enemigo1Vista.h"
 #include "../GeneradorDeTexturas.h"
 #include "Ticker.h"
+#include "Entidad.h"
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;
 
 
-class Enemigo1 : public Ticker {
+class Enemigo1 : public Entidad, public Ticker {
 public:
 	Enemigo1(float x, float y);
+	int getAncho() override;
+	int getAlto() override;
 	void tick() override;
 
 private:

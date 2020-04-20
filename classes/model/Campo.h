@@ -12,6 +12,7 @@
 #include "Jugador.h"
 #include <list>
 #include "Ticker.h"
+#include "Entidad.h"
 
 class Campo {
 public:
@@ -31,6 +32,7 @@ private:
 
 	CampoVista* vista;
 
+	bool entidadEstaDentroDelCampo(Entidad* entidad, int posX, int posY);
 
     // Posicion X, para la logica del juego (no se usa aun)
     float posX;

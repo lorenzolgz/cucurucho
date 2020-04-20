@@ -14,6 +14,14 @@ Enemigo2::Enemigo2(float x,float y) {
     l.info("Enemy 02 created");
 }
 
+int Enemigo2::getAncho() {
+	return ENEMIGO2_ANCHO;
+}
+
+int Enemigo2::getAlto() {
+	return ENEMIGO2_ALTO;
+}
+
 void Enemigo2::tick() {
 	// recalcularPosicion();
 	vista->render(posicion, velocidadX);
