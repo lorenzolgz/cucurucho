@@ -29,7 +29,14 @@ void Campo::crearNEnemigo1(int n) {
 	for (int i = 0; i < n; i++) {
 		int posX = std::rand() % ancho;
 		int posY = std::rand() % alto;
-		enemigos.push_back(new Enemigo1(posX, posY));
+		Enemigo1* enemigo = new Enemigo1(posX, posY);
+		// Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
+		if (!entidadEstaDentroDelCampo(enemigo, posX, posY)) {
+			i--;
+			continue;
+		}
+
+		enemigos.push_back(enemigo);
 	}
 }
 
@@ -38,7 +45,14 @@ void Campo::crearNEnemigo2(int n) {
 	for (int i = 0; i < n; i++) {
 		int posX = std::rand() % ancho;
 		int posY = std::rand() % alto;
-		enemigos.push_back(new Enemigo2(posX, posY));
+		Enemigo2* enemigo = new Enemigo2(posX, posY);
+		// Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
+		if (!entidadEstaDentroDelCampo(enemigo, posX, posY)) {
+			i--;
+			continue;
+		}
+
+		enemigos.push_back(enemigo);
 	}
 }
 
@@ -50,4 +64,8 @@ void Campo::tick() {
 	vista->render(velocidad);
 	std::for_each(enemigos.begin(), enemigos.end(), [](Ticker* t) { t->tick(); });
 	jugador->tick();
+}
+
+bool Campo::entidadEstaDentroDelCampo(Entidad* entidad, int posX, int posY) {
+	return (posX + entidad->getAncho() < ancho) && (posY + entidad->getAlto() < alto);
 }
