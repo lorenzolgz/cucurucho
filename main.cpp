@@ -143,8 +143,6 @@ void mainLoop(Configuracion* config) {
 
     //Prueba
 
-    GeneradorDeTexturas generadorDeTexturas = GeneradorDeTexturas();
-
     Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
 	Campo* campo = crearCampo(config, jugador);
 	Helper helper = Helper(gRenderer, jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
