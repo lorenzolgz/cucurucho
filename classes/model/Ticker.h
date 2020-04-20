@@ -8,7 +8,7 @@
 
 class Ticker {
 public:
-	virtual void tick() {};
+	virtual void tick() = 0;
 };
 
 
