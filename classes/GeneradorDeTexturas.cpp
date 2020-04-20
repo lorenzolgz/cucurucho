@@ -22,7 +22,7 @@ GeneradorDeTexturas::GeneradorDeTexturas(){
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
 	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
-    map<string, SDL_Texture*> texturas;
+    //map<string, SDL_Texture*> texturas;
 
     texturas["enemy01.png"] = cargarTextura(gRenderer, "enemy01.png");
     texturas["enemy02.png"] = cargarTextura(gRenderer, "enemy02.png");

@@ -21,6 +21,7 @@ public:
 private:
     GeneradorDeTexturas();
 	static GeneradorDeTexturas *instance;
+    map<string, SDL_Texture*> texturas;
 };
 
 #endif //CUCURUCHO_GENERADORDETEXTURAS_H
