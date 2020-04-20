@@ -7,21 +7,20 @@
 
 
 #include <vector>
-#include "Fondo.h"
+#include "../view/FondoVista.h"
+#include "../view/VentanaJuegoVista.h"
 #include <list>
 
 class VentanaJuego {
 public:
-    float velocidad;
-    SDL_Renderer* gRenderer;
-    VentanaJuego(SDL_Renderer* gRenderer, SDL_Rect rectVentana);
-    Fondo * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
+	VentanaJuego(SDL_Renderer* gRenderer, SDL_Rect rectVentana);
+    FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
     void render();
-private:
-    std::list<Fondo*> fondos;
 
-    // Posicion de la ventana del juego en la pantalla principal
-    SDL_Rect posVentana;
+private:
+	float velocidad;
+	VentanaJuegoVista* vista;
+
 
     // Posicion X, para la logica del juego (no se usa aun)
     float posX;

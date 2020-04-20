@@ -111,23 +111,20 @@ VentanaJuego crearVentanaJuego(Configuracion* config){
     int altoPantalla = config->getAltoPantalla();
     int anchoPantalla = config->getAnchoPantalla();
 
-    SDL_Rect rect_ventana;
-    rect_ventana.x = 0;
-    rect_ventana.y = HUD_ALTO;
-    rect_ventana.w = anchoPantalla;
-    rect_ventana.h = altoPantalla - rect_ventana.y;
+    int inicioRectVentana = HUD_ALTO;
+    SDL_Rect rect_ventana = { 0, inicioRectVentana, anchoPantalla, altoPantalla - inicioRectVentana };
 
     VentanaJuego ventana(gRenderer, rect_ventana);
 
     // Primer fondo se carga fuera del JSON
     int y_inicial = -24;
-    Fondo* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
+    FondoVista* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
 
     // Resto de los fondos salen del JSON y se mapean
     Json::Value fondosAPresentar = config->getRecursos("1");
     for(Json::Value f : fondosAPresentar) {
         fondo = ventana.nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
-                fondo->getY() + fondo->getHeight(),f["velocidad"].asFloat());
+        		fondo->getY() + fondo->getHeight(),f["velocidad"].asFloat());
     }
 
     ventana.nuevoFondo("bg.png", 450, 0, 0.3);
