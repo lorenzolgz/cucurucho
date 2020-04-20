@@ -9,6 +9,6 @@ Hud::Hud(SDL_Renderer *gRenderer) {
     l.info("Hud created");
 }
 
-void Hud::render() {
+void Hud::tick() {
 	vista->render(posicion);
 }

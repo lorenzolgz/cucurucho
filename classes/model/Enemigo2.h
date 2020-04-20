@@ -10,14 +10,15 @@
 #include "../Vector.h"
 #include "../view/Enemigo2Vista.h"
 #include "../GeneradorDeTexturas.h"
+#include "Ticker.h"
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
 
-class Enemigo2 {
+class Enemigo2 : public Ticker {
 public:
-    void render();
     Enemigo2(SDL_Renderer* gRenderer, float x, float y);
+	void tick() override;
 
 private:
     Vector posicion;

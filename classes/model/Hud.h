@@ -16,7 +16,7 @@ const int HUD_ALTO = 96;
 class Hud {
 public:
     Hud(SDL_Renderer* gRenderer);
-    void render();
+    void tick();
 
 private:
 	Vector posicion;

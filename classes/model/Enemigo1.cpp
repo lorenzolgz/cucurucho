@@ -11,7 +11,7 @@ Enemigo1::Enemigo1(SDL_Renderer* gRenderer, float x, float y) {
     l.info("Enemy 01 created");
 };
 
-void Enemigo1::render() {
+void Enemigo1::tick() {
 	vista->render(posicion, velocidadX);
 	l.info(("Position ENEMY 01:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getX())+ ")"));
 }

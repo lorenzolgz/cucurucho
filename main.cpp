@@ -149,8 +149,6 @@ void mainLoop(Configuracion* config) {
 	Campo* campo = crearCampo(config, jugador);
     Hud hud = Hud(gRenderer);
 
-    Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
-    Enemigo2 enemigo2 = Enemigo2(gRenderer, 600, 45);
     l.info("Objects are initialized according to the initial configuration");
 
     //FinPrueba
@@ -178,9 +176,7 @@ void mainLoop(Configuracion* config) {
 
         //Render texture to screen
 		campo->tick();
-        enemigo1.render();
-        enemigo2.render();
-        hud.render();
+		hud.tick();
 
         //Update screen
         SDL_RenderPresent(gRenderer);

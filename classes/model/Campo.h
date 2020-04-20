@@ -11,6 +11,7 @@
 #include "../view/CampoVista.h"
 #include "Jugador.h"
 #include <list>
+#include "Ticker.h"
 
 class Campo {
 public:
@@ -22,6 +23,7 @@ private:
 	float velocidad;
 
 	Jugador* jugador;
+	std::list<Ticker*> enemigos;
 
 	CampoVista* vista;
 

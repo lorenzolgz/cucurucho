@@ -7,15 +7,16 @@
 #include "../Vector.h"
 #include "../view/Enemigo1Vista.h"
 #include "../GeneradorDeTexturas.h"
+#include "Ticker.h"
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;
 
 
-class Enemigo1 {
+class Enemigo1 : public Ticker {
 public:
 	Enemigo1(SDL_Renderer* gRenderer, float x, float y);
-	void render();
+	void tick() override;
 
 private:
     Vector posicion;
