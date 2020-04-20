@@ -19,7 +19,7 @@ const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador {
 public:
-	Jugador(SDL_Renderer* gRenderer, int x, int y);
+	Jugador(int x, int y);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 

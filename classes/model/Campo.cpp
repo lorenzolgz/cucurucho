@@ -8,14 +8,14 @@
 #include "Enemigo1.h"
 #include "Enemigo2.h"
 
-Campo::Campo(SDL_Renderer *gRenderer, SDL_Rect rectCampo, Jugador* jugador) {
+Campo::Campo(SDL_Rect rectCampo, Jugador* jugador) {
 	velocidad = 2;
 
 	Campo::jugador = jugador;
-	enemigos.push_back(new Enemigo1(gRenderer, 825, 420));
-	enemigos.push_back(new Enemigo2(gRenderer, 600, 45));
+	enemigos.push_back(new Enemigo1(825, 420));
+	enemigos.push_back(new Enemigo2(600, 45));
 
-	vista = new CampoVista(gRenderer, rectCampo);
+	vista = new CampoVista(rectCampo);
 }
 
 FondoVista * Campo::nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad) {

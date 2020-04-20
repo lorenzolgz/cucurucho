@@ -4,10 +4,10 @@
 #include "../Log.h"
 
 
-Enemigo1::Enemigo1(SDL_Renderer* gRenderer, float x, float y) {
+Enemigo1::Enemigo1(float x, float y) {
     posicion = Vector(x, y);
 	velocidadX = 7; // Posición 2 de sprite
-    vista = new Enemigo1Vista(gRenderer);
+    vista = new Enemigo1Vista();
     l.info("Enemy 01 created");
 }
 

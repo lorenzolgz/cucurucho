@@ -21,5 +21,5 @@ void Log::warning(std::string mensaje) {
 }
 
 void Log::info(std::string mensaje) {
-    // output(" - INFO - ", mensaje);
+    output(" - INFO - ", mensaje);
 }

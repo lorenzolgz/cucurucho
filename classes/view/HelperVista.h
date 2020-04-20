@@ -17,7 +17,7 @@ const int HELPER_SRC_ALTO = 48;
 
 class HelperVista {
 public:
-	HelperVista(SDL_Renderer * gRenderer, Jugador* jugador);
+	HelperVista(Jugador* jugador);
 	void render(Vector posicion, double angulo, std::deque<Vector> recorrido);
 
 private:

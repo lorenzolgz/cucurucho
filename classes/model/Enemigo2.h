@@ -17,7 +17,7 @@ const int ENEMIGO2_ALTO = 147;
 
 class Enemigo2 : public Ticker {
 public:
-    Enemigo2(SDL_Renderer* gRenderer, float x, float y);
+    Enemigo2(float x, float y);
 	void tick() override;
 
 private:

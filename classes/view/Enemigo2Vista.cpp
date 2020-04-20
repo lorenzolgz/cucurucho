@@ -3,13 +3,13 @@
 #include "../Utils.h"
 #include "../Log.h"
 #include "../GeneradorDeTexturas.h"
+#include "../GraphicRenderer.h"
 
-Enemigo2Vista::Enemigo2Vista(SDL_Renderer* gRenderer) {
-	Enemigo2Vista::gRenderer = gRenderer;
+Enemigo2Vista::Enemigo2Vista() {
+	Enemigo2Vista::gRenderer = GraphicRenderer::getInstance();
 	//Enemigo2Vista::textura = cargarTextura(gRenderer, "enemy02.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
-    Enemigo2Vista::textura = generadorDeTexturas->generarTextura(gRenderer, "enemy02.png");
-	l.info("Enemy 02 created");
+    Enemigo2Vista::textura = generadorDeTexturas->generarTextura("enemy02.png");
 }
 
 void Enemigo2Vista::render(Vector posicion, int velocidadX) {

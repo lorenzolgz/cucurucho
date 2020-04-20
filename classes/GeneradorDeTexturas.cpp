@@ -3,6 +3,7 @@
 //
 
 #include "GeneradorDeTexturas.h"
+#include "GraphicRenderer.h"
 
 GeneradorDeTexturas* GeneradorDeTexturas::instance=NULL;
 
@@ -19,7 +20,8 @@ GeneradorDeTexturas::GeneradorDeTexturas(){
     cout << "Creating singleton" << endl;
 }
 
-SDL_Texture* GeneradorDeTexturas::generarTextura(SDL_Renderer* gRenderer, string entidadDelJuego) {
+SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
+	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     map<string, SDL_Texture*> texturas;
 
     texturas["enemy01.png"] = cargarTextura(gRenderer, "enemy01.png");

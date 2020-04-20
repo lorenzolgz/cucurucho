@@ -10,7 +10,7 @@ const int HUD_SRC_ALTO = 96;
 
 class HudVista {
 public:
-	HudVista(SDL_Renderer* gRenderer);
+	HudVista();
 	void render(Vector posicion);
 private:
 	SDL_Renderer* gRenderer;

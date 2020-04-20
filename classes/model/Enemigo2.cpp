@@ -6,11 +6,11 @@
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
-Enemigo2::Enemigo2(SDL_Renderer* gRenderer, float x,float y) {
+Enemigo2::Enemigo2(float x,float y) {
     velocidadEscalar = 1;
     posicion = Vector(x, y);
 	velocidadX = true;
-    vista = new Enemigo2Vista(gRenderer);
+    vista = new Enemigo2Vista();
     l.info("Enemy 02 created");
 }
 

@@ -16,11 +16,11 @@ using namespace std;
 class GeneradorDeTexturas {
 public:
     static GeneradorDeTexturas *getInstance();
-    SDL_Texture* generarTextura(SDL_Renderer* gRenderer, string entidadDelJuego);
+    SDL_Texture* generarTextura(string entidadDelJuego);
 
 private:
-    static GeneradorDeTexturas *instance;
     GeneradorDeTexturas();
+	static GeneradorDeTexturas *instance;
 };
 
 #endif //CUCURUCHO_GENERADORDETEXTURAS_H

@@ -1,14 +1,15 @@
 #include "HelperVista.h"
 #include "../Utils.h"
+#include "../GraphicRenderer.h"
 
 
-HelperVista::HelperVista(SDL_Renderer *gRenderer, Jugador* jugador) {
-	HelperVista::gRenderer = gRenderer;
+HelperVista::HelperVista(Jugador* jugador) {
+	HelperVista::gRenderer = GraphicRenderer::getInstance();
 	HelperVista::jugador = jugador;
 	//textura = cargarTextura(gRenderer, "helper.png");
 
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
-    HelperVista::textura = generadorDeTexturas->generarTextura(gRenderer, "helper.png");
+    HelperVista::textura = generadorDeTexturas->generarTextura("helper.png");
 
 	for (int i = 0; i < 19; i++) {
 		// recorrido.push_front(posicion);

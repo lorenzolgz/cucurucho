@@ -12,14 +12,14 @@
 
 class VentanaJuego {
 public:
-	VentanaJuego(SDL_Renderer *gRenderer, Configuracion* config, Jugador* jugador);
+	VentanaJuego(Configuracion* config, Jugador* jugador);
 	void tick();
 
 private:
 	Hud *hud;
 	Campo *campo;
 
-	Campo *crearCampo(SDL_Renderer *gRenderer, Configuracion *config, Jugador *jugador);
+	Campo *crearCampo(Configuracion *config, Jugador *jugador);
 };
 
 

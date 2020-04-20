@@ -13,12 +13,10 @@
 #include "classes/model/Enemigo1.h"
 #include "classes/Configuracion.h"
 #include "classes/model/VentanaJuego.h"
+#include "classes/GraphicRenderer.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
-
-//The window renderer
-SDL_Renderer* gRenderer = nullptr;
 
 Log l = Log();
 
@@ -72,11 +70,12 @@ bool init(Configuracion* config) {
     }
     //Get window surface
 
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
         l.error(("Renderer could not be created! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
+	GraphicRenderer::setInstance(gRenderer);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
@@ -88,6 +87,7 @@ bool init(Configuracion* config) {
 
 void close(Configuracion* config) {
     //Deallocate textures
+	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     SDL_DestroyRenderer(gRenderer);
 
     //Destroy window
@@ -110,8 +110,8 @@ void mainLoop(Configuracion* config) {
     int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
 
-	Jugador* jugador = new Jugador(gRenderer, anchoPantalla / 8, altoPantalla / 2);
-	VentanaJuego* ventanaJuego = new VentanaJuego(gRenderer, config, jugador);
+	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
+	VentanaJuego* ventanaJuego = new VentanaJuego(config, jugador);
 
     l.info("Objects are initialized according to the initial configuration");
 
@@ -132,7 +132,8 @@ void mainLoop(Configuracion* config) {
                                         currentKeyStates[SDL_SCANCODE_LEFT],
                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
 
-        //Clear screen
+		SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
+		//Clear screen
         SDL_RenderClear(gRenderer);
 
         //Render texture to screen

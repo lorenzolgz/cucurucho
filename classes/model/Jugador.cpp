@@ -3,16 +3,16 @@
 #include "../Log.h"
 
 
-Jugador::Jugador(SDL_Renderer* gRenderer, int x, int y) {
+Jugador::Jugador(int x, int y) {
 	Jugador::velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
 	Jugador::contadorVelocidadY = 0;
 
-	Jugador::helperAbove = new Helper(gRenderer, this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-	Jugador::helperBelow = new Helper(gRenderer, this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
-	Jugador::vista = new JugadorVista(gRenderer);
+	Jugador::vista = new JugadorVista();
     l.info("Player created");
 }
 

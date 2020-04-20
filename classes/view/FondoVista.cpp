@@ -4,12 +4,14 @@
 
 #include "FondoVista.h"
 #include "../Utils.h"
+#include "../GraphicRenderer.h"
 #include <iostream>
 
 
-FondoVista::FondoVista(SDL_Renderer* gRenderer, const std::string &fileName, float xOffset, int y, float modVelocidad) {
-    textura = cargarTextura(gRenderer, fileName);
-    // Busca el ancho y alto de la imagen cargada
+FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) {
+	FondoVista::gRenderer = GraphicRenderer::getInstance();
+	textura = cargarTextura(gRenderer, fileName);
+	// Busca el ancho y alto de la imagen cargada
     SDL_QueryTexture(textura, nullptr, nullptr, &width, &height);
 	FondoVista::y = y;
 	FondoVista::xOffset = xOffset;
@@ -18,7 +20,7 @@ FondoVista::FondoVista(SDL_Renderer* gRenderer, const std::string &fileName, flo
 	FondoVista::modVelocidad = modVelocidad;
 }
 
-void FondoVista::render(SDL_Renderer *gRenderer, float velocidad) {
+void FondoVista::render(float velocidad) {
     SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, modVelocidad * velocidad, xOffset);
     SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, modVelocidad * velocidad, xOffset);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect1);

@@ -10,7 +10,7 @@ const int JUGADOR_SRC_ALTO = 48;
 
 class JugadorVista {
 public:
-	JugadorVista(SDL_Renderer* gRenderer);
+	JugadorVista();
 	void render(Vector posicion, int contadorVelocidadY);
 	int getContador() const;
 

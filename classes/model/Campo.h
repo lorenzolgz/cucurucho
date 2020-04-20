@@ -15,7 +15,7 @@
 
 class Campo {
 public:
-	Campo(SDL_Renderer* gRenderer, SDL_Rect rectCampo, Jugador* jugador);
+	Campo(SDL_Rect rectCampo, Jugador* jugador);
     FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
     void tick();
 

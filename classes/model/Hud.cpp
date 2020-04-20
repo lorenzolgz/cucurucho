@@ -3,9 +3,9 @@
 #include "../Log.h"
 
 
-Hud::Hud(SDL_Renderer *gRenderer) {
+Hud::Hud() {
     posicion = Vector(0, 0);
-    vista = new HudVista(gRenderer);
+    vista = new HudVista();
     l.info("Hud created");
 }
 

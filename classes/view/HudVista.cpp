@@ -1,13 +1,14 @@
 #include "HudVista.h"
 #include "../Utils.h"
 #include "../GeneradorDeTexturas.h"
+#include "../GraphicRenderer.h"
 
 
-HudVista::HudVista(SDL_Renderer *gRenderer) {
-	HudVista::gRenderer = gRenderer;
+HudVista::HudVista() {
+	HudVista::gRenderer = GraphicRenderer::getInstance();
 	//textura = cargarTextura(gRenderer, "hud.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
-    HudVista::textura = generadorDeTexturas->generarTextura(gRenderer, "hud.png");
+    HudVista::textura = generadorDeTexturas->generarTextura("hud.png");
 }
 
 void HudVista::render(Vector posicion) {

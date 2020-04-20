@@ -6,9 +6,9 @@
 #include "../Configuracion.h"
 #include "../Log.h"
 
-VentanaJuego::VentanaJuego(SDL_Renderer *gRenderer, Configuracion* config, Jugador* jugador) {
-	VentanaJuego::hud = new Hud(gRenderer);
-	VentanaJuego::campo = crearCampo(gRenderer, config, jugador);
+VentanaJuego::VentanaJuego(Configuracion* config, Jugador* jugador) {
+	VentanaJuego::hud = new Hud();
+	VentanaJuego::campo = crearCampo(config, jugador);
 }
 
 void VentanaJuego::tick() {
@@ -16,11 +16,11 @@ void VentanaJuego::tick() {
 	campo->tick();
 }
 
-Campo* VentanaJuego::crearCampo(SDL_Renderer *gRenderer, Configuracion* config, Jugador* jugador){
+Campo* VentanaJuego::crearCampo(Configuracion* config, Jugador* jugador){
 	int inicioRectCampo = HUD_ALTO;
 	SDL_Rect rectCampo = {0, inicioRectCampo, config->getAnchoPantalla(), config->getAltoPantalla() - inicioRectCampo };
 
-	Campo* campo = new Campo(gRenderer, rectCampo, jugador);
+	Campo* campo = new Campo(rectCampo, jugador);
 
 	// Primer fondo se carga fuera del JSON
 	int y_inicial = -24;

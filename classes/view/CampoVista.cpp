@@ -1,13 +1,16 @@
 #include <string>
 #include "CampoVista.h"
+#include "../GraphicRenderer.h"
+#include "../Log.h"
 
-CampoVista::CampoVista(SDL_Renderer *gRenderer, SDL_Rect rectCampo) {
-	CampoVista::gRenderer = gRenderer;
+CampoVista::CampoVista(SDL_Rect rectCampo) {
+	CampoVista::gRenderer = GraphicRenderer::getInstance();
 	CampoVista::posCampo = rectCampo;
+	l.info("Campo created");
 }
 
 FondoVista * CampoVista::nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad) {
-	FondoVista* fondo = new FondoVista(gRenderer, fileName, xOffset, yFondo, modVelocidad);
+	FondoVista* fondo = new FondoVista(fileName, xOffset, yFondo, modVelocidad);
 	fondos.push_front(fondo);
 	return fondo;
 }
@@ -22,6 +25,6 @@ void CampoVista::render(float velocidad) {
 
 	// Renderizar todos los fondos
 	for (FondoVista* fondo : fondos) {
-		fondo->render(gRenderer, velocidad);
+		fondo->render(velocidad);
 	}
 }

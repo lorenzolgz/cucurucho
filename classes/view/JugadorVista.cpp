@@ -2,14 +2,15 @@
 #include "../Utils.h"
 #include "../Log.h"
 #include "../GeneradorDeTexturas.h"
+#include "../GraphicRenderer.h"
 
-JugadorVista::JugadorVista(SDL_Renderer* gRenderer) {
-	JugadorVista::gRenderer = gRenderer;
+JugadorVista::JugadorVista() {
+	JugadorVista::gRenderer = GraphicRenderer::getInstance();
 	//JugadorVista::textura = cargarTextura(gRenderer, "player.png");
 	//JugadorVista::texturaGlow = cargarTextura(gRenderer, "player.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
-    JugadorVista::textura = generadorDeTexturas->generarTextura(gRenderer, "player.png");
-    JugadorVista::texturaGlow = generadorDeTexturas->generarTextura(gRenderer, "player.png");
+    JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
+    JugadorVista::texturaGlow = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;
 	l.info("Player view created");
 }
