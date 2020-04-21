@@ -56,3 +56,8 @@ double Vector::arg() const {
 bool Vector::esNulo() const {
     return x == 0 && y == 0;
 }
+
+
+std::string Vector::getVector() {
+    return "("+ std::to_string(x)+" , "+std::to_string(y) + ").";
+}

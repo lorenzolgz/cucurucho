@@ -11,7 +11,7 @@ SDL_Renderer* GraphicRenderer::instance = nullptr;
 
 SDL_Renderer* GraphicRenderer::getInstance(){
 	if (instance == nullptr) {
-		l.error("GraphicRenderer not created");
+		l.error("GraphicRenderer no fue creado correctamente");
 		throw std::runtime_error("GraphicRenderer not created.");
 	}
 
@@ -23,5 +23,5 @@ void GraphicRenderer::setInstance(SDL_Renderer *gRenderer) {
 }
 
 GraphicRenderer::GraphicRenderer(){
-	l.error("Creating GraphicRenderer instance.");
+	l.info("Creando instancia de GraphicRenderer.");
 }

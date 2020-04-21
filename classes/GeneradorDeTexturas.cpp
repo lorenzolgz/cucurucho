@@ -4,6 +4,7 @@
 
 #include "GeneradorDeTexturas.h"
 #include "GraphicRenderer.h"
+#include "Log.h"
 
 GeneradorDeTexturas* GeneradorDeTexturas::instance=NULL;
 
@@ -11,13 +12,13 @@ GeneradorDeTexturas* GeneradorDeTexturas::getInstance(){
     if (instance==NULL)
         instance = new GeneradorDeTexturas();
     else
-        cout << "Getting existing instance" << endl;
+        l.info("Creando instancia");
 
     return instance;
 }
 
 GeneradorDeTexturas::GeneradorDeTexturas(){
-    cout << "Creating singleton" << endl;
+    l.info("Creacion de sinngleton");
 }
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {

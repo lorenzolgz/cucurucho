@@ -13,7 +13,8 @@ Jugador::Jugador(int x, int y) {
 	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
 	Jugador::vista = new JugadorVista();
-    l.info("Player created");
+    l.info("Se creo correctamente el Jugador.");
+
 }
 
 void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha) {
@@ -50,6 +51,7 @@ void Jugador::tick() {
 	helperAbove->tick();
 	helperBelow->tick();
 	vista->render(posicion, contadorVelocidadY);
+    l.info("Posicion del Jugador: "+ posicion.getVector());
 }
 
 const Vector &Jugador::getPosicion() const {

@@ -11,7 +11,7 @@ Enemigo2::Enemigo2(float x,float y) {
     posicion = Vector(x, y);
 	velocidadX = true;
     vista = new Enemigo2Vista();
-    l.info("Enemy 02 created");
+    l.info("Se creo correctamente el Enemigo 02.");
 }
 
 int Enemigo2::getAncho() {
@@ -25,7 +25,7 @@ int Enemigo2::getAlto() {
 void Enemigo2::tick() {
 	// recalcularPosicion();
 	vista->render(posicion, velocidadX);
-	l.info(("Position ENEMY 02:("+ std::to_string(posicion.getX())+","+ std::to_string(posicion.getY())+ ")"));
+    l.info("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 void Enemigo2::recalcularPosicion() {

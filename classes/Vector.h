@@ -4,7 +4,7 @@
 
 #ifndef CPP_SANDBOX_VECTOR_H
 #define CPP_SANDBOX_VECTOR_H
-
+#include <string>
 
 class Vector {
 private:
@@ -27,6 +27,8 @@ public:
     double arg() const;
 
     bool esNulo() const;
+
+    std::string getVector();
 };
 
 

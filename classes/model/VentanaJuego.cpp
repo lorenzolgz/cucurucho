@@ -38,6 +38,6 @@ Campo* VentanaJuego::crearCampo(Configuracion* config, Jugador* jugador){
 
 	campo->nuevoFondo("bg.png", 450, 0, 0.3);
 
-	l.info("Parallax Stage 1 created");
+	l.info("Se creo correctamente el nivel 1 (Parallax)");
 	return campo;
 }

@@ -6,7 +6,7 @@
 Hud::Hud() {
     posicion = Vector(0, 0);
     vista = new HudVista();
-    l.info("Hud created");
+    l.info("Se creo correctamente el HUD.");
 }
 
 void Hud::tick() {

@@ -10,6 +10,7 @@ Enemigo2Vista::Enemigo2Vista() {
 	//Enemigo2Vista::textura = cargarTextura(gRenderer, "enemy02.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     Enemigo2Vista::textura = generadorDeTexturas->generarTextura("enemy02.png");
+    l.info("La vista del Enemigo 2 fue creada correctamente.");
 }
 
 void Enemigo2Vista::render(Vector posicion, int velocidadX) {
