@@ -18,6 +18,8 @@
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
 
+Configuracion* config;
+
 Log l = Log();
 
 Configuracion* leerJson(std::string ruta){
@@ -39,6 +41,21 @@ Configuracion* leerJson(std::string ruta){
 }
 
 
+void configurar(){
+    try {
+        config = leerJson("../config/config.json");
+        l.setConf(config->getNivelLog());
+    }
+    catch (const std::exception& exc) {
+        config = leerJson("../config/backup.json");
+        l.setConf(config->getNivelLog());
+        l.error(exc.what());
+        l.debug("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
+    }
+    l.setConf(config->getNivelLog());
+}
+
+
 bool init(Configuracion* config) {
     int anchoPantalla = config->getAnchoPantalla();
     int altoPantalla = config->getAltoPantalla();
@@ -46,41 +63,41 @@ bool init(Configuracion* config) {
 
     //Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        l.error(("SDL could not initialize! SDL_Error: %s\n", SDL_GetError()));
+        l.error(("No se logro inicializar SDL! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
 
     // Set texture filtering to linear
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
     {
-        l.warning("Linear texture filtering not enabled!");
+        l.debug("No se habilito el filro de la textura linear");
     }
 
     //Initialize SDL_image
     if (!(IMG_Init(IMG_INIT_PNG))) {
-        l.error(("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError()));
+        l.error(("No se logro inicializar la SDL_image. SDL_image Error: %s\n", IMG_GetError()));
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
+                               anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
     if (gWindow == nullptr) {
-        l.error(("Window could not be created! SDL_Error: %s\n", SDL_GetError()));
+        l.error(("La Ventana no creo correctamente! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
     //Get window surface
 
     SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
-        l.error(("Renderer could not be created! SDL_Error: %s\n", SDL_GetError()));
+        l.error(("El Renderer no se creo correctamente! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
-	GraphicRenderer::setInstance(gRenderer);
+    GraphicRenderer::setInstance(gRenderer);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
-    l.info("Window was successfully created");
+    l.info("La ventana se creo correctamente");
     return true;
 }
 
@@ -96,11 +113,11 @@ void close(Configuracion* config) {
     //Free Configuration
     delete(config);
 
-    l.info("Memory released ( todo:( )");
+    l.info("Se libero toda la memoria ( todo:( )");
     //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
-    l.info("Window was successfully closed");
+    l.info("La ventana se cerro correctamente");
 }
 
 void mainLoop(Configuracion* config) {
@@ -114,7 +131,8 @@ void mainLoop(Configuracion* config) {
 	VentanaJuego* ventanaJuego = new VentanaJuego(config, jugador);
 	ventanaJuego->crearEnemigos(config->getEnemigosTipoUno(), config->getEnemigosTipoDos());
 
-    l.info("Objects are initialized according to the initial configuration");
+    l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
+
 
     while (!quit) {
         //Handle events on queue
@@ -147,17 +165,8 @@ void mainLoop(Configuracion* config) {
 
 
 int main(int, char**) {
-    Configuracion* config;
 
-    try {
-        config = leerJson("../config/config.json");
-    }
-    catch (const std::exception& exc) {
-        l.error(exc.what());
-        l.warning("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
-        config = leerJson("../config/backup.json");
-    }
-
+    configurar();
     // Inicializa con la configuracion
     if (!init(config)) return 1;
 
