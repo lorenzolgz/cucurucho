@@ -17,7 +17,6 @@ public:
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
-	SDL_Texture* texturaGlow;
 	int contador;
 
 	void colorGlow();

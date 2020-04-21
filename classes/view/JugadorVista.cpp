@@ -10,7 +10,6 @@ JugadorVista::JugadorVista() {
 	//JugadorVista::texturaGlow = cargarTextura(gRenderer, "player.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
-    JugadorVista::texturaGlow = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;
 	l.info("Player view created");
 }
@@ -27,9 +26,12 @@ void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
 	colorGlow();
+
 	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 			   0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
-	SDL_RenderCopy(gRenderer, texturaGlow, &srcrect, &dstrect);
+	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+
+    SDL_SetTextureColorMod(textura, 255, 255, 255);
 }
 
 void JugadorVista::colorGlow() {
@@ -52,7 +54,7 @@ void JugadorVista::colorGlow() {
 							{140, 101, 239},
 							{173, 138, 239}};
 
-	SDL_SetTextureColorMod(texturaGlow, COLORES[contador % 16][0], COLORES[contador % 16][1], COLORES[contador % 16][2]);
+	SDL_SetTextureColorMod(textura, COLORES[contador % 16][0], COLORES[contador % 16][1], COLORES[contador % 16][2]);
 }
 
 int JugadorVista::getContador() const {
