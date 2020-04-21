@@ -21,15 +21,14 @@ GeneradorDeTexturas::GeneradorDeTexturas(){
 }
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
-	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
-    //map<string, SDL_Texture*> texturas;
 
-    texturas["enemy01.png"] = cargarTextura(gRenderer, "enemy01.png");
-    texturas["enemy02.png"] = cargarTextura(gRenderer, "enemy02.png");
-    texturas["helper.png"] = cargarTextura(gRenderer, "helper.png");
-    texturas["hud.png"] = cargarTextura(gRenderer, "hud.png");
-    texturas["player.png"] = cargarTextura(gRenderer, "player.png");
+    SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
+    SDL_Texture* textura = texturas[entidadDelJuego];
 
+    if(textura==NULL){
+        texturas[entidadDelJuego] = cargarTextura(gRenderer, entidadDelJuego);
+        textura = texturas[entidadDelJuego];
+    }
 
-    return texturas[entidadDelJuego];
+    return textura;
 }
