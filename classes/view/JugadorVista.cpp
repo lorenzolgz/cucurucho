@@ -6,8 +6,6 @@
 
 JugadorVista::JugadorVista() {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
-	//JugadorVista::textura = cargarTextura(gRenderer, "player.png");
-	//JugadorVista::texturaGlow = cargarTextura(gRenderer, "player.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;

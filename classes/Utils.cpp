@@ -3,29 +3,11 @@
 //
 
 #include <SDL_render.h>
-#include <SDL_image.h>
 #include "Utils.h"
-#include "Log.h"
+
 
 #define PI 3.14159265358979323846
 
-
-SDL_Texture * cargarTextura(SDL_Renderer* gRenderer, const std::string& path) {
-    const std::string& SPRITES_LOCATION = "../assets/sprites/";
-
-    SDL_Surface* loadedSurface = IMG_Load((SPRITES_LOCATION + path).c_str());
-    if (loadedSurface == nullptr) {
-        l.error(("Error al cargar la imagen %s! SDL_image Error: %s.\n", IMG_GetError()));
-    }
-
-    SDL_Texture * textura = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-    if (textura == nullptr) {
-        l.error(("Error al cargar la textura de %s! SDL Error: %s.\n", SDL_GetError()));
-    }
-
-    SDL_FreeSurface(loadedSurface);
-    return textura;
-}
 
 double cos_d(double angulo_d) {
     return cos(to_r(angulo_d));

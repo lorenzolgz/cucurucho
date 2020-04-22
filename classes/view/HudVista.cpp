@@ -6,7 +6,6 @@
 
 HudVista::HudVista() {
 	HudVista::gRenderer = GraphicRenderer::getInstance();
-	//textura = cargarTextura(gRenderer, "hud.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     HudVista::textura = generadorDeTexturas->generarTextura("hud.png");
 }

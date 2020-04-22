@@ -6,9 +6,7 @@
 HelperVista::HelperVista(Jugador* jugador) {
 	HelperVista::gRenderer = GraphicRenderer::getInstance();
 	HelperVista::jugador = jugador;
-	//textura = cargarTextura(gRenderer, "helper.png");
-
-    GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
+	GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     HelperVista::textura = generadorDeTexturas->generarTextura("helper.png");
 
 	for (int i = 0; i < 19; i++) {

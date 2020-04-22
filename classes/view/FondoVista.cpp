@@ -3,14 +3,16 @@
 //
 
 #include "FondoVista.h"
-#include "../Utils.h"
 #include "../GraphicRenderer.h"
+#include "../GeneradorDeTexturas.h"
 #include <iostream>
 
 
 FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) {
 	FondoVista::gRenderer = GraphicRenderer::getInstance();
-	textura = cargarTextura(gRenderer, fileName);
+    GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
+	textura = generadorDeTexturas->generarTextura(fileName);
+
 	// Busca el ancho y alto de la imagen cargada
     SDL_QueryTexture(textura, nullptr, nullptr, &width, &height);
 	FondoVista::y = y;

@@ -10,7 +10,10 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include "Utils.h"
+#include "GraphicRenderer.h"
+#include "Log.h"
+#include <SDL_render.h>
+#include <SDL_image.h>
 using namespace std;
 
 class GeneradorDeTexturas {
@@ -22,6 +25,7 @@ private:
     GeneradorDeTexturas();
 	static GeneradorDeTexturas *instance;
     map<string, SDL_Texture*> texturas;
+    SDL_Texture * cargarTextura(SDL_Renderer* gRenderer, const std::string& path);
 };
 
 #endif //CUCURUCHO_GENERADORDETEXTURAS_H

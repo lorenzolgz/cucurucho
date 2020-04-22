@@ -7,7 +7,6 @@
 
 Enemigo1Vista::Enemigo1Vista() {
 	Enemigo1Vista::gRenderer = GraphicRenderer::getInstance();
-	//Enemigo1Vista::textura = cargarTextura(gRenderer, "enemy01.png");
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	Enemigo1Vista::textura = generadorDeTexturas->generarTextura("enemy01.png");
 	l.info("La vista del Enemigo 1 fue creada correctamente.");

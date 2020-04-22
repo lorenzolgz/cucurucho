@@ -8,8 +8,6 @@
 #include <SDL_render.h>
 #include <string>
 
-SDL_Texture * cargarTextura(SDL_Renderer* gRenderer, const std::string& path);
-
 double cos_d(double angulo_d);
 double sin_d(double angulo_d);
 double to_d(double angulo_r);
