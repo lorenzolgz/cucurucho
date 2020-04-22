@@ -5,9 +5,10 @@
 #include "Log.h"
 #include "Configuracion.h"
 
-#define INFO  nivel == "info"
-#define DEBUG INFO or nivel == "debug"
-#define ERROR DEBUG or nivel == "error"
+
+#define DEBUG nivel == "debug"
+#define INFO  DEBUG or nivel == "info"
+#define ERROR INFO or nivel == "error"
 
 
 Log::Log() {
@@ -25,7 +26,7 @@ void Log::error(std::string string) {
 }
 
 void Log::debug(std::string string) {
-    if ( DEBUG ) output(" - WARNING - ", string);
+    if ( DEBUG ) output(" - DEBUG - ", string);
 }
 
 void Log::info(std::string string) {

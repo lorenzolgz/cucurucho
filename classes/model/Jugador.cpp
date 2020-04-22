@@ -51,7 +51,7 @@ void Jugador::tick() {
 	helperAbove->tick();
 	helperBelow->tick();
 	vista->render(posicion, contadorVelocidadY);
-    l.info("Posicion del Jugador: "+ posicion.getVector());
+    l.debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
 const Vector &Jugador::getPosicion() const {

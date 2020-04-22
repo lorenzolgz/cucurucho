@@ -25,7 +25,7 @@ int Enemigo2::getAlto() {
 void Enemigo2::tick() {
 	// recalcularPosicion();
 	vista->render(posicion, velocidadX);
-    l.info("Posicion del Enemigo 02: "+ posicion.getVector());
+    l.debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 void Enemigo2::recalcularPosicion() {
