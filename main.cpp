@@ -1,165 +1,162 @@
 
 #include <iostream>
+#include <fstream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "classes/VentanaJuego.h"
-#include "classes/Jugador.h"
-#include "classes/Hud.h"
-#include "classes/Helper.h"
-#include "classes/Enemigo2.h"
+#include <jsoncpp/json/json.h>
+#include "classes/model/Campo.h"
+#include "classes/model/Jugador.h"
+#include "classes/model/Hud.h"
+#include "classes/model/Helper.h"
+#include "classes/model/Enemigo2.h"
 #include "classes/Log.h"
-#include "classes/Enemigo1.h"
-
-const int SCREEN_ANCHO = 960;
-const int SCREEN_ALTO = 672;
-const int SCREEN_RENDER_SCALE = 1;
+#include "classes/model/Enemigo1.h"
+#include "classes/Configuracion.h"
+#include "classes/model/VentanaJuego.h"
+#include "classes/GraphicRenderer.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
 
-//The window renderer
-SDL_Renderer* gRenderer = nullptr;
+Configuracion* config;
 
 Log l = Log();
 
-bool init() {
+Configuracion* leerJson(std::string ruta){
+    Json::Value root;
+    Json::Reader reader;
+    std::ifstream file(ruta);
+    file >> root;
+
+    auto entriesArray = root["configuracion"]["niveles"]["1"];
+
+    return new Configuracion(
+            root["configuracion"]["resolucion"]["alto"].asInt64(),
+            root["configuracion"]["resolucion"]["ancho"].asInt64(),
+            root["configuracion"]["resolucion"]["escala"].asInt64(),
+            root["configuracion"]["enemigos"]["tipoUno"].asInt64(),
+            root["configuracion"]["enemigos"]["tipoDos"].asInt64(),
+            root["configuracion"]["log"]["nivel"].asString(),
+            root["configuracion"]["niveles"]);
+}
+
+
+void configurar(){
+    try {
+        config = leerJson("../config/config.json");
+        l.setConf(config->getNivelLog());
+    }
+    catch (const std::exception& exc) {
+        config = leerJson("../config/backup.json");
+        l.setConf(config->getNivelLog());
+        l.error(exc.what());
+        l.debug("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
+    }
+    l.setConf(config->getNivelLog());
+}
+
+
+bool init(Configuracion* config) {
+    int anchoPantalla = config->getAnchoPantalla();
+    int altoPantalla = config->getAltoPantalla();
+    int escalaPantalla = config->getEscalaPantalla();
+
     //Initialize SDL
-    if(SDL_Init( SDL_INIT_VIDEO ) < 0) {
-        l.error(("SDL could not initialize! SDL_Error: %s\n", SDL_GetError()));
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        l.error(("No se logro inicializar SDL! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
 
     // Set texture filtering to linear
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
     {
-        l.warning( "Linear texture filtering not enabled!" );
+        l.debug("No se habilito el filro de la textura linear");
     }
 
     //Initialize SDL_image
-    if(!(IMG_Init(IMG_INIT_PNG))) {
-        l.error(( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() ));
+    if (!(IMG_Init(IMG_INIT_PNG))) {
+        l.error(("No se logro inicializar la SDL_image. SDL_image Error: %s\n", IMG_GetError()));
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            SCREEN_ANCHO * SCREEN_RENDER_SCALE, SCREEN_ALTO * SCREEN_RENDER_SCALE, SDL_WINDOW_SHOWN);
-    if(gWindow == nullptr) {
-        l.error(("Window could not be created! SDL_Error: %s\n", SDL_GetError()));
+                               anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
+    if (gWindow == nullptr) {
+        l.error(("La Ventana no creo correctamente! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
     //Get window surface
 
-    gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
-        l.error(("Renderer could not be created! SDL_Error: %s\n", SDL_GetError()));
+        l.error(("El Renderer no se creo correctamente! SDL_Error: %s\n", SDL_GetError()));
         return false;
     }
+    GraphicRenderer::setInstance(gRenderer);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    SDL_RenderSetScale(gRenderer, SCREEN_RENDER_SCALE, SCREEN_RENDER_SCALE);
+    SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
-    l.info("Window was successfully created");
+    l.info("La ventana se creo correctamente");
     return true;
 }
 
 
-void close() {
-
+void close(Configuracion* config) {
     //Deallocate textures
+	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     SDL_DestroyRenderer(gRenderer);
 
     //Destroy window
     SDL_DestroyWindow(gWindow);
 
-    l.info("Memory released ( todo:( )");
+    //Free Configuration
+    delete(config);
+
+    l.info("Se libero toda la memoria ( todo:( )");
     //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
-    l.info("Window was successfully closed");
+    l.info("La ventana se cerro correctamente");
 }
 
-
-VentanaJuego crearVentanaJuego() {
-    SDL_Rect rect_ventana;
-    rect_ventana.x = 0;
-    rect_ventana.y = HUD_ALTO;
-    rect_ventana.w = SCREEN_ANCHO;
-    rect_ventana.h = SCREEN_ALTO - rect_ventana.y;
-
-    VentanaJuego ventana(gRenderer, rect_ventana);
-
-    int y_inicial = -24;
-    Fondo* fondo = ventana.nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 0, fondo->getY() + fondo->getHeight(), 7.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 0, fondo->getY() + fondo->getHeight(), 6);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 0, fondo->getY() + fondo->getHeight(), 4.5);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 0, fondo->getY() + fondo->getHeight(), 3.75);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 0, fondo->getY() + fondo->getHeight(), 3);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 0, fondo->getY() + fondo->getHeight(), 2.25);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 0, fondo->getY() + fondo->getHeight(), 1.35);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 0, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 0, fondo->getY() + fondo->getHeight(), 0.36);
-    fondo = ventana.nuevoFondo("asteroids_9.png", 900, fondo->getY() + fondo->getHeight(), 0.45);
-    fondo = ventana.nuevoFondo("asteroids_8.png", 900, fondo->getY() + fondo->getHeight(), 0.75);
-    fondo = ventana.nuevoFondo("asteroids_7.png", 900, fondo->getY() + fondo->getHeight(), 1.35);
-    fondo = ventana.nuevoFondo("asteroids_6.png", 900, fondo->getY() + fondo->getHeight(), 2.25);
-    fondo = ventana.nuevoFondo("asteroids_5.png", 900, fondo->getY() + fondo->getHeight(), 3);
-    fondo = ventana.nuevoFondo("asteroids_4.png", 900, fondo->getY() + fondo->getHeight(), 3.75);
-    fondo = ventana.nuevoFondo("asteroids_3.png", 900, fondo->getY() + fondo->getHeight(), 4.5);
-    fondo = ventana.nuevoFondo("asteroids_2.png", 900, fondo->getY() + fondo->getHeight(), 6);
-    fondo = ventana.nuevoFondo("asteroids_1.png", 900, fondo->getY() + fondo->getHeight(), 7.5);
-    fondo = ventana.nuevoFondo("asteroids_0.png", 900, fondo->getY() + fondo->getHeight(), 9);
-
-    ventana.nuevoFondo("bg.png", 450, 0, 0.3);
-
-    l.info("Parallax Stage 1 created");
-    return ventana;
-}
-
-
-void mainLoop() {
+void mainLoop(Configuracion* config) {
     bool quit = false;
     SDL_Event e;
 
-    VentanaJuego ventana = crearVentanaJuego();
-    Jugador jugador = Jugador(gRenderer, SCREEN_ANCHO / 8, SCREEN_ALTO / 2);
-    Helper helper = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-    Helper helper2 = Helper(gRenderer, &jugador, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
-    Hud hud = Hud(gRenderer);
+    int anchoPantalla = config->getAnchoPantalla();
+	int altoPantalla = config->getAltoPantalla();
 
-    Enemigo1 enemigo1 = Enemigo1(gRenderer, 825, 420);
-    Enemigo2 enemigo2 = Enemigo2(gRenderer, 600, 45);
-    l.info("Objects are initialized according to the initial configuration");
+	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
+	VentanaJuego* ventanaJuego = new VentanaJuego(config, jugador);
+	ventanaJuego->crearEnemigos(config->getEnemigosTipoUno(), config->getEnemigosTipoDos());
+
+    l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
+
 
     while (!quit) {
-
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
+        while (SDL_PollEvent( &e ) != 0)
         {
             //User requests quit
-            if( e.type == SDL_QUIT )
+            if (e.type == SDL_QUIT)
             {
                 quit = true;
             }
-
         }
-        const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
-        jugador.calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
+
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                         currentKeyStates[SDL_SCANCODE_DOWN],
                                         currentKeyStates[SDL_SCANCODE_LEFT],
                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
 
-        //Clear screen
+		SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
+		//Clear screen
         SDL_RenderClear(gRenderer);
 
         //Render texture to screen
-        ventana.render();
-        helper.render();
-        helper2.render();
-        jugador.render();
-        enemigo1.render();
-        enemigo2.render();
-        hud.render();
+        ventanaJuego->tick();
 
         //Update screen
         SDL_RenderPresent(gRenderer);
@@ -168,9 +165,14 @@ void mainLoop() {
 
 
 int main(int, char**) {
-    if (!init()) return 1;
 
-    mainLoop();
-    close();
+    configurar();
+    // Inicializa con la configuracion
+    if (!init(config)) return 1;
+
+    // Comienza el juego con la configuracion
+    mainLoop(config);
+
+    close(config);
     return 0;
 }

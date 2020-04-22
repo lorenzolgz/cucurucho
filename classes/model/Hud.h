@@ -7,18 +7,20 @@
 
 
 #include <SDL_render.h>
+#include "../view/HudVista.h"
+#include "../GeneradorDeTexturas.h"
 
 const int HUD_ANCHO = 960;
 const int HUD_ALTO = 96;
 
 class Hud {
 public:
-    Hud(SDL_Renderer* gRenderer);
-    void render();
+    Hud();
+    void tick();
+
 private:
-    SDL_Renderer* gRenderer;
-    SDL_Texture* textura;
-    SDL_Rect posHud;
+	Vector posicion;
+	HudVista* vista;
 };
 
 

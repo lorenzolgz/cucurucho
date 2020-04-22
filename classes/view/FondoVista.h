@@ -10,10 +10,10 @@
 #include <string>
 
 
-class Fondo {
+class FondoVista {
 public:
-    Fondo(SDL_Renderer* gRenderer, const std::string &fileName, float xOffset, int y, float modVelocidad);
-    void render(SDL_Renderer *gRenderer, float d);
+    FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad);
+    void render(float d);
     int getY() const;
     int getWidth() const;
     int getHeight() const;
@@ -27,6 +27,9 @@ private:
     int width;
     int height;
     SDL_Texture* textura;
+	SDL_Renderer* gRenderer;
+
+	SDL_Rect calcularCoords(float* x, int y, int width, int height, float speed, float xOffset);
 };
 
 #endif //CPP_SANDBOX_FONDO_H
