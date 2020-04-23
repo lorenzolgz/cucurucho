@@ -22,6 +22,66 @@ Configuracion* config;
 
 Log l = Log();
 
+std::string parsearNivelLog(Json::Value root) {
+    try {
+        std::string nivelLog = root["configuracion"]["log"]["nivel"].asString();
+        if (nivelLog.compare("error") && nivelLog.compare("info") && nivelLog.compare("debug")){
+            l.error("Se intento setear un nivel de log invalido");
+            throw std::exception();
+        }
+        return nivelLog;
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al obtener el nivel de logging");
+        throw exc;
+    }
+}
+
+
+void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEnemigosDos) {
+    try {
+        cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
+        cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
+
+        if (cantEnemigosUno < 0) {
+            l.error("Intento setearse una cantidad de enemigos_uno negativa");
+            throw std::exception();
+        }
+        if (cantEnemigosDos < 0) {
+            l.error("Intento setearse una cantidad de enemigos_dos negativa");
+            throw std::exception();
+        }
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al obtener la cantidad de enemigos");
+        throw exc;
+    }
+}
+
+void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPantalla, int &escala) {
+    try {
+        altoPantalla = root["configuracion"]["resolucion"]["alto"].asInt64();
+        anchoPantalla = root["configuracion"]["resolucion"]["ancho"].asInt64();
+        escala = root["configuracion"]["resolucion"]["escala"].asInt64();
+        if (altoPantalla < 100) {
+            l.error("Intento setearse un alto de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (anchoPantalla < 100){
+            l.error("Intento setearse un ancho de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (escala < 0){
+            l.error("Intento setearse una escala de pantalla negativa");
+            throw std::exception();
+        }
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al cargar la resolucion de pantalla");
+        throw exc;
+    }
+}
+
 Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
     Json::Value root;
     std::ifstream archivo(rutaJsonConfig);
@@ -41,15 +101,21 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
         throw exc;
     }
 
-    int altoPantalla = root["configuracion"]["resolucion"]["alto"].asInt64();
-    int anchoPantalla = root["configuracion"]["resolucion"]["ancho"].asInt64();
-    int escala = root["configuracion"]["resolucion"]["escala"].asInt64();
-    int cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
-    int cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
-    std::string nivelLog = root["configuracion"]["log"]["nivel"].asString();
+    int altoPantalla;
+    int anchoPantalla;
+    int escala;
+    int cantEnemigosUno;
+    int cantEnemigosDos;
+    std::string nivelLog;
+
+    parsearResolucion(root, altoPantalla, anchoPantalla, escala);
+    parsearEnemigos(root, cantEnemigosUno, cantEnemigosDos);
+    nivelLog = parsearNivelLog(root);
 
     return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, entriesArray);
 }
+
+
 
 
 void configurar(){
@@ -60,8 +126,11 @@ void configurar(){
     catch (const std::exception& exc) {
         config = parsearConfiguracion("../config/backup.json");
         l.setConf(config->getNivelLog());
-        l.error(exc.what());
-        l.debug("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
+        // Solo se loguean las excepciones que tengan un what() para poder dar mas info
+        if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
+            l.error(exc.what());
+        }
+        l.debug("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
     }
     l.setConf(config->getNivelLog());
 }
@@ -144,7 +213,6 @@ void mainLoop(Configuracion* config) {
 
     l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-
     while (!quit) {
         //Handle events on queue
         while (SDL_PollEvent( &e ) != 0)
@@ -176,7 +244,6 @@ void mainLoop(Configuracion* config) {
 
 
 int main(int, char**) {
-
     configurar();
     // Inicializa con la configuracion
     if (!init(config)) return 1;

@@ -6,110 +6,12 @@
          "escala": 1
       },
       "log": {
-         "nivel": "info"
+         "nivel": "debug"
       },
       "enemigos": {
-         "tipoUno": 8,
-         "tipoDos": 2
+         "tipoUno": 2,
+         "tipoDos":2
       },
-      "niveles": {
-         "1": [
-            {
-               "archivo": "asteroids_1.png",
-               "xOffset": 0,
-               "velocidad": 7.5
-            },
-            {
-               "archivo": "asteroids_2.png",
-               "xOffset": 0,
-               "velocidad": 6
-            },
-            {
-               "archivo": "asteroids_3.png",
-               "xOffset": 0,
-               "velocidad": 4.5
-            },
-            {
-               "archivo": "asteroids_4.png",
-               "xOffset": 0,
-               "velocidad": 3.75
-            },
-            {
-               "archivo": "asteroids_5.png",
-               "xOffset": 0,
-               "velocidad": 3
-            },
-            {
-               "archivo": "asteroids_6.png",
-               "xOffset": 0,
-               "velocidad": 2.25
-            },
-            {
-               "archivo": "asteroids_7.png",
-               "xOffset": 0,
-               "velocidad": 1.35
-            },
-            {
-               "archivo": "asteroids_8.png",
-               "xOffset": 0,
-               "velocidad": 0.75
-            },
-            {
-               "archivo": "asteroids_9.png",
-               "xOffset": 0,
-               "velocidad": 0.36
-            },
-            {
-               "archivo": "asteroids_9.png",
-               "xOffset": 900,
-               "velocidad": 0.45
-            },
-            {
-               "archivo": "asteroids_8.png",
-               "xOffset": 900,
-               "velocidad": 0.75
-            },
-            {
-               "archivo": "asteroids_7.png",
-               "xOffset": 900,
-               "velocidad": 1.35
-            },
-            {
-               "archivo": "asteroids_6.png",
-               "xOffset": 900,
-               "velocidad": 2.25
-            },
-            {
-               "archivo": "asteroids_5.png",
-               "xOffset": 900,
-               "velocidad": 3
-            },
-            {
-               "archivo": "asteroids_4.png",
-               "xOffset": 900,
-               "velocidad": 3.75
-            },
-            {
-               "archivo": "asteroids_3.png",
-               "xOffset": 900,
-               "velocidad": 4.5
-            },
-            {
-               "archivo": "asteroids_2.png",
-               "xOffset": 900,
-               "velocidad": 6
-            },
-            {
-               "archivo": "asteroids_1.png",
-               "xOffset": 900,
-               "velocidad": 7.5
-            },
-            {
-               "archivo": "asteroids_0.png",
-               "xOffset": 900,
-               "velocidad": 9
-            }
-         ]
-      }
+      "rutaFondos": "fondos.json"
    }
 }

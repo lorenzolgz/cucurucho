@@ -12,7 +12,7 @@
 
 
 Log::Log() {
-    nivel = "";
+    nivel = "error";
 }
 
 void output(std::string estado_log, std::string mensaje){

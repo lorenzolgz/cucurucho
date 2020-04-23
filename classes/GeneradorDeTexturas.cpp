@@ -35,7 +35,7 @@ GeneradorDeTexturas* GeneradorDeTexturas::getInstance(){
 }
 
 GeneradorDeTexturas::GeneradorDeTexturas(){
-    l.info("Creacion de sinngleton");
+    l.info("Creacion de singleton");
 }
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
