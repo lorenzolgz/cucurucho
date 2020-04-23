@@ -22,32 +22,43 @@ Configuracion* config;
 
 Log l = Log();
 
-Configuracion* leerJson(std::string ruta){
+Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
     Json::Value root;
-    Json::Reader reader;
-    std::ifstream file(ruta);
-    file >> root;
+    std::ifstream archivo(rutaJsonConfig);
+    archivo >> root;
 
-    auto entriesArray = root["configuracion"]["niveles"]["1"];
+    Json::Value rootFondos;
+    Json::Value entriesArray;
+    std::string rutaCarpetaConfig = "../config/";
 
-    return new Configuracion(
-            root["configuracion"]["resolucion"]["alto"].asInt64(),
-            root["configuracion"]["resolucion"]["ancho"].asInt64(),
-            root["configuracion"]["resolucion"]["escala"].asInt64(),
-            root["configuracion"]["enemigos"]["tipoUno"].asInt64(),
-            root["configuracion"]["enemigos"]["tipoDos"].asInt64(),
-            root["configuracion"]["log"]["nivel"].asString(),
-            root["configuracion"]["niveles"]);
+    try {
+        std::string rutaFondos = rutaCarpetaConfig += root["configuracion"]["rutaFondos"].asString();
+        std::ifstream archivo(rutaFondos);
+        archivo >> rootFondos;
+        entriesArray = rootFondos;
+    } catch(const std::exception& exc){
+        l.error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
+        throw exc;
+    }
+
+    int altoPantalla = root["configuracion"]["resolucion"]["alto"].asInt64();
+    int anchoPantalla = root["configuracion"]["resolucion"]["ancho"].asInt64();
+    int escala = root["configuracion"]["resolucion"]["escala"].asInt64();
+    int cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
+    int cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
+    std::string nivelLog = root["configuracion"]["log"]["nivel"].asString();
+
+    return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, entriesArray);
 }
 
 
 void configurar(){
     try {
-        config = leerJson("../config/config.json");
+        config = parsearConfiguracion("../config/config.json");
         l.setConf(config->getNivelLog());
     }
     catch (const std::exception& exc) {
-        config = leerJson("../config/backup.json");
+        config = parsearConfiguracion("../config/backup.json");
         l.setConf(config->getNivelLog());
         l.error(exc.what());
         l.debug("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
