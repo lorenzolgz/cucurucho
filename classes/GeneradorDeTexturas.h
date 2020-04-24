@@ -25,6 +25,7 @@ private:
     GeneradorDeTexturas();
 	static GeneradorDeTexturas *instance;
     map<string, SDL_Texture*> texturas;
+    SDL_Texture* textura_defecto;
     SDL_Texture * cargarTextura(SDL_Renderer* gRenderer, const std::string& path);
 };
 

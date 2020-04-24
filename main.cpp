@@ -136,14 +136,14 @@ void configurar(){
 }
 
 
-bool init(Configuracion* config) {
+bool init() {
     int anchoPantalla = config->getAnchoPantalla();
     int altoPantalla = config->getAltoPantalla();
     int escalaPantalla = config->getEscalaPantalla();
 
     //Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        l.error(("No se logro inicializar SDL! SDL_Error: %s\n", SDL_GetError()));
+        l.error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
         return false;
     }
 
@@ -155,21 +155,21 @@ bool init(Configuracion* config) {
 
     //Initialize SDL_image
     if (!(IMG_Init(IMG_INIT_PNG))) {
-        l.error(("No se logro inicializar la SDL_image. SDL_image Error: %s\n", IMG_GetError()));
+        l.error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
     if (gWindow == nullptr) {
-        l.error(("La Ventana no creo correctamente! SDL_Error: %s\n", SDL_GetError()));
+        l.error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
         return false;
     }
     //Get window surface
 
     SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
-        l.error(("El Renderer no se creo correctamente! SDL_Error: %s\n", SDL_GetError()));
+        l.error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
         return false;
     }
     GraphicRenderer::setInstance(gRenderer);
@@ -182,7 +182,7 @@ bool init(Configuracion* config) {
 }
 
 
-void close(Configuracion* config) {
+void close() {
     //Deallocate textures
 	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     SDL_DestroyRenderer(gRenderer);
@@ -200,7 +200,7 @@ void close(Configuracion* config) {
     l.info("La ventana se cerro correctamente");
 }
 
-void mainLoop(Configuracion* config) {
+void mainLoop() {
     bool quit = false;
     SDL_Event e;
 
@@ -246,11 +246,11 @@ void mainLoop(Configuracion* config) {
 int main(int, char**) {
     configurar();
     // Inicializa con la configuracion
-    if (!init(config)) return 1;
+    if (!init()) return 1;
 
     // Comienza el juego con la configuracion
-    mainLoop(config);
+    mainLoop();
 
-    close(config);
+    close();
     return 0;
 }
