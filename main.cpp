@@ -25,6 +25,10 @@ Log l = Log();
 std::string parsearNivelLog(Json::Value root) {
     try {
         std::string nivelLog = root["configuracion"]["log"]["nivel"].asString();
+        if (!nivelLog.compare("")){
+            l.error("No se hayó un nivel de log");
+            throw std::exception();
+        }
         if (nivelLog.compare("error") && nivelLog.compare("info") && nivelLog.compare("debug")){
             l.error("Se intento setear un nivel de log invalido");
             throw std::exception();
@@ -43,8 +47,16 @@ void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEne
         cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
         cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
 
+        if (!cantEnemigosUno) {
+            l.error("No se halló la cantidad de enemigos uno");
+            throw std::exception();
+        }
         if (cantEnemigosUno < 0) {
             l.error("Intento setearse una cantidad de enemigos_uno negativa");
+            throw std::exception();
+        }
+        if (!cantEnemigosDos) {
+            l.error("No se halló la cantidad de enemigos dos");
             throw std::exception();
         }
         if (cantEnemigosDos < 0) {
@@ -63,12 +75,25 @@ void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPan
         altoPantalla = root["configuracion"]["resolucion"]["alto"].asInt64();
         anchoPantalla = root["configuracion"]["resolucion"]["ancho"].asInt64();
         escala = root["configuracion"]["resolucion"]["escala"].asInt64();
-        if (altoPantalla < 100) {
-            l.error("Intento setearse un alto de pantalla muy pequeño");
+
+        if (!altoPantalla) {
+            l.error("No se halló un alto de pantalla");
+            throw std::exception();
+        }
+        if(altoPantalla < 100) {
+            l.error("Se intento setear un tamaño de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (!anchoPantalla){
+            l.error("No se halló un ancho de pantalla");
             throw std::exception();
         }
         if (anchoPantalla < 100){
             l.error("Intento setearse un ancho de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (!escala){
+            l.error("No se halló una escala de pantalla");
             throw std::exception();
         }
         if (escala < 0){
@@ -92,7 +117,12 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
     std::string rutaCarpetaConfig = "../config/";
 
     try {
-        std::string rutaFondos = rutaCarpetaConfig += root["configuracion"]["rutaFondos"].asString();
+        std::string rutaRelativa = root["configuracion"]["rutaFondos"].asString();
+        std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
+        if (!rutaRelativa.compare("")){
+           l.error("No se halló una ruta para el archivo de fondos");
+            throw std::exception();
+        }
         std::ifstream archivo(rutaFondos);
         archivo >> rootFondos;
         entriesArray = rootFondos;
