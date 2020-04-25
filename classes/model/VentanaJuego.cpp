@@ -29,8 +29,6 @@ Campo* VentanaJuego::crearCampo(Configuracion* config, Jugador* jugador){
 	Json::Value fondosAPresentar = config->getRecursos("1");
 
 	for(Json::Value f : fondosAPresentar) {
-	    std::cout << f["archivo"].asString();
-	    std::cout << f["velocidad"].asFloat();
 		fondo = campo->nuevoFondo(f["archivo"].asString(), 0,0, f["velocidad"].asFloat());
 	}
 

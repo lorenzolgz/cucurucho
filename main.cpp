@@ -1,6 +1,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <regex>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <jsoncpp/json/json.h>
@@ -106,13 +108,13 @@ void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPan
     }
 }
 
-Json::Value parsearFondos(Json::Value root) {
+Json::Value parsearFondos(Json::Value jsonConfig) {
     std::string rutaCarpetaConfig = "../config/";
-    Json::Value rootFondos;
+    Json::Value jsonFondos;
     Json::Value fondosPorNivel;
 
     try {
-        std::string rutaRelativa = root["configuracion"]["rutaFondos"].asString();
+        std::string rutaRelativa = jsonConfig["configuracion"]["rutaFondos"].asString();
         if (!rutaRelativa.compare("")){
             l.error("No se halló una ruta para el archivo de fondos");
             throw std::exception();
@@ -123,8 +125,8 @@ Json::Value parsearFondos(Json::Value root) {
             l.error(rutaFondos +=  " no direcciona a un archivo JSON de fondos");
             throw std::exception();
         }
-        archivo >> rootFondos;
-        fondosPorNivel = rootFondos;
+        archivo >> jsonFondos;
+        fondosPorNivel = jsonFondos;
     } catch(const std::exception& exc){
         l.error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
         throw exc;
@@ -134,13 +136,26 @@ Json::Value parsearFondos(Json::Value root) {
 }
 
 Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
-    Json::Value root;
+    Json::Value jsonConfig;
     std::ifstream archivo(rutaJsonConfig);
     if (archivo.fail()){
         l.error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
         throw std::exception();
     }
-    archivo >> root;
+
+    try {
+        archivo >> jsonConfig;
+        int a = 3;
+    }
+    catch(Json::Exception const& a){
+        // Acomodo el mensaje de la libreria para que quede de una sola linea
+        const std::string mensaje(a.what());
+        std::regex caracterIgnorado("\n+");
+        auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+        l.error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente");
+        l.error("Referencia de la libreria: " + mensajeUnaLinea);
+        throw std::exception();
+    }
 
     int altoPantalla;
     int anchoPantalla;
@@ -150,32 +165,39 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
     std::string nivelLog;
     Json::Value fondosPorNivel;
 
-    parsearResolucion(root, altoPantalla, anchoPantalla, escala);
-    parsearEnemigos(root, cantEnemigosUno, cantEnemigosDos);
-    nivelLog = parsearNivelLog(root);
-    fondosPorNivel = parsearFondos(root);
+    parsearResolucion(jsonConfig, altoPantalla, anchoPantalla, escala);
+    parsearEnemigos(jsonConfig, cantEnemigosUno, cantEnemigosDos);
+    nivelLog = parsearNivelLog(jsonConfig);
+    fondosPorNivel = parsearFondos(jsonConfig);
 
     return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, fondosPorNivel);
 }
 
-
+void informarConfiguracion(Configuracion* config){
+    l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
+    l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
+    l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
+    l.info("Cantidad Enemigos 1: " + std::to_string(config->getEnemigosTipoUno()));
+    l.info("Cantidad Enemigos 2: " + std::to_string(config->getEnemigosTipoDos()));
+    l.info("Nivel de Log: " + config->getNivelLog());
+}
 
 
 void configurar(){
     try {
         config = parsearConfiguracion("../config/config.json");
-        l.setConf(config->getNivelLog());
     }
     catch (const std::exception& exc) {
         config = parsearConfiguracion("../config/backup.json");
-        l.setConf(config->getNivelLog());
+
         // Solo se loguean las excepciones que tengan un what() para poder dar mas info
         if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
             l.error(exc.what());
         }
-        l.debug("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
+        l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
     }
     l.setConf(config->getNivelLog());
+    informarConfiguracion(config);
 }
 
 
