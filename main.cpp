@@ -41,7 +41,6 @@ std::string parsearNivelLog(Json::Value root) {
     }
 }
 
-
 void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEnemigosDos) {
     try {
         cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
@@ -80,7 +79,7 @@ void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPan
             l.error("No se halló un alto de pantalla");
             throw std::exception();
         }
-        if(altoPantalla < 100) {
+        if (altoPantalla < 100) {
             l.error("Se intento setear un tamaño de pantalla muy pequeño");
             throw std::exception();
         }
@@ -107,29 +106,41 @@ void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPan
     }
 }
 
-Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
-    Json::Value root;
-    std::ifstream archivo(rutaJsonConfig);
-    archivo >> root;
-
-    Json::Value rootFondos;
-    Json::Value entriesArray;
+Json::Value parsearFondos(Json::Value root) {
     std::string rutaCarpetaConfig = "../config/";
+    Json::Value rootFondos;
+    Json::Value fondosPorNivel;
 
     try {
         std::string rutaRelativa = root["configuracion"]["rutaFondos"].asString();
-        std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
         if (!rutaRelativa.compare("")){
-           l.error("No se halló una ruta para el archivo de fondos");
+            l.error("No se halló una ruta para el archivo de fondos");
             throw std::exception();
         }
+        std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
         std::ifstream archivo(rutaFondos);
+        if (archivo.fail()){
+            l.error(rutaFondos +=  " no direcciona a un archivo JSON de fondos");
+            throw std::exception();
+        }
         archivo >> rootFondos;
-        entriesArray = rootFondos;
+        fondosPorNivel = rootFondos;
     } catch(const std::exception& exc){
         l.error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
         throw exc;
     }
+
+    return fondosPorNivel;
+}
+
+Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
+    Json::Value root;
+    std::ifstream archivo(rutaJsonConfig);
+    if (archivo.fail()){
+        l.error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
+        throw std::exception();
+    }
+    archivo >> root;
 
     int altoPantalla;
     int anchoPantalla;
@@ -137,12 +148,14 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
     int cantEnemigosUno;
     int cantEnemigosDos;
     std::string nivelLog;
+    Json::Value fondosPorNivel;
 
     parsearResolucion(root, altoPantalla, anchoPantalla, escala);
     parsearEnemigos(root, cantEnemigosUno, cantEnemigosDos);
     nivelLog = parsearNivelLog(root);
+    fondosPorNivel = parsearFondos(root);
 
-    return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, entriesArray);
+    return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, fondosPorNivel);
 }
 
 
