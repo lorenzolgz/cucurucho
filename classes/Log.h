@@ -9,21 +9,26 @@
 #include <iostream>
 #include <time.h>
 #include <iomanip>
+#include <fstream>
 #include "Configuracion.h"
 
 
 class Log {
 private:
     std::string nivel;
+    char logEntrada [30]{};
+
 public:
     Log();
 
-    void error(std::string string);
-    void debug(std::string string);
-    void info(std::string string);
+    void error(const std::string& string);
+    void debug(const std::string& string);
+    void info(const std::string& string);
 
     void setConf(std::string string);
 
+    void output(const std::string& estado_log, const std::string& mensaje);
+    static void cargar_log(char* log, time_t timestamp, const std::string& estado, const std::string& msj);
 };
 
 extern Log l;
