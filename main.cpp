@@ -1,6 +1,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <regex>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <jsoncpp/json/json.h>
@@ -22,48 +24,191 @@ Configuracion* config;
 
 Log l = Log();
 
-Configuracion* leerJson(std::string ruta){
-    Json::Value root;
-    Json::Reader reader;
-    std::ifstream file(ruta);
-    file >> root;
+std::string parsearNivelLog(Json::Value root) {
+    try {
+        std::string nivelLog = root["configuracion"]["log"]["nivel"].asString();
+        if (!nivelLog.compare("")){
+            l.error("No se hayó un nivel de log");
+            throw std::exception();
+        }
+        if (nivelLog.compare("error") && nivelLog.compare("info") && nivelLog.compare("debug")){
+            l.error("Se intento setear un nivel de log invalido");
+            throw std::exception();
+        }
+        return nivelLog;
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al obtener el nivel de logging");
+        throw exc;
+    }
+}
 
-    auto entriesArray = root["configuracion"]["niveles"]["1"];
+void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEnemigosDos) {
+    try {
+        cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
+        cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
 
-    return new Configuracion(
-            root["configuracion"]["resolucion"]["alto"].asInt64(),
-            root["configuracion"]["resolucion"]["ancho"].asInt64(),
-            root["configuracion"]["resolucion"]["escala"].asInt64(),
-            root["configuracion"]["enemigos"]["tipoUno"].asInt64(),
-            root["configuracion"]["enemigos"]["tipoDos"].asInt64(),
-            root["configuracion"]["log"]["nivel"].asString(),
-            root["configuracion"]["niveles"]);
+        if (!cantEnemigosUno) {
+            l.error("No se halló la cantidad de enemigos uno");
+            throw std::exception();
+        }
+        if (cantEnemigosUno < 0) {
+            l.error("Intento setearse una cantidad de enemigos_uno negativa");
+            throw std::exception();
+        }
+        if (!cantEnemigosDos) {
+            l.error("No se halló la cantidad de enemigos dos");
+            throw std::exception();
+        }
+        if (cantEnemigosDos < 0) {
+            l.error("Intento setearse una cantidad de enemigos_dos negativa");
+            throw std::exception();
+        }
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al obtener la cantidad de enemigos");
+        throw exc;
+    }
+}
+
+void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPantalla, int &escala) {
+    try {
+        altoPantalla = root["configuracion"]["resolucion"]["alto"].asInt64();
+        anchoPantalla = root["configuracion"]["resolucion"]["ancho"].asInt64();
+        escala = root["configuracion"]["resolucion"]["escala"].asInt64();
+
+        if (!altoPantalla) {
+            l.error("No se halló un alto de pantalla");
+            throw std::exception();
+        }
+        if (altoPantalla < 100) {
+            l.error("Se intento setear un tamaño de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (!anchoPantalla){
+            l.error("No se halló un ancho de pantalla");
+            throw std::exception();
+        }
+        if (anchoPantalla < 100){
+            l.error("Intento setearse un ancho de pantalla muy pequeño");
+            throw std::exception();
+        }
+        if (!escala){
+            l.error("No se halló una escala de pantalla");
+            throw std::exception();
+        }
+        if (escala < 0){
+            l.error("Intento setearse una escala de pantalla negativa");
+            throw std::exception();
+        }
+    }
+    catch(const std::exception& exc) {
+        l.error("Ocurrio un error al cargar la resolucion de pantalla");
+        throw exc;
+    }
+}
+
+Json::Value parsearFondos(Json::Value jsonConfig) {
+    std::string rutaCarpetaConfig = "../config/";
+    Json::Value jsonFondos;
+    Json::Value fondosPorNivel;
+
+    try {
+        std::string rutaRelativa = jsonConfig["configuracion"]["rutaFondos"].asString();
+        if (!rutaRelativa.compare("")){
+            l.error("No se halló una ruta para el archivo de fondos");
+            throw std::exception();
+        }
+        std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
+        std::ifstream archivo(rutaFondos);
+        if (archivo.fail()){
+            l.error(rutaFondos +=  " no direcciona a un archivo JSON de fondos");
+            throw std::exception();
+        }
+        archivo >> jsonFondos;
+        fondosPorNivel = jsonFondos;
+    } catch(const std::exception& exc){
+        l.error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
+        throw exc;
+    }
+
+    return fondosPorNivel;
+}
+
+Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
+    Json::Value jsonConfig;
+    std::ifstream archivo(rutaJsonConfig);
+    if (archivo.fail()){
+        l.error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
+        throw std::exception();
+    }
+
+    try {
+        archivo >> jsonConfig;
+        int a = 3;
+    }
+    catch(Json::Exception const& a){
+        // Acomodo el mensaje de la libreria para que quede de una sola linea
+        const std::string mensaje(a.what());
+        std::regex caracterIgnorado("\n+");
+        auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+        l.error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente");
+        l.error("Referencia de la libreria: " + mensajeUnaLinea);
+        throw std::exception();
+    }
+
+    int altoPantalla;
+    int anchoPantalla;
+    int escala;
+    int cantEnemigosUno;
+    int cantEnemigosDos;
+    std::string nivelLog;
+    Json::Value fondosPorNivel;
+
+    parsearResolucion(jsonConfig, altoPantalla, anchoPantalla, escala);
+    parsearEnemigos(jsonConfig, cantEnemigosUno, cantEnemigosDos);
+    nivelLog = parsearNivelLog(jsonConfig);
+    fondosPorNivel = parsearFondos(jsonConfig);
+
+    return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, fondosPorNivel);
+}
+
+void informarConfiguracion(Configuracion* config){
+    l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
+    l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
+    l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
+    l.info("Cantidad Enemigos 1: " + std::to_string(config->getEnemigosTipoUno()));
+    l.info("Cantidad Enemigos 2: " + std::to_string(config->getEnemigosTipoDos()));
+    l.info("Nivel de Log: " + config->getNivelLog());
 }
 
 
 void configurar(){
     try {
-        config = leerJson("../config/config.json");
-        l.setConf(config->getNivelLog());
+        config = parsearConfiguracion("../config/config.json");
     }
     catch (const std::exception& exc) {
-        config = leerJson("../config/backup.json");
-        l.setConf(config->getNivelLog());
-        l.error(exc.what());
-        l.debug("Ocurrió un problema al leer el archivo de configuración, se usará el de backup");
+        config = parsearConfiguracion("../config/backup.json");
+
+        // Solo se loguean las excepciones que tengan un what() para poder dar mas info
+        if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
+            l.error(exc.what());
+        }
+        l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
     }
     l.setConf(config->getNivelLog());
+    informarConfiguracion(config);
 }
 
 
-bool init(Configuracion* config) {
+bool init() {
     int anchoPantalla = config->getAnchoPantalla();
     int altoPantalla = config->getAltoPantalla();
     int escalaPantalla = config->getEscalaPantalla();
 
     //Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        l.error(("No se logro inicializar SDL! SDL_Error: %s\n", SDL_GetError()));
+        l.error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
         return false;
     }
 
@@ -75,21 +220,21 @@ bool init(Configuracion* config) {
 
     //Initialize SDL_image
     if (!(IMG_Init(IMG_INIT_PNG))) {
-        l.error(("No se logro inicializar la SDL_image. SDL_image Error: %s\n", IMG_GetError()));
+        l.error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
         return false;
     }
 
     gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
     if (gWindow == nullptr) {
-        l.error(("La Ventana no creo correctamente! SDL_Error: %s\n", SDL_GetError()));
+        l.error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
         return false;
     }
     //Get window surface
 
     SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (gRenderer == nullptr) {
-        l.error(("El Renderer no se creo correctamente! SDL_Error: %s\n", SDL_GetError()));
+        l.error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
         return false;
     }
     GraphicRenderer::setInstance(gRenderer);
@@ -102,7 +247,7 @@ bool init(Configuracion* config) {
 }
 
 
-void close(Configuracion* config) {
+void close() {
     //Deallocate textures
 	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     SDL_DestroyRenderer(gRenderer);
@@ -120,7 +265,7 @@ void close(Configuracion* config) {
     l.info("La ventana se cerro correctamente");
 }
 
-void mainLoop(Configuracion* config) {
+void mainLoop() {
     bool quit = false;
     SDL_Event e;
 
@@ -132,7 +277,6 @@ void mainLoop(Configuracion* config) {
 	ventanaJuego->crearEnemigos(config->getEnemigosTipoUno(), config->getEnemigosTipoDos());
 
     l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
-
 
     while (!quit) {
         //Handle events on queue
@@ -165,14 +309,13 @@ void mainLoop(Configuracion* config) {
 
 
 int main(int, char**) {
-
     configurar();
     // Inicializa con la configuracion
-    if (!init(config)) return 1;
+    if (!init()) return 1;
 
     // Comienza el juego con la configuracion
-    mainLoop(config);
+    mainLoop();
 
-    close(config);
+    close();
     return 0;
 }

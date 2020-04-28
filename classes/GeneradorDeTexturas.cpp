@@ -10,12 +10,12 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
 
     SDL_Surface* loadedSurface = IMG_Load((SPRITES_LOCATION + path).c_str());
     if (loadedSurface == nullptr) {
-        l.error(("Error al cargar la imagen %s! SDL_image Error: %s.\n", IMG_GetError()));
+        l.error(std::string("Error al cargar la imagen! SDL_image Error:") + IMG_GetError());
     }
 
     SDL_Texture * textura = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
     if (textura == nullptr) {
-        l.error(("Error al cargar la textura de %s! SDL Error: %s.\n", SDL_GetError()));
+        l.error(std::string("Error al crear la textura de la imagen! SDL_image Error:") + SDL_GetError());
     }
 
     SDL_FreeSurface(loadedSurface);
@@ -35,18 +35,21 @@ GeneradorDeTexturas* GeneradorDeTexturas::getInstance(){
 }
 
 GeneradorDeTexturas::GeneradorDeTexturas(){
-    l.info("Creacion de sinngleton");
+    textura_defecto = cargarTextura(GraphicRenderer::getInstance(), "default.png");
+    l.info("Creacion de instancia GeneradorDeTexturas");
 }
 
 SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
-
     SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
     SDL_Texture* textura = texturas[entidadDelJuego];
 
-    if(textura==NULL){
+    if (textura == NULL){
         texturas[entidadDelJuego] = cargarTextura(gRenderer, entidadDelJuego);
         textura = texturas[entidadDelJuego];
     }
 
+    if (textura == NULL){
+        return textura_defecto;
+    }
     return textura;
 }

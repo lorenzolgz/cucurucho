@@ -1,0 +1,102 @@
+{
+  "1": [
+    {
+      "archivo": "asteroids_0.png",
+      "velocidad": 9
+    },
+    {
+      "archivo": "asteroids_1.png",
+      "velocidad": 7.5
+    },
+    {
+      "archivo": "asteroids_2.png",
+      "velocidad": 6
+    },
+    {
+      "archivo": "asteroids_3.png",
+      "velocidad": 4.5
+    },
+    {
+      "archivo": "asteroids_4.png",
+      "velocidad": 3.75
+    },
+    {
+      "archivo": "asteroids_5.png",
+      "velocidad": 3
+    },
+    {
+      "archivo": "asteroids_6.png",
+      "velocidad": 2.25
+    },
+    {
+      "archivo": "asteroids_7.png",
+      "velocidad": 1.35
+    },
+    {
+      "archivo": "asteroids_8.png",
+      "velocidad": 0.75
+    },
+    {
+      "archivo": "asteroids_9.png",
+      "velocidad": 0.36
+    },
+    {
+      "archivo": "asteroids_10.png",
+      "velocidad": 0.45
+    },
+    {
+      "archivo": "asteroids_11.png",
+      "velocidad": 0.3
+    }
+  ],
+  "2": [
+    {
+      "archivo": "asteroids_0.png",
+      "velocidad": 9
+    },
+    {
+      "archivo": "asteroids_1.png",
+      "velocidad": 7.5
+    },
+    {
+      "archivo": "asteroids_2.png",
+      "velocidad": 6
+    },
+    {
+      "archivo": "asteroids_3.png",
+      "velocidad": 4.5
+    },
+    {
+      "archivo": "asteroids_4.png",
+      "velocidad": 3.75
+    },
+    {
+      "archivo": "asteroids_5.png",
+      "velocidad": 3
+    },
+    {
+      "archivo": "asteroids_6.png",
+      "velocidad": 2.25
+    },
+    {
+      "archivo": "asteroids_7.png",
+      "velocidad": 1.35
+    },
+    {
+      "archivo": "asteroids_8.png",
+      "velocidad": 0.75
+    },
+    {
+      "archivo": "asteroids_9.png",
+      "velocidad": 0.36
+    },
+    {
+      "archivo": "asteroids_10.png",
+      "velocidad": 0.45
+    },
+    {
+      "archivo": "asteroids_11.png",
+      "velocidad": 0.3
+    }
+  ]
+}

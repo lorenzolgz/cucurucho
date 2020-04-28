@@ -14,7 +14,6 @@ Jugador::Jugador(int x, int y) {
 
 	Jugador::vista = new JugadorVista();
     l.info("Se creo correctamente el Jugador.");
-
 }
 
 void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha) {

@@ -25,18 +25,12 @@ Campo* VentanaJuego::crearCampo(Configuracion* config, Jugador* jugador){
 	int inicioCampoEnEjeY = HUD_ALTO;
 	Campo* campo = new Campo(jugador, config->getAnchoPantalla(), config->getAltoPantalla() - inicioCampoEnEjeY, inicioCampoEnEjeY);
 
-	// Primer fondo se carga fuera del JSON
-	int y_inicial = -24;
-	FondoVista* fondo = campo->nuevoFondo("asteroids_0.png", 0, y_inicial, 9);
-
-	// Resto de los fondos salen del JSON y se mapean
+	FondoVista* fondo;
 	Json::Value fondosAPresentar = config->getRecursos("1");
-	for(Json::Value f : fondosAPresentar) {
-		fondo = campo->nuevoFondo(f["archivo"].asString(), f["xOffset"].asFloat(),
-								  fondo->getY() + fondo->getHeight(), f["velocidad"].asFloat());
-	}
 
-	campo->nuevoFondo("bg.png", 450, 0, 0.3);
+	for(Json::Value f : fondosAPresentar) {
+		fondo = campo->nuevoFondo(f["archivo"].asString(), 0,0, f["velocidad"].asFloat());
+	}
 
 	l.info("Se creo correctamente el nivel 1 (Parallax)");
 	return campo;
