@@ -1,15 +1,12 @@
-//
-// Created by rodrigosouto on 20/4/20.
-//
-
 #ifndef CUCURUCHO_ENTIDAD_H
 #define CUCURUCHO_ENTIDAD_H
 
 
-class Entidad {
+class Entidad : public Ticker {
 public:
 	virtual int getAncho() = 0;
 	virtual int getAlto() = 0;
+	virtual Vector getPosicion() = 0;
 };
 
 

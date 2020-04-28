@@ -6,7 +6,7 @@
          "escala": 1
       },
       "log": {
-         "nivel": "debug"
+         "nivel": "info"
       },
       "enemigos": {
          "tipoUno": 2,
