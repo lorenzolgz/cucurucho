@@ -295,7 +295,8 @@ void mainLoop() {
 
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	Nivel* nivel = new Nivel(config, jugador, 1000, 100);
-	nivel->crearEnemigos(12, 3);
+	nivel->crearEnemigos(config);
+
 
 
 	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");

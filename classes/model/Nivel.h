@@ -10,8 +10,10 @@ class Nivel : public Ticker {
 public:
 	Nivel(Configuracion* config, Jugador* jugador, int ancho, int alto);
 
-	void crearEnemigos(int cantClase1, int cantClase2);
+    void crearEnemigos(Configuracion* config);
+    //int crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
+    void crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos);
 
 private:
 	int ancho;
@@ -19,9 +21,8 @@ private:
 	Hud* hud;
 	CampoMovil* campo;
 	list<SemillaEntidad*> semillasEntidades;
-
-	void crearNEnemigo1(int n);
-	void crearNEnemigo2(int n);
+	int cantidadDeEnemigosACrear[2];
+    int numeroDeNivel;
 	CampoMovil *crearCampo(Configuracion *config, Jugador* jugador);
 	void plantarSemillasEnCampo();
 };

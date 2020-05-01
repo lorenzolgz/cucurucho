@@ -3,12 +3,15 @@
 #include "Enemigo2.h"
 #include "Enemigo1.h"
 #include "Jugador.h"
+#include <queue>
 
 Nivel::Nivel(Configuracion* config, Jugador* jugador, int ancho, int alto) {
 	Nivel::hud = new Hud();
 	Nivel::campo = crearCampo(config, jugador);
 	Nivel::ancho = ancho;
 	Nivel::alto = campo->getAlto();
+    Nivel::numeroDeNivel = 1;
+
 }
 
 void Nivel::tick() {
@@ -17,50 +20,55 @@ void Nivel::tick() {
 	plantarSemillasEnCampo();
 }
 
-void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
-	crearNEnemigo2(cantClase2);
-	crearNEnemigo1(cantClase1);
+
+void Nivel::crearEnemigos(Configuracion* config){
+
+    std::queue<int> colaDeEnemigos = config->getEnemigosNivel(numeroDeNivel);
+    int  tamanioCola =  colaDeEnemigos.size();
+
+    for (int i=0; i<tamanioCola; i++){
+        int cantidaDeEnemigosDelTipoN = colaDeEnemigos.front();
+        colaDeEnemigos.pop();
+        crearEnemigosDelTipo(i+1, cantidaDeEnemigosDelTipoN);
+    }
 }
 
-void Nivel::crearNEnemigo1(int n) {
-	for (int i = 0; i < n; i++) {
-		int posInicialX = campo->getAncho();
-		int posY = std::rand() % alto;
-		// !!!! acomodar esto:
-		int posXEnNivel = std::rand() % 600 + campo->getAncho();
-		int velocidadX = campo->getVelocidadX();
+void Nivel::crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos){
 
-		Entidad* entidad = new Enemigo1(posInicialX, posY, velocidadX);
-		SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(posXEnNivel, 0));
-		// Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
-		if (campo->getAlto() < entidad->getPosicion().getY() + entidad->getAlto() ) {
-			i--;
-			continue;
-		}
+    for (int i = 0; i < cantDeEnemigos; i++) {
+        int posInicialX = campo->getAncho();
+        int posY = std::rand() % alto;
+        // !!!! acomodar esto:
+        int posXEnNivel = std::rand() % 600 + campo->getAncho();
+        int velocidadX = campo->getVelocidadX();
 
-		semillasEntidades.push_back(semillaEntidad);
-	}
+        Entidad* entidad;
+
+        switch (tipoDeEnemigo) {
+
+            case 1: {entidad = new Enemigo1(posInicialX, posY, velocidadX);}
+            break;
+
+            case 2: {entidad = new Enemigo2(posInicialX, posY, velocidadX);}
+            break;
+
+            //después vemos
+            default: {entidad = nullptr;};
+        }
+
+        SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(posXEnNivel, 0));
+        // Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
+        if (campo->getAlto() < entidad->getPosicion().getY() + entidad->getAlto() ) {
+            i--;
+            continue;
+        }
+
+        semillasEntidades.push_back(semillaEntidad);
+
+
+    }
 }
 
-void Nivel::crearNEnemigo2(int n) {
-	for (int i = 0; i < n; i++) {
-		int posInicialX = campo->getAncho();
-		int posY = std::rand() % alto;
-		// !!!! acomodar esto:
-		int posXEnNivel = std::rand() % 600 + campo->getAncho();
-		int velocidadX = campo->getVelocidadX();
-
-		Entidad* entidad = new Enemigo2(posInicialX, posY, velocidadX);
-		SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(posXEnNivel, 0));
-		// Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
-		if (campo->getAlto() < entidad->getPosicion().getY() + entidad->getAlto() ) {
-			i--;
-			continue;
-		}
-
-		semillasEntidades.push_back(semillaEntidad);
-	}
-}
 
 CampoMovil* Nivel::crearCampo(Configuracion* config, Jugador* jugador) {
 	int inicioCampoEnEjeY = HUD_ALTO;
