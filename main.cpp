@@ -42,7 +42,7 @@ std::string parsearNivelLog(Json::Value root) {
 }
 
 map<int, queue <int>> parsearEnemigos(const Json::Value &root) {
-    map<int, queue <int>> diccionarioDeEnemigos;
+    map<int, queue <int>> mapEnemigosPorNivel;
 
     try {
         Json::Value enemigosPorNivel = root["configuracion"]["enemigosPorNivel"];
@@ -50,48 +50,51 @@ map<int, queue <int>> parsearEnemigos(const Json::Value &root) {
         int nivelActual = 1;
         Json::Value entradaNivel = enemigosPorNivel[std::to_string(nivelActual)];
 
+        // Mientras haya entradas de nivel en el JSON
         while (!entradaNivel.isNull()){
             // Cola a guardar en el diccionario de enemigos
             queue <int> enemigos;
 
-            // Leyendo enemigos
-            enemigos.push(entradaNivel["tipoUno"].asInt64());
-            enemigos.push(entradaNivel["tipoDos"].asInt64());
+            // Leyendo enemigos tipo uno
+            Json::Value enemigosUno = entradaNivel["tipoUno"];
+            if (enemigosUno.isNull()) {
+                l.error("No se halló la cantidad de enemigos uno para el nivel " + std::to_string(nivelActual));
+                throw std::exception();
+            }
+            if (enemigosUno.asInt64() < 0) {
+                l.error("Se halló una cantidad de enemigos tipo uno negativa para el nivel " + std::to_string(nivelActual));
+                throw std::exception();
+            }
+
+            // Leyendo enemigos tipo dos
+            Json::Value enemigosDos = entradaNivel["tipoDos"];
+            if (enemigosDos.isNull()) {
+                l.error("No se halló la cantidad de enemigos dos para el nivel " + std::to_string(nivelActual));
+                throw std::exception();
+            }
+            if (enemigosDos.asInt64() < 0) {
+                l.error("Se halló una cantidad de enemigos tipo dos negativa para el nivel " + std::to_string(nivelActual));
+                throw std::exception();
+            }
+
+            // Cargando en la cola
+            enemigos.push(enemigosUno.asInt64());
+            enemigos.push(enemigosDos.asInt64());
 
             // Guardo enemigos
-            diccionarioDeEnemigos.insert({nivelActual, enemigos});
+            mapEnemigosPorNivel.insert({nivelActual, enemigos});
 
             // Paso al nivel siguiente
             nivelActual++;
             entradaNivel =  enemigosPorNivel[std::to_string(nivelActual)];
         }
-
-        //std::cout << "Corte en el nivel: " << nivelActual;
-		/*
-		 * VALIDACIONES (TO DO TRAS EL REFACTOR)
-		 * if (!cantEnemigosUno) {
-			l.error("No se halló la cantidad de enemigos uno");
-			throw std::exception();
-		}
-		if (cantEnemigosUno < 0) {
-			l.error("Intento setearse una cantidad de enemigos_uno negativa");
-			throw std::exception();
-		}
-		if (!cantEnemigosDos) {
-			l.error("No se halló la cantidad de enemigos dos");
-			throw std::exception();
-		}
-		if (cantEnemigosDos < 0) {
-			l.error("Intento setearse una cantidad de enemigos_dos negativa");
-			throw std::exception();
-		}*/
 	}
 	catch(const std::exception& exc) {
 		l.error("Ocurrio un error al obtener la cantidad de enemigos");
 		throw exc;
 	}
 
-	return diccionarioDeEnemigos;
+	return mapEnemigosPorNivel;
 }
 
 void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPantalla, int &escala) {
