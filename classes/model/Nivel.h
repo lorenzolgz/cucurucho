@@ -11,7 +11,6 @@ public:
 	Nivel(Configuracion* config, Jugador* jugador, int ancho, int alto);
 
     void crearEnemigos(Configuracion* config);
-    //int crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
     void crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos);
 
@@ -21,7 +20,6 @@ private:
 	Hud* hud;
 	CampoMovil* campo;
 	list<SemillaEntidad*> semillasEntidades;
-	int cantidadDeEnemigosACrear[2];
     int numeroDeNivel;
 	CampoMovil *crearCampo(Configuracion *config, Jugador* jugador);
 	void plantarSemillasEnCampo();
