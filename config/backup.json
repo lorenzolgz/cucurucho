@@ -8,9 +8,11 @@
       "log": {
          "nivel": "info"
       },
-      "enemigos": {
-         "tipoUno": 2,
-         "tipoDos":2
+      "enemigosPorNivel": {
+         "1": {"tipoUno": 1, "tipoDos": 1},
+         "2": {"tipoUno": 2, "tipoDos": 2},
+         "3": {"tipoUno": 3, "tipoDos": 3},
+         "4": {"tipoUno": 4, "tipoDos": 4}
       },
       "rutaFondos": "fondos.json"
    }

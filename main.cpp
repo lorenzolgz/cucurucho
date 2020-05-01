@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
+#include <queue>
 #include <regex>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -40,12 +41,35 @@ std::string parsearNivelLog(Json::Value root) {
 	}
 }
 
-void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEnemigosDos) {
-	try {
-		cantEnemigosUno = root["configuracion"]["enemigos"]["tipoUno"].asInt64();
-		cantEnemigosDos = root["configuracion"]["enemigos"]["tipoDos"].asInt64();
+map<int, queue <int>> parsearEnemigos(const Json::Value &root) {
+    map<int, queue <int>> diccionarioDeEnemigos;
 
-		if (!cantEnemigosUno) {
+    try {
+        Json::Value enemigosPorNivel = root["configuracion"]["enemigosPorNivel"];
+
+        int nivelActual = 1;
+        Json::Value entradaNivel = enemigosPorNivel[std::to_string(nivelActual)];
+
+        while (!entradaNivel.isNull()){
+            // Cola a guardar en el diccionario de enemigos
+            queue <int> enemigos;
+
+            // Leyendo enemigos
+            enemigos.push(entradaNivel["tipoUno"].asInt64());
+            enemigos.push(entradaNivel["tipoDos"].asInt64());
+
+            // Guardo enemigos
+            diccionarioDeEnemigos.insert({nivelActual, enemigos});
+
+            // Paso al nivel siguiente
+            nivelActual++;
+            entradaNivel =  enemigosPorNivel[std::to_string(nivelActual)];
+        }
+
+        //std::cout << "Corte en el nivel: " << nivelActual;
+		/*
+		 * VALIDACIONES (TO DO TRAS EL REFACTOR)
+		 * if (!cantEnemigosUno) {
 			l.error("No se halló la cantidad de enemigos uno");
 			throw std::exception();
 		}
@@ -60,12 +84,14 @@ void parsearEnemigos(const Json::Value &root, int &cantEnemigosUno, int &cantEne
 		if (cantEnemigosDos < 0) {
 			l.error("Intento setearse una cantidad de enemigos_dos negativa");
 			throw std::exception();
-		}
+		}*/
 	}
 	catch(const std::exception& exc) {
 		l.error("Ocurrio un error al obtener la cantidad de enemigos");
 		throw exc;
 	}
+
+	return diccionarioDeEnemigos;
 }
 
 void parsearResolucion(const Json::Value &root, int &altoPantalla, int &anchoPantalla, int &escala) {
@@ -142,7 +168,6 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
 
 	try {
 		archivo >> jsonConfig;
-		int a = 3;
 	}
 	catch(Json::Exception const& a){
 		// Acomodo el mensaje de la libreria para que quede de una sola linea
@@ -157,25 +182,24 @@ Configuracion* parsearConfiguracion(std::string rutaJsonConfig){
 	int altoPantalla;
 	int anchoPantalla;
 	int escala;
-	int cantEnemigosUno;
-	int cantEnemigosDos;
+    map<int, queue <int>> enemigos;
 	std::string nivelLog;
 	Json::Value fondosPorNivel;
 
 	parsearResolucion(jsonConfig, altoPantalla, anchoPantalla, escala);
-	parsearEnemigos(jsonConfig, cantEnemigosUno, cantEnemigosDos);
+	enemigos = parsearEnemigos(jsonConfig);
 	nivelLog = parsearNivelLog(jsonConfig);
 	fondosPorNivel = parsearFondos(jsonConfig);
 
-	return new Configuracion(altoPantalla, anchoPantalla, escala, cantEnemigosUno, cantEnemigosDos, nivelLog, fondosPorNivel);
+	return new Configuracion(altoPantalla, anchoPantalla, escala, enemigos, nivelLog, fondosPorNivel);
 }
 
 void informarConfiguracion(Configuracion* config){
 	l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
 	l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
 	l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
-	l.info("Cantidad Enemigos 1: " + std::to_string(config->getEnemigosTipoUno()));
-	l.info("Cantidad Enemigos 2: " + std::to_string(config->getEnemigosTipoDos()));
+	std::cout << "Cantidad de tipos de enemigos cargados en Nivel 1: " << config->getEnemigosNivel(1).size() << std::endl;
+    std::cout << "Cantidad de tipos de enemigos cargados en Nivel 2: " << config->getEnemigosNivel(2).size() << std::endl;
 	l.info("Nivel de Log: " + config->getNivelLog());
 }
 
