@@ -29,7 +29,7 @@ private:
 	int ancho;
 	int alto;
 	Vector posicion;
-	int velocidadX;
+	float velocidadX;
 	Jugador* jugador;
 	CampoVista* vista;
 	std::list<Entidad*> entidades;
