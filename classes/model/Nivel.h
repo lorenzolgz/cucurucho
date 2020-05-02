@@ -6,13 +6,16 @@
 #include "Ticker.h"
 #include "SemillaEntidad.h"
 
+#define PANTALLA_ANCHO 960
+#define PANTALLA_ALTO 672
+
 class Nivel : public Ticker {
 public:
-	Nivel(Configuracion* config, Jugador* jugador, int ancho, int alto);
+	Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, int ancho, int alto, int numeroDeNivel);
 
-    void crearEnemigos(Configuracion* config);
+	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
-    void crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos);
+    void crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos);
 
 private:
 	int ancho;
@@ -21,7 +24,8 @@ private:
 	CampoMovil* campo;
 	list<SemillaEntidad*> semillasEntidades;
     int numeroDeNivel;
-	CampoMovil *crearCampo(Configuracion *config, Jugador* jugador);
+
+	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, Jugador* jugador);
 	void plantarSemillasEnCampo();
 };
 

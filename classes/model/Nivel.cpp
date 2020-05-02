@@ -4,14 +4,15 @@
 #include "Enemigo1.h"
 #include "Jugador.h"
 #include <queue>
+#include <iterator>
+#include <list>
 
-Nivel::Nivel(Configuracion* config, Jugador* jugador, int ancho, int alto) {
+Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, int ancho, int alto, int numeroDeNivel) {
 	Nivel::hud = new Hud();
-	Nivel::campo = crearCampo(config, jugador);
+	Nivel::campo = crearCampo(nivelConfig, jugador);
 	Nivel::ancho = ancho;
 	Nivel::alto = campo->getAlto();
-    Nivel::numeroDeNivel = 1;
-
+    Nivel::numeroDeNivel = numeroDeNivel;
 }
 
 void Nivel::tick() {
@@ -20,39 +21,28 @@ void Nivel::tick() {
 	plantarSemillasEnCampo();
 }
 
-
-void Nivel::crearEnemigos(Configuracion* config){
-
-    std::queue<int> colaDeEnemigos = config->getEnemigosNivel(numeroDeNivel);
-    int  tamanioCola =  colaDeEnemigos.size();
-
-    for (int i=0; i<tamanioCola; i++){
-        int cantidaDeEnemigosDelTipoN = colaDeEnemigos.front();
-        colaDeEnemigos.pop();
-        crearEnemigosDelTipo(i+1, cantidaDeEnemigosDelTipoN);
-    }
+void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
+	crearEnemigosDeClase(2, cantClase2);
+	crearEnemigosDeClase(1, cantClase1);
 }
 
-void Nivel::crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos){
+void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
     for (int i = 0; i < cantDeEnemigos; i++) {
         int posInicialX = campo->getAncho();
         int posY = std::rand() % alto;
-        // !!!! acomodar esto:
+        // TODO acomodar esto para que se distribuya en todo el ancho del campo!!!!
         int posXEnNivel = std::rand() % 600 + campo->getAncho();
         int velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-
             case 1: {entidad = new Enemigo1(posInicialX, posY, velocidadX);}
             break;
-
             case 2: {entidad = new Enemigo2(posInicialX, posY, velocidadX);}
             break;
-
-            //después vemos
+            // Todo después vemos
             default: {entidad = nullptr;};
         }
 
@@ -64,21 +54,16 @@ void Nivel::crearEnemigosDelTipo(int tipoDeEnemigo, int cantDeEnemigos){
         }
 
         semillasEntidades.push_back(semillaEntidad);
-
-
     }
 }
 
-
-CampoMovil* Nivel::crearCampo(Configuracion* config, Jugador* jugador) {
+CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador) {
+	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
 	int inicioCampoEnEjeY = HUD_ALTO;
-	CampoMovil* campo = new CampoMovil(jugador, config->getAnchoPantalla(), config->getAltoPantalla() - inicioCampoEnEjeY, inicioCampoEnEjeY);
+	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY);
 
-	FondoVista* fondo;
-	Json::Value fondosAPresentar = config->getRecursos("1");
-
-	for(Json::Value f : fondosAPresentar) {
-		fondo = campo->nuevoFondo(f["archivo"].asString(), 0,0, f["velocidad"].asFloat());
+	for(FondoConfiguracion* f : nivelConfig->getFondos()) {
+		campo->nuevoFondo(f->getArchivo(), 0,0, f->getVelocidad());
 	}
 
 	l.info("Se creo correctamente el nivel 1 (Parallax)");

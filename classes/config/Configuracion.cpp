@@ -4,14 +4,13 @@
 
 #include "Configuracion.h"
 
-Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::map<int, std::queue <int>> enemigos,
-        std::string nivelLog, Json::Value recursosNiveles){
+Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
+		std::list<NivelConfiguracion*> niveles){
     this->altoPantalla = altoPantalla;
     this->anchoPantalla = anchoPantalla;
     this->escalaPantalla = escalaPantalla;
-    this->enemigos = enemigos;
     this->nivelLog = nivelLog;
-    this->recursosNiveles = recursosNiveles;
+    this->niveles = niveles;
 }
 
 int Configuracion::getAltoPantalla(){
@@ -26,14 +25,10 @@ int Configuracion::getEscalaPantalla(){
     return this->escalaPantalla;
 }
 
-std::queue <int> Configuracion::getEnemigosNivel(int nivel){
-    return this->enemigos.at(nivel);
-}
-
 std::string Configuracion::getNivelLog() {
     return this->nivelLog;
 }
 
-Json::Value Configuracion::getRecursos(std::string nivel) {
-    return this->recursosNiveles[nivel];
+const std::list<NivelConfiguracion *> &Configuracion::getNiveles() const {
+	return niveles;
 }

@@ -5,7 +5,7 @@
 #include "Log.h"
 
 #include <utility>
-#include "Configuracion.h"
+#include "config/Configuracion.h"
 
 
 #define DEBUG nivel == "debug"
