@@ -1,0 +1,24 @@
+{
+  "fondos": [
+    {
+      "archivo": "asteroids_3.png",
+      "velocidad": 3
+    },
+    {
+      "archivo": "asteroids_7.png",
+      "velocidad": 2.25
+    },
+    {
+      "archivo": "asteroids_2.png",
+      "velocidad": 1.35
+    },
+    {
+      "archivo": "asteroids_10.png",
+      "velocidad": 0.3
+    },
+    {
+      "archivo": "clouds_10.png",
+      "velocidad": 1.00
+    }
+  ]
+}

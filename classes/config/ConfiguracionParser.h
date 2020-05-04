@@ -19,6 +19,7 @@ private:
 	FondoConfiguracion* parsearFondo(Json::Value fondoJson, int nivel);
 	std::list<FondoConfiguracion*> parsearFondos(Json::Value fondosConfiguracionJson, int nivel);
 	std::list<FondoConfiguracion*> parsearArchivoFondos(Json::Value jsonConfig, int nivel);
+	std::string parsearFinalNivel(Json::Value imagenFinalJson);
 	NivelConfiguracion* parsearNivel(Json::Value nivelJson, int nivel);
 	std::list<NivelConfiguracion*> parsearNiveles(Json::Value nivelesJson);
 };

@@ -11,7 +11,7 @@
 #include "classes/model/Nivel.h"
 #include "classes/config/NivelConfiguracion.h"
 #include "classes/config/ConfiguracionParser.h"
-
+#include "classes/model/ManagerNiveles.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
@@ -30,7 +30,6 @@ void informarConfiguracion(Configuracion* config){
 
 void configurar() {
 	ConfiguracionParser configuracionParser;
-
 	try {
 		config = configuracionParser.parsearConfiguracion("../config/config.json");
 	}
@@ -113,46 +112,50 @@ void close() {
 }
 
 void mainLoop() {
-	bool quit = false;
-	SDL_Event e;
-
-	int anchoPantalla = config->getAnchoPantalla();
+    int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
+    bool quit = false;
+    bool terminoNivelActual = false;
+    SDL_Event e;
+
 
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
-	NivelConfiguracion* nivelConfiguracion1 = config->getNiveles().front();
-	Nivel* nivel = new Nivel(nivelConfiguracion1, jugador, 1600, config->getAltoPantalla(), 1);
-	nivel->crearEnemigos(nivelConfiguracion1->getEnemigos()->getEnemigosClase1(), nivelConfiguracion1->getEnemigos()->getEnemigosClase2());
+	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
 
 	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-	while (!quit) {
-		//Handle events on queue
-		while (SDL_PollEvent( &e ) != 0)
-		{
-			//User requests quit
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
+    while (!quit) {
+        //Handle events on queue
+        while (SDL_PollEvent(&e) != 0) {
+            //User requests quit
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+
+        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
+                                         currentKeyStates[SDL_SCANCODE_DOWN],
+                                         currentKeyStates[SDL_SCANCODE_LEFT],
+                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
+
+        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+        //Clear screen
+        SDL_RenderClear(gRenderer);
+
+        //Render texture to screen
+		manager->tick();
+		terminoNivelActual = manager->terminoNivelActual();
+        if (terminoNivelActual) {
+			terminoNivelActual = manager->pasajeDeNivel();
+            SDL_RenderPresent(gRenderer);
+            SDL_Delay(800);
+            quit = quit || manager->estadoJuego();
+        } else {
+			quit = quit || manager->estadoJuego();
+			SDL_RenderPresent(gRenderer);
 		}
-
-		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-		jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
-										 currentKeyStates[SDL_SCANCODE_DOWN],
-										 currentKeyStates[SDL_SCANCODE_LEFT],
-										 currentKeyStates[SDL_SCANCODE_RIGHT]);
-
-		SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
-		//Clear screen
-		SDL_RenderClear(gRenderer);
-
-		//Render texture to screen
-		nivel->tick();
-
-		//Update screen
-		SDL_RenderPresent(gRenderer);
-	}
+    }
 }
 
 

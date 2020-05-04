@@ -3,20 +3,22 @@
 #include "CampoMovil.h"
 #include "../Log.h"
 
-CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY) {
+CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, int velocidadNivel) {
 	CampoMovil::posicion = Vector(0, 0);
-	CampoMovil::velocidadX = 2;
-	CampoMovil::ancho = ancho;
+	CampoMovil::velocidadX = velocidadNivel;
+    CampoMovil::ancho = ancho;
 	CampoMovil::alto = alto;
 	CampoMovil::jugador = jugador;
 	CampoMovil::vista = new CampoVista(ancho, alto, inicioEnEjeY);
 }
 
 void CampoMovil::tick() {
-	posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
-	vista->render(velocidadX);
-	std::for_each(entidades.begin(), entidades.end(), [](Entidad* t) { t->tick(); });
-	jugador->tick();
+    posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
+    vista->render(velocidadX);
+    if (jugador) {
+        std::for_each(entidades.begin(), entidades.end(), [](Entidad *t) { t->tick(); });
+        jugador->tick();
+    }
 }
 
 FondoVista * CampoMovil::nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad) {
@@ -46,3 +48,8 @@ void CampoMovil::agregarEntidad(Entidad *entidad) {
 bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 	return (entidad->getPosicion().getX() + entidad->getAncho() < ancho) && (entidad->getPosicion().getY() + entidad->getAlto() < alto);
 }
+
+bool CampoMovil::verificarPosicion() {
+    return posicion.getX() > TIEMPO_NIVEL*velocidadX;
+}
+

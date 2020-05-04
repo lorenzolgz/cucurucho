@@ -64,3 +64,7 @@ const Vector Jugador::getVelocidad() const {
 int Jugador::getContador() const {
     return vista->getContador();
 }
+
+void Jugador::setPosicion(int x, int y) {
+    Jugador::posicion = Vector(x / 8, y / 2);
+}

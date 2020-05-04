@@ -18,6 +18,9 @@ public:
     int getWidth() const;
     int getHeight() const;
 
+
+    void tickintermedio();
+
 private:
     float x1;
     float x2;
@@ -30,6 +33,7 @@ private:
 	SDL_Renderer* gRenderer;
 
 	SDL_Rect calcularCoords(float* x, int y, int width, int height, float speed, float xOffset);
+
 };
 
 #endif //CPP_SANDBOX_FONDO_H

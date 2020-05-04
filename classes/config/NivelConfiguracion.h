@@ -11,14 +11,16 @@
 
 class NivelConfiguracion {
 public:
-	NivelConfiguracion(const std::list<FondoConfiguracion *> &fondos, EnemigosConfiguracion *enemigos);
+	NivelConfiguracion(const std::list<FondoConfiguracion *> &fondos, EnemigosConfiguracion *enemigos, std::string finalNivel);
 
 	const std::list<FondoConfiguracion *> &getFondos() const;
 	EnemigosConfiguracion *getEnemigos() const;
+	std::string getFinalNivel() const;
 
 private:
 	std::list<FondoConfiguracion*> fondos;
 	EnemigosConfiguracion* enemigos;
+	std::string finalNivel;
 };
 
 

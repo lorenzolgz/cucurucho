@@ -26,6 +26,7 @@ public:
     const Vector &getPosicion() const;
     const Vector getVelocidad() const;
     int getContador() const;
+    void setPosicion(int x, int y);
 
 private:
     Vector posicion;
@@ -37,6 +38,7 @@ private:
 	Helper* helperBelow;
 
 	JugadorVista *vista;
+
 };
 
 
