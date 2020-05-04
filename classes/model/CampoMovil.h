@@ -11,10 +11,11 @@
 
 class Entidad;
 class Ticker;
+#define TIEMPO_NIVEL 500
 
 class CampoMovil : public Ticker {
 public:
-	CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY);
+	CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, int velocidadNivel);
 
 	int getAncho();
 	int getAlto();
@@ -25,6 +26,9 @@ public:
 	bool entidadEstaDentroDelCampo(Entidad* entidad);
 	void tick() override;
 
+	bool verificarPosicion();
+
+
 private:
 	int ancho;
 	int alto;
@@ -33,6 +37,7 @@ private:
 	Jugador* jugador;
 	CampoVista* vista;
 	std::list<Entidad*> entidades;
+
 };
 
 

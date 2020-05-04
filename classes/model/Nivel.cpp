@@ -7,18 +7,22 @@
 #include <iterator>
 #include <list>
 
-Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, int ancho, int alto, int numeroDeNivel) {
+Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, int ancho, int alto, int velocidad) {
 	Nivel::hud = new Hud();
+	Nivel::velocidad = velocidad;
 	Nivel::campo = crearCampo(nivelConfig, jugador);
 	Nivel::ancho = ancho;
 	Nivel::alto = campo->getAlto();
-    Nivel::numeroDeNivel = numeroDeNivel;
 }
 
 void Nivel::tick() {
-	campo->tick();
+    campo->tick();
 	hud->tick();
 	plantarSemillasEnCampo();
+}
+
+bool Nivel::termino() {
+	return campo->verificarPosicion();
 }
 
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
@@ -60,7 +64,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
 	int inicioCampoEnEjeY = HUD_ALTO;
-	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY);
+	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad);
 
 	for(FondoConfiguracion* f : nivelConfig->getFondos()) {
 		campo->nuevoFondo(f->getArchivo(), 0,0, f->getVelocidad());

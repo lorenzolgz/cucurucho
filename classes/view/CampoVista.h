@@ -17,6 +17,7 @@ private:
 	// Posicion del campo del juego en la pantalla principal
 	SDL_Rect posCampo;
 	std::list<FondoVista*> fondos;
+
 };
 
 

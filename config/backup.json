@@ -6,13 +6,15 @@
       "niveles": [
          {
             "archivoFondos": "fondos/fondos2.json",
+            "fin": "cleared_con_nave1.png",
             "enemigos": {
                "clase1": 2,
                "clase2": 37
             }
          },
          {
-            "archivoFondos": "fondos/fondos2.json",
+            "archivoFondos": "fondos/fondos1.json",
+            "fin": "cleared_con_nave2.png",
             "enemigos": {
                "clase1": 73,
                "clase2": 2

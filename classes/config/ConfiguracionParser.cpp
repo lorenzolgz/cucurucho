@@ -159,12 +159,18 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fo
 	return fondosConfiguracion;
 }
 
+std::string ConfiguracionParser::parsearFinalNivel(Json::Value imagenFinalJson) {
+	std::string fondosJson = imagenFinalJson["fin"].asString();
+	return fondosJson;
+}
+
 NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int nivel) {
 	try {
 		auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
 		auto fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
+		auto finNivel = parsearFinalNivel(nivelJson);
 
-		return new NivelConfiguracion(fondos, enemigos);
+		return new NivelConfiguracion(fondos, enemigos, finNivel);
 	} catch (const std::exception &exc) {
 		l.error("Ocurrio un error al parsear el nivel " + to_string(nivel));
 		throw exc;

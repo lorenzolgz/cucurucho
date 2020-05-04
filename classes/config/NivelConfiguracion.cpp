@@ -1,7 +1,7 @@
 #include "NivelConfiguracion.h"
 
-NivelConfiguracion::NivelConfiguracion(const std::list<FondoConfiguracion *> &fondos, EnemigosConfiguracion *enemigos)
-		: fondos(fondos), enemigos(enemigos) {}
+NivelConfiguracion::NivelConfiguracion(const std::list<FondoConfiguracion *> &fondos, EnemigosConfiguracion *enemigos, std::string finalNivel)
+		: fondos(fondos), enemigos(enemigos), finalNivel(finalNivel) {}
 
 const std::list<FondoConfiguracion *> &NivelConfiguracion::getFondos() const {
 	return fondos;
@@ -9,4 +9,8 @@ const std::list<FondoConfiguracion *> &NivelConfiguracion::getFondos() const {
 
 EnemigosConfiguracion *NivelConfiguracion::getEnemigos() const {
 	return enemigos;
+}
+
+std::string NivelConfiguracion::getFinalNivel() const{
+	return finalNivel;
 }
