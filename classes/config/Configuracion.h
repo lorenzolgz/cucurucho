@@ -8,26 +8,25 @@
 #include <string>
 #include <queue>
 #include <jsoncpp/json/json.h>
+#include "NivelConfiguracion.h"
 
 class Configuracion {
 public:
-    Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::map<int, std::queue <int>> enemigos,
-                    std::string nivelLog, Json::Value recursosNiveles);
+    Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
+    		std::list<NivelConfiguracion*> niveles);
 
     int getAltoPantalla();
     int getAnchoPantalla();
     int getEscalaPantalla();
-    std::queue <int> getEnemigosNivel(int nivel);
     std::string getNivelLog();
-    Json::Value getRecursos(std::string nivel);
+	const std::list<NivelConfiguracion *> &getNiveles() const;
 
 private:
     int altoPantalla;
     int anchoPantalla;
     int escalaPantalla;
-    std::map<int, std::queue <int>> enemigos;
     std::string nivelLog;
-    Json::Value recursosNiveles;
+	std::list<NivelConfiguracion*> niveles;
 };
 
 #endif //CUCURUCHO_CONFIGURACION_H

@@ -3,7 +3,7 @@
 
 
 #include "Hud.h"
-#include "../Configuracion.h"
+#include "../config/Configuracion.h"
 #include "../view/CampoVista.h"
 #include "Jugador.h"
 #include "Ticker.h"

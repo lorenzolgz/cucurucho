@@ -10,7 +10,7 @@
 #include <time.h>
 #include <iomanip>
 #include <fstream>
-#include "Configuracion.h"
+#include "config/Configuracion.h"
 
 
 class Log {
