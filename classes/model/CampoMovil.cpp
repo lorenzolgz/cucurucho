@@ -1,6 +1,6 @@
-#include <cstdlib>
 #include <algorithm>
 #include "CampoMovil.h"
+#include <string>
 #include "../Log.h"
 
 CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, int velocidadNivel) {

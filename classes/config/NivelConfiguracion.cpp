@@ -1,4 +1,5 @@
 #include "NivelConfiguracion.h"
+#include <string>
 
 NivelConfiguracion::NivelConfiguracion(const std::list<FondoConfiguracion *> &fondos, EnemigosConfiguracion *enemigos, std::string finalNivel)
 		: fondos(fondos), enemigos(enemigos), finalNivel(finalNivel) {}

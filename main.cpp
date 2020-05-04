@@ -21,17 +21,10 @@ Configuracion* config;
 Log l = Log();
 
 
-void informarConfiguracion(Configuracion* config){
-	l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
-	l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
-	l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
-	l.info("Nivel de Log: " + config->getNivelLog());
-}
-
-void configurar() {
+void configurar(string archivoConfig, string nivelLog) {
 	ConfiguracionParser configuracionParser;
 	try {
-		config = configuracionParser.parsearConfiguracion("../config/config.json");
+		config = configuracionParser.parsearConfiguracion(archivoConfig);
 	}
 	catch (const std::exception& exc) {
 		config = configuracionParser.parsearConfiguracion("../config/backup.json");
@@ -42,8 +35,16 @@ void configurar() {
 		}
 		l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
 	}
-	l.setConf(config->getNivelLog());
-	informarConfiguracion(config);
+
+	if (nivelLog.empty()) {
+	    nivelLog = config->getNivelLog();
+	}
+	l.setConf(nivelLog);
+
+    l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
+    l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
+    l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
+    l.info("Nivel de Log: " + nivelLog);
 }
 
 
@@ -118,7 +119,6 @@ void mainLoop() {
     bool terminoNivelActual = false;
     SDL_Event e;
 
-
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
 
@@ -159,10 +159,27 @@ void mainLoop() {
 }
 
 
-int main(int, char**) {
-	std::srand(std::time(NULL)); //use current time as seed for random generator
-	configurar();
-	// Inicializa con la configuracion
+int main(int argc, char *argv[]) {
+    std::srand(std::time(NULL)); //use current time as seed for random generator
+
+    std::string archivoConfig = "../config/config.json";
+    std::string nivelLog;
+
+    for (int i = 1; i + 1 < argc; i += 2) {
+        if (strcmp(argv[i], "-l") == 0) {
+            if (!l.confValida(argv[i + 1])) {
+                std::cout << "Nivel de log invalido: " + std::string(argv[i + 1]) << std::endl;
+            } else {
+                nivelLog = std::string(argv[i + 1]);
+            }
+        } else if (strcmp(argv[i], "-c") == 0) {
+            archivoConfig = std::string(argv[i + 1]);
+        }
+    }
+
+    configurar(archivoConfig, nivelLog);
+
+	// Inicializa SDL con la configuracion
 	if (!init()) return 1;
 
 	// Comienza el juego con la configuracion

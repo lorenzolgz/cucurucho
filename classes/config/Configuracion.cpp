@@ -3,6 +3,7 @@
 //
 
 #include "Configuracion.h"
+#include <list>
 
 Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
 		std::list<NivelConfiguracion*> niveles){

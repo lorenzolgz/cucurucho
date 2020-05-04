@@ -1,6 +1,7 @@
 #include "ConfiguracionParser.h"
 #include <queue>
 #include <regex>
+#include <string>
 #include "NivelConfiguracion.h"
 #include "../model/Nivel.h"
 #include "../Log.h"
@@ -11,12 +12,12 @@ Json::Value ConfiguracionParser::get(Json::Value value, std::string mensaje, boo
 	return campo;
 }
 
-void ConfiguracionParser::validarJsonNoNulo(Json::Value value, std::string mensaje) {
-	validarJsonGenerico(value.isNull(), mensaje);
+void ConfiguracionParser::validarJsonNoNulo(Json::Value value, std::string campo) {
+	validarJsonGenerico(value.isNull(), "Campo nulo: " + campo);
 }
 
-void ConfiguracionParser::validarJsonNoNegativo(Json::Value value, std::string mensaje) {
-	validarJsonGenerico(value.asInt64() < 0, mensaje);
+void ConfiguracionParser::validarJsonNoNegativo(Json::Value value, std::string campo) {
+	validarJsonGenerico(value.asInt64() < 0, "Campo negativo: " + campo);
 }
 
 void ConfiguracionParser::validarJsonGenerico(bool hayError, std::string mensaje) {
@@ -116,16 +117,12 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::V
 EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigosJson, int nivel) {
 	try {
 		Json::Value clase1Json = enemigosJson["clase1"];
-		validarJsonNoNulo(clase1Json,
-						  "No se halló la cantidad de enemigos clase 1 para el nivel " + std::to_string(nivel));
-		validarJsonNoNegativo(clase1Json, "Se halló una cantidad de enemigos clase 1 negativa para el nivel " +
-										  std::to_string(nivel));
+		validarJsonNoNulo(clase1Json, "clase1 del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(clase1Json, "clase1 del nivel " + std::to_string(nivel));
 
 		Json::Value clase2Json = enemigosJson["clase2"];
-		validarJsonNoNulo(clase2Json,
-						  "No se halló la cantidad de enemigos clase 2 para el nivel " + std::to_string(nivel));
-		validarJsonNoNegativo(clase2Json, "Se halló una cantidad de enemigos clase 2 negativa para el nivel " +
-										  std::to_string(nivel));
+		validarJsonNoNulo(clase2Json,"clase 2 del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(clase2Json, "clase1 del nivel " + std::to_string(nivel));
 
 		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64());
 	} catch (const std::exception &exc) {
@@ -225,7 +222,7 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	std::list<NivelConfiguracion*> niveles;
 
 	Json::Value configuracionJson = jsonConfig["configuracion"];
-	validarJsonNoNulo(configuracionJson, "En el Json de configuracion tiene que estar el campo 'configuracion'");
+	validarJsonNoNulo(configuracionJson, "configuracion");
 
 	parsearResolucion(configuracionJson["resolucion"], anchoPantalla, altoPantalla, escala);
 	nivelLog = parsearNivelLog(configuracionJson);

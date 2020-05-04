@@ -34,7 +34,7 @@ void ManagerNiveles::tick() {
 }
 
 bool ManagerNiveles::terminoNivelActual() {
-	nivelActual->termino();
+    return nivelActual->termino();
 }
 
 bool ManagerNiveles::estadoJuego() {

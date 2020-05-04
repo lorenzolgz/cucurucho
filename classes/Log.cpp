@@ -48,11 +48,15 @@ void Log::info(const std::string& string) {
     if ( INFO ) output(" - INFO - ", string);
 }
 
+bool Log::confValida(std::string nivel) {
+    return ERROR;
+}
+
 void Log::setConf(std::string string) {
     Log::nivel = std::move(string);
 }
 
-void Log::cargar_log( char* log, time_t timestamp, const std::string& estado, const std::string& msj){
+void Log::cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj){
     std::fstream archivo;
     archivo.open(log , std::fstream::app);
     char horario[30];

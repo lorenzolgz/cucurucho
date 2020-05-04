@@ -31,7 +31,6 @@ void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 }
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
-
     for (int i = 0; i < cantDeEnemigos; i++) {
         int posInicialX = campo->getAncho();
         int posY = std::rand() % alto;
@@ -52,7 +51,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
         SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(posXEnNivel, 0));
         // Esto se hace para que no queden parte fuera de la pantalla. Probablemente sólo para la primer entrega.
-        if (campo->getAlto() < entidad->getPosicion().getY() + entidad->getAlto() ) {
+        if (campo->getAlto() < entidad->getPosicion().getY() + entidad->getAlto()) {
             i--;
             continue;
         }
