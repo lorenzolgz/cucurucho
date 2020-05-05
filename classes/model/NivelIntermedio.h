@@ -12,8 +12,7 @@
 
 class NivelIntermedio: public Ticker {
 public:
-    NivelIntermedio(int ancho, int alto, int inicioEnEjeY);
-    FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo);
+    NivelIntermedio(int ancho, int alto, int inicioEnEjeY,const std::string &archivo);
     void tick() override;
 
 private:

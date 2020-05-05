@@ -5,12 +5,11 @@
 #include "NivelIntermedio.h"
 #include "../view/FondoVista.h"
 
-NivelIntermedio::NivelIntermedio(int ancho, int alto, int inicioEnEjeY) {
+NivelIntermedio::NivelIntermedio(int ancho, int alto, int inicioEnEjeY,const std::string &archivo) {
     NivelIntermedio::nivelIntermedioVista = new NivelIntermedioVista(ancho, alto, inicioEnEjeY);
-}
+    nivelIntermedioVista->nuevoFondo(archivo);
+    l.info("El Nivel Intermedio fue creado correctamente.");
 
-FondoVista * NivelIntermedio::nuevoFondo(const std::string &fileName, float xOffset, int yFondo) {
-    return nivelIntermedioVista->nuevoFondo(fileName, xOffset, yFondo);
 }
 
 void NivelIntermedio::tick() {

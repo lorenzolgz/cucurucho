@@ -44,8 +44,7 @@ bool ManagerNiveles::estadoJuego() {
 bool ManagerNiveles::pasajeDeNivel(){
     NivelConfiguracion* nivel = listNiveles.front();
 
-    NivelIntermedio* nivelIntermedio = new NivelIntermedio(960, 672, 96);
-    nivelIntermedio->nuevoFondo(nivel->getFinalNivel(), 0,0);
+    NivelIntermedio* nivelIntermedio = new NivelIntermedio(960, 672, 96, nivel->getFinalNivel());
     nivelIntermedio->tick();
     l.info("Transicion de niveles");
 
