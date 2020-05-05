@@ -23,9 +23,20 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
 	FondoVista::velocidadNivelX = velocidadNivelX;
 }
 
+FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) :
+    FondoVista(fileName, xOffset, y, modVelocidad, nullptr){
+}
+
+
 void FondoVista::render() {
-    SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, modVelocidad * (*velocidadNivelX), xOffset);
-    SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, modVelocidad * (*velocidadNivelX), xOffset);
+    float velocidad;
+    if (velocidadNivelX) {
+        velocidad = modVelocidad * (*velocidadNivelX);
+    } else {
+        velocidad = 0;
+    }
+    SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, velocidad, xOffset);
+    SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, velocidad, xOffset);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect1);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect2);
 }

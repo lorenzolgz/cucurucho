@@ -13,6 +13,7 @@
 class FondoVista {
 public:
     FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad, float* velocidadNivelX);
+    FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad);
     void render();
     int getY() const;
     int getWidth() const;
