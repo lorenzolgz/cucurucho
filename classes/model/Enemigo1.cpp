@@ -4,7 +4,7 @@
 #include "../Log.h"
 
 
-Enemigo1::Enemigo1(float x, float y, int velocidadX) {
+Enemigo1::Enemigo1(float x, float y, float velocidadX) {
 	Enemigo1::posicion = Vector(x, y);
 	Enemigo1::velocidadX = velocidadX; // Posición 2 de sprite
 	Enemigo1::vista = new Enemigo1Vista();

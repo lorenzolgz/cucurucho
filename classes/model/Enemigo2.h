@@ -18,7 +18,7 @@ const int ENEMIGO2_ALTO = 147;
 
 class Enemigo2 : public Entidad {
 public:
-    Enemigo2(float x, float y, int velocidadX);
+    Enemigo2(float x, float y, float velocidadX);
 
 	int getAncho() override;
 	int getAlto() override;
@@ -28,7 +28,7 @@ public:
 private:
     Vector posicion;
     float velocidadEscalar;
-    int velocidadX;
+    float velocidadX;
     Enemigo2Vista *vista;
 
     void recalcularPosicion();

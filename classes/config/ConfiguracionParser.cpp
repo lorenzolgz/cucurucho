@@ -17,7 +17,7 @@ void ConfiguracionParser::validarJsonNoNulo(Json::Value value, std::string campo
 }
 
 void ConfiguracionParser::validarJsonNoNegativo(Json::Value value, std::string campo) {
-	validarJsonGenerico(value.asInt64() < 0, "Campo negativo: " + campo);
+	validarJsonGenerico(value.asInt64() < 0 || value.asFloat() < 0, "Campo negativo: " + campo);
 }
 
 void ConfiguracionParser::validarJsonGenerico(bool hayError, std::string mensaje) {
@@ -156,9 +156,35 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fo
 	return fondosConfiguracion;
 }
 
-std::string ConfiguracionParser::parsearFinalNivel(Json::Value imagenFinalJson) {
-	std::string fondosJson = imagenFinalJson["fin"].asString();
-	return fondosJson;
+std::string ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON) {
+    std::string fondosJson = nivelJSON["fin"].asString();
+    return fondosJson;
+}
+
+float ConfiguracionParser::parsearVelocidadNivel(Json::Value nivelJSON, int nivel) {
+    try {
+        Json::Value velocidad = nivelJSON["velocidad"];
+		validarJsonNoNulo(velocidad, "velociad del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(velocidad, "velociad del nivel " + std::to_string(nivel));
+
+        return velocidad.asFloat();
+    } catch (const std::exception &exc) {
+        l.error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
+        throw exc;
+    }
+}
+
+float ConfiguracionParser::parsearLargoNivel(Json::Value nivelJSON, int nivel) {
+    try {
+        Json::Value velocidad = nivelJSON["largo"];
+		validarJsonNoNulo(velocidad, "largo del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(velocidad, "largo del nivel " + std::to_string(nivel));
+
+        return velocidad.asFloat();
+    } catch (const std::exception &exc) {
+        l.error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
+        throw exc;
+    }
 }
 
 NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int nivel) {
@@ -166,8 +192,10 @@ NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int
 		auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
 		auto fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
 		auto finNivel = parsearFinalNivel(nivelJson);
+        auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
+        auto largo = parsearLargoNivel(nivelJson, nivel);
 
-		return new NivelConfiguracion(fondos, enemigos, finNivel);
+		return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
 	} catch (const std::exception &exc) {
 		l.error("Ocurrio un error al parsear el nivel " + to_string(nivel));
 		throw exc;

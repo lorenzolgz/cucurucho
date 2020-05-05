@@ -11,17 +11,15 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
     alto = config->getAltoPantalla();
     jugador = jug;
 
-    ManagerNiveles::velocidad = VELOCIDAD_INICIAL;
     ManagerNiveles::listNiveles = config->getNiveles();
     ManagerNiveles::nivelActual = configurarNuevoNivel();
 }
 
 
-
 Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
 	jugador->setPosicion(ancho, alto);
-	Nivel *nivel = new Nivel(nivelConfActual, jugador, 1600, alto, velocidad);
+	Nivel *nivel = new Nivel(nivelConfActual, jugador);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
 
@@ -50,7 +48,6 @@ bool ManagerNiveles::pasajeDeNivel(){
 
     listNiveles.pop_front();
     if (listNiveles.empty()) return true;
-    ManagerNiveles::velocidad *= AUMENTO_VELOCIDAD_POR_NIVEL;
     nivelActual = configurarNuevoNivel();
     return false;
 }

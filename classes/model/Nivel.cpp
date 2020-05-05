@@ -7,12 +7,12 @@
 #include <iterator>
 #include <list>
 
-Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, int ancho, int alto, int velocidad) {
+Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 	Nivel::hud = new Hud();
-	Nivel::velocidad = velocidad;
-	Nivel::campo = crearCampo(nivelConfig, jugador);
-	Nivel::ancho = ancho;
-	Nivel::alto = campo->getAlto();
+	Nivel::velocidad = nivelConfig->getVelocidad();
+	Nivel::ancho = nivelConfig->getLargo();
+    Nivel::campo = crearCampo(nivelConfig, jugador);
+    Nivel::alto = campo->getAlto();
 }
 
 void Nivel::tick() {
@@ -34,16 +34,15 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     for (int i = 0; i < cantDeEnemigos; i++) {
         int posInicialX = campo->getAncho();
         int posY = std::rand() % alto;
-        // TODO acomodar esto para que se distribuya en todo el ancho del campo!!!!
-        int posXEnNivel = std::rand() % 600 + campo->getAncho();
-        int velocidadX = campo->getVelocidadX();
+        int posXEnNivel = std::rand() % ((int) ancho - posInicialX) + posInicialX;
+        float velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-            case 1: {entidad = new Enemigo1(posInicialX, posY, velocidadX);}
+            case 1: {entidad = new Enemigo1(posXEnNivel, posY, velocidadX);}
             break;
-            case 2: {entidad = new Enemigo2(posInicialX, posY, velocidadX);}
+            case 2: {entidad = new Enemigo2(posXEnNivel, posY, velocidadX);}
             break;
             // Todo después vemos
             default: {entidad = nullptr;};
@@ -63,7 +62,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
 	int inicioCampoEnEjeY = HUD_ALTO;
-	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad);
+	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
 
 	for(FondoConfiguracion* f : nivelConfig->getFondos()) {
 		campo->nuevoFondo(f->getArchivo(), 0,0, f->getVelocidad());

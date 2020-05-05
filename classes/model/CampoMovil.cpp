@@ -3,9 +3,10 @@
 #include <string>
 #include "../Log.h"
 
-CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, int velocidadNivel) {
+CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);
 	CampoMovil::velocidadX = velocidadNivel;
+	CampoMovil::largoNivel = largoNivel;
     CampoMovil::ancho = ancho;
 	CampoMovil::alto = alto;
 	CampoMovil::jugador = jugador;
@@ -37,7 +38,7 @@ Vector CampoMovil::getPosicion() {
 	return posicion;
 }
 
-int CampoMovil::getVelocidadX() {
+float CampoMovil::getVelocidadX() {
 	return velocidadX;
 }
 
@@ -50,6 +51,5 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 }
 
 bool CampoMovil::verificarPosicion() {
-    return posicion.getX() > TIEMPO_NIVEL*velocidadX;
+    return posicion.getX() > (largoNivel + ancho);
 }
-

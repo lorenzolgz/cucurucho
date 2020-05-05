@@ -10,7 +10,9 @@
             "enemigos": {
                "clase1": 2,
                "clase2": 37
-            }
+            },
+            "velocidad": 2,
+            "largo": 1600
          },
          {
             "archivoFondos": "fondos/fondos1.json",
@@ -18,7 +20,9 @@
             "enemigos": {
                "clase1": 73,
                "clase2": 2
-            }
+            },
+            "velocidad": 2,
+            "largo": 1600
          }
       ]
    }

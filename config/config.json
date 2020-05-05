@@ -8,9 +8,11 @@
             "archivoFondos": "fondos/fondos1.json",
             "fin": "cleared_con_nave1.png",
             "enemigos": {
-               "clase1": 2,
-               "clase2": 3
-            }
+               "clase1": 7,
+               "clase2": 2
+            },
+            "velocidad": 2,
+            "largo": 1600
          },
          {
             "archivoFondos": "fondos/fondos2.json",
@@ -18,7 +20,9 @@
             "enemigos": {
                "clase1": 5,
                "clase2": 2
-            }
+            },
+            "velocidad": 3,
+            "largo": 1200
          },
          {
             "archivoFondos": "fondos/fondos3.json",
@@ -26,7 +30,9 @@
             "enemigos": {
                "clase1": 4,
                "clase2": 1
-            }
+            },
+            "velocidad": 2.5,
+            "largo": 1200
          }
       ]
    }

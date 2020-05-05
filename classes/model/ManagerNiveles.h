@@ -29,7 +29,6 @@ public:
 private:
     std::list<NivelConfiguracion *> listNiveles;
     Nivel* nivelActual;
-    int velocidad;
     int alto;
     int ancho;
     Jugador* jugador;

@@ -6,7 +6,7 @@
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
-Enemigo2::Enemigo2(float x,float y, int velocidadX) {
+Enemigo2::Enemigo2(float x,float y, float velocidadX) {
 	Enemigo2::velocidadEscalar = 1;
 	Enemigo2::posicion = Vector(x, y);
 	Enemigo2::velocidadX = velocidadX;
