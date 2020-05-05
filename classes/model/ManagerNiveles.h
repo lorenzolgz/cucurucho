@@ -12,6 +12,7 @@
 #include "../config/Configuracion.h"
 #include "CampoMovil.h"
 #include "Nivel.h"
+#include "NivelIntermedio.h"
 
 #define VELOCIDAD_INICIAL 2
 #define AUMENTO_VELOCIDAD_POR_NIVEL 1.1

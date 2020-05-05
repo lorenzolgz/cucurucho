@@ -12,7 +12,6 @@ public:
 	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
 	void render(float velocidad);
 
-    void render();
 
 private:
 	SDL_Renderer* gRenderer;
