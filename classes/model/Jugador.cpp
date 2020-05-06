@@ -1,6 +1,7 @@
 #include "Jugador.h"
 #include "../Utils.h"
 #include "../Log.h"
+#include "CampoMovil.h"
 
 
 Jugador::Jugador(int x, int y) {
@@ -43,10 +44,20 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
     }
 
     velocidad = Vector(vx, vy);
-    posicion = posicion + velocidad;
+}
+
+Vector Jugador::actualizarPosicion(Vector posicionNueva) {
+	Vector posicionAnterior = posicion;
+	posicion = posicionNueva;
+
+	if (!campo->entidadEstaDentroDelCampo(this)) {
+		posicion = posicionAnterior;
+	}
 }
 
 void Jugador::tick() {
+	actualizarPosicion(posicion + Vector(velocidad.getX(), 0));
+	actualizarPosicion(posicion + Vector(0, velocidad.getY()));
 	helperAbove->tick();
 	helperBelow->tick();
 	vista->render(posicion, contadorVelocidadY);
@@ -67,4 +78,20 @@ int Jugador::getContador() const {
 
 void Jugador::setPosicion(int x, int y) {
     Jugador::posicion = Vector(x / 8, y / 2);
+}
+
+void Jugador::setCampo(CampoMovil *campo) {
+	this->campo = campo;
+}
+
+int Jugador::getAncho() {
+	return JUGADOR_ANCHO;
+}
+
+int Jugador::getAlto() {
+	return JUGADOR_ALTO;
+}
+
+Vector Jugador::getPosicion() {
+	return posicion;
 }

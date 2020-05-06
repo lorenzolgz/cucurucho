@@ -31,9 +31,11 @@ void Log::output(const std::string& estado_log, const std::string& mensaje) {
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(PATHLOG, timenow,estado_log, mensaje);
 
+    /*
     // TODO sacar que imprima en pantalla !!!!
 	auto timestamp = std::put_time(gmtime(&timenow), "%Y-%m-%d %H:%M:%S");
 	std::cout << timestamp << estado_log << mensaje << std::endl;
+     */
 }
 
 void Log::error(const std::string& string) {
