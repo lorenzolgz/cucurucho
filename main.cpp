@@ -13,6 +13,8 @@
 #include "classes/config/ConfiguracionParser.h"
 #include "classes/model/ManagerNiveles.h"
 
+#define BACKUP_CONFIG "../config/backup.json"
+
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
 
@@ -27,7 +29,7 @@ void configurar(string archivoConfig, string nivelLog) {
 		config = configuracionParser.parsearConfiguracion(archivoConfig);
 	}
 	catch (const std::exception& exc) {
-		config = configuracionParser.parsearConfiguracion("../config/backup.json");
+		config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
 
 		// Solo se loguean las excepciones que tengan un what() para poder dar mas info
 		if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
@@ -162,7 +164,7 @@ void mainLoop() {
 int main(int argc, char *argv[]) {
     std::srand(std::time(NULL)); //use current time as seed for random generator
 
-    std::string archivoConfig = "../config/config.json";
+    std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
 
     for (int i = 1; i + 1 < argc; i += 2) {
