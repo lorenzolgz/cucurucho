@@ -2,6 +2,9 @@
 #define CUCURUCHO_ENTIDAD_H
 
 
+#include "Ticker.h"
+class Ticker;
+
 class Entidad : public Ticker {
 public:
 	virtual int getAncho() = 0;

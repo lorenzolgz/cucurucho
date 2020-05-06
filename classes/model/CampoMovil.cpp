@@ -11,6 +11,8 @@ CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, 
 	CampoMovil::alto = alto;
 	CampoMovil::jugador = jugador;
 	CampoMovil::vista = new CampoVista(ancho, alto, inicioEnEjeY);
+
+	jugador->setCampo(this);
 }
 
 void CampoMovil::tick() {
@@ -47,7 +49,8 @@ void CampoMovil::agregarEntidad(Entidad *entidad) {
 }
 
 bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
-	return (entidad->getPosicion().getX() + entidad->getAncho() < ancho) && (entidad->getPosicion().getY() + entidad->getAlto() < alto);
+	return (entidad->getPosicion().getX() + entidad->getAncho() <= ancho) && (entidad->getPosicion().getY() + entidad->getAlto() <= alto) &&
+			(entidad->getPosicion().getX() >= 0) && (entidad->getPosicion().getY() >= 0);
 }
 
 bool CampoMovil::verificarPosicion() {

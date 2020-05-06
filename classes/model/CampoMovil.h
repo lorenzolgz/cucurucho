@@ -11,6 +11,7 @@
 
 class Entidad;
 class Ticker;
+class Jugador;
 
 class CampoMovil : public Ticker {
 public:

@@ -160,6 +160,15 @@ void mainLoop() {
     }
 }
 
+// !!!!
+bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
+	if (posArg + 1 >= argc || argv[posArg+1][0] == '-') {
+		std::cout << "ERROR: falto pasar un parametro para la opcion \"" + parametro + "\"" << std::endl;
+		return false;
+	}
+
+	return true;
+}
 
 int main(int argc, char *argv[]) {
     std::srand(std::time(NULL)); //use current time as seed for random generator
@@ -167,17 +176,27 @@ int main(int argc, char *argv[]) {
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
 
-    for (int i = 1; i + 1 < argc; i += 2) {
+    // TODO --help
+    for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
+        	if (!validarParametroSimple(argc, argv, "-l", i)) return -1;
             if (!l.confValida(argv[i + 1])) {
-                std::cout << "Nivel de log invalido: " + std::string(argv[i + 1]) << std::endl;
+                std::cout << "ERROR: nivel de log invalido: " + std::string(argv[i + 1]) + ". Los niveles validos son \"debug\", \"info\" y \"error\"" << std::endl;
+                return -1;
             } else {
                 nivelLog = std::string(argv[i + 1]);
             }
         } else if (strcmp(argv[i], "-c") == 0) {
-            archivoConfig = std::string(argv[i + 1]);
-        }
-    }
+			if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
+			archivoConfig = std::string(argv[i + 1]);
+		} else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
+        	std::string help = "Gley Lancer en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
+        	std::string opciones = "Opciones:\n\t-l\tSetea el nivel de log\n\t-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)";
+			std::cout << help << std::endl;
+			std::cout << opciones << std::endl;
+			return 0;
+		}
+	}
 
     configurar(archivoConfig, nivelLog);
 
