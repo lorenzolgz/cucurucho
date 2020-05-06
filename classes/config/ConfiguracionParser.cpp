@@ -117,12 +117,12 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::V
 EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigosJson, int nivel) {
 	try {
 		Json::Value clase1Json = enemigosJson["clase1"];
-		validarJsonNoNulo(clase1Json, "clase1 del nivel " + std::to_string(nivel));
-		validarJsonNoNegativo(clase1Json, "clase1 del nivel " + std::to_string(nivel));
+		validarJsonNoNulo(clase1Json, "Enemigos de clase1 del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(clase1Json, "Enemigos de clase1 del nivel " + std::to_string(nivel));
 
 		Json::Value clase2Json = enemigosJson["clase2"];
-		validarJsonNoNulo(clase2Json,"clase 2 del nivel " + std::to_string(nivel));
-		validarJsonNoNegativo(clase2Json, "clase1 del nivel " + std::to_string(nivel));
+		validarJsonNoNulo(clase2Json,"Enemigos de clase2 del nivel " + std::to_string(nivel));
+		validarJsonNoNegativo(clase2Json, "Enemigos de clase2 del nivel " + std::to_string(nivel));
 
 		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64());
 	} catch (const std::exception &exc) {
