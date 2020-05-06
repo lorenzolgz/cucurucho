@@ -16,19 +16,19 @@
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
 
-class Enemigo2 : public Entidad, public Ticker {
+class Enemigo2 : public Entidad {
 public:
-    Enemigo2(float x, float y);
+    Enemigo2(float x, float y, float velocidadX);
+
 	int getAncho() override;
 	int getAlto() override;
+	Vector getPosicion() override;
 	void tick() override;
 
 private:
     Vector posicion;
-    Vector velocidad;
     float velocidadEscalar;
-    bool velocidadX;
-
+    float velocidadX;
     Enemigo2Vista *vista;
 
     void recalcularPosicion();

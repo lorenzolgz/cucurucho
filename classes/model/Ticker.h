@@ -1,10 +1,9 @@
-//
-// Created by rodrigosouto on 20/4/20.
-//
-
 #ifndef CUCURUCHO_TICKER_H
 #define CUCURUCHO_TICKER_H
 
+
+class Vector;
+class Entidad;
 
 class Ticker {
 public:

@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) {
+FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad, float* velocidadNivelX) {
 	FondoVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	textura = generadorDeTexturas->generarTextura(fileName);
@@ -20,11 +20,23 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
 	FondoVista::x1 = 0;
 	FondoVista::x2 = (float) width;
 	FondoVista::modVelocidad = modVelocidad;
+	FondoVista::velocidadNivelX = velocidadNivelX;
 }
 
-void FondoVista::render(float velocidad) {
-    SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, modVelocidad * velocidad, xOffset);
-    SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, modVelocidad * velocidad, xOffset);
+FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) :
+    FondoVista(fileName, xOffset, y, modVelocidad, nullptr){
+}
+
+
+void FondoVista::render() {
+    float velocidad;
+    if (velocidadNivelX) {
+        velocidad = modVelocidad * (*velocidadNivelX);
+    } else {
+        velocidad = 0;
+    }
+    SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, velocidad, xOffset);
+    SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, velocidad, xOffset);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect1);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect2);
 }

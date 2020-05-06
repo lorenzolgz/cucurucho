@@ -10,7 +10,7 @@
 #include <time.h>
 #include <iomanip>
 #include <fstream>
-#include "Configuracion.h"
+#include "config/Configuracion.h"
 
 
 class Log {
@@ -28,7 +28,9 @@ public:
     void setConf(std::string string);
 
     void output(const std::string& estado_log, const std::string& mensaje);
-    static void cargar_log(char* log, time_t timestamp, const std::string& estado, const std::string& msj);
+    static void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
+
+    bool confValida(std::string nivel);
 };
 
 extern Log l;

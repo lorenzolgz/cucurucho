@@ -5,7 +5,7 @@
 #include "Log.h"
 
 #include <utility>
-#include "Configuracion.h"
+#include "config/Configuracion.h"
 
 
 #define DEBUG nivel == "debug"
@@ -30,6 +30,10 @@ void Log::output(const std::string& estado_log, const std::string& mensaje) {
 
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(PATHLOG, timenow,estado_log, mensaje);
+
+    // TODO sacar que imprima en pantalla !!!!
+	auto timestamp = std::put_time(gmtime(&timenow), "%Y-%m-%d %H:%M:%S");
+	std::cout << timestamp << estado_log << mensaje << std::endl;
 }
 
 void Log::error(const std::string& string) {
@@ -44,11 +48,15 @@ void Log::info(const std::string& string) {
     if ( INFO ) output(" - INFO - ", string);
 }
 
+bool Log::confValida(std::string nivel) {
+    return ERROR;
+}
+
 void Log::setConf(std::string string) {
     Log::nivel = std::move(string);
 }
 
-void Log::cargar_log( char* log, time_t timestamp, const std::string& estado, const std::string& msj){
+void Log::cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj){
     std::fstream archivo;
     archivo.open(log , std::fstream::app);
     char horario[30];

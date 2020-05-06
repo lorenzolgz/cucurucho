@@ -9,14 +9,21 @@
 class CampoVista {
 public:
 	CampoVista(int ancho, int alto, int inicioEnEjeY);
-	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
-	void render(float velocidad);
+//<<<<<<< HEAD
+	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad, float *velocidadMovilX);
+	void render();
+//=======
+//	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
+//	void render(float velocidad);
+//
+//>>>>>>> fc9956d7857587da90e67248d06f7121abdadf45
 
 private:
 	SDL_Renderer* gRenderer;
 	// Posicion del campo del juego en la pantalla principal
 	SDL_Rect posCampo;
 	std::list<FondoVista*> fondos;
+
 };
 
 

@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 20/4/20.
-//
-
 #ifndef CUCURUCHO_GRAPHICRENDERER_H
 #define CUCURUCHO_GRAPHICRENDERER_H
 

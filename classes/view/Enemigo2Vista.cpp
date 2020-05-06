@@ -12,9 +12,11 @@ Enemigo2Vista::Enemigo2Vista() {
     l.info("La vista del Enemigo 2 fue creada correctamente.");
 }
 
+
 void Enemigo2Vista::render(Vector posicion, int velocidadX) {
-	SDL_Rect srcrect = {0, 0 + ENEMIGO2_SRC_ALTOS * (velocidadX), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
+	SDL_Rect srcrect = {0, 0 + ENEMIGO2_SRC_ALTOS, ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
 	SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
 
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+	l.debug("Vista del Enemigo 02: "+ posicion.getVector());
 }

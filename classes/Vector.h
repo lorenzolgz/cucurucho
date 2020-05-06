@@ -4,6 +4,8 @@
 
 #ifndef CPP_SANDBOX_VECTOR_H
 #define CPP_SANDBOX_VECTOR_H
+
+
 #include <string>
 
 class Vector {

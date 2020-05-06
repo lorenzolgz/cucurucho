@@ -21,4 +21,10 @@ sudo python3 -m pip install cpplint
 ```
 
 
+### Parámetros opcionales
+Parámetros opcionales:
+- `-l`: Nivel de log (`debug`, `info` o `error`)
+- `-c`: Ruta del archivo de configuración. En el caso de no encontrarlo, se levantará un archivo de configuración por defecto.
+
+
 ![Gley Lancer](assets/screenshot.png)

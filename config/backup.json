@@ -1,17 +1,39 @@
 {
    "configuracion": {
-      "resolucion": {
-         "alto": 672,
-         "ancho": 960,
-         "escala": 1
-      },
       "log": {
-         "nivel": "debug"
+         "nivel": "error"
       },
-      "enemigos": {
-         "tipoUno": 2,
-         "tipoDos":2
-      },
-      "rutaFondos": "fondos.json"
+      "niveles": [
+         {
+            "archivoFondos": "fondos/fondos1.json",
+            "fin": "cleared_con_nave1.png",
+            "enemigos": {
+               "clase1": 7,
+               "clase2": 2
+            },
+            "velocidad": 2,
+            "largo": 1600
+         },
+         {
+            "archivoFondos": "fondos/fondos2.json",
+            "fin": "cleared_con_nave2.png",
+            "enemigos": {
+               "clase1": 5,
+               "clase2": 2
+            },
+            "velocidad": 3,
+            "largo": 1200
+         },
+         {
+            "archivoFondos": "fondos/fondos3.json",
+            "fin": "cleared_con_nave3.png",
+            "enemigos": {
+               "clase1": 4,
+               "clase2": 1
+            },
+            "velocidad": 2.5,
+            "largo": 1200
+         }
+      ]
    }
 }

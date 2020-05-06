@@ -26,10 +26,10 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
 GeneradorDeTexturas* GeneradorDeTexturas::instance=NULL;
 
 GeneradorDeTexturas* GeneradorDeTexturas::getInstance(){
-    if (instance==NULL)
-        instance = new GeneradorDeTexturas();
-    else
-        l.info("Creando instancia");
+    if (instance==NULL) {
+		instance = new GeneradorDeTexturas();
+		l.info("Creando instancia GeneradorDeTexturas");
+	}
 
     return instance;
 }
