@@ -53,6 +53,7 @@ Vector Jugador::actualizarPosicion(Vector posicionNueva) {
 	if (!campo->entidadEstaDentroDelCampo(this)) {
 		posicion = posicionAnterior;
 	}
+	return posicion;
 }
 
 void Jugador::tick() {

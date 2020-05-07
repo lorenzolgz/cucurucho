@@ -151,7 +151,7 @@ void mainLoop() {
         if (terminoNivelActual) {
 			terminoNivelActual = manager->pasajeDeNivel();
             SDL_RenderPresent(gRenderer);
-            SDL_Delay(800);
+            SDL_Delay(2000);
             quit = quit || manager->estadoJuego();
         } else {
 			quit = quit || manager->estadoJuego();
@@ -176,7 +176,6 @@ int main(int argc, char *argv[]) {
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
 
-    // TODO --help
     for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
         	if (!validarParametroSimple(argc, argv, "-l", i)) return -1;
