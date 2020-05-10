@@ -118,15 +118,18 @@ void mainLoop() {
     int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
     bool quit = false;
+    bool onStart = true;
     bool terminoNivelActual = false;
     SDL_Event e;
-
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
 
 	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
+
     while (!quit) {
+        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+
         //Handle events on queue
         while (SDL_PollEvent(&e) != 0) {
             //User requests quit
@@ -135,15 +138,36 @@ void mainLoop() {
             }
         }
 
-        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+        //Clear screen
+        SDL_RenderClear(gRenderer);
+
+        SDL_Surface* welcomeSurface = NULL;
+
+        while(onStart){
+            while (SDL_PollEvent(&e) != 0) {
+                //El usuario presiona ENTER o INTRO
+                if (currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN]) {
+                    onStart = false;
+                }
+            }
+            // Si no cargo la imagen de bienvenida, la carga
+            if(welcomeSurface == NULL) {
+                SDL_Surface* gScreenSurface = SDL_GetWindowSurface( gWindow );
+                /*
+                 * Logica para cargar la imagen de START
+                 * */
+                SDL_UpdateWindowSurface( gWindow );
+            }
+        }
+
+        SDL_RenderClear(gRenderer);
+
         jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                          currentKeyStates[SDL_SCANCODE_DOWN],
                                          currentKeyStates[SDL_SCANCODE_LEFT],
                                          currentKeyStates[SDL_SCANCODE_RIGHT]);
 
-        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
-        //Clear screen
-        SDL_RenderClear(gRenderer);
 
         //Render texture to screen
 		manager->tick();
