@@ -21,7 +21,7 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
     height = height * escala;
 	FondoVista::y = y;
 	FondoVista::xOffset = xOffset;
-	FondoVista::x1 = PANTALLA_ANCHO / 2 + (float) width / 5;
+	FondoVista::x1 = PANTALLA_ANCHO / 2 - (float) width / 2;
 	FondoVista::x2 = x1 + width;
 	FondoVista::modVelocidad = modVelocidad;
 	FondoVista::velocidadNivelX = velocidadNivelX;

@@ -12,6 +12,7 @@
 #include "classes/config/NivelConfiguracion.h"
 #include "classes/config/ConfiguracionParser.h"
 #include "classes/model/ManagerNiveles.h"
+#include "classes/model/Titulo.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -89,6 +90,7 @@ bool init() {
 	GraphicRenderer::setInstance(gRenderer);
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND); // Para activar alpha/opacidad
 	SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
 	l.info("La ventana se creo correctamente");
@@ -118,11 +120,11 @@ void mainLoop() {
     int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
     bool quit = false;
-    bool onStart = true;
     bool terminoNivelActual = false;
     SDL_Event e;
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
+    Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 
 	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
@@ -142,26 +144,14 @@ void mainLoop() {
         //Clear screen
         SDL_RenderClear(gRenderer);
 
-        SDL_Surface* welcomeSurface = NULL;
+        // El usuario presiona ENTER o INTRO o ESPACIO
+        bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
-        while(onStart){
-            while (SDL_PollEvent(&e) != 0) {
-                //El usuario presiona ENTER o INTRO
-                if (currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN]) {
-                    onStart = false;
-                }
-            }
-            // Si no cargo la imagen de bienvenida, la carga
-            if(welcomeSurface == NULL) {
-                SDL_Surface* gScreenSurface = SDL_GetWindowSurface( gWindow );
-                /*
-                 * Logica para cargar la imagen de START
-                 * */
-                SDL_UpdateWindowSurface( gWindow );
-            }
+        if (!pantallaPrincipal->isActivada(onStart)) {
+            pantallaPrincipal->tick();
+            SDL_RenderPresent(gRenderer);
+            continue;
         }
-
-        SDL_RenderClear(gRenderer);
 
         jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                          currentKeyStates[SDL_SCANCODE_DOWN],
@@ -202,7 +192,9 @@ int main(int argc, char *argv[]) {
 
     for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
-        	if (!validarParametroSimple(argc, argv, "-l", i)) return -1;
+        	if (!validarParametroSimple(argc, argv, "-l", i)) {
+                return -1;
+            }
             if (!l.confValida(argv[i + 1])) {
                 std::cout << "ERROR: nivel de log invalido: " + std::string(argv[i + 1]) + ". Los niveles validos son \"debug\", \"info\" y \"error\"" << std::endl;
                 return -1;

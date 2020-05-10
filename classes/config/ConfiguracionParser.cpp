@@ -2,6 +2,7 @@
 #include <queue>
 #include <regex>
 #include <string>
+#include <list>
 #include "NivelConfiguracion.h"
 #include "../model/Nivel.h"
 #include "../Log.h"

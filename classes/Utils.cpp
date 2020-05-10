@@ -6,9 +6,6 @@
 #include "Utils.h"
 
 
-#define PI 3.14159265358979323846
-
-
 double cos_d(double angulo_d) {
     return cos(to_r(angulo_d));
 }

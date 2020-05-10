@@ -34,7 +34,13 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     for (int i = 0; i < cantDeEnemigos; i++) {
         int posInicialX = campo->getAncho();
         int posY = std::rand() % alto;
-        int posXEnNivel = std::rand() % ((int) ancho - posInicialX) + posInicialX;
+
+        int rangoEnemigos = (int) ancho - posInicialX;
+        if (rangoEnemigos <= 0) {
+            l.info("Ancho de pantalla mas grande que largo del nivel");
+            rangoEnemigos = ancho;
+        }
+        int posXEnNivel = std::rand() % rangoEnemigos + posInicialX;
         float velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
@@ -68,7 +74,7 @@ CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador)
 		campo->nuevoFondo(f->getArchivo(), 0,0, f->getVelocidad());
 	}
 
-	l.info("Se creo correctamente el nivel 1 (Parallax)");
+	l.info("Se creo correctamente el nivel (Parallax)");
 	return campo;
 }
 

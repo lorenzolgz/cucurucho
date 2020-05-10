@@ -20,7 +20,7 @@ void HudVista::render(Vector posicion) {
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
-    for (TextoView & c : textos){
+    for (TextoVista & c : textos){
         c.render();
     }
 }
