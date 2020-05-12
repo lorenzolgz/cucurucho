@@ -11,6 +11,7 @@ pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
 
 include_directories(${SDL2_INCLUDE_DIRS})
+link_libraries(stdc++fs)
 
 
 # CPPLINT
