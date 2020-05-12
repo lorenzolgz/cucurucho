@@ -42,7 +42,6 @@ void configurar(string archivoConfig, string nivelLog) {
 	if (nivelLog.empty()) {
 	    nivelLog = config->getNivelLog();
 	}
-	std::cout << nivelLog << std::endl;
 	l.setConf(nivelLog);
 
     l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
