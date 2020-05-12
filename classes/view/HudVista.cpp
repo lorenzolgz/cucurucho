@@ -2,6 +2,7 @@
 #include "../Utils.h"
 #include "../GeneradorDeTexturas.h"
 #include "../GraphicRenderer.h"
+#include "../model/Nivel.h"
 #include <string>
 
 
@@ -12,14 +13,14 @@ HudVista::HudVista() {
 }
 
 void HudVista::render(Vector posicion) {
-	SDL_Rect hudrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
+    SDL_Rect hudrect = {(PANTALLA_ANCHO - HUD_ANCHO) / 2, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderSetViewport(gRenderer, &hudrect);
 
 	SDL_Rect srcrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
-    for (TextoView & c : textos){
+    for (TextoVista & c : textos){
         c.render();
     }
 }

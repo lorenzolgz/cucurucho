@@ -11,16 +11,22 @@
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"
 #define ERROR INFO or nivel == "error"
-#define PATHLOGTIME "../log/log-%d%m%y-%H%M%S.txt"
+#define PATHLOGTIME "../log/log-%d%m%y%H%M.txt"
 #define PATHLOG "../log/log.txt"
+#define PATH "../log"
 
+namespace fs = std::experimental::filesystem;
 
 Log::Log() {
-    nivel = "error";
+
+    if (!fs::is_directory(PATH) || !fs::exists(PATH)) { // Check if src folder exists
+        fs::create_directory(PATH); // create src folder
+    }
 
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::strftime(Log::logEntrada, 30, PATHLOGTIME , std::localtime(&t));
     std::fstream archivo;
+    archivo.open(logEntrada , std::fstream::out);
     archivo.open(PATHLOG , std::fstream::out);
 }
 
@@ -30,10 +36,6 @@ void Log::output(const std::string& estado_log, const std::string& mensaje) {
 
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(PATHLOG, timenow,estado_log, mensaje);
-
-    // TODO sacar que imprima en pantalla !!!!
-	auto timestamp = std::put_time(gmtime(&timenow), "%Y-%m-%d %H:%M:%S");
-	std::cout << timestamp << estado_log << mensaje << std::endl;
 }
 
 void Log::error(const std::string& string) {

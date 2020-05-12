@@ -4,6 +4,7 @@
 
 #include "NivelIntermedioVista.h"
 #include "../GraphicRenderer.h"
+#include <string>
 
 NivelIntermedioVista::NivelIntermedioVista(int ancho, int alto, int inicioEnEjeY) {
     NivelIntermedioVista::gRenderer = GraphicRenderer::getInstance();

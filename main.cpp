@@ -12,6 +12,7 @@
 #include "classes/config/NivelConfiguracion.h"
 #include "classes/config/ConfiguracionParser.h"
 #include "classes/model/ManagerNiveles.h"
+#include "classes/model/Titulo.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -89,6 +90,7 @@ bool init() {
 	GraphicRenderer::setInstance(gRenderer);
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND); // Para activar alpha/opacidad
 	SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
 	l.info("La ventana se creo correctamente");
@@ -120,13 +122,16 @@ void mainLoop() {
     bool quit = false;
     bool terminoNivelActual = false;
     SDL_Event e;
-
 	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
+    Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 
 	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
+
     while (!quit) {
+        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+
         //Handle events on queue
         while (SDL_PollEvent(&e) != 0) {
             //User requests quit
@@ -135,15 +140,24 @@ void mainLoop() {
             }
         }
 
-        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+        //Clear screen
+        SDL_RenderClear(gRenderer);
+
+        // El usuario presiona ENTER o INTRO o ESPACIO
+        bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
+
+        if (!pantallaPrincipal->isActivada(onStart)) {
+            pantallaPrincipal->tick();
+            SDL_RenderPresent(gRenderer);
+            continue;
+        }
+
         jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                          currentKeyStates[SDL_SCANCODE_DOWN],
                                          currentKeyStates[SDL_SCANCODE_LEFT],
                                          currentKeyStates[SDL_SCANCODE_RIGHT]);
 
-        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
-        //Clear screen
-        SDL_RenderClear(gRenderer);
 
         //Render texture to screen
 		manager->tick();
@@ -151,7 +165,7 @@ void mainLoop() {
         if (terminoNivelActual) {
 			terminoNivelActual = manager->pasajeDeNivel();
             SDL_RenderPresent(gRenderer);
-            SDL_Delay(800);
+            SDL_Delay(2000);
             quit = quit || manager->estadoJuego();
         } else {
 			quit = quit || manager->estadoJuego();
@@ -160,6 +174,15 @@ void mainLoop() {
     }
 }
 
+// !!!!
+bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
+	if (posArg + 1 >= argc || argv[posArg+1][0] == '-') {
+		std::cout << "ERROR: falto pasar un parametro para la opcion \"" + parametro + "\"" << std::endl;
+		return false;
+	}
+
+	return true;
+}
 
 int main(int argc, char *argv[]) {
     std::srand(std::time(NULL)); //use current time as seed for random generator
@@ -167,17 +190,28 @@ int main(int argc, char *argv[]) {
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
 
-    for (int i = 1; i + 1 < argc; i += 2) {
+    for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
+        	if (!validarParametroSimple(argc, argv, "-l", i)) {
+                return -1;
+            }
             if (!l.confValida(argv[i + 1])) {
-                std::cout << "Nivel de log invalido: " + std::string(argv[i + 1]) << std::endl;
+                std::cout << "ERROR: nivel de log invalido: " + std::string(argv[i + 1]) + ". Los niveles validos son \"debug\", \"info\" y \"error\"" << std::endl;
+                return -1;
             } else {
                 nivelLog = std::string(argv[i + 1]);
             }
         } else if (strcmp(argv[i], "-c") == 0) {
-            archivoConfig = std::string(argv[i + 1]);
-        }
-    }
+			if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
+			archivoConfig = std::string(argv[i + 1]);
+		} else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
+        	std::string help = "Gley Lancer en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
+        	std::string opciones = "Opciones:\n\t-l\tSetea el nivel de log\n\t-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)";
+			std::cout << help << std::endl;
+			std::cout << opciones << std::endl;
+			return 0;
+		}
+	}
 
     configurar(archivoConfig, nivelLog);
 

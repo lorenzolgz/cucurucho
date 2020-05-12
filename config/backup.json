@@ -1,15 +1,15 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error"
+         "nivel": "debug"
       },
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",
             "fin": "cleared_con_nave1.png",
             "enemigos": {
-               "clase1": 7,
-               "clase2": 2
+               "clase1": 5,
+               "clase2": 1
             },
             "velocidad": 2,
             "largo": 1600

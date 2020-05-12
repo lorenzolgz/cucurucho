@@ -5,6 +5,7 @@
 #include "FondoVista.h"
 #include "../GraphicRenderer.h"
 #include "../GeneradorDeTexturas.h"
+#include "../model/Nivel.h"
 #include <iostream>
 
 
@@ -15,10 +16,13 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
 
 	// Busca el ancho y alto de la imagen cargada
     SDL_QueryTexture(textura, nullptr, nullptr, &width, &height);
+    float escala = (float) (PANTALLA_ALTO - HUD_ALTO) / height;
+    width = width * escala;
+    height = height * escala;
 	FondoVista::y = y;
 	FondoVista::xOffset = xOffset;
-	FondoVista::x1 = 0;
-	FondoVista::x2 = (float) width;
+	FondoVista::x1 = PANTALLA_ANCHO / 2 - (float) width / 2;
+	FondoVista::x2 = x1 + width;
 	FondoVista::modVelocidad = modVelocidad;
 	FondoVista::velocidadNivelX = velocidadNivelX;
 }

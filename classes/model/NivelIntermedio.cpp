@@ -9,7 +9,6 @@ NivelIntermedio::NivelIntermedio(int ancho, int alto, int inicioEnEjeY,const std
     NivelIntermedio::nivelIntermedioVista = new NivelIntermedioVista(ancho, alto, inicioEnEjeY);
     nivelIntermedioVista->nuevoFondo(archivo);
     l.info("El Nivel Intermedio fue creado correctamente.");
-
 }
 
 void NivelIntermedio::tick() {

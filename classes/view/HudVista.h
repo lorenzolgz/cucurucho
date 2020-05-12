@@ -5,7 +5,7 @@
 #include <SDL_render.h>
 #include <vector>
 #include "../Vector.h"
-#include "TextoView.h"
+#include "TextoVista.h"
 
 const int HUD_SRC_ANCHO = 960;
 const int HUD_SRC_ALTO = 96;
@@ -19,7 +19,7 @@ public:
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
-	std::vector<TextoView> textos;
+	std::vector<TextoVista> textos;
 };
 
 
