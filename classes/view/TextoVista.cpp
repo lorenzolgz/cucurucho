@@ -11,13 +11,23 @@ const int LETRA_ANCHO = 24;
 const int ASCII_OFFSET = 32;
 
 
-TextoVista::TextoVista(std::string &texto, Vector posicion, const int color, int alineacion) {
-    TextoVista::texto = texto;
+TextoVista::TextoVista(std::string nuevoTexto, Vector posicion, const int color, int alineacion) {
+	TextoVista::texto = new std::string;
+    *texto = nuevoTexto;
     TextoVista::posicion = posicion;
     TextoVista::color = color;
     TextoVista::alineacion = alineacion;
     TextoVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("font.png");
     TextoVista::gRenderer = GraphicRenderer::getInstance();
+}
+
+TextoVista::TextoVista(std::string* nuevoTexto, Vector posicion, const int color, int alineacion) {
+	TextoVista::texto = nuevoTexto;
+	TextoVista::posicion = posicion;
+	TextoVista::color = color;
+	TextoVista::alineacion = alineacion;
+	TextoVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("font.png");
+	TextoVista::gRenderer = GraphicRenderer::getInstance();
 }
 
 void TextoVista::renderLetra(char c, int pos, int size) {
@@ -31,19 +41,19 @@ void TextoVista::renderLetra(char c, int pos, int size) {
 }
 
 void TextoVista::render() {
-    if (alineacion != ALINEACION_DERECHA) {
-        for (int i = 0; i < texto.size(); i++){
-            renderLetra(texto[i], i, texto.size());
+	if (alineacion != ALINEACION_DERECHA) {
+        for (int i = 0; i < texto->size(); i++){
+            renderLetra((*texto)[i], i, texto->size());
         }
     } else {
-        for (int i = texto.size(); i > 0; i--){
-            renderLetra(texto[i - 1], i - texto.size(), texto.size());
+        for (int i = texto->size(); i > 0; i--){
+            renderLetra((*texto)[i - 1], i - texto->size(), texto->size());
         }
     }
 }
 
 void TextoVista::setTexto(const string &texto) {
-    TextoVista::texto = texto;
+    // TextoVista::*texto = texto;
 }
 
 void TextoVista::eRender(std::string texto, Vector posicion, const int color, int alineacion) {

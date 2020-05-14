@@ -20,11 +20,15 @@ void HudVista::render(Vector posicion) {
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
-    for (TextoVista & c : textos){
-        c.render();
+    for (TextoVista* c : textos){
+        c->render();
     }
 }
 
-void HudVista::nuevoTexto(basic_string<char> texto, Vector posicion, int color, bool alineacionIzq) {
-    textos.emplace_back(texto, posicion, color, alineacionIzq);
+void HudVista::nuevoTexto(std::string texto, Vector posicion, int color, bool alineacionIzq) {
+	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
+}
+
+void HudVista::nuevoTextoVariable(std::string* texto, Vector posicion, int color, bool alineacionIzq) {
+	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
 }

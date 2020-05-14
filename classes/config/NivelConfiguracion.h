@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 2/5/20.
-//
-
 #ifndef CUCURUCHO_NIVELCONFIGURACION_H
 #define CUCURUCHO_NIVELCONFIGURACION_H
 

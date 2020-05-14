@@ -174,7 +174,6 @@ void mainLoop() {
     }
 }
 
-// !!!!
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
 	if (posArg + 1 >= argc || argv[posArg+1][0] == '-') {
 		std::cout << "ERROR: falto pasar un parametro para la opcion \"" + parametro + "\"" << std::endl;

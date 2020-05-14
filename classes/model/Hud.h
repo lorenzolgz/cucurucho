@@ -16,11 +16,15 @@ const int HUD_ALTO = 96;
 class Hud {
 public:
     Hud();
-    void tick();
+
+	void actualizarHI(int posEnNivel);
+	void tick();
 
 private:
 	Vector posicion;
 	HudVista* vista;
+	std::string* hi;
+	HudVista* crearVista();
 };
 
 

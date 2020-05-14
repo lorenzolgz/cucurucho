@@ -17,6 +17,7 @@ Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 
 void Nivel::tick() {
     campo->tick();
+	hud->actualizarHI(campo->getPosicion().getX());
 	hud->tick();
 	plantarSemillasEnCampo();
 }
