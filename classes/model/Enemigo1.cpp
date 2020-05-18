@@ -2,9 +2,14 @@
 #include <SDL_image.h>
 #include "../Utils.h"
 #include "../Log.h"
+#include "Nivel.h"
 
 
 Enemigo1::Enemigo1(float x, float y, float velocidadX) {
+    if (random() % 2 == 0) {
+        x = -x + PANTALLA_ANCHO - ENEMIGO1_ANCHO;
+        velocidadX *= -1;
+    }
 	Enemigo1::posicion = Vector(x, y);
 	Enemigo1::velocidadX = velocidadX; // Posición 2 de sprite
 	Enemigo1::vista = new Enemigo1Vista();
