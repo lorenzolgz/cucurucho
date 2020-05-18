@@ -30,14 +30,25 @@ void configurar(string archivoConfig, string nivelLog) {
 		config = configuracionParser.parsearConfiguracion(archivoConfig);
 	}
 	catch (const std::exception& exc) {
-		config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        // Primero aviso que no se pudo usar el original antes de seguir con el backup
+	    l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
 
-		// Solo se loguean las excepciones que tengan un what() para poder dar mas info
-		if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
-			l.error(exc.what());
-		}
-		l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
-	}
+        // Solo se loguean las excepciones que tengan un what() para poder dar mas info
+        if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
+            l.error(exc.what());
+        }
+        // Ahoro intento con el backup
+        try {
+            config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        }
+        // Si el backup tampoco sirve, ya no puedo inicializar el juego
+        catch (const std::exception& exc) {
+            l.error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
+            // Throw exception corta por completo la ejecucion del codigo
+            throw exc;
+        }
+
+    }
 
 	if (nivelLog.empty()) {
 	    nivelLog = config->getNivelLog();
