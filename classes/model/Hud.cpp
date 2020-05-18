@@ -36,5 +36,5 @@ void Hud::tick() {
 }
 
 void Hud::actualizarHI(int posEnNivel) {
-	 *hi = to_string(posEnNivel);
+//	 *hi = to_string(posEnNivel);
 }
