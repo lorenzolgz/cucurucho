@@ -120,7 +120,7 @@ void close() {
 	//Free Configuration
 	delete(config);
 
-	l.info("Se libero toda la memoria ( todo:( )");
+	l.info("Se libero toda la memoria");
 	//Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();
