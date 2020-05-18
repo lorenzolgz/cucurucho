@@ -19,12 +19,11 @@ const int ALINEACION_CENTRO = 2;
 
 class TextoVista {
 public:
-	TextoVista(std::string texto, Vector posicion, const int color, int alineacion);
 	TextoVista(std::string* texto, Vector posicion, const int color, int alineacion);
 	static void eRender(std::string texto, Vector posicion, const int color, int alineacion);
     void render();
 
-    void setTexto(const std::string &texto);
+    void setTexto(const std::string texto);
 
 private:
     std::string* texto;

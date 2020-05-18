@@ -74,7 +74,7 @@ bool init() {
 		return false;
 	}
 
-	gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+	gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 							   anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
 		l.error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());

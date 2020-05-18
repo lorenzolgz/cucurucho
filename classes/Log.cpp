@@ -11,7 +11,7 @@
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"
 #define ERROR INFO or nivel == "error"
-#define PATHLOGTIME "../log/log-%d%m%y%H%M.txt"
+#define PATHLOGTIME "../log/log-%y%m%d-%H%M.txt"
 #define PATHLOG "../log/log.txt"
 #define PATH "../log"
 

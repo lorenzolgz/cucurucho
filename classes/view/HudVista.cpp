@@ -25,10 +25,6 @@ void HudVista::render(Vector posicion) {
     }
 }
 
-void HudVista::nuevoTexto(std::string texto, Vector posicion, int color, bool alineacionIzq) {
-	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
-}
-
-void HudVista::nuevoTextoVariable(std::string* texto, Vector posicion, int color, bool alineacionIzq) {
+void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq) {
 	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
 }
