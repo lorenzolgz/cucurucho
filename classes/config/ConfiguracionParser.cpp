@@ -191,7 +191,25 @@ float ConfiguracionParser::parsearLargoNivel(Json::Value nivelJSON, int nivel) {
 NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int nivel) {
 	try {
 		auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
-		auto fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
+
+        /* ################ COMIENZO INTERVENCION
+
+          Agregar try catch para fondos similar a la que hay en el archivo original
+
+          try {
+        */       auto fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
+        /*        }
+                catch(Json::Exception const& a){
+                    // Acomodo el mensaje de la libreria para que quede de una sola linea
+                    const std::string mensaje(a.what());
+                    std::regex caracterIgnorado("\n+");
+                    auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+                    l.error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente");
+                    l.error("Referencia de la libreria: " + mensajeUnaLinea);
+                    throw std::exception();
+                }
+         ################ FIN INTERVENCION */
+
 		auto finNivel = parsearFinalNivel(nivelJson);
         auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
         auto largo = parsearLargoNivel(nivelJson, nivel);
