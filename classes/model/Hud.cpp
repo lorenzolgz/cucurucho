@@ -9,7 +9,7 @@ Hud::Hud() {
 	*hi = to_string(10000);
 	vista = crearVista();
 
-    l.info("Se creo correctamente el HUD.");
+    l->info("Se creo correctamente el HUD.");
 }
 
 HudVista* Hud::crearVista() {

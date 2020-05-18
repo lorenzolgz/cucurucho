@@ -11,7 +11,7 @@
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"
 #define ERROR INFO or nivel == "error"
-#define PATHLOGTIME "../log/log-%y%m%d-%H%M.txt"
+#define PATHLOGTIME "../log/log-%y%m%d-%H%M%S.txt"
 #define PATHLOG "../log/log.txt"
 #define PATH "../log"
 
@@ -27,7 +27,9 @@ Log::Log() {
     std::strftime(Log::logEntrada, 30, PATHLOGTIME , std::localtime(&t));
     std::fstream archivo;
     archivo.open(logEntrada , std::fstream::out);
+    archivo.close();
     archivo.open(PATHLOG , std::fstream::out);
+    archivo.close();
 }
 
 
@@ -64,5 +66,6 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     char horario[30];
     std::strftime(horario, 30, "%x %X" , std::localtime(&timestamp));
     archivo << horario << estado << msj << std::endl;
+    archivo.flush();
     archivo.close();
 }

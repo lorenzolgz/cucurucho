@@ -30,10 +30,10 @@ public:
     void output(const std::string& estado_log, const std::string& mensaje);
     static void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
 
-    bool confValida(std::string nivel);
+    static bool confValida(std::string nivel);
 };
 
-extern Log l;
+extern Log* l;
 
 
 #endif //CUCURUCHO_LOG_H

@@ -23,7 +23,7 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
 
-	l.info("Nuevo nivel creado");
+	l->info("Nuevo nivel creado");
 	return nivel;
 }
 
@@ -44,7 +44,7 @@ bool ManagerNiveles::pasajeDeNivel(){
 
     NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
     nivelIntermedio->tick();
-    l.info("Transicion de niveles");
+    l->info("Transicion de niveles");
 
     listNiveles.pop_front();
     if (listNiveles.empty()) return true;

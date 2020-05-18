@@ -6,7 +6,7 @@
 CampoVista::CampoVista(int ancho, int alto, int inicioEnEjeY) {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();
 	CampoVista::posCampo = { 0, inicioEnEjeY, ancho, alto };
-	l.info("La vista del Campo fue creada correctamente.");
+	l->info("La vista del Campo fue creada correctamente.");
 }
 
 FondoVista * CampoVista::nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad, float* velocidadMovilX) {

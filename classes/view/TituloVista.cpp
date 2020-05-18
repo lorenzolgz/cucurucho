@@ -66,7 +66,7 @@ void TituloVista::nuevaParticula() {
     Vector velocidad = Vector(velocidadEscalar * cos(angulo), velocidadEscalar * sin(angulo));
     auto* particula = new TituloParticula(Vector(ancho / 2, alto / 2), velocidad);
     particulas.insert(particula);
-    l.debug("Insertando nueva particula con velocidad " + velocidad.getVector());
+    l->debug("Insertando nueva particula con velocidad " + velocidad.getVector());
 }
 
 void TituloVista::renderParticulas() {
@@ -75,7 +75,7 @@ void TituloVista::renderParticulas() {
     for (auto it = particulas.begin(); it != particulas.end(); ) {
         (*it)->render(gRenderer, texturaParticulas);
         if ((*it)->fueraDePantalla(ancho, alto)) {
-            l.debug("Eliminando particula en posicion " + (*it)->getPosicion().getVector());
+            l->debug("Eliminando particula en posicion " + (*it)->getPosicion().getVector());
             it = particulas.erase(it);
         } else {
             ++it;

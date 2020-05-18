@@ -13,7 +13,7 @@ Enemigo1::Enemigo1(float x, float y, float velocidadX) {
 	Enemigo1::posicion = Vector(x, y);
 	Enemigo1::velocidadX = velocidadX; // Posición 2 de sprite
 	Enemigo1::vista = new Enemigo1Vista();
-    l.info("Se creo correctamente el Enemigo 01.");
+    l->info("Se creo correctamente el Enemigo 01.");
 }
 
 int Enemigo1::getAncho() {
@@ -27,7 +27,7 @@ int Enemigo1::getAlto() {
 void Enemigo1::tick() {
 	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
 	vista->render(posicion, velocidadX);
-    l.debug("Posicion del Enemigo 01: "+ posicion.getVector());
+    l->debug("Posicion del Enemigo 01: "+ posicion.getVector());
 }
 
 Vector Enemigo1::getPosicion() {
