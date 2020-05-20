@@ -9,7 +9,7 @@
 NivelIntermedioVista::NivelIntermedioVista(int ancho, int alto, int inicioEnEjeY) {
     NivelIntermedioVista::gRenderer = GraphicRenderer::getInstance();
     NivelIntermedioVista::posCampo = { 0, inicioEnEjeY, ancho, alto };
-    l.info("La vista del Nivel Intermedio fue creada correctamente.");
+    l->info("La vista del Nivel Intermedio fue creada correctamente.");
 }
 
 FondoVista* NivelIntermedioVista::nuevoFondo(const std::string &fileName) {

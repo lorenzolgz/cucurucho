@@ -14,12 +14,12 @@ class HudVista {
 public:
 	HudVista();
 	void render(Vector posicion);
-    void nuevoTexto(std::basic_string<char> texto, Vector posicion, int color, bool alineacionIzq);
+	void nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
-	std::vector<TextoVista> textos;
+	std::vector<TextoVista*> textos;
 };
 
 

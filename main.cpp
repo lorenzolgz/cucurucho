@@ -21,33 +21,45 @@ SDL_Window* gWindow = nullptr;
 
 Configuracion* config;
 
-Log l = Log();
+Log* l;
 
 
 void configurar(string archivoConfig, string nivelLog) {
 	ConfiguracionParser configuracionParser;
+    l = new Log();
 	try {
 		config = configuracionParser.parsearConfiguracion(archivoConfig);
 	}
 	catch (const std::exception& exc) {
-		config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        // Primero aviso que no se pudo usar el original antes de seguir con el backup
+	    l->error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
 
-		// Solo se loguean las excepciones que tengan un what() para poder dar mas info
-		if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
-			l.error(exc.what());
-		}
-		l.error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
-	}
+        // Solo se loguean las excepciones que tengan un what() para poder dar mas info
+        if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
+            l->error(exc.what());
+        }
+        // Ahoro intento con el backup
+        try {
+            config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        }
+        // Si el backup tampoco sirve, ya no puedo inicializar el juego
+        catch (const std::exception& exc) {
+            l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
+            // Throw exception corta por completo la ejecucion del codigo
+            throw exc;
+        }
+
+    }
 
 	if (nivelLog.empty()) {
 	    nivelLog = config->getNivelLog();
 	}
-	l.setConf(nivelLog);
+	l->setConf(nivelLog);
 
-    l.info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
-    l.info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
-    l.info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
-    l.info("Nivel de Log: " + nivelLog);
+    l->info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
+    l->info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
+    l->info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
+    l->info("Nivel de Log: " + nivelLog);
 }
 
 
@@ -58,33 +70,33 @@ bool init() {
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		l.error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
+		l->error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
 		return false;
 	}
 
 	// Set texture filtering to linear
 	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 	{
-		l.debug("No se habilito el filro de la textura linear");
+		l->debug("No se habilito el filro de la textura linear");
 	}
 
 	//Initialize SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG))) {
-		l.error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
+		l->error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
 		return false;
 	}
 
-	gWindow = SDL_CreateWindow("cpp sandbox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+	gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 							   anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
-		l.error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
+		l->error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
 		return false;
 	}
 	//Get window surface
 
 	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (gRenderer == nullptr) {
-		l.error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
+		l->error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
 		return false;
 	}
 	GraphicRenderer::setInstance(gRenderer);
@@ -93,7 +105,7 @@ bool init() {
     SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND); // Para activar alpha/opacidad
 	SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
 
-	l.info("La ventana se creo correctamente");
+	l->info("La ventana se creo correctamente");
 	return true;
 }
 
@@ -109,11 +121,11 @@ void close() {
 	//Free Configuration
 	delete(config);
 
-	l.info("Se libero toda la memoria ( todo:( )");
+	l->info("Se libero toda la memoria");
 	//Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();
-	l.info("La ventana se cerro correctamente");
+	l->info("La ventana se cerro correctamente");
 }
 
 void mainLoop() {
@@ -126,7 +138,7 @@ void mainLoop() {
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 
-	l.info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
+	l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
 
     while (!quit) {
@@ -174,7 +186,6 @@ void mainLoop() {
     }
 }
 
-// !!!!
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
 	if (posArg + 1 >= argc || argv[posArg+1][0] == '-') {
 		std::cout << "ERROR: falto pasar un parametro para la opcion \"" + parametro + "\"" << std::endl;
@@ -195,7 +206,7 @@ int main(int argc, char *argv[]) {
         	if (!validarParametroSimple(argc, argv, "-l", i)) {
                 return -1;
             }
-            if (!l.confValida(argv[i + 1])) {
+            if (!Log::confValida(argv[i + 1])) {
                 std::cout << "ERROR: nivel de log invalido: " + std::string(argv[i + 1]) + ". Los niveles validos son \"debug\", \"info\" y \"error\"" << std::endl;
                 return -1;
             } else {

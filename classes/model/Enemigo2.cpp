@@ -2,16 +2,21 @@
 #include <SDL_image.h>
 #include "../Utils.h"
 #include "../Log.h"
+#include "Nivel.h"
 
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX) {
+    if (random() % 2 == 0) {
+        x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
+        velocidadX *= -1;
+    }
 	Enemigo2::velocidadEscalar = 1;
 	Enemigo2::posicion = Vector(x, y);
 	Enemigo2::velocidadX = velocidadX;
 	Enemigo2::vista = new Enemigo2Vista();
-    l.info("Se creo correctamente el Enemigo 02.");
+    l->info("Se creo correctamente el Enemigo 02.");
 }
 
 int Enemigo2::getAncho() {
@@ -25,7 +30,7 @@ int Enemigo2::getAlto() {
 void Enemigo2::tick() {
 	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
 	vista->render(posicion, velocidadX);
-	l.debug("Posicion del Enemigo 02: "+ posicion.getVector());
+	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 void Enemigo2::recalcularPosicion() {

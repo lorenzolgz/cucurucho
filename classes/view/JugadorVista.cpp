@@ -9,7 +9,7 @@ JugadorVista::JugadorVista() {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;
-	l.info("La vista del jugador fue creada correctamente.");
+	l->info("La vista del jugador fue creada correctamente.");
 }
 
 void JugadorVista::render(Vector posicion, int contadorVelocidadY) {

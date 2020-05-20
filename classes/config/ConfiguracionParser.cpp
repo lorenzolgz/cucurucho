@@ -23,7 +23,7 @@ void ConfiguracionParser::validarJsonNoNegativo(Json::Value value, std::string c
 
 void ConfiguracionParser::validarJsonGenerico(bool hayError, std::string mensaje) {
 	if (hayError) {
-		l.error(mensaje);
+		l->error(mensaje);
 		throw std::exception();
 	}
 }
@@ -32,17 +32,17 @@ std::string parsearNivelLog(Json::Value root) {
 	try {
 		std::string nivelLog = root["log"]["nivel"].asString();
 		if (!nivelLog.compare("")){
-			l.error("No se hayó un nivel de log");
+			l->error("No se hayó un nivel de log");
 			throw std::exception();
 		}
 		if (nivelLog.compare("error") && nivelLog.compare("info") && nivelLog.compare("debug")){
-			l.error("Se intento setear un nivel de log invalido. Los valores validos son 'debug', 'info' o 'error'");
+			l->error("Se intento setear un nivel de log invalido. Los valores validos son 'debug', 'info' o 'error'");
 			throw std::exception();
 		}
 		return nivelLog;
 	}
 	catch(const std::exception& exc) {
-		l.error("Ocurrio un error al obtener el nivel de logging");
+		l->error("Ocurrio un error al obtener el nivel de logging");
 		throw exc;
 	}
 }
@@ -59,32 +59,32 @@ void parsearResolucion(const Json::Value &root, int &anchoPantalla, int &altoPan
 		escala = resolucionJson["escala"].asInt64();
 
 		if (!altoPantalla) {
-			l.error("No se halló un alto de pantalla");
+			l->error("No se halló un alto de pantalla");
 			throw std::exception();
 		}
 		if (altoPantalla < 100) {
-			l.error("Se intento setear un tamaño de pantalla muy pequeño");
+			l->error("Se intento setear un tamaño de pantalla muy pequeño");
 			throw std::exception();
 		}
 		if (!anchoPantalla){
-			l.error("No se halló un ancho de pantalla");
+			l->error("No se halló un ancho de pantalla");
 			throw std::exception();
 		}
 		if (anchoPantalla < 100){
-			l.error("Intento setearse un ancho de pantalla muy pequeño");
+			l->error("Intento setearse un ancho de pantalla muy pequeño");
 			throw std::exception();
 		}
 		if (!escala){
-			l.error("No se halló una escala de pantalla");
+			l->error("No se halló una escala de pantalla");
 			throw std::exception();
 		}
 		if (escala < 0){
-			l.error("Intento setearse una escala de pantalla negativa");
+			l->error("Intento setearse una escala de pantalla negativa");
 			throw std::exception();
 		}
 	}
 	catch(const std::exception& exc) {
-		l.error("Ocurrio un error al cargar la resolucion de pantalla");
+		l->error("Ocurrio un error al cargar la resolucion de pantalla");
 		throw exc;
 	}
 }
@@ -95,22 +95,33 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::V
 
 		std::string rutaRelativa = jsonConfig.asString();
 		if (!rutaRelativa.compare("")) {
-			l.error("No se halló una ruta para el archivo de fondos");
+			l->error("No se halló una ruta para el archivo de fondos");
 			throw std::exception();
 		}
 		std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
 		std::ifstream archivo(rutaFondos);
 		if (archivo.fail()) {
-			l.error(rutaFondos += " no direcciona a un archivo JSON de fondos");
+			l->error(rutaFondos += " no direcciona a un archivo JSON de fondos");
 			throw std::exception();
 		}
 
 		Json::Value jsonFondos;
-		archivo >> jsonFondos;
+
+		//Validación de sintaxis de json de fondos
+		try {
+		    archivo >> jsonFondos;
+		}
+        catch(Json::Exception const& a){
+            const std::string mensaje(a.what());
+            std::regex caracterIgnorado("\n+");
+            auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+            l->error("Referencia de la libreria: " + mensajeUnaLinea);
+            throw a;
+        }
 
 		return parsearFondos(jsonFondos, nivel);
 	} catch (const std::exception &exc) {
-		l.error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
+		l->error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
 		throw exc;
 	}
 }
@@ -127,7 +138,7 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 
 		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64());
 	} catch (const std::exception &exc) {
-		l.error("Ocurrio un error al parsear las cantidades de enemigos para el nivel " + to_string(nivel));
+		l->error("Ocurrio un error al parsear las cantidades de enemigos para el nivel " + to_string(nivel));
 		throw exc;
 	}
 }
@@ -139,7 +150,7 @@ FondoConfiguracion* ConfiguracionParser::parsearFondo(Json::Value fondoJson, int
 
 		return new FondoConfiguracion(archivo, velocidad);
 	} catch (const std::exception &exc) {
-		l.error("Ocurrio un error al parsear uno de los fondos del nivel " + to_string(nivel) +
+		l->error("Ocurrio un error al parsear uno de los fondos del nivel " + to_string(nivel) +
 		". Probablemente uno de los valores pasados no fue un entero");
 		throw exc;
 	}
@@ -170,7 +181,7 @@ float ConfiguracionParser::parsearVelocidadNivel(Json::Value nivelJSON, int nive
 
         return velocidad.asFloat();
     } catch (const std::exception &exc) {
-        l.error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
+        l->error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
         throw exc;
     }
 }
@@ -183,23 +194,35 @@ float ConfiguracionParser::parsearLargoNivel(Json::Value nivelJSON, int nivel) {
 
         return velocidad.asFloat();
     } catch (const std::exception &exc) {
-        l.error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
+        l->error("Ocurrio un error al parsear la velocidad para el nivel nivel " + to_string(nivel));
         throw exc;
     }
 }
 
 NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int nivel) {
 	try {
-		auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
-		auto fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
-		auto finNivel = parsearFinalNivel(nivelJson);
-        auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
-        auto largo = parsearLargoNivel(nivelJson, nivel);
+		    auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
+            std::list<FondoConfiguracion*> fondos;
 
-		return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
-	} catch (const std::exception &exc) {
-		l.error("Ocurrio un error al parsear el nivel " + to_string(nivel));
-		throw exc;
+            //Validación de jsons de fondos
+            try {
+                 fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
+            }
+            catch(const std::exception &exc){
+                std::string rutaJsonFondos = nivelJson["archivoFondos"].asString();
+                l->error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonFondos + "\" por favor revise que este escrito correctamente");
+                throw exc;
+            }
+
+		    auto finNivel = parsearFinalNivel(nivelJson);
+            auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
+            auto largo = parsearLargoNivel(nivelJson, nivel);
+
+	    	return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
+	    }
+	catch(const std::exception &exc) {
+	        l->error("Ocurrio un error al parsear el nivel " + to_string(nivel));
+	        throw exc;
 	}
 }
 
@@ -216,7 +239,7 @@ std::list<NivelConfiguracion*> ConfiguracionParser::parsearNiveles(Json::Value n
 
 		return nivelesConfiguracion;
 	} catch (const std::exception &exc) {
-		l.error("Error al parsear niveles");
+		l->error("Error al parsear niveles");
 		throw exc;
 	}
 }
@@ -225,7 +248,7 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	Json::Value jsonConfig;
 	std::ifstream archivo(rutaJsonConfig);
 	if (archivo.fail()){
-		l.error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
+		l->error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
 		throw std::exception();
 	}
 
@@ -237,8 +260,8 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 		const std::string mensaje(a.what());
 		std::regex caracterIgnorado("\n+");
 		auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
-		l.error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente");
-		l.error("Referencia de la libreria: " + mensajeUnaLinea);
+		l->error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente");
+		l->error("Referencia de la libreria: " + mensajeUnaLinea);
 		throw std::exception();
 	}
 

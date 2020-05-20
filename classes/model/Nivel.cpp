@@ -17,6 +17,7 @@ Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 
 void Nivel::tick() {
     campo->tick();
+	hud->actualizarHI(campo->getPosicion().getX());
 	hud->tick();
 	plantarSemillasEnCampo();
 }
@@ -37,7 +38,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
         int rangoEnemigos = (int) ancho - posInicialX;
         if (rangoEnemigos <= 0) {
-            l.info("Ancho de pantalla mas grande que largo del nivel");
+            l->info("Ancho de pantalla mas grande que largo del nivel");
             rangoEnemigos = ancho;
         }
         int posXEnNivel = std::rand() % rangoEnemigos + posInicialX;
@@ -74,7 +75,7 @@ CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador)
 		campo->nuevoFondo(f->getArchivo(), 0,0, f->getVelocidad());
 	}
 
-	l.info("Se creo correctamente el nivel (Parallax)");
+	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;
 }
 
