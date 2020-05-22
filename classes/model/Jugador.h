@@ -22,7 +22,7 @@ const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador : public Entidad {
 public:
-	Jugador(int x, int y);
+    Jugador(int x, int y, ColoresJugador colores);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 

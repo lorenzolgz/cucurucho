@@ -27,7 +27,7 @@ const int HELPER_ALTO = 48;
 
 class Helper {
 public:
-    Helper(Jugador* jugador, Vector posRelativa);
+    Helper(Jugador* jugador, Vector posRelativa, ColoresJugador colores);
     void tick();
 
 private:

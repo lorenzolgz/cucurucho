@@ -4,16 +4,16 @@
 #include "CampoMovil.h"
 
 
-Jugador::Jugador(int x, int y) {
+Jugador::Jugador(int x, int y, ColoresJugador colores) {
 	Jugador::velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
 	Jugador::contadorVelocidadY = 0;
 
-	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO), colores);
+	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2), colores);
 
-	Jugador::vista = new JugadorVista();
+    Jugador::vista = new JugadorVista(std::move(colores));
     l->info("Se creo correctamente el Jugador.");
 }
 

@@ -134,7 +134,7 @@ void mainLoop() {
     bool quit = false;
     bool terminoNivelActual = false;
     SDL_Event e;
-	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
+	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2, COLORES_AZUL);
 	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 

@@ -17,18 +17,21 @@ const int HELPER_SRC_ALTO = 48;
 
 class HelperVista {
 public:
-	HelperVista(Jugador* jugador);
+	HelperVista(Jugador *jugador, ColoresJugador coloresJugador);
 	void render(Vector posicion, double angulo, std::deque<Vector> recorrido);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+    SDL_Texture *texturaBall;
 
 	Jugador* jugador;
 
 	void renderGlow(Vector posicion, std::deque<Vector> recorrido);
 	void renderBall(Vector posicion);
 	void renderHelper(Vector posicion, double angulo);
+
+    ColoresJugador colores = ColoresJugador({}, {});
 };
 
 

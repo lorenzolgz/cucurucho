@@ -6,7 +6,7 @@
 #include "Helper.h"
 #include "../Utils.h"
 
-Helper::Helper(Jugador* jugador, Vector posRelativa) {
+Helper::Helper(Jugador* jugador, Vector posRelativa, ColoresJugador colores) {
     Helper::jugador = jugador;
     Helper::posRelativa = posRelativa;
     Helper::posicion = posRelativa + jugador->getPosicion();
@@ -14,7 +14,7 @@ Helper::Helper(Jugador* jugador, Vector posRelativa) {
     Helper::velAngular = HELPER_VEL_ANGULAR;
     Helper::aceleracion = HELPER_ACELERACION;
     Helper::angulo = 0;
-	Helper::vista = new HelperVista(jugador);
+	Helper::vista = new HelperVista(jugador, colores);
 	for (int i = 0; i < 19; i++) {
         recorrido.push_front(posicion);
     }

@@ -4,11 +4,12 @@
 #include "../GeneradorDeTexturas.h"
 #include "../GraphicRenderer.h"
 
-JugadorVista::JugadorVista() {
+JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;
+    JugadorVista::colores = colores;
 	l->info("La vista del jugador fue creada correctamente.");
 }
 
@@ -22,37 +23,29 @@ void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
 						JUGADOR_SRC_ALTO};
 
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+    colorShip(srcrect, dstrect);
 
 	colorGlow();
-
 	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 			   0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-
     SDL_SetTextureColorMod(textura, 255, 255, 255);
 }
 
+
+void JugadorVista::colorShip(SDL_Rect srcrect, SDL_Rect dstrect) {
+    for (auto & i : colores.base) {
+        srcrect.y += JUGADOR_SRC_ALTO;
+        SDL_SetTextureColorMod(textura, i[0], i[1], i[2]);
+        SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+    }
+}
+
+
 void JugadorVista::colorGlow() {
 	contador++;
-
-	Uint8 COLORES[16][3] = {{206, 160, 239},
-							{173, 138, 239},
-							{140, 101, 239},
-							{99, 69, 239},
-							{66, 32, 239},
-							{33, 0, 206},
-							{33, 0, 173},
-							{0, 0, 140},
-							{0, 0, 99},
-							{0, 0, 140},
-							{33, 0, 173},
-							{33, 0, 206},
-							{66, 32, 239},
-							{99, 69, 239},
-							{140, 101, 239},
-							{173, 138, 239}};
-
-	SDL_SetTextureColorMod(textura, COLORES[contador % 16][0], COLORES[contador % 16][1], COLORES[contador % 16][2]);
+    std::array<int, 3> color = colores.getColorGlow(contador);
+	SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
 }
 
 int JugadorVista::getContador() const {
