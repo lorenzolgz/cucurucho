@@ -4,15 +4,15 @@
 #include <queue>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "classes/model/Jugador.h"
-#include "classes/Log.h"
-#include "classes/config/Configuracion.h"
-#include "classes/GraphicRenderer.h"
-#include "classes/model/Nivel.h"
-#include "classes/config/NivelConfiguracion.h"
-#include "classes/config/ConfiguracionParser.h"
-#include "classes/model/ManagerNiveles.h"
-#include "classes/model/Titulo.h"
+#include "../classes/model/Jugador.h"
+#include "../classes/Log.h"
+#include "../classes/config/Configuracion.h"
+#include "../classes/GraphicRenderer.h"
+#include "../classes/model/Nivel.h"
+#include "../classes/config/NivelConfiguracion.h"
+#include "../classes/config/ConfiguracionParser.h"
+#include "../classes/model/ManagerNiveles.h"
+#include "../classes/model/Titulo.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
