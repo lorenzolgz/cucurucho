@@ -149,8 +149,11 @@ void mainLoop() {
 	// !!!!
 	//------------------------
 	// BEGIN socket configuration
+	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	struct Comando client_command;
+	// IMPORTANTE!!! El nombre es enañoso, no es solo un booleano, tambien deberia ser el numero del nivel.
+	int nuevoNivel = 1;
 	char* ip_address = "127.0.0.1";
 	int port = 3040;
 
@@ -202,7 +205,14 @@ void mainLoop() {
 		// printf("Send data: action = \n");
 		//--------------------
 		// Receive data (view)
-		estadoTick = conexionCliente->recibirMensaje();
+		if (nuevoNivel) {
+			l->info("Nuevo nivel recibido: " + std::to_string(nuevoNivel));
+			informacionNivel = conexionCliente->recibirInformacionNivel();
+			nuevoNivel = 0;
+		} else {
+			estadoTick = conexionCliente->recibirEstadoTick();
+			nuevoNivel = estadoTick.nuevoNivel;
+		}
 		// printf("Incomming data: pos(X,Y) = (%d,%d)\n\n", estadoTick.posicionX, estadoTick.posicionY);
 		// END sockets messaging
 		// --------------------------
@@ -244,6 +254,8 @@ void mainLoop() {
 			SDL_RenderPresent(gRenderer);
 		}
     }
+
+	conexionCliente->cerrarConexion();
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {

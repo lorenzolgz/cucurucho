@@ -7,7 +7,7 @@
 #include "Jugador.h"
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
-#include "../states/EstadoCampoMovil.h"
+#include "../states/EstadoInternoCampoMovil.h"
 
 class Entidad;
 class Ticker;
@@ -26,7 +26,7 @@ public:
 	void tick() override;
 
 	bool verificarPosicion();
-	EstadoCampoMovil state();
+	EstadoInternoCampoMovil state();
 
 
 private:

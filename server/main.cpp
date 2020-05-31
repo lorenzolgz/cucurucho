@@ -12,7 +12,7 @@
 Log* l;
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida* partida, struct Comando action, struct EstadoTick* estadoTick);
+void processData(Partida* partida, struct Comando action, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick);
 int mainLoop(int puerto, Configuracion* configuracion);
 Configuracion* parsearConfiguracion();
 
@@ -58,6 +58,7 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	bool quit = false;
 	struct Comando client_command;
+	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	clock_t t2, t1 = clock();
 
@@ -66,6 +67,9 @@ int mainLoop(int puerto, Configuracion* config) {
 	int commands_count = 0;
 	int status = 0;
 	initializeData(&estadoTick);
+
+	// Comunicacion inicial.
+	int nuevoNivel = 1;
 
 	//keep communicating with client
 	while (!quit) {
@@ -86,11 +90,21 @@ int mainLoop(int puerto, Configuracion* config) {
 		//--------------------
 
 		// Process model
-		processData(partida, client_command, &estadoTick);
+		processData(partida, client_command, &informacionNivel, &estadoTick);
 		//--------------------
 
+		if (nuevoNivel) {
+			l->info("Enviando nuevo nivel:" + std::to_string(nuevoNivel));
+		}
+
 		// Send data (view)
-		coneccionServidor->enviarMensaje(&estadoTick);
+		if (nuevoNivel) {
+			coneccionServidor->enviarInformacionNivel(&informacionNivel);
+			nuevoNivel = false;
+		} else {
+			coneccionServidor->enviarEstadoTick(&estadoTick);
+			nuevoNivel = estadoTick.nuevoNivel;
+		}
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
 		//--------------------
 
@@ -105,9 +119,16 @@ int mainLoop(int puerto, Configuracion* config) {
 	return status;
 }
 
-void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick) {
+void processData(Partida* partida, struct Comando command, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick) {
 	partida->tick(command);
-	EstadoCampoMovil estadoCampoMovil = partida->state();
+	EstadoInternoNivel estadoInternoNivel = partida->state();
+
+	// Seteando informacionNivel
+	informacionNivel->muchaData = estadoInternoNivel.nuevoNivel;
+
+	// Seteando estadoTick
+	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->estadoJugador = estadoCampoMovil.estadoJugador;
 	int i = 0;
 	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {

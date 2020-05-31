@@ -4,6 +4,7 @@
 #include "Enemigo1.h"
 #include "Jugador.h"
 #include "../../../commons/utils/Log.h"
+#include "../states/EstadoInternoNivel.h"
 #include <queue>
 #include <iterator>
 #include <list>
@@ -24,7 +25,12 @@ void Nivel::tick() {
 }
 
 bool Nivel::termino() {
-	return campo->verificarPosicion();
+	bool verificacionPosicion = campo->verificarPosicion();
+	if (verificacionPosicion) {
+		l->debug("Termina el nivel? Evidentemente si.");
+	}
+
+	return verificacionPosicion;
 }
 
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
@@ -90,16 +96,14 @@ void Nivel::plantarSemillasEnCampo() {
 			nuevasSemillasEntidades.push_back(semillaEntidad);
 		} else {
 			Entidad* entidad = semillaEntidad->getEntidad();
-			// !!!! esto es pa quilombo
-			l->error("!!!! 1");
+			// !!!! este casteo es pa quilombo
 			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
-			l->error("!!!! 2");
 		}
 	}
 
 	semillasEntidades = nuevasSemillasEntidades;
 }
 
-EstadoCampoMovil Nivel::state() {
+EstadoInternoCampoMovil Nivel::state() {
 	return campo->state();
 }

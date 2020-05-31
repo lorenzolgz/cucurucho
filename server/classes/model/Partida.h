@@ -9,9 +9,10 @@ public:
 	Partida(Configuracion* config);
 
 	void tick(struct Comando command);
-	EstadoCampoMovil state();
+	EstadoInternoNivel state();
 
 private:
+	int nuevoNivel;
 	Jugador* jugador;
 	ManagerNiveles* managerNiveles;
 };

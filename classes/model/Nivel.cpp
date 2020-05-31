@@ -25,7 +25,12 @@ void Nivel::tick() {
 }
 
 bool Nivel::termino() {
-	return campo->verificarPosicion();
+	bool verificacionPosicion = campo->verificarPosicion();
+	if (verificacionPosicion) {
+		l->debug("Termina el nivel? Evidentemente si.");
+	}
+
+	return verificacionPosicion;
 }
 
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {

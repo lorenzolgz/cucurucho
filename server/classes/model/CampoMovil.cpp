@@ -51,15 +51,15 @@ bool CampoMovil::verificarPosicion() {
     return posicion.getX() > (largoNivel + ancho);
 }
 
-EstadoCampoMovil CampoMovil::state() {
+EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
 
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
 		estadosEnemigos.push_back(entidadEnemigo->state());
 	}
 
-	// EstadoCampoMovil* estadoCampoMovil ;= new EstadoCampoMovil(jugador->state(), estadosEnemigos)
-	EstadoCampoMovil estadoCampoMovil;
+	// EstadoInternoCampoMovil* estadoCampoMovil ;= new EstadoInternoCampoMovil(jugador->state(), estadosEnemigos)
+	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadoJugador = jugador->state();
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
 
