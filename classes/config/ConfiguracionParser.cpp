@@ -5,7 +5,6 @@
 #include <list>
 #include "NivelConfiguracion.h"
 #include "../model/Nivel.h"
-#include "../Log.h"
 
 Json::Value ConfiguracionParser::get(Json::Value value, std::string mensaje, bool requerido) {
 	Json::Value campo = value["mensaje"];

@@ -8,7 +8,7 @@
 
 #include <array>
 #include <deque>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 #include "Jugador.h"
 #include "../view/HelperVista.h"
 #include "../GeneradorDeTexturas.h"

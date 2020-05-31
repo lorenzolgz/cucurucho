@@ -1,7 +1,7 @@
 #include <string>
 #include "CampoVista.h"
 #include "../GraphicRenderer.h"
-#include "../Log.h"
+#include "../../commons/utils/Log.h"
 
 CampoVista::CampoVista(int ancho, int alto, int inicioEnEjeY) {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();

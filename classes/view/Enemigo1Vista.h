@@ -3,7 +3,7 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 
 const int ENEMIGO1_SRC_ANCHO = 66;
 const int ENEMIGO1_SRC_ALTO = 66;

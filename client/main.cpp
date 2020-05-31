@@ -4,15 +4,20 @@
 #include <queue>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "classes/model/Jugador.h"
-#include "classes/Log.h"
-#include "classes/config/Configuracion.h"
-#include "classes/GraphicRenderer.h"
-#include "classes/model/Nivel.h"
-#include "classes/config/NivelConfiguracion.h"
-#include "classes/config/ConfiguracionParser.h"
-#include "classes/model/ManagerNiveles.h"
-#include "classes/model/Titulo.h"
+#include "../classes/model/Jugador.h"
+#include "../classes/model/Nivel.h"
+#include "../classes/config/ConfiguracionParser.h"
+#include "../classes/model/ManagerNiveles.h"
+#include "../classes/model/Titulo.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include "../commons/protocols/protocolo.h"
+#include "../commons/connections/ConexionCliente.h"
+#include "../commons/connections/IniciadorComunicacion.h"
+
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -23,10 +28,66 @@ Configuracion* config;
 
 Log* l;
 
+// !!!!
+// --------------
+// BEGIN socket setup
+int posJugadorX = 0;
+int posJugadorY = 0;
+
+
+int sendData(int* client_socket, struct Command* client_command) {
+
+	int total_bytes_written = 0;
+	int bytes_written = 0;
+	int send_data_size = sizeof(struct Command);
+	bool client_socket_still_open = true;
+
+	while ((send_data_size > total_bytes_written) && client_socket_still_open) {
+		bytes_written = send(*client_socket, (client_command + total_bytes_written),
+							 (send_data_size - total_bytes_written), MSG_NOSIGNAL);
+
+		if (bytes_written < 0) { // Error
+			return bytes_written;
+		} else if (bytes_written == 0) { // Socket closed
+			client_socket_still_open = false;
+		} else {
+			total_bytes_written += bytes_written;
+		}
+	}
+
+	return 0;
+}
+
+int receiveData(int* client_socket, struct View* client_view) {
+
+	int total_bytes_receive = 0;
+	int bytes_receive = 0;
+	int receive_data_size = sizeof(struct View);
+	bool client_socket_still_open = true;
+
+	while ((receive_data_size > bytes_receive) && client_socket_still_open) {
+		bytes_receive = recv(*client_socket, (client_view + total_bytes_receive),
+							 (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
+
+		if (bytes_receive < 0) { // Error
+			return bytes_receive;
+		} else if (bytes_receive == 0) { // Socket closed
+			client_socket_still_open = false;
+		} else {
+			total_bytes_receive += bytes_receive;
+		}
+	}
+
+	return 0;
+}
+
+// END socket setup
+// --------------
+
 
 void configurar(string archivoConfig, string nivelLog) {
 	ConfiguracionParser configuracionParser;
-    l = new Log();
+    l = new Log("client");
 	try {
 		config = configuracionParser.parsearConfiguracion(archivoConfig);
 	}
@@ -110,7 +171,7 @@ bool init() {
 }
 
 
-void close() {
+void closeSDL() {
 	//Deallocate textures
 	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
 	SDL_DestroyRenderer(gRenderer);
@@ -140,8 +201,21 @@ void mainLoop() {
 
 	l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
+	// !!!!
+	//------------------------
+	// BEGIN socket configuration
+	struct View client_view;
+	struct Command client_command;
+	char* ip_address = "127.0.0.1";
+	int port = 3040;
 
-    while (!quit) {
+	//IniciadorComunicacion* iniciadorComunicacion =  new IniciadorComunicacion(ip_address, port);
+	//ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
+	// END socket configuration
+	//------------------------
+
+	while (!quit) {
+
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
         //Handle events on queue
@@ -157,6 +231,8 @@ void mainLoop() {
         SDL_RenderClear(gRenderer);
 
         // El usuario presiona ENTER o INTRO o ESPACIO
+        // !!!! saque la pantalla de inicio
+        /*
         bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
         if (!pantallaPrincipal->isActivada(onStart)) {
@@ -164,8 +240,31 @@ void mainLoop() {
             SDL_RenderPresent(gRenderer);
             continue;
         }
+         */
 
-        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
+
+        /*
+		// --------------------------
+		// !!!!
+		// BEGIN sockets messaging
+		//keep communicating with server
+		client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
+		client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
+		client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
+		client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+		// Send data (command)
+		conexionCliente->enviarMensaje(&client_command);
+		printf("Send data: action = \n");
+		//--------------------
+		// Receive data (view)
+		!!!! client_view = conexionCliente->recibirMensaje();
+		printf("Incomming data: pos(X,Y) = (%d,%d)\n\n", client_view.positionX, client_view.positionY);
+		posJugadorX = client_view.positionX;
+		posJugadorY = client_view.positionY;
+		// END sockets messaging
+		// --------------------------
+         */
+		jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
                                          currentKeyStates[SDL_SCANCODE_DOWN],
                                          currentKeyStates[SDL_SCANCODE_LEFT],
                                          currentKeyStates[SDL_SCANCODE_RIGHT]);
@@ -232,6 +331,6 @@ int main(int argc, char *argv[]) {
 	// Comienza el juego con la configuracion
 	mainLoop();
 
-	close();
+	closeSDL();
 	return 0;
 }

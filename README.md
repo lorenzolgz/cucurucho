@@ -26,5 +26,24 @@ Parámetros opcionales:
 - `-l`: Nivel de log (`debug`, `info` o `error`)
 - `-c`: Ruta del archivo de configuración. En el caso de no encontrarlo, se levantará un archivo de configuración por defecto.
 
+### Compilar proyecto
+```sh
+# Desde el root del proyecto:
+cmake --build ./cmake-build-debug --target all -- -j 8
+```
+
+### Correr cliente
+```sh
+# Desde el root del proyecto:
+cd cmake-build-debug 
+./cliente
+```
+
+### Correr servidor
+```sh
+# Desde el root del proyecto:
+cd cmake-build-debug
+./servidor
+```
 
 ![Gley Lancer](assets/screenshot.png)

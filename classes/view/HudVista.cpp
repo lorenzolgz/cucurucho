@@ -1,5 +1,5 @@
 #include "HudVista.h"
-#include "../Utils.h"
+#include "../../commons/utils/Utils.h"
 #include "../GeneradorDeTexturas.h"
 #include "../GraphicRenderer.h"
 #include "../model/Nivel.h"

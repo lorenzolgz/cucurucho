@@ -4,7 +4,7 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 #include "../view/Enemigo1Vista.h"
 #include "../GeneradorDeTexturas.h"
 #include "Ticker.h"

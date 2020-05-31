@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "CampoMovil.h"
 #include <string>
-#include "../Log.h"
+#include "../../commons/utils/Log.h"
 
 CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);

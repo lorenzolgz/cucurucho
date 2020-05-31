@@ -6,7 +6,7 @@
 #define CUCURUCHO_NIVELINTERMEDIOVISTA_H
 
 #include <SDL_render.h>
-#include "../Log.h"
+#include "../../commons/utils/Log.h"
 #include "FondoVista.h"
 
 class NivelIntermedioVista {

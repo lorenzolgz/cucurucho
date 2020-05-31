@@ -1,6 +1,6 @@
 #include "Jugador.h"
-#include "../Utils.h"
-#include "../Log.h"
+#include "../../commons/utils/Utils.h"
+#include "../../commons/utils/Log.h"
 #include "CampoMovil.h"
 
 

@@ -1,3 +1,5 @@
 /cmake-build-debug/
 /.idea/
 /log/
+/client/log/
+/server/log/

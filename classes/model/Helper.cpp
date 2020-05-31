@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "Helper.h"
-#include "../Utils.h"
+#include "../../commons/utils/Utils.h"
 
 Helper::Helper(Jugador* jugador, Vector posRelativa, ColoresJugador colores) {
     Helper::jugador = jugador;

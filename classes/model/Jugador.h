@@ -4,7 +4,7 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 #include "../view/JugadorVista.h"
 #include "../GeneradorDeTexturas.h"
 #include "Helper.h"

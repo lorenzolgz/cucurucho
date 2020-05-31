@@ -4,7 +4,7 @@
 #include "../model/Jugador.h"
 #include <array>
 #include <deque>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 
 class Jugador;
 
