@@ -1,5 +1,5 @@
 #include "HelperVista.h"
-#include "../Utils.h"
+#include "../../commons/utils/Utils.h"
 #include "../GraphicRenderer.h"
 
 
@@ -59,8 +59,6 @@ void HelperVista::renderBall(Vector posicion) {
     SDL_RenderCopy(gRenderer, texturaBall, &ballsrc, &balldst);
     SDL_SetTextureColorMod(texturaBall, 255, 255, 255);
 }
-
-
 
 void HelperVista::renderHelper(Vector posicion, double angulo) {
 	int renderPosX = (int) posicion.getX() - HELPER_BALL_SRC_RADIO + (int) (cos_d(angulo) * HELPER_SRC_DISTANCIA);

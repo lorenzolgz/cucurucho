@@ -1,0 +1,33 @@
+{
+   "configuracion": {
+      "log": {
+         "nivel": "debug"
+      },
+      "niveles": [
+         {
+            "enemigos": {
+               "clase1": 5,
+               "clase2": 1
+            },
+            "velocidad": 2,
+            "largo": 1600
+         },
+         {
+            "enemigos": {
+               "clase1": 5,
+               "clase2": 2
+            },
+            "velocidad": 3,
+            "largo": 1200
+         },
+         {
+            "enemigos": {
+               "clase1": 4,
+               "clase2": 1
+            },
+            "velocidad": 2.5,
+            "largo": 1200
+         }
+      ]
+   }
+}

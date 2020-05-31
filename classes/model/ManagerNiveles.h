@@ -25,6 +25,7 @@ public:
     bool estadoJuego();
     bool pasajeDeNivel();
 	bool terminoNivelActual();
+	void setEstado(std::list<EstadoEnemigo> estadosEnemigos);
 
 private:
     std::list<NivelConfiguracion *> listNiveles;

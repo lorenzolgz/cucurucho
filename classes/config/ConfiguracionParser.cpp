@@ -5,7 +5,6 @@
 #include <list>
 #include "NivelConfiguracion.h"
 #include "../model/Nivel.h"
-#include "../Log.h"
 
 Json::Value ConfiguracionParser::get(Json::Value value, std::string mensaje, bool requerido) {
 	Json::Value campo = value["mensaje"];
@@ -101,7 +100,7 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::V
 		std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
 		std::ifstream archivo(rutaFondos);
 		if (archivo.fail()) {
-			l->error(rutaFondos += " no direcciona a un archivo JSON de fondos");
+			l->error(rutaFondos += " no direcciona estadosEnemigos un archivo JSON de fondos");
 			throw std::exception();
 		}
 
@@ -248,7 +247,7 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	Json::Value jsonConfig;
 	std::ifstream archivo(rutaJsonConfig);
 	if (archivo.fail()){
-		l->error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
+		l->error(rutaJsonConfig +=  " no direcciona estadosEnemigos un archivo JSON de configuracion");
 		throw std::exception();
 	}
 

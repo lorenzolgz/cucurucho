@@ -2,7 +2,7 @@
 #define CUCURUCHO_SEMILLAENTIDAD_H
 
 
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 
 class Entidad;
 

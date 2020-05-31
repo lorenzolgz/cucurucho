@@ -25,11 +25,12 @@ public:
 	FondoVista *nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
 	bool entidadEstaDentroDelCampo(Entidad* entidad);
 	void tick() override;
-
+	void setEstadosEnemigos(std::list<EstadoEnemigo> estadosEnemigos);
 	bool verificarPosicion();
 
 
 private:
+	std::list<EstadoEnemigo> estadosEnemigos;
 	int ancho;
 	int alto;
 	Vector posicion;
@@ -37,7 +38,7 @@ private:
     float largoNivel;
     Jugador* jugador;
     CampoVista* vista;
-	std::list<Entidad*> entidades;
+	std::list<Entidad*> entidadesEnemigos;
 };
 
 

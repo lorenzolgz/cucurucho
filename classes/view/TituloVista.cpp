@@ -3,9 +3,9 @@
 //
 
 #include "TituloVista.h"
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
 #include "../GeneradorDeTexturas.h"
-#include "../Utils.h"
+#include "../../commons/utils/Utils.h"
 #include "TextoVista.h"
 #include "../model/Titulo.h"
 #include <string>

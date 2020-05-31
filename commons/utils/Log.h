@@ -10,16 +10,17 @@
 #include <time.h>
 #include <iomanip>
 #include <fstream>
-#include "config/Configuracion.h"
+#include "../../classes/config/Configuracion.h"
 #include <experimental/filesystem>
 
 class Log {
 private:
+	std::string homePath;
     std::string nivel = "error";
     char logEntrada [30]{};
 
 public:
-    Log();
+    Log(std::string basePath);
 
     void error(const std::string& string);
     void debug(const std::string& string);

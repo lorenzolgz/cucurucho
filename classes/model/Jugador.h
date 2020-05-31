@@ -4,7 +4,8 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../commons/utils/Vector.h"
+#include "../../commons/protocols/protocolo.h"
 #include "../view/JugadorVista.h"
 #include "../GeneradorDeTexturas.h"
 #include "Helper.h"
@@ -20,37 +21,18 @@ const int JUGADOR_ALTO = 48;
 
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
-class Jugador : public Entidad {
+class Jugador {
 public:
-    Jugador(int x, int y, ColoresJugador colores);
-	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
+    Jugador(ColoresJugador colores);
 	void tick();
-
-	int getAncho() override;
-
-	int getAlto() override;
-
-	Vector getPosicion() override;
-
-	const Vector &getPosicion() const;
-    const Vector getVelocidad() const;
     int getContador() const;
-    void setPosicion(int x, int y);
-    void setCampo(CampoMovil* campo);
+    void setEstado(struct EstadoJugador estado);
 
 private:
-    Vector posicion;
-    Vector velocidad;
-    double velocidadEscalar;
-    int contadorVelocidadY;
-
-	CampoMovil* campo;
+	struct EstadoJugador estado;
 	Helper* helperAbove;
 	Helper* helperBelow;
-
 	JugadorVista *vista;
-
-	Vector actualizarPosicion(Vector posicionNueva);
 };
 
 
