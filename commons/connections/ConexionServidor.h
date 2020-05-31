@@ -10,13 +10,15 @@ public:
 	ConexionServidor(int client_socket);
 
 	struct Comando recibirMensaje();
-	void enviarMensaje(struct EstadoTick* estadoTick);
+	void enviarEstadoTick(struct EstadoTick* estadoTick);
+	void enviarInformacionNivel(struct InformacionNivel* header);
 	void cerrarConexion();
 
 private:
 	int client_socket;
-	int receiveData(int* client_socket, struct Comando* client_command);
-	int sendData(int* client_socket, struct EstadoTick* estadoTick);
+	int receiveData(int* client_socket, struct Comando* comando);
+	int sendDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
+	int sendDataInformacionNivel(int* client_socket, InformacionNivel *estadoTick);
 };
 
 

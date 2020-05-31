@@ -9,13 +9,15 @@ class ConexionCliente {
 public:
 	ConexionCliente(int client_socket);
 
-	struct EstadoTick recibirMensaje();
+	struct EstadoTick recibirEstadoTick();
+	struct InformacionNivel recibirInformacionNivel();
 	void enviarMensaje(struct Comando* comando);
 	void cerrarConexion();
 
 private:
 	int client_socket;
-	int receiveData(int* client_socket, struct EstadoTick* estadoTick);
+	int receiveDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
+	int receiveInformacionNivel(int* client_socket, struct InformacionNivel* header);
 	int sendData(int* client_socket, struct Comando* client_command);
 };
 

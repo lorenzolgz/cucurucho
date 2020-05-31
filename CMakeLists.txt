@@ -120,7 +120,8 @@ add_executable(servidor
         server/classes/model/Partida.cpp
         server/classes/model/Partida.h
         server/classes/model/EntidadEnemigo.h
-        server/classes/states/EstadoCampoMovil.h)
+        server/classes/states/EstadoInternoCampoMovil.h
+        server/classes/states/EstadoInternoNivel.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

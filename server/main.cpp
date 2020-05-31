@@ -12,7 +12,7 @@
 Log* l;
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida* partida, struct Comando action, struct EstadoTick* estadoTick);
+void processData(Partida* partida, struct Comando action, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick);
 int mainLoop(int puerto, Configuracion* configuracion);
 Configuracion* parsearConfiguracion();
 
@@ -51,13 +51,14 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
 	aceptadorConexiones->escuchar();
-	ConexionServidor* coneccionServidor = aceptadorConexiones->aceptarConexion();
+	ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
 
-	// ConexionServidor* coneccionServidor = new ConexionServidor(client_socket);
+	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
 	l->info("Connection accepted");
 
 	bool quit = false;
 	struct Comando client_command;
+	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	clock_t t2, t1 = clock();
 
@@ -66,6 +67,9 @@ int mainLoop(int puerto, Configuracion* config) {
 	int commands_count = 0;
 	int status = 0;
 	initializeData(&estadoTick);
+
+	// Comunicacion inicial.
+	int nuevoNivel = 1;
 
 	//keep communicating with client
 	while (!quit) {
@@ -81,23 +85,33 @@ int mainLoop(int puerto, Configuracion* config) {
 		// printf("Commands count: %d\n", commands_count + 1);
 
 		// Receive data (command)
-		client_command = coneccionServidor->recibirMensaje();
+		client_command = conexionServidor->recibirMensaje();
 		// printf("Incomming command action: \n");
 		//--------------------
 
 		// Process model
-		processData(partida, client_command, &estadoTick);
+		processData(partida, client_command, &informacionNivel, &estadoTick);
 		//--------------------
 
+		if (nuevoNivel) {
+			l->info("Enviando nuevo nivel:" + std::to_string(nuevoNivel));
+		}
+
 		// Send data (view)
-		coneccionServidor->enviarMensaje(&estadoTick);
+		if (nuevoNivel) {
+			conexionServidor->enviarInformacionNivel(&informacionNivel);
+			nuevoNivel = false;
+		} else {
+			conexionServidor->enviarEstadoTick(&estadoTick);
+			nuevoNivel = estadoTick.nuevoNivel;
+		}
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
 		//--------------------
 
 		commands_count++;
 	}
 
-	coneccionServidor->cerrarConexion();
+	conexionServidor->cerrarConexion();
 	printf("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
 	printf("Server socket number closed\n");
@@ -105,9 +119,16 @@ int mainLoop(int puerto, Configuracion* config) {
 	return status;
 }
 
-void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick) {
+void processData(Partida* partida, struct Comando command, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick) {
 	partida->tick(command);
-	EstadoCampoMovil estadoCampoMovil = partida->state();
+	EstadoInternoNivel estadoInternoNivel = partida->state();
+
+	// Seteando informacionNivel
+	informacionNivel->muchaData = estadoInternoNivel.nuevoNivel;
+
+	// Seteando estadoTick
+	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->estadoJugador = estadoCampoMovil.estadoJugador;
 	int i = 0;
 	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {

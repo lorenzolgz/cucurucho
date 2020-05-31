@@ -52,6 +52,6 @@ bool ManagerNiveles::pasajeDeNivel(){
     return false;
 }
 
-EstadoCampoMovil ManagerNiveles::state() {
+EstadoInternoCampoMovil ManagerNiveles::state() {
 	return nivelActual->state();
 }

@@ -9,6 +9,7 @@
 #include "Ticker.h"
 #include "SemillaEntidad.h"
 #include "../config/NivelConfiguracion.h"
+#include "../states/EstadoInternoNivel.h"
 
 #define PANTALLA_ANCHO 960
 #define PANTALLA_ALTO 672
@@ -21,7 +22,7 @@ public:
 	void tick() override;
     void crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos);
 	bool termino();
-	EstadoCampoMovil state();
+	EstadoInternoCampoMovil state();
 
 private:
 	float ancho;

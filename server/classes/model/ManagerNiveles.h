@@ -1,7 +1,3 @@
-//
-// Created by camix on 2/5/20.
-//
-
 #ifndef CUCURUCHO_MANAGERNIVELES_H
 #define CUCURUCHO_MANAGERNIVELES_H
 
@@ -13,6 +9,7 @@
 #include "CampoMovil.h"
 #include "Nivel.h"
 #include "NivelIntermedio.h"
+#include "../states/EstadoInternoNivel.h"
 
 #define VELOCIDAD_INICIAL 2
 #define AUMENTO_VELOCIDAD_POR_NIVEL 1.1
@@ -25,7 +22,7 @@ public:
     bool estadoJuego();
     bool pasajeDeNivel();
 	bool terminoNivelActual();
-	EstadoCampoMovil state();
+	EstadoInternoCampoMovil state();
 
 private:
     std::list<NivelConfiguracion *> listNiveles;

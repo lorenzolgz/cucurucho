@@ -10,11 +10,11 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::client_socket = client_socket;
 }
 
-struct EstadoTick ConexionCliente::recibirMensaje() {
+struct EstadoTick ConexionCliente::recibirEstadoTick() {
 	struct EstadoTick estadoTick;
 
 	l->debug("Cliente por recibir mensaje");
-	if (receiveData(&client_socket, &estadoTick) < 0) {
+	if (receiveDataEstadoTick(&client_socket, &estadoTick) < 0) {
 		perror("Receive Data Error");
 		exit(1);
 	}
@@ -22,6 +22,20 @@ struct EstadoTick ConexionCliente::recibirMensaje() {
 	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadoJugador.posicionX));
 
 	return estadoTick;
+}
+
+struct InformacionNivel ConexionCliente::recibirInformacionNivel() {
+	struct InformacionNivel informacionNivel;
+
+	l->debug("Cliente por recibir mensaje");
+	if (receiveInformacionNivel(&client_socket, &informacionNivel) < 0) {
+		perror("Receive Data Error");
+		exit(1);
+	}
+
+	l->debug("Cliente recibio informacionNivel: ");
+
+	return informacionNivel;
 }
 
 void ConexionCliente::enviarMensaje(struct Comando *comando) {
@@ -60,7 +74,7 @@ int ConexionCliente::sendData(int* client_socket, struct Comando* client_command
 	return 0;
 }
 
-int ConexionCliente::receiveData(int* client_socket, struct EstadoTick* estadoTick) {
+int ConexionCliente::receiveDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick) {
 
 	int total_bytes_receive = 0;
 	int bytes_receive = 0;
@@ -82,3 +96,27 @@ int ConexionCliente::receiveData(int* client_socket, struct EstadoTick* estadoTi
 
 	return 0;
 }
+
+int ConexionCliente::receiveInformacionNivel(int* client_socket, struct InformacionNivel* header) {
+
+	int total_bytes_receive = 0;
+	int bytes_receive = 0;
+	int receive_data_size = sizeof(struct InformacionNivel); // !!!!
+	bool client_socket_still_open = true;
+
+	while ((receive_data_size > bytes_receive) && client_socket_still_open) {
+		bytes_receive = recv(*client_socket, (header + total_bytes_receive),
+							 (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
+
+		if (bytes_receive < 0) { // Error
+			return bytes_receive;
+		} else if (bytes_receive == 0) { // Socket closed
+			client_socket_still_open = false;
+		} else {
+			total_bytes_receive += bytes_receive;
+		}
+	}
+
+	return 0;
+}
+
