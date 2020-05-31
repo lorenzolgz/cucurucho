@@ -51,9 +51,9 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
 	aceptadorConexiones->escuchar();
-	ConexionServidor* coneccionServidor = aceptadorConexiones->aceptarConexion();
+	ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
 
-	// ConexionServidor* coneccionServidor = new ConexionServidor(client_socket);
+	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
 	l->info("Connection accepted");
 
 	bool quit = false;
@@ -85,7 +85,7 @@ int mainLoop(int puerto, Configuracion* config) {
 		// printf("Commands count: %d\n", commands_count + 1);
 
 		// Receive data (command)
-		client_command = coneccionServidor->recibirMensaje();
+		client_command = conexionServidor->recibirMensaje();
 		// printf("Incomming command action: \n");
 		//--------------------
 
@@ -99,10 +99,10 @@ int mainLoop(int puerto, Configuracion* config) {
 
 		// Send data (view)
 		if (nuevoNivel) {
-			coneccionServidor->enviarInformacionNivel(&informacionNivel);
+			conexionServidor->enviarInformacionNivel(&informacionNivel);
 			nuevoNivel = false;
 		} else {
-			coneccionServidor->enviarEstadoTick(&estadoTick);
+			conexionServidor->enviarEstadoTick(&estadoTick);
 			nuevoNivel = estadoTick.nuevoNivel;
 		}
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
@@ -111,7 +111,7 @@ int mainLoop(int puerto, Configuracion* config) {
 		commands_count++;
 	}
 
-	coneccionServidor->cerrarConexion();
+	conexionServidor->cerrarConexion();
 	printf("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
 	printf("Server socket number closed\n");

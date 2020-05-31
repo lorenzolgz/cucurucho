@@ -152,7 +152,7 @@ void mainLoop() {
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	struct Comando client_command;
-	// IMPORTANTE!!! El nombre es enañoso, no es solo un booleano, tambien deberia ser el numero del nivel.
+	// IMPORTANTE!!! El nombre es engañoso, no es solo un booleano, tambien deberia ser el numero del nivel.
 	int nuevoNivel = 1;
 	char* ip_address = "127.0.0.1";
 	int port = 3040;

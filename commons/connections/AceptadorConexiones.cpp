@@ -13,8 +13,8 @@ void AceptadorConexiones::escuchar() {
 	// Domain: AF_INET (IPv4 Internet protocols)
 	// Type: SOCK_STREAM (Provides  sequenced,  reliable, two-way connection-based byte streams.)
 	// Protocol: 0 (chosen automatically)
-	server_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (server_socket == -1) {
+	this->server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (this->server_socket == -1) {
 		perror("Could not create socket");
 		exit(1);
 	}
@@ -33,7 +33,7 @@ void AceptadorConexiones::escuchar() {
 	}; */
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY; //Address to accept any incoming messages. INADDR_ANY accepts any.
-	server_addr.sin_port = htons(port); // The htons() function converts the unsigned short integer hostshort from host byte order to network byte order.
+	server_addr.sin_port = htons(this->port); // The htons() function converts the unsigned short integer hostshort from host byte order to network byte order.
 	//------------------------
 
 	// Bind
@@ -42,7 +42,7 @@ void AceptadorConexiones::escuchar() {
 	// addr -> pointer to sockaddr_in structure of the SERVER
 	// addrlen -> size of the sockaddr_in structure
 	// bind() assigns the address specified by addr to the socket referred to by the file descriptor sockfd.
-	if (bind(server_socket, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+	if (bind(this->server_socket, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
 		perror("Bind failed. Error");
 		exit(1);
 	}
@@ -54,7 +54,7 @@ void AceptadorConexiones::escuchar() {
 	// sockfd -> file descriptor that refers to estadosEnemigos socket,in this case of type SOCK_STREAM
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
 	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
-	if (listen(server_socket, 3) < 0) {
+	if (listen(this->server_socket, 3) < 0) {
 		perror("Listen failed. Error");
 		exit(1);
 	}
@@ -71,7 +71,7 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// sockfd -> socket that has been created with socket(), bound to estadosEnemigos local address with bind(), and is listening for connections after estadosEnemigos listen()
 	// addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
 	// addrlen -> size of sockaddr structure for the CLIENT.
-	int client_socket = accept(server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
+	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
 		perror("Accept failed");
 		exit(1);
@@ -81,5 +81,5 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 }
 
 void AceptadorConexiones::dejarDeEscuchar() {
-	close(server_socket);
+	close(this->server_socket);
 }
