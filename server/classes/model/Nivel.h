@@ -21,6 +21,7 @@ public:
 	void tick() override;
     void crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos);
 	bool termino();
+	EstadoCampoMovil state();
 
 private:
 	float ancho;

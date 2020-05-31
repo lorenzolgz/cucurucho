@@ -3,6 +3,8 @@
 #include "Enemigo2.h"
 #include "Enemigo1.h"
 #include "Jugador.h"
+#include "../../server/classes/model/Nivel.h"
+
 #include <queue>
 #include <iterator>
 #include <list>
@@ -98,4 +100,8 @@ void Nivel::plantarSemillasEnCampo() {
 	}
 
 	semillasEntidades = nuevasSemillasEntidades;
+}
+
+void Nivel::setEstado(std::list<EstadoEnemigo> estadosEnemigos) {
+	campo->setEstadosEnemigos(estadosEnemigos);
 }

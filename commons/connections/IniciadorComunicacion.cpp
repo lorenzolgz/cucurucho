@@ -1,9 +1,6 @@
-//
-// Created by rodrigosouto on 30/5/20.
-//
-
 #include "IniciadorComunicacion.h"
 #include "ConexionCliente.h"
+#include "../utils/Log.h"
 
 IniciadorComunicacion::IniciadorComunicacion(char* ip_address, int port) {
 	IniciadorComunicacion::ip_address = ip_address;
@@ -14,7 +11,7 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 	int client_socket;
 	struct sockaddr_in server;
 
-	printf("Arguments: 1) ip: %s ,2) port: %d \n", ip_address, port);
+	l->info("Arguments: 1) ip: " + (std::string) ip_address + "%s ,2) port: " + std::to_string(port));
 
 	// Create Socket
 	// int socket(int domain, int type, int protocol);
@@ -26,7 +23,7 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 		perror("Could not create socket");
 		exit(1);
 	}
-	printf("Socket created\n");
+	l->info("Socket created");
 	//------------------------
 
 	// Prepare the sockaddr_in structure
@@ -37,7 +34,7 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 
 	//Connect to remote server
 	// int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	// sockfd -> file descriptor that refers to a socket
+	// sockfd -> file descriptor that refers to estadosEnemigos socket
 	// addr -> pointer to sockaddr_in structure for the SERVER.
 	// addrlen -> size of sockaddr_in structure for the SERVER.
 	// The connect() system call connects the socket referred to by the file descriptor sockfd to the address specified by addr.
@@ -45,7 +42,8 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 		perror("connect failed. Error");
 		exit(1);
 	}
-	printf("Connected\n\n");
+
+	l->info("Connected");
 
 	return new ConexionCliente(client_socket);
 }

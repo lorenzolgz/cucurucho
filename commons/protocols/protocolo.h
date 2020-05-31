@@ -2,16 +2,38 @@
 #define CUCURUCHO_PROTOCOLO_H
 
 
-struct Command {
+#define MAX_ENEMIGOS 15
+
+struct Comando {
 	int arriba;
 	int abajo;
 	int izquierda;
 	int derecha;
 };
 
-struct View {
-	int positionX;
-	int positionY;
+struct EstadoHelper {
+	int posicionX;
+	int posicionY;
+	int angulo;
+};
+
+struct EstadoJugador {
+	int posicionX;
+	int posicionY;
+	int contadorVelocidadY;
+	EstadoHelper helper1;
+	EstadoHelper helper2;
+};
+
+struct EstadoEnemigo {
+	int posicionX;
+	int posicionY;
+	int clase;
+};
+
+struct EstadoTick {
+	EstadoJugador estadoJugador;
+	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
 };
 
 

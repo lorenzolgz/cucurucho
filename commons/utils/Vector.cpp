@@ -47,7 +47,7 @@ void Vector::setY(double y) {
 
 double Vector::arg() const {
     // atan2 da un angulo en [-pi, pi]
-    // creanme que esto lo pasa a [0°, 360°]
+    // creanme que esto lo pasa estadosEnemigos [0°, 360°]
 
     double d = to_d(atan2(y, x));
     d = -d + 360 * (d > 0);

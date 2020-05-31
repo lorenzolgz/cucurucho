@@ -9,14 +9,14 @@ class ConexionServidor {
 public:
 	ConexionServidor(int client_socket);
 
-	struct Command recibirMensaje();
-	void enviarMensaje(struct View* client_view);
+	struct Comando recibirMensaje();
+	void enviarMensaje(struct EstadoTick* estadoTick);
 	void cerrarConexion();
 
 private:
 	int client_socket;
-	int receiveData(int* client_socket, struct Command* client_command);
-	int sendData(int* client_socket, struct View* client_view);
+	int receiveData(int* client_socket, struct Comando* client_command);
+	int sendData(int* client_socket, struct EstadoTick* estadoTick);
 };
 
 

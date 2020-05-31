@@ -2,11 +2,6 @@
 #include "../../commons/utils/Utils.h"
 #include "../../commons/utils/Log.h"
 #include "../GeneradorDeTexturas.h"
-#include "../GraphicRenderer.h"
-
-// !!!!
-extern int posJugadorX;
-extern int posJugadorY;
 
 JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
@@ -20,15 +15,6 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
 	SDL_Rect srcrect = {JUGADOR_SRC_ANCHO + JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 						0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
-
-	// !!!!
-	/*
-	SDL_Rect dstrect = {posJugadorX,
-						posJugadorY,
-						JUGADOR_SRC_ANCHO,
-						JUGADOR_SRC_ALTO};
-
-	 */
 
 	SDL_Rect dstrect = {(int) posicion.getX(),
 						(int) posicion.getY(),

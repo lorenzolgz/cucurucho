@@ -90,9 +90,16 @@ void Nivel::plantarSemillasEnCampo() {
 			nuevasSemillasEntidades.push_back(semillaEntidad);
 		} else {
 			Entidad* entidad = semillaEntidad->getEntidad();
-			campo->agregarEntidad(entidad);
+			// !!!! esto es pa quilombo
+			l->error("!!!! 1");
+			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
+			l->error("!!!! 2");
 		}
 	}
 
 	semillasEntidades = nuevasSemillasEntidades;
+}
+
+EstadoCampoMovil Nivel::state() {
+	return campo->state();
 }

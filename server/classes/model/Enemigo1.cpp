@@ -30,3 +30,11 @@ void Enemigo1::tick() {
 Vector Enemigo1::getPosicion() {
 	return posicion;
 }
+
+struct EstadoEnemigo Enemigo1::state() {
+	struct EstadoEnemigo estado;
+	estado.posicionX = posicion.getX();
+	estado.posicionY = posicion.getY();
+	estado.clase = 1;
+	return estado;
+}

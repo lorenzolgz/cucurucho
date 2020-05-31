@@ -17,7 +17,7 @@ CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, 
 void CampoMovil::tick() {
     posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
     if (jugador) {
-        std::for_each(entidades.begin(), entidades.end(), [](Entidad *t) { t->tick(); });
+        std::for_each(entidadesEnemigos.begin(), entidadesEnemigos.end(), [](EntidadEnemigo *t) { t->tick(); });
         jugador->tick();
     }
 }
@@ -38,8 +38,8 @@ float CampoMovil::getVelocidadX() {
 	return velocidadX;
 }
 
-void CampoMovil::agregarEntidad(Entidad *entidad) {
-	entidades.push_back(entidad);
+void CampoMovil::agregarEntidadEnemigo(EntidadEnemigo *entidad) {
+	entidadesEnemigos.push_back(entidad);
 }
 
 bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
@@ -50,3 +50,19 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 bool CampoMovil::verificarPosicion() {
     return posicion.getX() > (largoNivel + ancho);
 }
+
+EstadoCampoMovil CampoMovil::state() {
+	std::list<EstadoEnemigo> estadosEnemigos;
+
+	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
+		estadosEnemigos.push_back(entidadEnemigo->state());
+	}
+
+	// EstadoCampoMovil* estadoCampoMovil ;= new EstadoCampoMovil(jugador->state(), estadosEnemigos)
+	EstadoCampoMovil estadoCampoMovil;
+	estadoCampoMovil.estadoJugador = jugador->state();
+	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
+
+	return estadoCampoMovil;
+}
+

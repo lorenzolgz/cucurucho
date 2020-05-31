@@ -26,7 +26,7 @@ int Enemigo1::getAlto() {
 
 void Enemigo1::tick() {
 	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
-	vista->render(posicion, velocidadX);
+	// !!!! vista->render(posicion, velocidadX);
     l->debug("Posicion del Enemigo 01: "+ posicion.getVector());
 }
 

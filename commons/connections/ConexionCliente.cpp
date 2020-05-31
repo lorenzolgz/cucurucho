@@ -1,8 +1,5 @@
-//
-// Created by rodrigosouto on 30/5/20.
-//
-
 #include "ConexionCliente.h"
+#include "../utils/Log.h"
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -13,34 +10,38 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::client_socket = client_socket;
 }
 
-struct View ConexionCliente::recibirMensaje() {
-	struct View client_view;
+struct EstadoTick ConexionCliente::recibirMensaje() {
+	struct EstadoTick estadoTick;
 
-	if (receiveData(&client_socket, &client_view) < 0) {
+	l->debug("Cliente por recibir mensaje");
+	if (receiveData(&client_socket, &estadoTick) < 0) {
 		perror("Receive Data Error");
-		// !!!! status = -1;
 		exit(1);
 	}
 
-	return client_view;
+	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadoJugador.posicionX));
+
+	return estadoTick;
 }
 
-void ConexionCliente::enviarMensaje(struct Command *client_command) {
-	if (sendData(&client_socket, client_command) < 0) {
+void ConexionCliente::enviarMensaje(struct Comando *comando) {
+	l->debug("Cliente por mandar mensaje: " + std::to_string(comando->arriba) + " " + std::to_string(comando->abajo) + " " + std::to_string(comando->izquierda)  + " " + std::to_string(comando->derecha));
+	if (sendData(&client_socket, comando) < 0) {
 		perror("Send Data Error");
 		exit(1);
 	}
+	l->debug("Cliente mando mensaje");
 }
 
 void ConexionCliente::cerrarConexion() {
 	close(client_socket);
 }
 
-int ConexionCliente::sendData(int* client_socket, struct Command* client_command) {
+int ConexionCliente::sendData(int* client_socket, struct Comando* client_command) {
 
 	int total_bytes_written = 0;
 	int bytes_written = 0;
-	int send_data_size = sizeof(struct Command);
+	int send_data_size = sizeof(struct Comando);
 	bool client_socket_still_open = true;
 
 	while ((send_data_size > total_bytes_written) && client_socket_still_open) {
@@ -59,15 +60,15 @@ int ConexionCliente::sendData(int* client_socket, struct Command* client_command
 	return 0;
 }
 
-int ConexionCliente::receiveData(int* client_socket, struct View* client_view) {
+int ConexionCliente::receiveData(int* client_socket, struct EstadoTick* estadoTick) {
 
 	int total_bytes_receive = 0;
 	int bytes_receive = 0;
-	int receive_data_size = sizeof(struct View);
+	int receive_data_size = sizeof(struct EstadoTick); // !!!!
 	bool client_socket_still_open = true;
 
 	while ((receive_data_size > bytes_receive) && client_socket_still_open) {
-		bytes_receive = recv(*client_socket, (client_view + total_bytes_receive),
+		bytes_receive = recv(*client_socket, (estadoTick + total_bytes_receive),
 							 (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
 
 		if (bytes_receive < 0) { // Error

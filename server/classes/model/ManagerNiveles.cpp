@@ -18,7 +18,7 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
 
 Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
-	jugador->setPosicion(ancho, alto);
+	jugador->setPosicion(ancho / 8, alto / 2);
 	Nivel *nivel = new Nivel(nivelConfActual, jugador);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
@@ -52,4 +52,6 @@ bool ManagerNiveles::pasajeDeNivel(){
     return false;
 }
 
-
+EstadoCampoMovil ManagerNiveles::state() {
+	return nivelActual->state();
+}

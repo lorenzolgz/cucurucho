@@ -2,9 +2,9 @@
 #define CPP_SANDBOX_JUGADOR_H
 
 
-#include <SDL_render.h>
 #include <string>
 #include "../../../commons/utils/Vector.h"
+#include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "Entidad.h"
 
@@ -23,6 +23,7 @@ public:
     Jugador(int x, int y);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
+	struct EstadoJugador state();
 
 	int getAncho() override;
 

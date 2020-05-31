@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 31/5/20.
-//
-
 #include "Partida.h"
 #include "../../../commons/protocols/protocolo.h"
 
@@ -15,7 +11,7 @@ Partida::Partida(Configuracion* config) {
 
 }
 
-void Partida::tick(struct Command command) {
+void Partida::tick(struct Comando command) {
 	bool terminoNivelActual = false;
 
 	jugador->calcularVectorVelocidad(command.arriba,
@@ -30,4 +26,8 @@ void Partida::tick(struct Command command) {
 	if (terminoNivelActual) {
 		terminoNivelActual = managerNiveles->pasajeDeNivel();
 	}
+}
+
+EstadoCampoMovil Partida::state() {
+	return managerNiveles->state();
 }

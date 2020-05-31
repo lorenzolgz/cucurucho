@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 30/5/20.
-//
-
 #ifndef CUCURUCHO_INICIADORCOMUNICACION_H
 #define CUCURUCHO_INICIADORCOMUNICACION_H
 

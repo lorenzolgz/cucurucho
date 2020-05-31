@@ -2,6 +2,10 @@
 #include "CampoMovil.h"
 #include <string>
 #include "../../commons/utils/Log.h"
+#include "../../server/classes/model/CampoMovil.h"
+#include "../view/Enemigo1Vista.h"
+#include "../view/Enemigo2Vista.h"
+
 
 CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);
@@ -11,15 +15,26 @@ CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, 
 	CampoMovil::alto = alto;
 	CampoMovil::jugador = jugador;
 	CampoMovil::vista = new CampoVista(ancho, alto, inicioEnEjeY);
-
-	jugador->setCampo(this);
 }
 
 void CampoMovil::tick() {
     posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
     vista->render();
     if (jugador) {
-        std::for_each(entidades.begin(), entidades.end(), [](Entidad *t) { t->tick(); });
+        std::for_each(entidadesEnemigos.begin(), entidadesEnemigos.end(), [](Entidad *t) { t->tick(); });
+        for (EstadoEnemigo estadoEnemigo : estadosEnemigos) {
+			switch (estadoEnemigo.clase) {
+				case 1: {
+					Enemigo1Vista *enemigo1Vista = new Enemigo1Vista();
+					enemigo1Vista->render(Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY), 0);
+					break;
+				}
+				case 2: {
+					Enemigo2Vista *enemigo2Vista = new Enemigo2Vista();
+					enemigo2Vista->render(Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY), 0);
+				}
+			}
+        }
         jugador->tick();
     }
 }
@@ -45,7 +60,7 @@ float CampoMovil::getVelocidadX() {
 }
 
 void CampoMovil::agregarEntidad(Entidad *entidad) {
-	entidades.push_back(entidad);
+	entidadesEnemigos.push_back(entidad);
 }
 
 bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
@@ -55,4 +70,8 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 
 bool CampoMovil::verificarPosicion() {
     return posicion.getX() > (largoNivel + ancho);
+}
+
+void CampoMovil::setEstadosEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
+	CampoMovil::estadosEnemigos = estadosEnemigos;
 }

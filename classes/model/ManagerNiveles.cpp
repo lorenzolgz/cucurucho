@@ -5,6 +5,8 @@
 #include "ManagerNiveles.h"
 #include "../view/FondoVista.h"
 #include "Hud.h"
+#include "../../server/classes/model/ManagerNiveles.h"
+
 
 ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
     ancho = config->getAnchoPantalla();
@@ -18,7 +20,6 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
 
 Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
-	jugador->setPosicion(ancho, alto);
 	Nivel *nivel = new Nivel(nivelConfActual, jugador);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
@@ -50,6 +51,10 @@ bool ManagerNiveles::pasajeDeNivel(){
     if (listNiveles.empty()) return true;
     nivelActual = configurarNuevoNivel();
     return false;
+}
+
+void ManagerNiveles::setEstado(std::list<EstadoEnemigo> estadosEnemigos) {
+	nivelActual->setEstado(estadosEnemigos);
 }
 
 

@@ -1,8 +1,5 @@
-//
-// Created by rodrigosouto on 30/5/20.
-//
-
 #include "AceptadorConexiones.h"
+#include "../utils/Log.h"
 
 AceptadorConexiones::AceptadorConexiones(int port) {
 	AceptadorConexiones::port = port;
@@ -41,7 +38,7 @@ void AceptadorConexiones::escuchar() {
 
 	// Bind
 	// int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	// sockfd -> file descriptor that refers to a socket
+	// sockfd -> file descriptor that refers to estadosEnemigos socket
 	// addr -> pointer to sockaddr_in structure of the SERVER
 	// addrlen -> size of the sockaddr_in structure
 	// bind() assigns the address specified by addr to the socket referred to by the file descriptor sockfd.
@@ -49,19 +46,19 @@ void AceptadorConexiones::escuchar() {
 		perror("Bind failed. Error");
 		exit(1);
 	}
-	printf("Bind done\n");
+	l->info("Bind done");
 	//------------------------
 
 	// Listen
 	// int listen(int sockfd, int backlog);
-	// sockfd -> file descriptor that refers to a socket,in this case of type SOCK_STREAM
+	// sockfd -> file descriptor that refers to estadosEnemigos socket,in this case of type SOCK_STREAM
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
-	// listen() marks the socket referred to by sockfd as a passive socket, that is, as a socket that will be used to accept incoming connection requests using accept();
+	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
 	if (listen(server_socket, 3) < 0) {
 		perror("Listen failed. Error");
 		exit(1);
 	}
-	printf("Listening on port: %d Waiting for incoming connections...\n", port);
+	l->info("Listening on port: " + std::to_string(port) + " Waiting for incoming connections...");
 	//------------------------
 }
 
@@ -69,12 +66,11 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	struct sockaddr_in client_addr;
 	int client_addrlen;
 
-	// Accept incoming connection from a client
+	// Accept incoming connection from estadosEnemigos client
 	// int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-	// sockfd -> socket that has been created with socket(), bound to a local address with bind(), and is listening for connections after a listen()
-	// addr -> pointer to a sockaddr structure for the CLIENT.
+	// sockfd -> socket that has been created with socket(), bound to estadosEnemigos local address with bind(), and is listening for connections after estadosEnemigos listen()
+	// addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
 	// addrlen -> size of sockaddr structure for the CLIENT.
-	printf("%d\n\n\n", server_socket);
 	int client_socket = accept(server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
 		perror("Accept failed");

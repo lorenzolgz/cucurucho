@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 30/5/20.
-//
-
 #ifndef CUCURUCHO_CONEXIONCLIENTE_H
 #define CUCURUCHO_CONEXIONCLIENTE_H
 
@@ -13,14 +9,14 @@ class ConexionCliente {
 public:
 	ConexionCliente(int client_socket);
 
-	struct View recibirMensaje();
-	void enviarMensaje(struct Command* client_command);
+	struct EstadoTick recibirMensaje();
+	void enviarMensaje(struct Comando* comando);
 	void cerrarConexion();
 
 private:
 	int client_socket;
-	int receiveData(int* client_socket, struct View* client_view);
-	int sendData(int* client_socket, struct Command* client_command);
+	int receiveData(int* client_socket, struct EstadoTick* estadoTick);
+	int sendData(int* client_socket, struct Comando* client_command);
 };
 
 

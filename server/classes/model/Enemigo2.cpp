@@ -47,3 +47,11 @@ void Enemigo2::recalcularPosicion() {
 Vector Enemigo2::getPosicion() {
 	return posicion;
 }
+
+struct EstadoEnemigo Enemigo2::state() {
+	struct EstadoEnemigo estado;
+	estado.posicionX = posicion.getX();
+	estado.posicionY = posicion.getY();
+	estado.clase = 2;
+	return estado;
+}

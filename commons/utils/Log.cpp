@@ -50,7 +50,7 @@ void Log::error(const std::string& string) {
 }
 
 void Log::debug(const std::string& string) {
-    // !!!! if ( DEBUG ) output(" - DEBUG - ", string);
+    if ( DEBUG ) output(" - DEBUG - ", string);
 }
 
 void Log::info(const std::string& string) {

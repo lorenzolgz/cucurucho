@@ -11,7 +11,7 @@ const int ENEMIGO1_SRC_ALTO = 66;
 class Enemigo1Vista {
 public:
 	Enemigo1Vista();
-	void render(Vector posicion, int velociadadX);
+	void render(Vector posicion, int velocidadX);
 
 private:
 	SDL_Renderer* gRenderer;

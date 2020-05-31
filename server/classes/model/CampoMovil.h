@@ -6,7 +6,8 @@
 #include "Hud.h"
 #include "Jugador.h"
 #include "Ticker.h"
-#include "Entidad.h"
+#include "EntidadEnemigo.h"
+#include "../states/EstadoCampoMovil.h"
 
 class Entidad;
 class Ticker;
@@ -20,11 +21,12 @@ public:
 	int getAlto();
 	Vector getPosicion();
 	float getVelocidadX();
-	void agregarEntidad(Entidad* entidad);
+	void agregarEntidadEnemigo(EntidadEnemigo* entidad);
 	bool entidadEstaDentroDelCampo(Entidad* entidad);
 	void tick() override;
 
 	bool verificarPosicion();
+	EstadoCampoMovil state();
 
 
 private:
@@ -34,7 +36,7 @@ private:
     float velocidadX;
     float largoNivel;
     Jugador* jugador;
-	std::list<Entidad*> entidades;
+	std::list<EntidadEnemigo*> entidadesEnemigos;
 };
 
 

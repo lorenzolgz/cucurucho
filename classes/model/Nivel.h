@@ -17,6 +17,7 @@ public:
 	void tick() override;
     void crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos);
 	bool termino();
+	void setEstado(std::list<EstadoEnemigo> estadosEnemigos);
 
 private:
 	float ancho;

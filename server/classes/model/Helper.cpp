@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Helper.h"
 #include "../../../commons/utils/Utils.h"
+#include "../../../classes/model/Helper.h"
+
 
 Helper::Helper(Jugador* jugador, Vector posRelativa) {
     Helper::jugador = jugador;
@@ -44,4 +46,12 @@ void Helper::calcularAngulo(){
         angulo += velAngular * ((angulo_d > 0) - (angulo_d < 0));
     }
     angulo = ((int) angulo + 360) % 360;
+}
+
+struct EstadoHelper Helper::state() {
+	struct EstadoHelper view;
+	view.posicionX = posicion.getX();
+	view.posicionY = posicion.getY();
+	view.angulo = angulo;
+	return view;
 }

@@ -8,6 +8,7 @@
 
 #include <array>
 #include <deque>
+#include "../../../commons/protocols/protocolo.h"
 #include "../../../commons/utils/Vector.h"
 #include "Jugador.h"
 
@@ -27,6 +28,7 @@ class Helper {
 public:
     Helper(Jugador* jugador, Vector posRelativa);
     void tick();
+	struct EstadoHelper state();
 
 private:
     Vector posicion;

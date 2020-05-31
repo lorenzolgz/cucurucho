@@ -8,6 +8,7 @@
 
 #include <array>
 #include <deque>
+#include "../../commons/protocols/protocolo.h"
 #include "../../commons/utils/Vector.h"
 #include "Jugador.h"
 #include "../view/HelperVista.h"
@@ -29,21 +30,15 @@ class Helper {
 public:
     Helper(Jugador* jugador, Vector posRelativa, ColoresJugador colores);
     void tick();
+	void setEstado(struct EstadoHelper estado);
 
 private:
-    Vector posicion;
-    Vector velocidad;
-    Vector posRelativa;
+	bool primeraVez;
+	struct EstadoHelper estado;
     Jugador* jugador;
     std::deque<Vector> recorrido;
-    double velAngular;
-    double angulo;
-    double aceleracion;
 
     HelperVista* vista;
-
-    void calcularAngulo();
-    void calcularVelocidad();
 };
 
 

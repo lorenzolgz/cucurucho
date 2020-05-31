@@ -62,6 +62,17 @@ void Jugador::tick() {
     l->debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
+struct EstadoJugador Jugador::state() {
+	struct EstadoJugador view;
+	view.posicionX = posicion.getX();
+	view.posicionY = posicion.getY();
+	view.contadorVelocidadY = contadorVelocidadY;
+	view.helper1 = helperAbove->state();
+	view.helper2 = helperBelow->state();
+	return view;
+}
+
+
 const Vector &Jugador::getPosicion() const {
     return posicion;
 }

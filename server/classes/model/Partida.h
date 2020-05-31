@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 31/5/20.
-//
-
 #ifndef CUCURUCHO_PARTIDA_H
 #define CUCURUCHO_PARTIDA_H
 
@@ -12,7 +8,8 @@ class Partida {
 public:
 	Partida(Configuracion* config);
 
-	void tick(struct Command command);
+	void tick(struct Comando command);
+	EstadoCampoMovil state();
 
 private:
 	Jugador* jugador;

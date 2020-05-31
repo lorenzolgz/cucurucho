@@ -60,8 +60,6 @@ void HelperVista::renderBall(Vector posicion) {
     SDL_SetTextureColorMod(texturaBall, 255, 255, 255);
 }
 
-
-
 void HelperVista::renderHelper(Vector posicion, double angulo) {
 	int renderPosX = (int) posicion.getX() - HELPER_BALL_SRC_RADIO + (int) (cos_d(angulo) * HELPER_SRC_DISTANCIA);
 	int renderPosY = (int) posicion.getY() - HELPER_BALL_SRC_RADIO - (int) (sin_d(angulo) * HELPER_SRC_DISTANCIA);

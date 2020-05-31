@@ -3,6 +3,8 @@
 #include "../../commons/utils/Utils.h"
 #include "../../commons/utils/Log.h"
 #include "Nivel.h"
+#include "../../server/classes/model/Enemigo2.h"
+
 
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;

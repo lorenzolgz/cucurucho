@@ -5,12 +5,12 @@
 #include <string>
 #include "../../../commons/utils/Vector.h"
 #include "Ticker.h"
-#include "Entidad.h"
+#include "EntidadEnemigo.h"
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
 
-class Enemigo2 : public Entidad {
+class Enemigo2 : public EntidadEnemigo {
 public:
     Enemigo2(float x, float y, float velocidadX);
 
@@ -18,6 +18,7 @@ public:
 	int getAlto() override;
 	Vector getPosicion() override;
 	void tick() override;
+	struct EstadoEnemigo state() override ;
 
 private:
     Vector posicion;
