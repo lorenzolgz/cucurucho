@@ -1,0 +1,12 @@
+{
+  "fondos": [
+    {
+      "archivo": "cave_1.png",
+      "velocidad": 0.9
+    },
+    {
+      "archivo": "cave_2.png",
+      "velocidad": 0.3
+    }
+  ]
+}

@@ -4,69 +4,38 @@
 #include <queue>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../classes/model/Jugador.h"
-#include "../classes/Log.h"
-#include "../classes/config/Configuracion.h"
-#include "../classes/GraphicRenderer.h"
-#include "../classes/model/Nivel.h"
-#include "../classes/config/NivelConfiguracion.h"
-#include "../classes/config/ConfiguracionParser.h"
-#include "../classes/model/ManagerNiveles.h"
-#include "../classes/model/Titulo.h"
+#include "classes/Log.h"
+#include "classes/GraphicRenderer.h"
+#include "classes/model/Nivel.h"
+#include "classes/view/Titulo.h"
+#include "classes/view/JugadorVista.h"
+#include "classes/view/ManagerVista.h"
+#include "classes/config/ConfiguracionParser.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
 
-Configuracion* config;
-
 Log* l;
 
 
-void configurar(string archivoConfig, string nivelLog) {
-	ConfiguracionParser configuracionParser;
-    l = new Log();
-	try {
-		config = configuracionParser.parsearConfiguracion(archivoConfig);
-	}
-	catch (const std::exception& exc) {
-        // Primero aviso que no se pudo usar el original antes de seguir con el backup
-	    l->error("Ocurrió un error al leer el archivo de configuración, se usará el de backup");
-
-        // Solo se loguean las excepciones que tengan un what() para poder dar mas info
-        if ((exc.what()!= NULL) && (exc.what()[0] == '\0')){
-            l->error(exc.what());
-        }
-        // Ahoro intento con el backup
-        try {
-            config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
-        }
-        // Si el backup tampoco sirve, ya no puedo inicializar el juego
-        catch (const std::exception& exc) {
-            l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
-            // Throw exception corta por completo la ejecucion del codigo
-            throw exc;
-        }
-
+void configurar(std::string nivelLog) {
+	if (!nivelLog.empty()) {
+        l->setConf(nivelLog);
     }
 
-	if (nivelLog.empty()) {
-	    nivelLog = config->getNivelLog();
-	}
-	l->setConf(nivelLog);
-
-    l->info("Alto pantalla: " + std::to_string(config->getAltoPantalla()));
-    l->info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
-    l->info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
+    l->info("Alto pantalla: " + std::to_string(PANTALLA_ALTO));
+    l->info("Ancho pantalla: " + std::to_string(PANTALLA_ANCHO));
+    l->info("Escala pantalla: " + std::to_string(1));
     l->info("Nivel de Log: " + nivelLog);
 }
 
 
 bool init() {
-	int anchoPantalla = config->getAnchoPantalla();
-	int altoPantalla = config->getAltoPantalla();
-	int escalaPantalla = config->getEscalaPantalla();
+	int anchoPantalla = PANTALLA_ANCHO;
+	int altoPantalla = PANTALLA_ALTO;
+	int escalaPantalla = 1;
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -118,9 +87,6 @@ void close() {
 	//Destroy window
 	SDL_DestroyWindow(gWindow);
 
-	//Free Configuration
-	delete(config);
-
 	l->info("Se libero toda la memoria");
 	//Quit SDL subsystems
 	IMG_Quit();
@@ -128,14 +94,20 @@ void close() {
 	l->info("La ventana se cerro correctamente");
 }
 
+std::vector<NivelConfiguracion*> mockConfig() {
+    std::vector<NivelConfiguracion*> nivelConfig;
+    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 36000));
+    return nivelConfig;
+}
+
 void mainLoop() {
-    int anchoPantalla = config->getAnchoPantalla();
-	int altoPantalla = config->getAltoPantalla();
+    int anchoPantalla = PANTALLA_ANCHO;
+	int altoPantalla = PANTALLA_ALTO;
     bool quit = false;
     bool terminoNivelActual = false;
     SDL_Event e;
-	Jugador* jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2, COLORES_AZUL);
-	ManagerNiveles* manager = new ManagerNiveles(config, jugador);
+	JugadorVista* jugador = new JugadorVista(COLORES_AZUL);
+	ManagerVista* manager = new ManagerVista(jugador, mockConfig(), 0, anchoPantalla, altoPantalla);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 
 	l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
@@ -165,24 +137,26 @@ void mainLoop() {
             continue;
         }
 
-        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
-                                         currentKeyStates[SDL_SCANCODE_DOWN],
-                                         currentKeyStates[SDL_SCANCODE_LEFT],
-                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
+//        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
+//                                         currentKeyStates[SDL_SCANCODE_DOWN],
+//                                         currentKeyStates[SDL_SCANCODE_LEFT],
+//                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
 
 
         //Render texture to screen
-		manager->tick();
-		terminoNivelActual = manager->terminoNivelActual();
-        if (terminoNivelActual) {
-			terminoNivelActual = manager->pasajeDeNivel();
-            SDL_RenderPresent(gRenderer);
-            SDL_Delay(2000);
-            quit = quit || manager->estadoJuego();
-        } else {
-			quit = quit || manager->estadoJuego();
-			SDL_RenderPresent(gRenderer);
-		}
+		manager->render();
+        jugador->render(Vector(200, 200), 0);
+		SDL_RenderPresent(gRenderer);
+//		terminoNivelActual = manager->terminoNivelActual();
+//        if (terminoNivelActual) {
+//			terminoNivelActual = manager->pasajeDeNivel();
+//            SDL_RenderPresent(gRenderer);
+//            SDL_Delay(2000);
+//            quit = quit || manager->estadoJuego();
+//        } else {
+//			quit = quit || manager->estadoJuego();
+//			SDL_RenderPresent(gRenderer);
+//		}
     }
 }
 
@@ -224,7 +198,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-    configurar(archivoConfig, nivelLog);
+    l = new Log();
+    configurar(nivelLog);
 
 	// Inicializa SDL con la configuracion
 	if (!init()) return 1;
