@@ -4,13 +4,16 @@
 #include <queue>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "classes/Log.h"
+#include "../commons/utils/Log.h"
 #include "classes/GraphicRenderer.h"
 #include "classes/model/Nivel.h"
 #include "classes/view/Titulo.h"
 #include "classes/view/JugadorVista.h"
 #include "classes/view/ManagerVista.h"
 #include "classes/config/ConfiguracionParser.h"
+#include "../commons/connections/ConexionCliente.h"
+#include "../commons/connections/IniciadorComunicacion.h"
+#include "classes/config/NivelConfiguracion.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -106,11 +109,16 @@ void mainLoop() {
     bool quit = false;
     bool terminoNivelActual = false;
     SDL_Event e;
-	JugadorVista* jugador = new JugadorVista(COLORES_AZUL);
-	ManagerVista* manager = new ManagerVista(jugador, mockConfig(), 0, anchoPantalla, altoPantalla);
+    JugadorVista* jugador = new JugadorVista(COLORES_AZUL);
+    ManagerVista* manager = new ManagerVista(jugador, mockConfig(), 0, anchoPantalla, altoPantalla);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
+    char* ip_address = "127.0.0.1";
+    int port = 3040;
+    IniciadorComunicacion* iniciadorComunicacion =  new IniciadorComunicacion(ip_address, port);
+    ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
+    struct Comando client_command;
 
-	l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
+    l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
 
     while (!quit) {
@@ -137,10 +145,12 @@ void mainLoop() {
             continue;
         }
 
-//        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
-//                                         currentKeyStates[SDL_SCANCODE_DOWN],
-//                                         currentKeyStates[SDL_SCANCODE_LEFT],
-//                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
+        client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
+        client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
+        client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
+        client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+        // Send data (command)
+        conexionCliente->enviarMensaje(&client_command);
 
 
         //Render texture to screen
@@ -198,7 +208,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-    l = new Log();
+    l = new Log("client");
     configurar(nivelLog);
 
 	// Inicializa SDL con la configuracion

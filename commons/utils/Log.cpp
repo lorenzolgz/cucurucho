@@ -27,7 +27,7 @@ Log::Log(std::string basePath) {
     std::string pathlogtime = homePath + RELATIVE_PATHLOGTIME;
 	char pathlogthimeAsCharArray[pathlogtime.size() + 1];
 	strcpy(pathlogthimeAsCharArray, pathlogtime.c_str());	// or pass &s[0]
-    std::strftime(Log::logEntrada, 30, pathlogthimeAsCharArray , std::localtime(&t));
+    std::strftime(Log::logEntrada, 50, pathlogthimeAsCharArray , std::localtime(&t));
     std::fstream archivo;
     archivo.open(logEntrada , std::fstream::out);
     archivo.close();

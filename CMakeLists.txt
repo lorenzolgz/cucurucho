@@ -31,12 +31,12 @@ add_executable(cliente
         client/main.cpp
         client/classes/view/FondoVista.cpp
         client/classes/view/FondoVista.h
-        client/classes/Vector.cpp
-        client/classes/Vector.h
-        client/classes/Utils.cpp
-        client/classes/Utils.h
-        client/classes/Log.cpp
-        client/classes/Log.h
+        commons/utils/Vector.cpp
+        commons/utils/Vector.h
+        commons/utils/Log.cpp
+        commons/utils/Log.h
+        commons/utils/Utils.cpp
+        commons/utils/Utils.h
         client/classes/view/JugadorVista.cpp
         client/classes/view/JugadorVista.h
         client/classes/view/Enemigo2Vista.cpp
@@ -70,7 +70,12 @@ add_executable(cliente
         client/classes/config/NivelConfiguracion.cpp
         client/classes/config/NivelConfiguracion.h
         client/classes/config/ConfiguracionParser.cpp
-        client/classes/config/ConfiguracionParser.h)
+        client/classes/config/ConfiguracionParser.h
+        commons/connections/ConexionCliente.cpp
+        commons/connections/ConexionCliente.h
+        commons/connections/IniciadorComunicacion.cpp
+        commons/connections/IniciadorComunicacion.h
+        commons/protocols/protocolo.h)
 
 add_executable(servidor
         server/main.cpp
