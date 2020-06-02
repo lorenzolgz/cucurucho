@@ -11,12 +11,12 @@
 
 class NivelIntermedioVista {
 private:
+
     FondoVista *fondo;
     SDL_Renderer *gRenderer;
-    SDL_Rect posCampo;
 
 public:
-    NivelIntermedioVista(int ancho,int alto,int inicioEnEjeY);
+    NivelIntermedioVista(const std::string fondoFilename);
     FondoVista *nuevoFondo(const std::string &archivo);
     void render();
 };

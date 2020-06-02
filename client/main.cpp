@@ -6,7 +6,6 @@
 #include <SDL2/SDL_image.h>
 #include "classes/Log.h"
 #include "classes/GraphicRenderer.h"
-#include "classes/model/Nivel.h"
 #include "classes/view/Titulo.h"
 #include "classes/view/JugadorVista.h"
 #include "classes/view/ManagerVista.h"
@@ -96,7 +95,8 @@ void close() {
 
 std::vector<NivelConfiguracion*> mockConfig() {
     std::vector<NivelConfiguracion*> nivelConfig;
-    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 36000));
+    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 1200));
+    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos2.json", 1), "cleared_con_nave2.png", 2, 1200));
     return nivelConfig;
 }
 
@@ -112,6 +112,9 @@ void mainLoop() {
 
 	l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
+    Vector posJugador = Vector(200, 200);
+    float argHelper1 = 0;
+    float argHelper2 = 0;
 
     while (!quit) {
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -137,26 +140,31 @@ void mainLoop() {
             continue;
         }
 
-//        jugador->calcularVectorVelocidad(currentKeyStates[SDL_SCANCODE_UP],
-//                                         currentKeyStates[SDL_SCANCODE_DOWN],
-//                                         currentKeyStates[SDL_SCANCODE_LEFT],
-//                                         currentKeyStates[SDL_SCANCODE_RIGHT]);
+        if (currentKeyStates[SDL_SCANCODE_UP]) {
+            posJugador = posJugador + Vector(0, 3);
+        } else if (currentKeyStates[SDL_SCANCODE_DOWN]) {
+            posJugador = posJugador + Vector(0, 3);
+        }
 
+        Vector posHelper1 = posJugador + Vector(JUGADOR_SRC_ANCHO / 2, -JUGADOR_SRC_ALTO);
+        Vector posHelper2 = posJugador + Vector(JUGADOR_SRC_ANCHO / 2, JUGADOR_SRC_ALTO * 2);
+
+        argHelper1++;
+        argHelper2++;
 
         //Render texture to screen
 		manager->render();
-        jugador->render(Vector(200, 200), 0);
-		SDL_RenderPresent(gRenderer);
-//		terminoNivelActual = manager->terminoNivelActual();
-//        if (terminoNivelActual) {
-//			terminoNivelActual = manager->pasajeDeNivel();
-//            SDL_RenderPresent(gRenderer);
-//            SDL_Delay(2000);
-//            quit = quit || manager->estadoJuego();
-//        } else {
-//			quit = quit || manager->estadoJuego();
-//			SDL_RenderPresent(gRenderer);
-//		}
+        jugador->render(posJugador, posHelper1, argHelper1, posHelper2, argHelper2);
+		terminoNivelActual = argHelper1 > 180;
+        if (terminoNivelActual) {
+            argHelper1 = 0;
+            manager->renderNivelIntermedio();
+			quit = !manager->cambiarNivel(1);
+            SDL_RenderPresent(gRenderer);
+            SDL_Delay(2000);
+        } else {
+			SDL_RenderPresent(gRenderer);
+		}
     }
 }
 

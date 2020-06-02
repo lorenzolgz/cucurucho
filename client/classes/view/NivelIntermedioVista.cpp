@@ -6,9 +6,9 @@
 #include "../GraphicRenderer.h"
 #include <string>
 
-NivelIntermedioVista::NivelIntermedioVista(int ancho, int alto, int inicioEnEjeY) {
+NivelIntermedioVista::NivelIntermedioVista(const std::string fondoFilename) {
     NivelIntermedioVista::gRenderer = GraphicRenderer::getInstance();
-    NivelIntermedioVista::posCampo = { 0, inicioEnEjeY, ancho, alto };
+    nuevoFondo(fondoFilename);
     l->info("La vista del Nivel Intermedio fue creada correctamente.");
 }
 
@@ -18,6 +18,5 @@ FondoVista* NivelIntermedioVista::nuevoFondo(const std::string &fileName) {
 }
 
 void NivelIntermedioVista::render() {
-    SDL_RenderSetViewport(gRenderer, &posCampo);
     fondo->render();
 }

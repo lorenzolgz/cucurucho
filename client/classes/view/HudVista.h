@@ -13,7 +13,7 @@ const int HUD_SRC_ALTO = 96;
 class HudVista {
 public:
 	HudVista();
-	void render(Vector posicion);
+	void render();
 	void nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq);
 
 private:

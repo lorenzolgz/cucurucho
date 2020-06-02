@@ -5,8 +5,8 @@
 #include "FondoVista.h"
 #include "../GraphicRenderer.h"
 #include "../GeneradorDeTexturas.h"
-#include "../model/Nivel.h"
 #include "HudVista.h"
+#include "ManagerVista.h"
 #include <iostream>
 
 

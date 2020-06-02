@@ -5,6 +5,8 @@
 #ifndef CUCURUCHO_MANAGERVISTA_H
 #define CUCURUCHO_MANAGERVISTA_H
 
+#define PANTALLA_ANCHO 1280
+#define PANTALLA_ALTO 800
 
 #include <list>
 #include "JugadorVista.h"
@@ -16,7 +18,9 @@ class ManagerVista {
 public:
     ManagerVista(JugadorVista* jugador, std::vector<NivelConfiguracion*> listNiveles, int nivelActual, int ancho, int alto);
     void render();
-    void cambiarNivel(int nivel);
+    bool cambiarNivel(int nivel);
+
+    void renderNivelIntermedio();
 
 private:
     JugadorVista* jugador;
@@ -27,6 +31,7 @@ private:
     int alto;
     int ancho;
     float posX;
+
 };
 
 

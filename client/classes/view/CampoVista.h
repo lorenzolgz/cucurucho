@@ -8,7 +8,7 @@
 
 class CampoVista {
 public:
-	CampoVista(int ancho, int alto, int inicioEnEjeY);
+	CampoVista();
 	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad, float *velocidadMovilX);
 	void render();
 

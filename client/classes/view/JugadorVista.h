@@ -15,7 +15,7 @@ class HelperVista;
 class JugadorVista {
 public:
     JugadorVista(ColoresJugador jugador);
-	void render(Vector posicion, int contadorVelocidadY);
+	void render(Vector posicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2);
 	int getContador() const;
 
 private:
@@ -25,10 +25,13 @@ private:
 	HelperVista* helperBelow;
     ColoresJugador colores = ColoresJugador({}, {});
 	int contador;
+	int contadorVelocidadY;
 	Vector posicion;
 
 	void colorGlow();
     void colorShip(SDL_Rect srcrect, SDL_Rect dstrect);
+
+	void calcularVelocidadY(Vector nuevaPosicion);
 };
 
 
