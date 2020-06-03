@@ -16,42 +16,27 @@ void ControladorDeSesiones::iniciarSesion(){
 
     //2. TODO guarda los datos en el json
     //3. si el user_id ya existe, verificar que la contraseña sea correcta
-    //si no lo es, el usuario tendrá hasta ? intentos, sino se cerrará la conexión y se lo eliminará del json
+    //si el user no está registrado, se cerrará la conexión y se lo eliminará del json
 
-    if(!datosCorrectos(usuario, contrasenia)){
+    if(!datosCorrectos(usuario, contrasenia)) {
         //volver a pedir
         string usuarioNuevo, contraseniaNueva;
         bool sonCorrectos;
         sonCorrectos = datosCorrectos(usuarioNuevo, contraseniaNueva);
-        if(!sonCorrectos){
+        if (!sonCorrectos) {
+            //se le informa al cliente que no se le permitirá jugar
             this->servidor->cerrarConexion();
-            //eliminar datos del json
-            //l->info("Sesión del" + usuario + "cerrada por ingresar contraseña incorrecta");
-        } else {
-            guardarUsuarioYContrasenia(usuarioNuevo, contraseniaNueva);
-            //l->info("Sesión del" + usuarioNuevo + "iniciada");
         }
-    } else {
-        guardarUsuarioYContrasenia(usuario, contrasenia);
-        //l->info("Sesión del" + usuario + "iniciada");
     }
-
 }
 
 bool ControladorDeSesiones::datosCorrectos(string usuario, string contrasenia){
     bool correcta = true;
 
     /*
-     * chequear en el json. Dar 3 intentos
+     * chequear en el json si el usuario ya existe y si la contraseña es la correcta (ver el tema de los intentos con la pass)
      */
 
     return correcta;
 }
 
-void ControladorDeSesiones::guardarUsuarioYContrasenia(string usuario, string contrasenia){
-
-    /*
-     * guardar en el json
-     */
-
-}
