@@ -18,7 +18,7 @@ const int HELPER_SRC_ALTO = 48;
 class HelperVista {
 public:
 	HelperVista(ColoresJugador coloresJugador);
-	void render(Vector posicion, double angulo);
+	void render(struct EstadoHelper estadoHelper);
 
 private:
 	SDL_Renderer* gRenderer;

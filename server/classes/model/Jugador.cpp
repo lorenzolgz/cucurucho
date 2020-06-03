@@ -8,7 +8,6 @@ Jugador::Jugador(int x, int y) {
 	Jugador::velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
-	Jugador::contadorVelocidadY = 0;
 
 	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
@@ -27,12 +26,8 @@ void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, b
     double vx = 0, vy = 0;
     if (arriba) {
         vy = -vParcial;
-        contadorVelocidadY += contadorVelocidadY < 14;
     } else if (abajo) {
         vy = vParcial;
-        contadorVelocidadY -= contadorVelocidadY > -14;
-    } else {
-        contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);
     }
 
     if (izquierda) {
@@ -66,7 +61,6 @@ struct EstadoJugador Jugador::state() {
 	struct EstadoJugador view;
 	view.posicionX = posicion.getX();
 	view.posicionY = posicion.getY();
-	view.contadorVelocidadY = contadorVelocidadY;
 	view.helper1 = helperAbove->state();
 	view.helper2 = helperBelow->state();
 	return view;

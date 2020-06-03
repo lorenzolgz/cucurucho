@@ -21,7 +21,6 @@ struct EstadoHelper {
 struct EstadoJugador {
 	int posicionX;
 	int posicionY;
-	int contadorVelocidadY;
 	EstadoHelper helper1;
 	EstadoHelper helper2;
 };

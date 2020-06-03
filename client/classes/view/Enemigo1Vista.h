@@ -4,6 +4,7 @@
 #include <SDL_render.h>
 #include <string>
 #include "../Vector.h"
+#include "../../../commons/protocols/protocolo.h"
 
 const int ENEMIGO1_SRC_ANCHO = 66;
 const int ENEMIGO1_SRC_ALTO = 66;
@@ -11,7 +12,7 @@ const int ENEMIGO1_SRC_ALTO = 66;
 class Enemigo1Vista {
 public:
 	Enemigo1Vista();
-	void render(Vector posicion, int velociadadX);
+	void render(EstadoEnemigo estadoEnemigo);
 
 private:
 	SDL_Renderer* gRenderer;

@@ -2,6 +2,7 @@
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "Nivel.h"
+#include "../../../commons/utils/Constantes.h"
 
 
 Enemigo1::Enemigo1(float x, float y, float velocidadX) {

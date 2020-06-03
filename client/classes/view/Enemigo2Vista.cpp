@@ -13,7 +13,8 @@ Enemigo2Vista::Enemigo2Vista() {
 }
 
 
-void Enemigo2Vista::render(Vector posicion, int velocidadX) {
+void Enemigo2Vista::render(EstadoEnemigo estadoEnemigo) {
+    Vector posicion = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
 	SDL_Rect srcrect = {0, 0 + ENEMIGO2_SRC_ALTOS, ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
 	SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), ENEMIGO2_SRC_ANCHO, ENEMIGO2_SRC_ALTOS};
 

@@ -41,7 +41,6 @@ private:
     Vector posicion;
     Vector velocidad;
     double velocidadEscalar;
-    int contadorVelocidadY;
 
 	CampoMovil* campo;
 	Helper* helperAbove;

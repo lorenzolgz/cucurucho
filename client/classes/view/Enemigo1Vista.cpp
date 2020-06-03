@@ -12,7 +12,9 @@ Enemigo1Vista::Enemigo1Vista() {
 	l->info("La vista del Enemigo 1 fue creada correctamente.");
 }
 
-void Enemigo1Vista::render(Vector posicion, int velocidadX) {
+void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {
+    Vector posicion = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
+    int velocidadX = 2;
 	SDL_Rect srcrect = {0 + ENEMIGO1_SRC_ANCHO * (velocidadX < 10) * (velocidadX > 5)
 						+ ENEMIGO1_SRC_ANCHO * 2 * (velocidadX > 10) * (velocidadX < 15)
 						+ ENEMIGO1_SRC_ANCHO * 3 * (velocidadX > 15),

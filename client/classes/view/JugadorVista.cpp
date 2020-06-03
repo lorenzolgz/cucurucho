@@ -10,13 +10,32 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
 	JugadorVista::contador = 0;
+	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
     helperAbove = new HelperVista(colores);
     helperBelow = new HelperVista(colores);
 	l->info("La vista del jugador fue creada correctamente.");
 }
 
-void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
+
+void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
+    if ((posicion - nuevaPosicion).getY() > 1) {
+        contadorVelocidadY += contadorVelocidadY < 14;
+    } else if ((posicion - nuevaPosicion).getY() < -1) {
+        contadorVelocidadY -= contadorVelocidadY > -14;
+    } else {
+        contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);
+    }
+}
+
+
+//void JugadorVista::render(Vector nuevaPosicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2) {
+void JugadorVista::render(struct EstadoJugador estadoJugador) {
+    Vector nuevaPosicion = Vector(estadoJugador.posicionX, estadoJugador.posicionY);
+
+    calcularVelocidadY(nuevaPosicion);
+    posicion = nuevaPosicion;
+
 	SDL_Rect srcrect = {JUGADOR_SRC_ANCHO + JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 						0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
 
@@ -28,8 +47,8 @@ void JugadorVista::render(Vector posicion, int contadorVelocidadY) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     colorShip(srcrect, dstrect);
 
-    helperAbove->render(posicion + Vector(contador * 3, 40), 0);
-    helperBelow->render(posicion + Vector(contador * 3, -40), 0);
+    helperAbove->render(estadoJugador.helper1);
+    helperBelow->render(estadoJugador.helper2);
 
 	colorGlow();
 	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),

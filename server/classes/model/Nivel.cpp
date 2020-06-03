@@ -8,6 +8,7 @@
 #include <queue>
 #include <iterator>
 #include <list>
+#include "../../../commons/utils/Constantes.h"
 
 Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador) {
 	Nivel::hud = new Hud();

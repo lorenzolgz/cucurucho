@@ -64,7 +64,6 @@ add_executable(cliente
         client/classes/view/Colores.h
         client/classes/view/ManagerVista.cpp
         client/classes/view/ManagerVista.h
-        client/classes/model/Nivel.h
         client/classes/config/FondoConfiguracion.cpp
         client/classes/config/FondoConfiguracion.h
         client/classes/config/NivelConfiguracion.cpp
@@ -75,7 +74,7 @@ add_executable(cliente
         commons/connections/ConexionCliente.h
         commons/connections/IniciadorComunicacion.cpp
         commons/connections/IniciadorComunicacion.h
-        commons/protocols/protocolo.h)
+        commons/protocols/protocolo.h commons/utils/Constantes.h)
 
 add_executable(servidor
         server/main.cpp
@@ -126,7 +125,7 @@ add_executable(servidor
         server/classes/model/Partida.h
         server/classes/model/EntidadEnemigo.h
         server/classes/states/EstadoInternoCampoMovil.h
-        server/classes/states/EstadoInternoNivel.h)
+        server/classes/states/EstadoInternoNivel.h commons/utils/Constantes.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

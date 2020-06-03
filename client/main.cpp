@@ -6,7 +6,6 @@
 #include <SDL2/SDL_image.h>
 #include "../commons/utils/Log.h"
 #include "classes/GraphicRenderer.h"
-#include "classes/model/Nivel.h"
 #include "classes/view/Titulo.h"
 #include "classes/view/JugadorVista.h"
 #include "classes/view/ManagerVista.h"
@@ -14,6 +13,8 @@
 #include "../commons/connections/ConexionCliente.h"
 #include "../commons/connections/IniciadorComunicacion.h"
 #include "classes/config/NivelConfiguracion.h"
+#include "../server/classes/states/EstadoInternoNivel.h"
+#include "../commons/utils/Constantes.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -99,7 +100,8 @@ void close() {
 
 std::vector<NivelConfiguracion*> mockConfig() {
     std::vector<NivelConfiguracion*> nivelConfig;
-    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 36000));
+    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 1200));
+    nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos2.json", 1), "cleared_con_nave2.png", 2, 1200));
     return nivelConfig;
 }
 
@@ -116,10 +118,15 @@ void mainLoop() {
     int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion =  new IniciadorComunicacion(ip_address, port);
     ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
-    struct Comando client_command;
+    struct Comando client_command = { false, false, false, false };
+    conexionCliente->enviarMensaje(&client_command);
+    struct EstadoTick estadoTick;
+    struct InformacionNivel informacionNivel;
+
+    // TODO: Cambios de niveles.
+    int nuevoNivel = 1;
 
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
-
 
     while (!quit) {
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -152,22 +159,32 @@ void mainLoop() {
         // Send data (command)
         conexionCliente->enviarMensaje(&client_command);
 
+        if (nuevoNivel) {
+            l->info("Nuevo nivel recibido: " + std::to_string(nuevoNivel));
+            informacionNivel = conexionCliente->recibirInformacionNivel();
+            nuevoNivel = 0;
+        } else {
+            estadoTick = conexionCliente->recibirEstadoTick();
+            nuevoNivel = estadoTick.nuevoNivel;
+        }
 
         //Render texture to screen
-		manager->render();
-        jugador->render(Vector(200, 200), 0);
-		SDL_RenderPresent(gRenderer);
-//		terminoNivelActual = manager->terminoNivelActual();
-//        if (terminoNivelActual) {
-//			terminoNivelActual = manager->pasajeDeNivel();
-//            SDL_RenderPresent(gRenderer);
-//            SDL_Delay(2000);
-//            quit = quit || manager->estadoJuego();
-//        } else {
-//			quit = quit || manager->estadoJuego();
-//			SDL_RenderPresent(gRenderer);
-//		}
+		manager->render(estadoTick);
+        jugador->render(estadoTick.estadoJugador);
+
+        // TODO: Cambios de niveles
+		terminoNivelActual = false;
+        if (terminoNivelActual) {
+            manager->renderNivelIntermedio();
+			quit = !manager->cambiarNivel(1);
+            SDL_RenderPresent(gRenderer);
+            SDL_Delay(2000);
+        } else {
+			SDL_RenderPresent(gRenderer);
+		}
     }
+
+    conexionCliente->cerrarConexion();
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {

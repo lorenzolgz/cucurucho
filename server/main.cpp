@@ -144,7 +144,6 @@ void processData(Partida* partida, struct Comando command, struct InformacionNiv
 void initializeData(struct EstadoTick* estadoTick) {
 	estadoTick->estadoJugador.posicionX = -1000;
 	estadoTick->estadoJugador.posicionY = -1000;
-	estadoTick->estadoJugador.contadorVelocidadY = 0;
 
 	estadoTick->estadoJugador.helper1.posicionX = -1000;
 	estadoTick->estadoJugador.helper1.posicionY = -1000;

@@ -13,7 +13,10 @@ HelperVista::HelperVista(ColoresJugador colores) {
     HelperVista::contador = 0;
 }
 
-void HelperVista::render(Vector posicion, double angulo) {
+void HelperVista::render(struct EstadoHelper estadoHelper) {
+	Vector posicion = Vector(estadoHelper.posicionX, estadoHelper.posicionY);
+	double angulo = estadoHelper.angulo;
+
     contador++;
     if (recorrido.size() > 20) recorrido.pop_back();
 	renderGlow(posicion, recorrido);

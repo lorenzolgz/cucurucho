@@ -3,9 +3,8 @@
 #include "../GraphicRenderer.h"
 #include "../Log.h"
 
-CampoVista::CampoVista(int ancho, int alto, int inicioEnEjeY) {
+CampoVista::CampoVista() {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();
-	CampoVista::posCampo = { 0, inicioEnEjeY, ancho, alto };
 	l->info("La vista del Campo fue creada correctamente.");
 }
 
@@ -20,8 +19,6 @@ FondoVista * CampoVista::nuevoFondo(const std::string &fileName, float xOffset, 
  * actualizan sus coordenadas en el campo.
  */
 void CampoVista::render() {
-	// Cambia el viewport por el que tiene asignado.
-	SDL_RenderSetViewport(gRenderer, &posCampo);
 
 	// Renderizar todos los fondos
 	for (FondoVista* fondo : fondos) {

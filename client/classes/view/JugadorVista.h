@@ -6,6 +6,8 @@
 #include "../Vector.h"
 #include "Colores.h"
 #include "HelperVista.h"
+#include "../../../commons/protocols/protocolo.h"
+
 
 const int JUGADOR_SRC_ANCHO = 96;
 const int JUGADOR_SRC_ALTO = 48;
@@ -15,7 +17,8 @@ class HelperVista;
 class JugadorVista {
 public:
     JugadorVista(ColoresJugador jugador);
-	void render(Vector posicion, int contadorVelocidadY);
+//    void render(Vector posicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2);
+    void render(struct EstadoJugador estadoJugador);
 	int getContador() const;
 
 private:
@@ -29,6 +32,10 @@ private:
 
 	void colorGlow();
     void colorShip(SDL_Rect srcrect, SDL_Rect dstrect);
+
+	void calcularVelocidadY(Vector nuevaPosicion);
+
+    int contadorVelocidadY;
 };
 
 

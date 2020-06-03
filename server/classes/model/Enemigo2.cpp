@@ -7,6 +7,8 @@
 const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
+#include "../../../commons/utils/Constantes.h"
+
 Enemigo2::Enemigo2(float x,float y, float velocidadX) {
     if (random() % 2 == 0) {
         x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
