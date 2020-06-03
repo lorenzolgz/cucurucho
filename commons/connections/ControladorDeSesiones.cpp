@@ -14,9 +14,8 @@ void ControladorDeSesiones::iniciarSesion(){
     //1. TODO pedirle un usuario y contraseña al cliente
     string usuario, contrasenia;
 
-    //2. TODO guarda los datos en el json
-    //3. si el user_id ya existe, verificar que la contraseña sea correcta
-    //si el user no está registrado, se cerrará la conexión y se lo eliminará del json
+    //2. si el user_id ya existe, verificar que la contraseña sea correcta
+    //si el user no está registrado, se cerrará la conexión
 
     if(!datosCorrectos(usuario, contrasenia)) {
         //volver a pedir
