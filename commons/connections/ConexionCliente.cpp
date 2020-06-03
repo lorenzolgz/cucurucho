@@ -41,7 +41,7 @@ struct InformacionNivel ConexionCliente::recibirInformacionNivel() {
 void ConexionCliente::enviarMensaje(struct Comando *comando) {
 	l->debug("Cliente por mandar mensaje: " + std::to_string(comando->arriba) + " " + std::to_string(comando->abajo) + " " + std::to_string(comando->izquierda)  + " " + std::to_string(comando->derecha));
 	if (sendData(&client_socket, comando) < 0) {
-		perror("Send Data Error");
+		perror("Send Data Error enviarMensaje");
 		exit(1);
 	}
 	l->debug("Cliente mando mensaje");

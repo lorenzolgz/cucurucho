@@ -6,6 +6,7 @@
 #include "../commons/utils/Log.h"
 #include "classes/model/Partida.h"
 #include "classes/config/ConfiguracionParser.h"
+#include "../commons/connections/ControladorDeSesiones.h"
 
 #define BACKUP_CONFIG "../server/config/backup.json"
 
@@ -55,6 +56,12 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
 	l->info("Connection accepted");
+
+
+	 //logueo con user y password
+	 ControladorDeSesiones* controlador = new ControladorDeSesiones(conexionServidor);
+	 controlador->iniciarSesion();
+
 
 	bool quit = false;
 	struct Comando client_command;
