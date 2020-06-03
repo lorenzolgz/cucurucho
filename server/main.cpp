@@ -70,9 +70,20 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
+	bool closedSocket = false;
 
 	//keep communicating with client
 	while (!quit) {
+
+        // Reaching this point means the client socket has been closed
+        // and the server is no longer available to write on the client socket
+	    /*if(closedSocket){
+            conexionServidor->cerrarConexion();
+            printf("Client socket closed\n");
+            conexionServidor = aceptadorConexiones->aceptarConexion();
+            // conexionServidor = aceptadorConexiones->aceptarConexion();
+            closedSocket = false;
+        }*/
 
 		// WIP. Para controlar la cantidad de ticks.
 		t2 = clock();
@@ -99,10 +110,14 @@ int mainLoop(int puerto, Configuracion* config) {
 
 		// Send data (view)
 		if (nuevoNivel) {
-			conexionServidor->enviarInformacionNivel(&informacionNivel);
-			nuevoNivel = false;
-		} else {
-			conexionServidor->enviarEstadoTick(&estadoTick);
+			if(conexionServidor->enviarInformacionNivel(&informacionNivel) < 0){
+			    conexionServidor = aceptadorConexiones->reconectar();
+			}
+            nuevoNivel = false;
+        } else {
+            if(conexionServidor->enviarEstadoTick(&estadoTick) < 0){
+                conexionServidor = aceptadorConexiones->reconectar();
+            }
 			nuevoNivel = estadoTick.nuevoNivel;
 		}
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);

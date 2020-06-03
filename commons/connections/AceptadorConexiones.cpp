@@ -54,7 +54,7 @@ void AceptadorConexiones::escuchar() {
 	// sockfd -> file descriptor that refers to estadosEnemigos socket,in this case of type SOCK_STREAM
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
 	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
-	if (listen(this->server_socket, 3) < 0) {
+	if (listen(this->server_socket, 100) < 0) {
 		perror("Listen failed. Error");
 		exit(1);
 	}
@@ -78,6 +78,23 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	}
 
 	return new ConexionServidor(client_socket);
+}
+
+ConexionServidor *AceptadorConexiones::reconectar() {
+    struct sockaddr_in client_addr;
+    int client_addrlen;
+
+    // Accept incoming connection from estadosEnemigos client
+    // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+    // sockfd -> socket that has been created with socket(), bound to estadosEnemigos local address with bind(), and is listening for connections after estadosEnemigos listen()
+    // addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
+    // addrlen -> size of sockaddr structure for the CLIENT.
+    int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
+    while(client_socket < 0){
+        client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
+    }
+
+    return new ConexionServidor(client_socket);
 }
 
 void AceptadorConexiones::dejarDeEscuchar() {

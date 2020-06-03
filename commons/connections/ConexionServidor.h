@@ -10,8 +10,8 @@ public:
 	ConexionServidor(int client_socket);
 
 	struct Comando recibirMensaje();
-	void enviarEstadoTick(struct EstadoTick* estadoTick);
-	void enviarInformacionNivel(struct InformacionNivel* header);
+	int enviarEstadoTick(struct EstadoTick* estadoTick);
+	int enviarInformacionNivel(struct InformacionNivel* header);
 	void cerrarConexion();
 
 private:

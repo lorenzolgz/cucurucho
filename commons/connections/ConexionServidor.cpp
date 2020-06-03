@@ -14,25 +14,29 @@ struct Comando ConexionServidor::recibirMensaje() {
 	struct Comando client_command;
 
 	if (receiveData(&client_socket, &client_command) < 0) {
-		perror("Receive Data Error");
-		exit(1);
+		perror("recibirMensaje receiveData -1");
+		//exit(1);
 	}
 
 	return client_command;
 }
 
-void ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
+int ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	if (sendDataEstadoTick(&client_socket, estadoTick) < 0) {
-		perror("Send Data Error");
-		exit(1);
+		perror("enviarEstadoTick -1");
+		return -1;
+		//exit(1);
 	}
+	return 0;
 }
 
-void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
+int ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
 	if (sendDataInformacionNivel(&client_socket, informacionNivel) < 0) {
-		perror("Send Data Error");
-		exit(1);
+        perror("enviarInformacionNivel -1");
+        return -1;
+        //exit(1);
 	}
+	return 0;
 }
 
 void ConexionServidor::cerrarConexion() {
