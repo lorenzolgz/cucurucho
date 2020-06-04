@@ -11,31 +11,39 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor)
 
 void ControladorDeSesiones::iniciarSesion(){
 
-    //1. TODO pedirle un usuario y contraseña al cliente
-    string usuario, contrasenia;
+    //TODO pedirle un usuario y contraseña al cliente
+    string usuario = "ailu";
+    string contrasenia = "5678";
 
-    //2. si el user_id ya existe, verificar que la contraseña sea correcta
-    //si el user no está registrado, se cerrará la conexión
-
-    if(!datosCorrectos(usuario, contrasenia)) {
-        //volver a pedir
-        string usuarioNuevo, contraseniaNueva;
-        bool sonCorrectos;
-        sonCorrectos = datosCorrectos(usuarioNuevo, contraseniaNueva);
-        if (!sonCorrectos) {
-            //se le informa al cliente que no se le permitirá jugar
-            this->servidor->cerrarConexion();
-        }
+    //verifico que el usuario esté registrado
+    if(!usuarioEstaRegistrado(usuario, contrasenia)) {
+        //TODO se le informa al cliente que no se le permitirá jugar
+        this->servidor->cerrarConexion();
     }
 }
 
-bool ControladorDeSesiones::datosCorrectos(string usuario, string contrasenia){
-    bool correcta = true;
+bool ControladorDeSesiones::usuarioEstaRegistrado(string usuario, string contrasenia)
+{
+    bool usuarioRegistrado;
+    bool contraseniaCorrecta;
 
-    /*
-     * chequear en el json si el usuario ya existe y si la contraseña es la correcta (ver el tema de los intentos con la pass)
-     */
+    //abro json de usuarios
+    Json::Value jsonUsuarios, usuarios;
+    ifstream archivo(JSON_USUARIOS, ifstream::binary);
+    archivo >> jsonUsuarios;
+    usuarios = jsonUsuarios["usuariosRegistrados"];
 
-    return correcta;
+    //chequeo si el usuario está registrado
+    usuarioRegistrado = !(usuarios[usuario].asString().empty());
+
+    //si está registrado, verifico la contraseña
+    if(usuarioRegistrado){
+        contraseniaCorrecta = (usuarios[usuario].asString() == contrasenia);
+        if(!contraseniaCorrecta){
+            //TODO pedirle al cliente que vuelva a ingresarla o anular la conexion (ver)
+        }
+    }
+
+    return usuarioRegistrado;
 }
 

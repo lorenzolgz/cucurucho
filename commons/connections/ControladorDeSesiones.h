@@ -5,8 +5,11 @@
 #ifndef CUCURUCHO_CONTROLADORDESESIONES_H
 #define CUCURUCHO_CONTROLADORDESESIONES_H
 
+#define JSON_USUARIOS "../server/usuarios.json"
 #include "ConexionServidor.h"
 #include <iostream>
+#include <jsoncpp/json/json.h>
+#include <fstream>
 using namespace std;
 
 class ControladorDeSesiones {
@@ -16,8 +19,7 @@ public:
 
 private:
     ConexionServidor* servidor;
-    bool datosCorrectos(string usuario, string contrasenia);
-    void guardarUsuarioYContrasenia(string usuario, string contrasenia);
+    bool usuarioEstaRegistrado(string usuario, string contrasenia);
 };
 
 
