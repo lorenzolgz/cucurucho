@@ -15,7 +15,7 @@
 Log* l;
 
 void initializeData(struct EstadoTick* estadoTick);
-void procesarNivel(struct InformacionNivel* informacionNivel,struct EstadoTick* estadoTick, Partida* partida);
+void procesarNivel(struct InformacionNivel* informacionNivel, Partida* partida);
 void processData(Partida* partida, struct Comando action,struct EstadoTick* estadoTick);
 void processNivel(struct InformacionNivel* informacionNivel);
 int mainLoop(int puerto, Configuracion* configuracion);
@@ -103,10 +103,10 @@ int mainLoop(int puerto, Configuracion* config) {
 //        else l->error("mismo nivel");
 
         if (nuevoNivel){
-            procesarNivel(&informacionNivel, &estadoTick,partida);
+            procesarNivel(&informacionNivel,partida);
 
 		    // Send Data
-            l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
+            l->error("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
             conexionServidor->enviarInformacionNivel(&informacionNivel);
             nuevoNivel = false;
 		} else {
@@ -169,21 +169,8 @@ void initializeData(struct EstadoTick* estadoTick) {
 	}
 }
 
-void procesarNivel(struct InformacionNivel* informacionNivel,struct EstadoTick* estadoTick, Partida* partida){
+void procesarNivel(struct InformacionNivel* informacionNivel, Partida* partida){
     informacionNivel->numeroNivel++;
     partida->setNextNivel(informacionNivel);
-
-    estadoTick->estadoJugador.posicionX = PANTALLA_ANCHO / 8;
-    estadoTick->estadoJugador.posicionY = PANTALLA_ALTO / 2;
-    estadoTick->estadoJugador.contadorVelocidadY = 0;
-
-    estadoTick->estadoJugador.helper1.posicionX = PANTALLA_ANCHO / 8 ;
-    estadoTick->estadoJugador.helper1.posicionY = PANTALLA_ALTO / 2 + 10;
-    estadoTick->estadoJugador.helper1.angulo = 0;
-
-    estadoTick->estadoJugador.helper2.posicionX = PANTALLA_ANCHO / 8;
-    estadoTick->estadoJugador.helper2.posicionY = PANTALLA_ALTO / 2 - 10;
-    estadoTick->estadoJugador.helper2.angulo = 0;
-
 
 }

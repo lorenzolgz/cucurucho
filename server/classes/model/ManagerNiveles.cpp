@@ -47,9 +47,8 @@ bool ManagerNiveles::pasajeDeNivel(){
     nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
-    listNiveles.pop_front();
-    if (listNiveles.empty()) return true;
     nivelActual = configurarNuevoNivel();
+    listNiveles.pop_front();
     return false;
 }
 

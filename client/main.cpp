@@ -210,6 +210,7 @@ void mainLoop() {
 			informacionNivel = conexionCliente->recibirInformacionNivel();
             l->error("Nuevo nivel recibido : " + std::to_string(informacionNivel.numeroNivel));
             manager->pasajeDeNivel(&informacionNivel);
+
             nuevoNivel = false;
 		} else {
 			estadoTick = conexionCliente->recibirEstadoTick();
@@ -248,9 +249,10 @@ void mainLoop() {
         if (nuevoNivel) {
             SDL_RenderPresent(gRenderer);
             SDL_Delay(2000);
-            quit = quit || manager->estadoJuego();
+            // Harcodeadisimo para que termine en el ultimo nivel
+            quit = quit || (informacionNivel.numeroNivel == 4);
         } else {
-			quit = quit || manager->estadoJuego();
+			quit = quit || (informacionNivel.numeroNivel == 4);
 			SDL_RenderPresent(gRenderer);
 		}
     }

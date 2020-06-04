@@ -56,7 +56,7 @@ void Partida::setNextNivel(InformacionNivel *informacionNivel) {
         strcpy(&informacionNivel->informacionFondo[i].pFondo[0],"\0");
     }
     nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
-//    nuevoNivel = managerNiveles->pasajeDeNivel();
+
 }
 
 bool Partida::terminoNivelActual(){
