@@ -17,6 +17,10 @@ const int ALINEACION_IZQUIERDA = 1;
 const int ALINEACION_DERECHA = 0;
 const int ALINEACION_CENTRO = 2;
 
+const int LETRA_ALTO = 24;
+const int LETRA_ANCHO = 24;
+const int ASCII_OFFSET = 32;
+
 class TextoVista {
 public:
 	TextoVista(std::string* texto, Vector posicion, const int color, int alineacion);
@@ -24,6 +28,7 @@ public:
     void render();
 
     void setTexto(const std::string texto);
+	void setPosicion(Vector posicion);
 
 private:
     std::string* texto;

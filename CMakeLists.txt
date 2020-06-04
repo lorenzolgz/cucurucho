@@ -74,7 +74,7 @@ add_executable(cliente
         commons/connections/ConexionCliente.h
         commons/connections/IniciadorComunicacion.cpp
         commons/connections/IniciadorComunicacion.h
-        commons/protocols/protocolo.h commons/utils/Constantes.h)
+        commons/protocols/protocolo.h commons/utils/Constantes.h client/classes/view/ToastVista.cpp client/classes/view/ToastVista.h)
 
 add_executable(servidor
         server/main.cpp

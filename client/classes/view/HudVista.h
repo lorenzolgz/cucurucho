@@ -6,6 +6,7 @@
 #include <vector>
 #include "../Vector.h"
 #include "TextoVista.h"
+#include "ToastVista.h"
 
 const int HUD_SRC_ANCHO = 960;
 const int HUD_SRC_ALTO = 96;
@@ -22,5 +23,6 @@ private:
 	std::vector<TextoVista*> textos;
 };
 
+extern ToastVista* toast;
 
 #endif //CUCURUCHO_HUDVISTA_H

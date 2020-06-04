@@ -22,7 +22,7 @@
 SDL_Window* gWindow = nullptr;
 
 Log* l;
-
+ToastVista* toast;
 
 void configurar(std::string nivelLog) {
 	if (!nivelLog.empty()) {
@@ -40,6 +40,7 @@ bool init() {
 	int anchoPantalla = PANTALLA_ANCHO;
 	int altoPantalla = PANTALLA_ALTO;
 	int escalaPantalla = 1;
+    toast = new ToastVista();
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {

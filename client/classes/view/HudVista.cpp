@@ -37,6 +37,10 @@ void HudVista::render() {
     for (TextoVista* c : textos){
         c->render();
     }
+
+    if (toast != nullptr) {
+        toast->render();
+    }
 }
 
 void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq) {

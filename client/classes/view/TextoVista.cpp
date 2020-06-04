@@ -6,9 +6,6 @@
 #include "../GeneradorDeTexturas.h"
 #include <string>
 
-const int LETRA_ALTO = 24;
-const int LETRA_ANCHO = 24;
-const int ASCII_OFFSET = 32;
 
 
 TextoVista::TextoVista(std::string* nuevoTexto, Vector posicion, const int color, int alineacion) {
@@ -50,4 +47,8 @@ void TextoVista::eRender(std::string texto, Vector posicion, const int color, in
     auto* t = new TextoVista(&texto, posicion, color, alineacion);
     t->render();
     delete t;
+}
+
+void TextoVista::setPosicion(Vector delta) {
+    posicion = delta;
 }
