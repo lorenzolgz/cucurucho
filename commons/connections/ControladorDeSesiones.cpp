@@ -28,17 +28,17 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(string usuario, string contras
     bool contraseniaCorrecta;
 
     //abro json de usuarios
-    Json::Value jsonUsuarios, usuarios;
+    Json::Value jsonUsuarios, contrasenias;
     ifstream archivo(JSON_USUARIOS, ifstream::binary);
     archivo >> jsonUsuarios;
-    usuarios = jsonUsuarios["usuariosRegistrados"];
+    contrasenias = jsonUsuarios["usuariosRegistrados"];
 
     //chequeo si el usuario está registrado
-    usuarioRegistrado = !(usuarios[usuario].asString().empty());
+    usuarioRegistrado = !(contrasenias[usuario].asString().empty());
 
     //si está registrado, verifico la contraseña
     if(usuarioRegistrado){
-        contraseniaCorrecta = (usuarios[usuario].asString() == contrasenia);
+        contraseniaCorrecta = (contrasenias[usuario].asString() == contrasenia);
         if(!contraseniaCorrecta){
             //TODO pedirle al cliente que vuelva a ingresarla o anular la conexion (ver)
         }
