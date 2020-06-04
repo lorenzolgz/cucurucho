@@ -144,7 +144,8 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 
 FondoConfiguracion* ConfiguracionParser::parsearFondo(Json::Value fondoJson, int nivel) {
 	try {
-		std::string archivo = fondoJson["archivo"].asString();
+		char archivo[LARGO_PATH];
+		strcpy(archivo, fondoJson["archivo"].asString().c_str());
 		double velocidad = fondoJson["velocidad"].asDouble();
 
 		return new FondoConfiguracion(archivo, velocidad);
@@ -167,8 +168,8 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fo
 	return fondosConfiguracion;
 }
 
-std::string ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON) {
-    std::string fondosJson = nivelJSON["fin"].asString();
+const char* ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON) {
+    const char* fondosJson = nivelJSON["fin"].asString().c_str();
     return fondosJson;
 }
 

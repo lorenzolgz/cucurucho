@@ -4,6 +4,8 @@
 
 #define MAX_ENEMIGOS 15
 #define LARGO_RECURSO 10
+#define MAX_FONDOS 15
+#define LARGO_PATH 255
 
 struct Comando {
 	int arriba;
@@ -38,8 +40,15 @@ struct EstadoTick {
 	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
 };
 
+struct InformacionFondo{
+    float pVelocidad;
+    char pFondo[LARGO_PATH];
+};
+
 struct InformacionNivel {
-	int muchaData;
+	int numeroNivel;
+	InformacionFondo informacionFondo[MAX_FONDOS];
+	char informacionFinNivel[LARGO_PATH];
 };
 
 

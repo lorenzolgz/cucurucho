@@ -65,6 +65,7 @@ void configurar(string archivoConfig, string nivelLog) {
     l->info("Ancho pantalla: " + std::to_string(config->getAnchoPantalla()));
     l->info("Escala pantalla: " + std::to_string(config->getEscalaPantalla()));
     l->info("Nivel de Log: " + nivelLog);
+
 }
 
 
@@ -206,9 +207,10 @@ void mainLoop() {
 		//--------------------
 		// Receive data (view)
 		if (nuevoNivel) {
-			l->info("Nuevo nivel recibido: " + std::to_string(nuevoNivel));
 			informacionNivel = conexionCliente->recibirInformacionNivel();
-			nuevoNivel = 0;
+            l->error("Nuevo nivel recibido : " + std::to_string(informacionNivel.numeroNivel));
+            manager->pasajeDeNivel(&informacionNivel);
+            nuevoNivel = false;
 		} else {
 			estadoTick = conexionCliente->recibirEstadoTick();
 			nuevoNivel = estadoTick.nuevoNivel;
@@ -241,11 +243,9 @@ void mainLoop() {
 		jugador->setEstado(estadoTick.estadoJugador);
 
 		manager->tick();
-		terminoNivelActual = manager->terminoNivelActual();
 
 
-        if (terminoNivelActual) {
-			terminoNivelActual = manager->pasajeDeNivel();
+        if (nuevoNivel) {
             SDL_RenderPresent(gRenderer);
             SDL_Delay(2000);
             quit = quit || manager->estadoJuego();

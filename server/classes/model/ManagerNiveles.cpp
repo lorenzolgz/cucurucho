@@ -5,6 +5,7 @@
 #include "ManagerNiveles.h"
 #include "Hud.h"
 #include "../../../commons/utils/Log.h"
+#include "../config/NivelConfiguracion.h"
 
 ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
     ancho = config->getAnchoPantalla();
@@ -50,6 +51,11 @@ bool ManagerNiveles::pasajeDeNivel(){
     if (listNiveles.empty()) return true;
     nivelActual = configurarNuevoNivel();
     return false;
+}
+
+NivelConfiguracion *ManagerNiveles::setNextNivel() {
+    if (listNiveles.empty()) return nullptr;
+    return listNiveles.front();
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state() {

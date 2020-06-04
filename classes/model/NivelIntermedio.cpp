@@ -5,7 +5,7 @@
 #include "NivelIntermedio.h"
 #include "../view/FondoVista.h"
 
-NivelIntermedio::NivelIntermedio(int ancho, int alto, int inicioEnEjeY,const std::string &archivo) {
+NivelIntermedio::NivelIntermedio(int ancho, int alto, int inicioEnEjeY,char* archivo) {
     l->info("El Nivel Intermedio fue creado correctamente.");
 }
 

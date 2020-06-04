@@ -4,21 +4,29 @@
 #include <list>
 #include <string>
 #include "EnemigosConfiguracion.h"
+#include "../../../classes/config/FondoConfiguracion.h"
 
 class NivelConfiguracion {
 public:
-	NivelConfiguracion(EnemigosConfiguracion *enemigos, std::string finalNivel, float velocidad, float largo);
 
-	EnemigosConfiguracion *getEnemigos() const;
-	std::string getFinalNivel() const;
+    NivelConfiguracion(std::list<FondoConfiguracion *> fondos, EnemigosConfiguracion *enemigos, const char *finalNivel,
+                       float velocidad, float largo);
+
+    EnemigosConfiguracion *getEnemigos() const;
     float getVelocidad() const;
     float getLargo() const;
+    const std::list<FondoConfiguracion *> &getFondos() const;
+    void getFinalNivel(char *final) const;
+    const char *getFinalNivel() const;
 
 private:
+
+    std::list<FondoConfiguracion*> fondos;
 	EnemigosConfiguracion* enemigos;
-	std::string finalNivel;
+	char finalNivel[255];
 	float velocidad;
 	float largo;
+
 };
 
 

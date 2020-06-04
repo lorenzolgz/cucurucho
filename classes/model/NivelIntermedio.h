@@ -12,7 +12,7 @@
 
 class NivelIntermedio: public Ticker {
 public:
-    NivelIntermedio(int ancho, int alto, int inicioEnEjeY,const std::string &archivo);
+    NivelIntermedio(int ancho, int alto, int inicioEnEjeY,char* archivo);
     void tick() override;
 
 private:

@@ -24,14 +24,15 @@ public:
 	bool terminoNivelActual();
 	EstadoInternoCampoMovil state();
 
+    NivelConfiguracion *setNextNivel();
+    Nivel *configurarNuevoNivel();
+
 private:
     std::list<NivelConfiguracion *> listNiveles;
     Nivel* nivelActual;
     int alto;
     int ancho;
     Jugador* jugador;
-
-    Nivel *configurarNuevoNivel();
 
 };
 

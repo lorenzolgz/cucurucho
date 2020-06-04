@@ -1,15 +1,24 @@
 #include "NivelConfiguracion.h"
+#include "../../../classes/config/FondoConfiguracion.h"
 #include <string>
+#include <iostream>
+#include <cstring>
 
-NivelConfiguracion::NivelConfiguracion(EnemigosConfiguracion *enemigos, std::string finalNivel, float velocidad, float largo)
-		: enemigos(enemigos), finalNivel(finalNivel), velocidad(velocidad), largo(largo) {}
+NivelConfiguracion::NivelConfiguracion(std::list<FondoConfiguracion *> fondos, EnemigosConfiguracion *enemigos, const char* finalNivel, float velocidad, float largo)
+		: fondos(fondos), enemigos(enemigos), velocidad(velocidad), largo(largo) {
+    strcpy(NivelConfiguracion::finalNivel, finalNivel);
+}
 
 EnemigosConfiguracion *NivelConfiguracion::getEnemigos() const {
 	return enemigos;
 }
 
-std::string NivelConfiguracion::getFinalNivel() const{
-	return finalNivel;
+void NivelConfiguracion::getFinalNivel(char* final) const{
+    strcpy(final, finalNivel);
+}
+
+const char* NivelConfiguracion::getFinalNivel() const {
+    return finalNivel;
 }
 
 float NivelConfiguracion::getVelocidad() const {
@@ -18,4 +27,8 @@ float NivelConfiguracion::getVelocidad() const {
 
 float NivelConfiguracion::getLargo() const {
     return largo;
+}
+
+const std::list<FondoConfiguracion *> &NivelConfiguracion::getFondos() const {
+    return fondos;
 }

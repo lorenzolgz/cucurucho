@@ -1,18 +1,23 @@
 #include <time.h>
 #include <iostream>
+#include <cstring>
 #include "../commons/protocols/protocolo.h"
 #include "../commons/connections/ConexionServidor.h"
 #include "../commons/connections/AceptadorConexiones.h"
 #include "../commons/utils/Log.h"
 #include "classes/model/Partida.h"
 #include "classes/config/ConfiguracionParser.h"
+#include "classes/config/FondoConfiguracion.h"
+
 
 #define BACKUP_CONFIG "../server/config/backup.json"
 
 Log* l;
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida* partida, struct Comando action, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick);
+void procesarNivel(struct InformacionNivel* informacionNivel,struct EstadoTick* estadoTick, Partida* partida);
+void processData(Partida* partida, struct Comando action,struct EstadoTick* estadoTick);
+void processNivel(struct InformacionNivel* informacionNivel);
 int mainLoop(int puerto, Configuracion* configuracion);
 Configuracion* parsearConfiguracion();
 
@@ -51,24 +56,26 @@ int mainLoop(int puerto, Configuracion* config) {
 
 	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
 	aceptadorConexiones->escuchar();
-	ConexionServidor* coneccionServidor = aceptadorConexiones->aceptarConexion();
+	ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
 
-	// ConexionServidor* coneccionServidor = new ConexionServidor(client_socket);
+	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
 	l->info("Connection accepted");
 
 	bool quit = false;
 	struct Comando client_command;
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
+    bool terminoNivelActual = false;
 	clock_t t2, t1 = clock();
 
 	Partida* partida = new Partida(config);
 
 	int commands_count = 0;
 	int status = 0;
-	initializeData(&estadoTick);
+    initializeData(&estadoTick);
+    informacionNivel.numeroNivel = 0;
 
-	// Comunicacion inicial.
+    // Comunicacion inicial.
 	int nuevoNivel = 1;
 
 	//keep communicating with client
@@ -85,33 +92,39 @@ int mainLoop(int puerto, Configuracion* config) {
 		// printf("Commands count: %d\n", commands_count + 1);
 
 		// Receive data (command)
-		client_command = coneccionServidor->recibirMensaje();
+		client_command = conexionServidor->recibirMensaje();
 		// printf("Incomming command action: \n");
 		//--------------------
 
 		// Process model
-		processData(partida, client_command, &informacionNivel, &estadoTick);
+		processData(partida, client_command, &estadoTick);
 		//--------------------
+//        if (partida->terminoNivelActual()) l->error("CAMBIO DE NIVEL");
+//        else l->error("mismo nivel");
 
-		if (nuevoNivel) {
-			l->info("Enviando nuevo nivel:" + std::to_string(nuevoNivel));
-		}
+        if (nuevoNivel){
+            procesarNivel(&informacionNivel, &estadoTick,partida);
 
-		// Send data (view)
-		if (nuevoNivel) {
-			coneccionServidor->enviarInformacionNivel(&informacionNivel);
-			nuevoNivel = false;
+		    // Send Data
+            l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
+            conexionServidor->enviarInformacionNivel(&informacionNivel);
+            nuevoNivel = false;
 		} else {
-			coneccionServidor->enviarEstadoTick(&estadoTick);
+			conexionServidor->enviarEstadoTick(&estadoTick);
 			nuevoNivel = estadoTick.nuevoNivel;
-		}
+        }
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
 		//--------------------
 
 		commands_count++;
+        terminoNivelActual = partida->terminoNivelActual();
+        if (terminoNivelActual) {
+            terminoNivelActual = partida->pasajeDeNivel();
+            if (terminoNivelActual) l->debug("Pasaje de nivel");
+        }
 	}
 
-	coneccionServidor->cerrarConexion();
+	conexionServidor->cerrarConexion();
 	printf("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
 	printf("Server socket number closed\n");
@@ -119,12 +132,9 @@ int mainLoop(int puerto, Configuracion* config) {
 	return status;
 }
 
-void processData(Partida* partida, struct Comando command, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick) {
+void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick) {
 	partida->tick(command);
 	EstadoInternoNivel estadoInternoNivel = partida->state();
-
-	// Seteando informacionNivel
-	informacionNivel->muchaData = estadoInternoNivel.nuevoNivel;
 
 	// Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
@@ -157,4 +167,23 @@ void initializeData(struct EstadoTick* estadoTick) {
 	for (int i = 0; i < MAX_ENEMIGOS; i++) {
 		estadoTick->estadosEnemigos[i].clase = 0;
 	}
+}
+
+void procesarNivel(struct InformacionNivel* informacionNivel,struct EstadoTick* estadoTick, Partida* partida){
+    informacionNivel->numeroNivel++;
+    partida->setNextNivel(informacionNivel);
+
+    estadoTick->estadoJugador.posicionX = PANTALLA_ANCHO / 8;
+    estadoTick->estadoJugador.posicionY = PANTALLA_ALTO / 2;
+    estadoTick->estadoJugador.contadorVelocidadY = 0;
+
+    estadoTick->estadoJugador.helper1.posicionX = PANTALLA_ANCHO / 8 ;
+    estadoTick->estadoJugador.helper1.posicionY = PANTALLA_ALTO / 2 + 10;
+    estadoTick->estadoJugador.helper1.angulo = 0;
+
+    estadoTick->estadoJugador.helper2.posicionX = PANTALLA_ANCHO / 8;
+    estadoTick->estadoJugador.helper2.posicionY = PANTALLA_ALTO / 2 - 10;
+    estadoTick->estadoJugador.helper2.angulo = 0;
+
+
 }

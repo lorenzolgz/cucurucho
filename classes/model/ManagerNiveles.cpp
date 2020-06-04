@@ -14,17 +14,17 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
     jugador = jug;
 
     ManagerNiveles::listNiveles = config->getNiveles();
-    ManagerNiveles::nivelActual = configurarNuevoNivel();
 }
 
 
-Nivel* ManagerNiveles::configurarNuevoNivel() {
+Nivel* ManagerNiveles::configurarNuevoNivel(struct InformacionFondo* informacionFondo) {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
-	Nivel *nivel = new Nivel(nivelConfActual, jugador);
+	Nivel *nivel = new Nivel(nivelConfActual, jugador, informacionFondo);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
 
 	l->info("Nuevo nivel creado");
+    ManagerNiveles::nivelActual = nivel;
 	return nivel;
 }
 
@@ -32,29 +32,32 @@ void ManagerNiveles::tick() {
 	nivelActual->tick();
 }
 
-bool ManagerNiveles::terminoNivelActual() {
-    return nivelActual->termino();
-}
 
 bool ManagerNiveles::estadoJuego() {
 	return listNiveles.empty();
 }
 
-bool ManagerNiveles::pasajeDeNivel(){
+bool ManagerNiveles::pasajeDeNivel(struct InformacionNivel* informacionNivel){
     NivelConfiguracion* nivel = listNiveles.front();
-
-    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
+    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, informacionNivel->informacionFinNivel);
     nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
+    nivelActual = configurarNuevoNivel(informacionNivel->informacionFondo);
     listNiveles.pop_front();
-    if (listNiveles.empty()) return true;
-    nivelActual = configurarNuevoNivel();
-    return false;
+    return listNiveles.empty();
 }
 
 void ManagerNiveles::setEstado(std::list<EstadoEnemigo> estadosEnemigos) {
 	nivelActual->setEstado(estadosEnemigos);
 }
 
+//void ManagerNiveles::setFondo(struct InformacionFondo* informacionFondo) {
+//    // tomar los fondos que se pasan por parametro en vez de tomar los del backup
+//}
 
+void ManagerNiveles::setNivelIntermedio(char* archivo){
+    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, archivo);
+    nivelIntermedio->tick();
+    l->info("Transicion de niveles");
+}
