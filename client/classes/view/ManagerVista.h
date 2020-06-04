@@ -15,14 +15,13 @@
 
 class ManagerVista {
 public:
-    ManagerVista(JugadorVista* jugador, std::vector<NivelConfiguracion*> listNiveles, int nivelActual, int ancho, int alto);
+    ManagerVista(std::vector<NivelConfiguracion*> listNiveles, int nivelActual, int ancho, int alto);
     void render(EstadoTick estadoTick);
     bool cambiarNivel(int nivel);
 
     void renderNivelIntermedio();
 
 private:
-    JugadorVista* jugador;
     std::vector<NivelConfiguracion *> listNiveles;
     HudVista hud;
     CampoVista* campoVista;

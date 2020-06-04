@@ -19,7 +19,7 @@ struct EstadoTick ConexionCliente::recibirEstadoTick() {
 		exit(1);
 	}
 
-	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadoJugador.posicionX));
+	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadosJugadores[0].posicionX));
 
 	return estadoTick;
 }

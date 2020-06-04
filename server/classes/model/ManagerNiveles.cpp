@@ -6,10 +6,10 @@
 #include "Hud.h"
 #include "../../../commons/utils/Log.h"
 
-ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
+ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores) {
     ancho = config->getAnchoPantalla();
     alto = config->getAltoPantalla();
-    jugador = jug;
+    ManagerNiveles::jugadores = jugadores;
 
     ManagerNiveles::listNiveles = config->getNiveles();
     ManagerNiveles::nivelActual = configurarNuevoNivel();
@@ -18,8 +18,16 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
 
 Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
-	jugador->setPosicion(ancho / 8, alto / 2);
-	Nivel *nivel = new Nivel(nivelConfActual, jugador);
+
+
+
+    std::map<int, Jugador*>::iterator it;
+    int pos = 1;
+    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
+        pos++;
+    }
+	Nivel *nivel = new Nivel(nivelConfActual, jugadores);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
 						 nivelConfActual->getEnemigos()->getEnemigosClase2());
 

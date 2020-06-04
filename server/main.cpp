@@ -129,8 +129,12 @@ void processData(Partida* partida, struct Comando command, struct InformacionNiv
 	// Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
-	estadoTick->estadoJugador = estadoCampoMovil.estadoJugador;
 	int i = 0;
+	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
+	    estadoTick->estadosJugadores[i] = estadoJugador;
+	    i++;
+	}
+	i = 0;
 	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {
 		estadoTick->estadosEnemigos[i] = estadoEnemigo;
 		i++;
@@ -142,16 +146,14 @@ void processData(Partida* partida, struct Comando command, struct InformacionNiv
 }
 
 void initializeData(struct EstadoTick* estadoTick) {
-	estadoTick->estadoJugador.posicionX = -1000;
-	estadoTick->estadoJugador.posicionY = -1000;
-
-	estadoTick->estadoJugador.helper1.posicionX = -1000;
-	estadoTick->estadoJugador.helper1.posicionY = -1000;
-	estadoTick->estadoJugador.helper1.angulo = 0;
-
-	estadoTick->estadoJugador.helper2.posicionX = -1000;
-	estadoTick->estadoJugador.helper2.posicionY = -1000;
-	estadoTick->estadoJugador.helper2.angulo = 0;
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        estadoTick->estadosJugadores[i].posicionX = -1000;
+        estadoTick->estadosJugadores[i].posicionY = -1000;
+        estadoTick->estadosJugadores[i].helper1.posicionX = -1000;
+        estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
+        estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
+        estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
+    }
 
 	for (int i = 0; i < MAX_ENEMIGOS; i++) {
 		estadoTick->estadosEnemigos[i].clase = 0;

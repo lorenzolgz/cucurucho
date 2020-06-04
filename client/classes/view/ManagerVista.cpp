@@ -9,8 +9,8 @@
 #include "../../../commons/utils/Constantes.h"
 #include <utility>
 
-ManagerVista::ManagerVista(JugadorVista* jugador, std::vector<NivelConfiguracion *>  listNiveles, int nivelActual, int ancho, int alto)
-        : jugador(jugador), listNiveles(std::move(listNiveles)), nivelActual(nivelActual), alto(alto), ancho(ancho) {
+ManagerVista::ManagerVista(std::vector<NivelConfiguracion *>  listNiveles, int nivelActual, int ancho, int alto)
+        : listNiveles(std::move(listNiveles)), nivelActual(nivelActual), alto(alto), ancho(ancho) {
     hud = HudVista();
     posX = 0;
     campoVista = nullptr;

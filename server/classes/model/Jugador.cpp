@@ -79,7 +79,7 @@ int Jugador::getContador() const {
 }
 
 void Jugador::setPosicion(int x, int y) {
-    Jugador::posicion = Vector(x / 8, y / 2);
+    Jugador::posicion = Vector(x, y);
 }
 
 void Jugador::setCampo(CampoMovil *campo) {

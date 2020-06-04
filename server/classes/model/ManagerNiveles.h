@@ -16,7 +16,7 @@
 
 class ManagerNiveles : public Ticker {
 public:
-    ManagerNiveles(Configuracion* config, Jugador* jugador);
+    ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores);
 
     void tick() override;
     bool estadoJuego();
@@ -29,7 +29,7 @@ private:
     Nivel* nivelActual;
     int alto;
     int ancho;
-    Jugador* jugador;
+    std::map<int, Jugador*> jugadores;
 
     Nivel *configurarNuevoNivel();
 

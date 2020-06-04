@@ -3,22 +3,26 @@
 #include <string>
 #include "../../../commons/utils/Log.h"
 
-CampoMovil::CampoMovil(Jugador* jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
+CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);
 	CampoMovil::velocidadX = velocidadNivel;
 	CampoMovil::largoNivel = largoNivel;
     CampoMovil::ancho = ancho;
 	CampoMovil::alto = alto;
-	CampoMovil::jugador = jugador;
+	CampoMovil::jugadores = jugadores;
 
-	jugador->setCampo(this);
+    std::map<int, Jugador*>::iterator it;
+    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        it->second->setCampo(this);
+    }
 }
 
 void CampoMovil::tick() {
     posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
-    if (jugador) {
-        std::for_each(entidadesEnemigos.begin(), entidadesEnemigos.end(), [](EntidadEnemigo *t) { t->tick(); });
-        jugador->tick();
+    std::for_each(entidadesEnemigos.begin(), entidadesEnemigos.end(), [](EntidadEnemigo *t) { t->tick(); });
+    std::map<int, Jugador*>::iterator it;
+    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        it->second->tick();
     }
 }
 
@@ -53,14 +57,19 @@ bool CampoMovil::verificarPosicion() {
 
 EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
-
+    std::list<EstadoJugador> estadosJugadores;
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
 		estadosEnemigos.push_back(entidadEnemigo->state());
 	}
 
+    std::map<int, Jugador*>::iterator it;
+    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        estadosJugadores.push_back(it->second->state());
+    }
+
 	// EstadoInternoCampoMovil* estadoCampoMovil ;= new EstadoInternoCampoMovil(jugador->state(), estadosEnemigos)
 	EstadoInternoCampoMovil estadoCampoMovil;
-	estadoCampoMovil.estadoJugador = jugador->state();
+	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
 
 	return estadoCampoMovil;

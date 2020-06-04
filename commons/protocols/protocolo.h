@@ -3,6 +3,7 @@
 
 
 #define MAX_ENEMIGOS 15
+#define MAX_JUGADORES 4
 #define LARGO_RECURSO 10
 
 struct Comando {
@@ -33,8 +34,8 @@ struct EstadoEnemigo {
 
 struct EstadoTick {
 	int nuevoNivel;
-	EstadoJugador estadoJugador;
 	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
+    EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 
 struct InformacionNivel {

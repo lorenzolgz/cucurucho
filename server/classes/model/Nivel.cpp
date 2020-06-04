@@ -10,11 +10,11 @@
 #include <list>
 #include "../../../commons/utils/Constantes.h"
 
-Nivel::Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador) {
+Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
 	Nivel::hud = new Hud();
 	Nivel::velocidad = nivelConfig->getVelocidad();
 	Nivel::ancho = nivelConfig->getLargo();
-    Nivel::campo = crearCampo(nivelConfig, jugador);
+    Nivel::campo = crearCampo(nivelConfig, jugadores);
     Nivel::alto = campo->getAlto();
 }
 
@@ -74,10 +74,10 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     }
 }
 
-CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, Jugador* jugador) {
+CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
 	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
 	int inicioCampoEnEjeY = HUD_ALTO;
-	auto* campo = new CampoMovil(jugador, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
+	auto* campo = new CampoMovil(jugadores, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
 
 	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;

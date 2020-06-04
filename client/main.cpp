@@ -112,8 +112,14 @@ void mainLoop() {
     bool quit = false;
     bool terminoNivelActual = false;
     SDL_Event e;
-    JugadorVista* jugador = new JugadorVista(COLORES_AZUL);
-    ManagerVista* manager = new ManagerVista(jugador, mockConfig(), 0, anchoPantalla, altoPantalla);
+
+    std::vector<JugadorVista*> jugadores;
+    jugadores.push_back(new JugadorVista(COLORES_AZUL));
+    jugadores.push_back(new JugadorVista(COLORES_ROJO));
+    jugadores.push_back(new JugadorVista(COLORES_ROSA));
+    jugadores.push_back(new JugadorVista(COLORES_TURQUESA));
+
+    ManagerVista* manager = new ManagerVista(mockConfig(), 0, anchoPantalla, altoPantalla);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
     char* ip_address = "127.0.0.1";
     int port = 3040;
@@ -171,7 +177,9 @@ void mainLoop() {
 
         //Render texture to screen
 		manager->render(estadoTick);
-        jugador->render(estadoTick.estadoJugador);
+        for (int i = 0; i < MAX_JUGADORES; i++) {
+            jugadores[i]->render(estadoTick.estadosJugadores[i]);
+        }
 
         // TODO: Cambios de niveles
 		terminoNivelActual = false;
