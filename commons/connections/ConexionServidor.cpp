@@ -21,6 +21,52 @@ struct Comando ConexionServidor::recibirMensaje() {
 	return client_command;
 }
 
+//para logueo
+struct Logueo ConexionServidor::recibirDatosDeLogueo() {
+    struct Logueo logueo;
+
+    if (recibirUsuarioYContrasenia(&client_socket, &logueo) < 0) {
+        perror("recibirMensaje receiveData -1");
+        //exit(1);
+    }
+
+    return logueo;
+}
+
+int ConexionServidor::recibirUsuarioYContrasenia(int *client_socket, struct Logueo *logueo) {
+    int total_bytes_receive = 0;
+    int bytes_receive = 0;
+    int receive_data_size = sizeof(struct Logueo);
+    bool client_socket_still_open = true;
+
+    // Receive
+    // ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+    // sockfd -> file descriptor that refers to estadosEnemigos socket
+    // buf -> where the received message into the buffer buf.
+    // len -> The caller must specify the size of the buffer in len.
+    // flags
+    // The recv() call are used to receive messages from estadosEnemigos socket.
+    // If no messages are available at the socket, the receive call wait for estadosEnemigos message to arrive. (Blocking)
+
+    while ((receive_data_size > bytes_receive) && client_socket_still_open) {
+        bytes_receive = recv(*client_socket, (logueo + total_bytes_receive),
+                             (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
+        if (bytes_receive < 0) { // Error
+            return bytes_receive;
+        } else if (bytes_receive == 0) { // Socket closed
+            client_socket_still_open = false;
+        } else {
+            total_bytes_receive += bytes_receive;
+        }
+    }
+
+    return 0;
+}
+
+
+//fin logueo
+
+
 int ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	if (sendDataEstadoTick(&client_socket, estadoTick) < 0) {
 		perror("enviarEstadoTick -1");

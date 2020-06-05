@@ -157,9 +157,24 @@ void mainLoop() {
 	char* ip_address = "127.0.0.1";
 	int port = 3040;
 
+	//------------------
+	//se completa el struct de logueo por ahora HARDCODEADO
+
+	struct Logueo logueo;
+    memset(logueo.usuario,'\0',sizeof(logueo.usuario));
+    memset(logueo.contrasenia,'\0',sizeof(logueo.contrasenia));
+	strcpy(logueo.usuario, "ailu");
+	strcpy(logueo.contrasenia, "5678");
+
+	//---------------
+
 	IniciadorComunicacion* iniciadorComunicacion =  new IniciadorComunicacion(ip_address, port);
 	ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
 	// END socket configuration
+
+	//------------------------
+    //se envian los datos de logueo
+	conexionCliente->enviarDatosDeLogueo(&logueo);
 	//------------------------
 
 	while (!quit) {

@@ -47,6 +47,41 @@ void ConexionCliente::enviarMensaje(struct Comando *comando) {
 	l->debug("Cliente mando mensaje");
 }
 
+//para logueo
+
+void ConexionCliente::enviarDatosDeLogueo(struct Logueo *logueo){
+    //que lo loguee
+    if(enviarUsuarioYContrasenia(&client_socket, logueo) < 0){
+        perror("Send Data Error enviarDatosDeLogueo");
+        exit(1);
+    }
+    l->debug("Cliente mando datos de logueo");
+}
+
+int ConexionCliente::enviarUsuarioYContrasenia(int* client_socket, struct Logueo* logueo){
+    int total_bytes_written = 0;
+    int bytes_written = 0;
+    int send_data_size = sizeof(struct Logueo);
+    bool client_socket_still_open = true;
+
+    while ((send_data_size > total_bytes_written) && client_socket_still_open) {
+        bytes_written = send(*client_socket, (logueo + total_bytes_written),
+                             (send_data_size - total_bytes_written), MSG_NOSIGNAL);
+
+        if (bytes_written < 0) { // Error
+            return bytes_written;
+        } else if (bytes_written == 0) { // Socket closed
+            client_socket_still_open = false;
+        } else {
+            total_bytes_written += bytes_written;
+        }
+    }
+
+    return 0;
+}
+
+//fin logueo
+
 void ConexionCliente::cerrarConexion() {
 	close(client_socket);
 }

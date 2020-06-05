@@ -19,7 +19,8 @@ public:
 
 private:
     ConexionServidor* servidor;
-    bool usuarioEstaRegistrado(string usuario, string contrasenia);
+    bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
+    Logueo pedir();
 };
 
 

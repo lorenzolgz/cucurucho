@@ -11,18 +11,24 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor)
 
 void ControladorDeSesiones::iniciarSesion(){
 
-    //TODO pedirle un usuario y contraseña al cliente
-    string usuario = "ailu";
-    string contrasenia = "5678";
+    //pedirle un usuario y contraseña al cliente
+    struct Logueo logueo;
+    logueo = pedir();
+
+    char* usuario;
+    char* contrasenia;
+
+    usuario = logueo.usuario;
+    contrasenia = logueo.contrasenia;
 
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)) {
         //TODO se le informa al cliente que no se le permitirá jugar
-        this->servidor->cerrarConexion();
+        servidor->cerrarConexion();
     }
 }
 
-bool ControladorDeSesiones::usuarioEstaRegistrado(string usuario, string contrasenia)
+bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia)
 {
     bool usuarioRegistrado;
     bool contraseniaCorrecta;
@@ -34,16 +40,22 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(string usuario, string contras
     contrasenias = jsonUsuarios["usuariosRegistrados"];
 
     //chequeo si el usuario está registrado
-    usuarioRegistrado = !(contrasenias[usuario].asString().empty());
+    usuarioRegistrado = !(contrasenias[usuario].empty());
+
 
     //si está registrado, verifico la contraseña
     if(usuarioRegistrado){
-        contraseniaCorrecta = (contrasenias[usuario].asString() == contrasenia);
+        contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
         if(!contraseniaCorrecta){
             //TODO pedirle al cliente que vuelva a ingresarla o anular la conexion (ver)
+            servidor->cerrarConexion();
         }
     }
 
     return usuarioRegistrado;
+}
+
+struct Logueo ControladorDeSesiones::pedir(){
+    return servidor->recibirDatosDeLogueo();
 }
 

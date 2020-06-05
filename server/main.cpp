@@ -61,7 +61,7 @@ int mainLoop(int puerto, Configuracion* config) {
 	 //logueo con user y password
 	 ControladorDeSesiones* controlador = new ControladorDeSesiones(conexionServidor);
 	 controlador->iniciarSesion();
-
+     //
 
 	bool quit = false;
 	struct Comando client_command;
