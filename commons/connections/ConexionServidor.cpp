@@ -21,7 +21,7 @@ struct Comando ConexionServidor::recibirMensaje() {
 	return client_command;
 }
 
-//para logueo
+//----------------------------------------para logueo----------------------------------
 struct Logueo ConexionServidor::recibirDatosDeLogueo() {
     struct Logueo logueo;
 
@@ -63,8 +63,44 @@ int ConexionServidor::recibirUsuarioYContrasenia(int *client_socket, struct Logu
     return 0;
 }
 
+void ConexionServidor::enviarSiContraseniaEsCorrecta(bool esCorrecta){
+    if (sendBool(&client_socket, esCorrecta) < 0) {
+        perror("enviarEstadoTick -1");
+        exit(1);
+    }
+}
 
-//fin logueo
+int ConexionServidor::sendBool(int* client_socket, bool esCorrecta){
+
+    int total_bytes_written = 0;
+    int bytes_written = 0;
+    int send_data_size = sizeof(esCorrecta); // !!!!
+    bool client_socket_still_open = true;
+
+    // Send
+    // ssize_t send(int sockfd, const void *buf, size_t len, int flags);
+    // sockfd -> file descriptor that refers to estadosEnemigos socket
+    // buf ->  the message is found in buf.
+    // len -> the message and has length len
+    // flags
+    // The system call send() is used to transmit estadosEnemigos message to another socket.
+    // The send() call may be used only when the socket is in estadosEnemigos connected state (so that the intended recipient is known).
+
+    while ((send_data_size > total_bytes_written) && client_socket_still_open) {
+        bytes_written = send(*client_socket, (&esCorrecta + total_bytes_written),
+                             (send_data_size - total_bytes_written), MSG_NOSIGNAL);
+        if (bytes_written < 0) { // Error
+            return bytes_written;
+        } else if (bytes_written == 0) { // Socket closed
+            client_socket_still_open = false;
+        } else {
+            total_bytes_written += bytes_written;
+        }
+    }
+
+    return 0;
+}
+//--------------------------------------fin logueo----------------------------------
 
 
 int ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {

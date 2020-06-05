@@ -15,6 +15,7 @@ public:
 	void cerrarConexion();
 	//para logueo
     Logueo recibirDatosDeLogueo();
+	void enviarSiContraseniaEsCorrecta(bool esCorrecta);
 
 private:
 	int client_socket;
@@ -23,6 +24,7 @@ private:
 	int sendDataInformacionNivel(int* client_socket, InformacionNivel *estadoTick);
 	//para logueo
     int recibirUsuarioYContrasenia(int *client_socket, Logueo *logueo);
+    int sendBool(int *client_socket, bool esCorrecta);
 };
 
 

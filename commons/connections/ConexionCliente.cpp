@@ -47,7 +47,7 @@ void ConexionCliente::enviarMensaje(struct Comando *comando) {
 	l->debug("Cliente mando mensaje");
 }
 
-//para logueo
+//---------------------------para logueo------------------------
 
 void ConexionCliente::enviarDatosDeLogueo(struct Logueo *logueo){
     //que lo loguee
@@ -80,7 +80,42 @@ int ConexionCliente::enviarUsuarioYContrasenia(int* client_socket, struct Logueo
     return 0;
 }
 
-//fin logueo
+bool ConexionCliente::contraseniaCorrecta(){
+    bool esCorrecta;
+
+    l->debug("Cliente por recibir mensaje");
+    if (recibirSiLaContraseniaEsCorrecta(&client_socket, esCorrecta) < 0) {
+        perror("Receive Data Error");
+        exit(1);
+    }
+    l->debug("Cliente recibio informacionNivel: ");
+
+    return esCorrecta;
+}
+
+int ConexionCliente::recibirSiLaContraseniaEsCorrecta(int* client_socket, bool esCorrecta){
+    int total_bytes_receive = 0;
+    int bytes_receive = 0;
+    int receive_data_size = sizeof(esCorrecta); // !!!!
+    bool client_socket_still_open = true;
+
+    while ((receive_data_size > bytes_receive) && client_socket_still_open) {
+        bytes_receive = recv(*client_socket, (&esCorrecta + total_bytes_receive),
+                             (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
+
+        if (bytes_receive < 0) { // Error
+            return bytes_receive;
+        } else if (bytes_receive == 0) { // Socket closed
+            client_socket_still_open = false;
+        } else {
+            total_bytes_receive += bytes_receive;
+        }
+    }
+
+    return 0;
+}
+
+//----------------------------------fin logueo---------------------------------------
 
 void ConexionCliente::cerrarConexion() {
 	close(client_socket);

@@ -160,11 +160,15 @@ void mainLoop() {
 	//------------------
 	//se completa el struct de logueo por ahora HARDCODEADO
 
-	struct Logueo logueo;
+	struct Logueo logueo, nuevoLogueo;
     memset(logueo.usuario,'\0',sizeof(logueo.usuario));
     memset(logueo.contrasenia,'\0',sizeof(logueo.contrasenia));
-	strcpy(logueo.usuario, "ailu");
-	strcpy(logueo.contrasenia, "5678");
+    memset(nuevoLogueo.usuario,'\0',sizeof(nuevoLogueo.usuario));
+    memset(nuevoLogueo.contrasenia,'\0',sizeof(nuevoLogueo.contrasenia));
+    strcpy(logueo.usuario, "ailu");
+	strcpy(logueo.contrasenia, "5679");
+    //preparado para cuando la contraseña sea incorrecta
+    strcpy(nuevoLogueo.usuario, "ailu");
 
 	//---------------
 
@@ -174,7 +178,18 @@ void mainLoop() {
 
 	//------------------------
     //se envian los datos de logueo
+
 	conexionCliente->enviarDatosDeLogueo(&logueo);
+
+	//vuelve a ingresar la contraseña en el caso de que sea incorrecta
+    //TODO esto funciona pero para una única vez
+    bool esCorrecta;
+	esCorrecta = conexionCliente->contraseniaCorrecta();
+	if(!esCorrecta){
+        strcpy(nuevoLogueo.contrasenia, "5678");
+	    conexionCliente->enviarDatosDeLogueo(&nuevoLogueo);
+        esCorrecta = conexionCliente->contraseniaCorrecta(); //para futuro while
+	}
 	//------------------------
 
 	while (!quit) {

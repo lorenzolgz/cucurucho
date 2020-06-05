@@ -32,6 +32,7 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
 {
     bool usuarioRegistrado;
     bool contraseniaCorrecta;
+    char* nuevaContrasenia;
 
     //abro json de usuarios
     Json::Value jsonUsuarios, contrasenias;
@@ -42,15 +43,17 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
     //chequeo si el usuario está registrado
     usuarioRegistrado = !(contrasenias[usuario].empty());
 
-
     //si está registrado, verifico la contraseña
     if(usuarioRegistrado){
         contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
         if(!contraseniaCorrecta){
-            //TODO pedirle al cliente que vuelva a ingresarla o anular la conexion (ver)
-            servidor->cerrarConexion();
+            //TODO esto funciona pero para una única vez
+            servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
+            nuevaContrasenia = pedir().contrasenia;
+            contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
         }
     }
+    servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
 
     return usuarioRegistrado;
 }
@@ -58,4 +61,3 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
 struct Logueo ControladorDeSesiones::pedir(){
     return servidor->recibirDatosDeLogueo();
 }
-

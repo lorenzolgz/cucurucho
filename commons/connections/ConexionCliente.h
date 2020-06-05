@@ -15,6 +15,7 @@ public:
 	void cerrarConexion();
 	//para logueo
     void enviarDatosDeLogueo(Logueo *logueo);
+    bool contraseniaCorrecta();
 
 private:
 	int client_socket;
@@ -23,6 +24,9 @@ private:
 	int sendData(int* client_socket, struct Comando* client_command);
 	//para logueo
     int enviarUsuarioYContrasenia(int *client_socket, Logueo *logueo);
+    int recibirSiLaContraseniaEsCorrecta(int *client_socket, bool esCorrecta);
+
+
 };
 
 
