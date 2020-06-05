@@ -12,7 +12,6 @@ Partida::Partida(Configuracion* config) {
 	Partida::nuevoNivel = 1;
 	Partida::jugador = new Jugador(anchoPantalla / 8, altoPantalla / 2);
 	Partida::managerNiveles = new ManagerNiveles(config, jugador);
-
 }
 
 void Partida::tick(struct Comando command) {
@@ -28,44 +27,13 @@ void Partida::tick(struct Comando command) {
 	nuevoNivel = managerNiveles->terminoNivelActual();
 }
 
-EstadoInternoNivel Partida::state() {
+EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {
 	EstadoInternoNivel estadoInternoNivel;
 	estadoInternoNivel.nuevoNivel = nuevoNivel;
-	estadoInternoNivel.estadoCampoMovil = managerNiveles->state();
-
-	if (estadoInternoNivel.nuevoNivel) {
-		l->debug("El estado del nivel es distinto de cero:" + std::to_string(estadoInternoNivel.nuevoNivel));
-	}
-
+	estadoInternoNivel.estadoCampoMovil = managerNiveles->state(informacionNivel);
 	return estadoInternoNivel;
 }
 
-
-void Partida::setNextNivel(InformacionNivel *informacionNivel) {
-
-    NivelConfiguracion* nivelConfig = managerNiveles->setNextNivel();
-    if ( nivelConfig == nullptr ) return;
-    int i = 0;
-    for( FondoConfiguracion* f : nivelConfig->getFondos() ) {
-        informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
-        f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
-        i++;
-    }
-    for (i; i< MAX_FONDOS; i++){
-        informacionNivel->informacionFondo[i].pVelocidad = 0;
-        strcpy(&informacionNivel->informacionFondo[i].pFondo[0],"\0");
-    }
-    nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
-
-}
-
-bool Partida::terminoNivelActual(){
-    return managerNiveles->terminoNivelActual();
-}
-
-bool Partida::pasajeDeNivel() {
-    return managerNiveles->pasajeDeNivel();
-}
 
 bool Partida::estadoJuego() {
     return managerNiveles->estadoJuego();

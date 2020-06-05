@@ -67,12 +67,12 @@ void Log::setConf(std::string string) {
 
 void Log::cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj){
     std::fstream archivo;
-//    archivo.open(log , std::fstream::app);
+    archivo.open(log , std::fstream::app);
     char horario[30];
     std::strftime(horario, 30, "%x %X" , std::localtime(&timestamp));
     archivo << horario << estado << msj << std::endl;
     // !!!!
 	std::cout << horario << estado << msj << std::endl;
-//	archivo.flush();
-//    archivo.close();
+	archivo.flush();
+    archivo.close();
 }

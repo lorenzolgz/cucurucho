@@ -22,9 +22,8 @@ public:
     bool estadoJuego();
     bool pasajeDeNivel();
 	bool terminoNivelActual();
-	EstadoInternoCampoMovil state();
+	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
 
-    NivelConfiguracion *setNextNivel();
     Nivel *configurarNuevoNivel();
 
 private:
@@ -33,6 +32,7 @@ private:
     int alto;
     int ancho;
     Jugador* jugador;
+    int nuevoNivel;
 
 };
 

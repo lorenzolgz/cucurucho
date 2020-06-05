@@ -12,10 +12,8 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, Jugador* jug) {
     ancho = config->getAnchoPantalla();
     alto = config->getAltoPantalla();
     jugador = jug;
-
     ManagerNiveles::listNiveles = config->getNiveles();
 }
-
 
 Nivel* ManagerNiveles::configurarNuevoNivel(struct InformacionFondo* informacionFondo) {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
@@ -32,13 +30,8 @@ void ManagerNiveles::tick() {
 	nivelActual->tick();
 }
 
-
-bool ManagerNiveles::estadoJuego() {
-	return listNiveles.empty();
-}
-
 bool ManagerNiveles::pasajeDeNivel(struct InformacionNivel* informacionNivel){
-    NivelConfiguracion* nivel = listNiveles.front();
+//  NivelConfiguracion* nivel = listNiveles.front();
     NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, informacionNivel->informacionFinNivel);
     nivelIntermedio->tick();
     l->info("Transicion de niveles");
@@ -50,14 +43,4 @@ bool ManagerNiveles::pasajeDeNivel(struct InformacionNivel* informacionNivel){
 
 void ManagerNiveles::setEstado(std::list<EstadoEnemigo> estadosEnemigos) {
 	nivelActual->setEstado(estadosEnemigos);
-}
-
-//void ManagerNiveles::setFondo(struct InformacionFondo* informacionFondo) {
-//    // tomar los fondos que se pasan por parametro en vez de tomar los del backup
-//}
-
-void ManagerNiveles::setNivelIntermedio(char* archivo){
-    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, archivo);
-    nivelIntermedio->tick();
-    l->info("Transicion de niveles");
 }

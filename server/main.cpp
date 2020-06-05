@@ -16,7 +16,7 @@ Log* l;
 
 void initializeData(struct EstadoTick* estadoTick);
 void procesarNivel(struct InformacionNivel* informacionNivel, Partida* partida);
-void processData(Partida* partida, struct Comando action,struct EstadoTick* estadoTick);
+void processData(Partida* partida, struct Comando action,struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel);
 void processNivel(struct InformacionNivel* informacionNivel);
 int mainLoop(int puerto, Configuracion* configuracion);
 Configuracion* parsearConfiguracion();
@@ -97,16 +97,14 @@ int mainLoop(int puerto, Configuracion* config) {
 		//--------------------
 
 		// Process model
-		processData(partida, client_command, &estadoTick);
+		processData(partida, client_command, &estadoTick, &informacionNivel);
 		//--------------------
 //        if (partida->terminoNivelActual()) l->error("CAMBIO DE NIVEL");
 //        else l->error("mismo nivel");
 
         if (nuevoNivel){
-            procesarNivel(&informacionNivel,partida);
-
 		    // Send Data
-            l->error("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
+            l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
             conexionServidor->enviarInformacionNivel(&informacionNivel);
             nuevoNivel = false;
 		} else {
@@ -117,11 +115,7 @@ int mainLoop(int puerto, Configuracion* config) {
 		//--------------------
 
 		commands_count++;
-        terminoNivelActual = partida->terminoNivelActual();
-        if (terminoNivelActual) {
-            terminoNivelActual = partida->pasajeDeNivel();
-            if (terminoNivelActual) l->debug("Pasaje de nivel");
-        }
+
 	}
 
 	conexionServidor->cerrarConexion();
@@ -132,11 +126,11 @@ int mainLoop(int puerto, Configuracion* config) {
 	return status;
 }
 
-void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick) {
-	partida->tick(command);
-	EstadoInternoNivel estadoInternoNivel = partida->state();
+void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel) {
+	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
+    partida->tick(command);
 
-	// Seteando estadoTick
+    // Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->estadoJugador = estadoCampoMovil.estadoJugador;
@@ -167,10 +161,4 @@ void initializeData(struct EstadoTick* estadoTick) {
 	for (int i = 0; i < MAX_ENEMIGOS; i++) {
 		estadoTick->estadosEnemigos[i].clase = 0;
 	}
-}
-
-void procesarNivel(struct InformacionNivel* informacionNivel, Partida* partida){
-    informacionNivel->numeroNivel++;
-    partida->setNextNivel(informacionNivel);
-
 }

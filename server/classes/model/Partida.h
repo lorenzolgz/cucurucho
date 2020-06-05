@@ -10,12 +10,7 @@ public:
 	Partida(Configuracion* config);
 
 	void tick(struct Comando command);
-	EstadoInternoNivel state();
-
-    void setNextNivel(InformacionNivel *informacionNivel);
-    bool terminoNivelActual();
-
-    bool pasajeDeNivel();
+	EstadoInternoNivel state(struct InformacionNivel* informacionNivel);
 
     bool estadoJuego();
 

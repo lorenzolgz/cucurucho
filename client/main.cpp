@@ -208,9 +208,8 @@ void mainLoop() {
 		// Receive data (view)
 		if (nuevoNivel) {
 			informacionNivel = conexionCliente->recibirInformacionNivel();
-            l->error("Nuevo nivel recibido : " + std::to_string(informacionNivel.numeroNivel));
+            l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel.numeroNivel));
             manager->pasajeDeNivel(&informacionNivel);
-
             nuevoNivel = false;
 		} else {
 			estadoTick = conexionCliente->recibirEstadoTick();
