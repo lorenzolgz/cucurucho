@@ -8,6 +8,7 @@
 #include <SDL_render.h>
 #include <SDL_rect.h>
 #include <set>
+#include <string>
 
 class TituloParticula;
 
@@ -22,7 +23,7 @@ class TituloVista {
     std::set<TituloParticula*> particulas;
 public:
     TituloVista(int ancho, int alto);
-    void render(bool b);
+    void render(int estado, std::string username, std::string password, bool seleccionadoUsuario);
 
     void nuevaParticula();
 
@@ -33,6 +34,10 @@ public:
     void renderTextos(bool b);
 
     void renderFadeout(bool activada);
+
+    void renderInput(std::string username, std::string password, bool seleccionadoUsuario);
+
+    void renderInfo(int estado);
 };
 
 

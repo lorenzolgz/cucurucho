@@ -123,10 +123,9 @@ void mainLoop() {
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
     char* ip_address = "127.0.0.1";
     int port = 3040;
-    IniciadorComunicacion* iniciadorComunicacion =  new IniciadorComunicacion(ip_address, port);
-    ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
+    IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
+    ConexionCliente* conexionCliente = nullptr;
     struct Comando client_command = { false, false, false, false };
-    conexionCliente->enviarMensaje(&client_command);
     struct EstadoTick estadoTick;
     struct InformacionNivel informacionNivel;
 
@@ -137,12 +136,27 @@ void mainLoop() {
 
     while (!quit) {
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        std::string inputText = "";
 
         //Handle events on queue
         while (SDL_PollEvent(&e) != 0) {
             //User requests quit
             if (e.type == SDL_QUIT) {
                 quit = true;
+            } else if (e.type == SDL_TEXTINPUT) {
+                inputText += e.text.text;
+            } else if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_BACKSPACE) {
+                    inputText += 8;
+                } else if (e.key.keysym.sym == SDLK_UP) {
+                    inputText += 9;
+                } else if (e.key.keysym.sym == SDLK_DOWN) {
+                    inputText += 10;
+                } else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
+                    inputText += 11;
+                } else if (e.key.keysym.sym == SDLK_d && SDL_GetModState() & KMOD_CTRL) {
+                    inputText += 12;
+                }
             }
         }
 
@@ -154,9 +168,13 @@ void mainLoop() {
         bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
         if (!pantallaPrincipal->isActivada(onStart)) {
-            pantallaPrincipal->tick();
+            pantallaPrincipal->tick(inputText);
             SDL_RenderPresent(gRenderer);
             continue;
+        }
+
+        if (conexionCliente == nullptr) {
+            conexionCliente = iniciadorComunicacion->conectar();
         }
 
         client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
@@ -193,7 +211,7 @@ void mainLoop() {
 		}
     }
 
-    conexionCliente->cerrarConexion();
+    if (conexionCliente != nullptr) conexionCliente->cerrarConexion();
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {

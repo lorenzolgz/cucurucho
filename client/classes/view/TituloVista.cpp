@@ -113,10 +113,42 @@ void TituloVista::renderFadeout(bool activada) {
     contadorActivada++;
 }
 
-void TituloVista::render(bool activada) {
+void TituloVista::renderInput(std::string username, std::string password, bool seleccionadoUsuario) {
+    Vector posicionUserLabel = Vector(ancho * 9 / 19, alto * 8 / 12);
+    Vector posicionPassLabel = Vector(ancho * 9 / 19, alto * 9 / 12);
+
+    Vector posicionUserInput = Vector(ancho * 10 / 19, alto * 8 / 12);
+    Vector posicionPassInput = Vector(ancho * 10 / 19, alto * 9 / 12);
+
+    std::string passwordInput = "";
+    for (int i = 0; i < password.length(); i++) passwordInput += "*";
+
+    TextoVista::eRender("usuario:", posicionUserLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
+    TextoVista::eRender("password:", posicionPassLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
+
+    TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
+    TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
+}
+
+void TituloVista::renderInfo(int estado) {
+    Vector posicion = Vector(ancho / 2, alto * 5 / 6);
+    std::string texto = "";
+    if (estado == TITULO_ERROR_AUTENTICACION) {
+        texto = "error de autenticacion";
+    } else if (estado == TITULO_ERROR_CONEXION) {
+        texto = "problema conexion";
+    } else if (estado == TITULO_ACEPTADO) {
+        texto = "inciando juego";
+    }
+    TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
+}
+
+void TituloVista::render(int estado, std::string username, std::string password, bool seleccionadoUsuario) {
     renderParticulas();
     renderTitulo();
-    renderTextos(activada);
-    renderFadeout(activada);
+    renderInfo(estado);
+    if (estado == TITULO_VACIO) renderTextos(false);
+    else renderInput(username, password, seleccionadoUsuario);
+    renderFadeout(estado == TITULO_ACEPTADO);
     contador++;
 }
