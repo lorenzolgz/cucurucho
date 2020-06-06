@@ -16,10 +16,11 @@ private:
 	void validarJsonGenerico(bool hayError, std::string mensaje);
 
 	EnemigosConfiguracion* parsearEnemigos(Json::Value enemigosJson, int nivel);
-	FondoConfiguracion* parsearFondo(Json::Value fondoJson, int nivel);
+
+    FondoConfiguracion* parsearFondo(Json::Value fondoJson, int nivel);
 	std::list<FondoConfiguracion*> parsearFondos(Json::Value fondosConfiguracionJson, int nivel);
 	std::list<FondoConfiguracion*> parsearArchivoFondos(Json::Value jsonConfig, int nivel);
-    std::string parsearFinalNivel(Json::Value imagenFinalJson);
+    const char* parsearFinalNivel(Json::Value imagenFinalJson);
     float parsearVelocidadNivel(Json::Value nivelJSON, int i);
     float parsearLargoNivel(Json::Value nivelJSON, int nivel);
     NivelConfiguracion* parsearNivel(Json::Value nivelJson, int nivel);

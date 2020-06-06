@@ -2,9 +2,11 @@
 // Created by camix on 2/5/20.
 //
 
+#include <cstring>
 #include "ManagerNiveles.h"
 #include "Hud.h"
 #include "../../../commons/utils/Log.h"
+#include "../config/NivelConfiguracion.h"
 
 ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores) {
     ancho = config->getAnchoPantalla();
@@ -13,6 +15,7 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> ju
 
     ManagerNiveles::listNiveles = config->getNiveles();
     ManagerNiveles::nivelActual = configurarNuevoNivel();
+    ManagerNiveles::nuevoNivel = 1;
 }
 
 
@@ -40,7 +43,8 @@ void ManagerNiveles::tick() {
 }
 
 bool ManagerNiveles::terminoNivelActual() {
-    return nivelActual->termino();
+    nuevoNivel = nivelActual->termino();
+    return nuevoNivel;
 }
 
 bool ManagerNiveles::estadoJuego() {
@@ -54,12 +58,30 @@ bool ManagerNiveles::pasajeDeNivel(){
     nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
-    listNiveles.pop_front();
-    if (listNiveles.empty()) return true;
     nivelActual = configurarNuevoNivel();
+    listNiveles.pop_front();
     return false;
 }
 
-EstadoInternoCampoMovil ManagerNiveles::state() {
+EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {
+    if (nuevoNivel){
+        informacionNivel->numeroNivel++;
+        NivelConfiguracion* nivelConfig = listNiveles.front();
+        if ( nivelConfig == nullptr ) return nivelActual->state();
+        int i = 0;
+        for( FondoConfiguracion* f : nivelConfig->getFondos() ) {
+            informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
+            f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
+            i++;
+        }
+        for (i; i< MAX_FONDOS; i++){
+            informacionNivel->informacionFondo[i].pVelocidad = 0;
+            strcpy(&informacionNivel->informacionFondo[i].pFondo[0],"\0");
+        }
+        nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
+        pasajeDeNivel();
+    }
+
 	return nivelActual->state();
 }
+

@@ -22,7 +22,8 @@ public:
     bool estadoJuego();
     bool pasajeDeNivel();
 	bool terminoNivelActual();
-	EstadoInternoCampoMovil state();
+	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
+    Nivel *configurarNuevoNivel();
 
 private:
     std::list<NivelConfiguracion *> listNiveles;
@@ -30,8 +31,7 @@ private:
     int alto;
     int ancho;
     std::map<int, Jugador*> jugadores;
-
-    Nivel *configurarNuevoNivel();
+    int nuevoNivel;
 
 };
 

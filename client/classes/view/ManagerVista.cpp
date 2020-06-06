@@ -9,14 +9,13 @@
 #include "../../../commons/utils/Constantes.h"
 #include <utility>
 
-ManagerVista::ManagerVista(std::vector<NivelConfiguracion *>  listNiveles, int nivelActual, int ancho, int alto)
-        : listNiveles(std::move(listNiveles)), nivelActual(nivelActual), alto(alto), ancho(ancho) {
+ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
+        : informacionNivel(infoNivel), nivelActual(nivelActual), alto(alto), ancho(ancho) {
     hud = HudVista();
     posX = 0;
     campoVista = nullptr;
     enemigo1Vista = Enemigo1Vista();
     enemigo2Vista = Enemigo2Vista();
-    cambiarNivel(nivelActual);
 }
 
 void ManagerVista::render(EstadoTick estadoTick) {
@@ -28,23 +27,23 @@ void ManagerVista::render(EstadoTick estadoTick) {
     renderEnemigos(estadoTick.estadosEnemigos);
 }
 
-bool ManagerVista::cambiarNivel(int nivel) {
-    if (nivel < 0 || nivel >= listNiveles.size()) {
-        return false;
-    }
-    nivelActual = nivel;
 
-    delete campoVista;
+void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
+    ManagerVista::informacionNivel = informacionNivel;
+
     campoVista = new CampoVista();
-    for (FondoConfiguracion * f : listNiveles.at(nivel)->getFondos()) {
-        campoVista->nuevoFondo(f->getArchivo(), 0, 0, f->getVelocidad(), &posX);
+    for (InformacionFondo & f : informacionNivel.informacionFondo) {
+        if (f.pFondo[0] == '\0') continue;
+        campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }
-    posX = listNiveles.at(nivel)->getVelocidad();
-    return true;
+
+    // TODO: VELOCIDAD DEL NIVEL.
+    posX = 2;
 }
 
+
 void ManagerVista::renderNivelIntermedio() {
-    NivelIntermedioVista(listNiveles.at(nivelActual)->getFinalNivel()).render();
+    NivelIntermedioVista(informacionNivel.informacionFinNivel).render();
 }
 
 void ManagerVista::renderEnemigos(EstadoEnemigo *estadosEnemigos) {

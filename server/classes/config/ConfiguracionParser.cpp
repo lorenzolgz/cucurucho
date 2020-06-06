@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include "NivelConfiguracion.h"
+#include "FondoConfiguracion.h"
 #include "../model/Nivel.h"
 #include "../../../commons/utils/Log.h"
 #include "../../../commons/utils/Constantes.h"
@@ -107,9 +108,8 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 	}
 }
 
-std::string ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON) {
-    std::string fondosJson = nivelJSON["fin"].asString();
-    return fondosJson;
+void ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON, char* fondosJson) {
+    strcpy(fondosJson, nivelJSON["fin"].asString().c_str());
 }
 
 float ConfiguracionParser::parsearVelocidadNivel(Json::Value nivelJSON, int nivel) {
@@ -138,14 +138,91 @@ float ConfiguracionParser::parsearLargoNivel(Json::Value nivelJSON, int nivel) {
     }
 }
 
+FondoConfiguracion* ConfiguracionParser::parsearFondo(Json::Value fondoJson, int nivel) {
+    try {
+        char archivo[LARGO_PATH];
+        strcpy(archivo, fondoJson["archivo"].asString().c_str());
+        double velocidad = fondoJson["velocidad"].asDouble();
+
+        return new FondoConfiguracion(archivo, velocidad);
+    } catch (const std::exception &exc) {
+        l->error("Ocurrio un error al parsear uno de los fondos del nivel " + std::to_string(nivel) +
+                 ". Probablemente uno de los valores pasados no fue un entero");
+        throw exc;
+    }
+}
+
+std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fondosConfiguracionJson, int nivel) {
+    Json::Value fondosJson = fondosConfiguracionJson["fondos"];
+    std::list<FondoConfiguracion*> fondosConfiguracion;
+
+    for(Json::Value fondoJson : fondosJson) {
+        FondoConfiguracion* fondoConfiguracion = parsearFondo(fondoJson, nivel);
+        fondosConfiguracion.push_back(fondoConfiguracion);
+    }
+
+    return fondosConfiguracion;
+}
+
+std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::Value jsonConfig, int nivel) {
+    try {
+        std::string rutaCarpetaConfig = "../config/";
+
+        std::string rutaRelativa = jsonConfig.asString();
+        if (!rutaRelativa.compare("")) {
+            l->error("No se halló una ruta para el archivo de fondos");
+            throw std::exception();
+        }
+        std::string rutaFondos = rutaCarpetaConfig += rutaRelativa;
+        std::ifstream archivo(rutaFondos);
+        if (archivo.fail()) {
+            l->error(rutaFondos += " no direcciona estadosEnemigos un archivo JSON de fondos");
+            throw std::exception();
+        }
+
+        Json::Value jsonFondos;
+
+        //Validación de sintaxis de json de fondos
+        try {
+            archivo >> jsonFondos;
+        }
+        catch(Json::Exception const& a){
+            const std::string mensaje(a.what());
+            std::regex caracterIgnorado("\n+");
+            auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+            l->error("Referencia de la libreria: " + mensajeUnaLinea);
+            throw a;
+        }
+
+        return parsearFondos(jsonFondos, nivel);
+    } catch (const std::exception &exc) {
+        l->error("Ocurrio un error al obtener las rutas de las imagenes de fondo");
+        throw exc;
+    }
+}
+
+
 NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int nivel) {
 	try {
 		    auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
-		    auto finNivel = parsearFinalNivel(nivelJson);
+		    char finNivel[LARGO_PATH];
+		    parsearFinalNivel(nivelJson, finNivel);
             auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
             auto largo = parsearLargoNivel(nivelJson, nivel);
 
-	    	return new NivelConfiguracion(enemigos, finNivel, velocidad, largo);
+            std::list<FondoConfiguracion*> fondos;
+
+            //Validación de jsons de fondos
+            try {
+                fondos = parsearArchivoFondos(nivelJson["archivoFondos"], nivel);
+            }
+            catch(const std::exception &exc){
+                std::string rutaJsonFondos = nivelJson["archivoFondos"].asString();
+                l->error("Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonFondos + "\" por favor revise que este escrito correctamente");
+                throw exc;
+            }
+
+	    	return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
 	    }
 	catch(const std::exception &exc) {
 	        l->error("Ocurrio un error al parsear el nivel " + std::to_string(nivel));

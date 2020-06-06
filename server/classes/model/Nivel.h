@@ -12,6 +12,9 @@
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
 
+#define PANTALLA_ANCHO 960
+#define PANTALLA_ALTO 672
+
 class Nivel : public Ticker {
 public:
 	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugador);

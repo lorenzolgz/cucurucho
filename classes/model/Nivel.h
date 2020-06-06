@@ -11,7 +11,7 @@
 
 class Nivel : public Ticker {
 public:
-	Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador);
+	Nivel(NivelConfiguracion* nivelConfig, Jugador* jugador, InformacionFondo* informacionFondo);
 
 	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
@@ -28,7 +28,7 @@ private:
     int numeroDeNivel;
     float velocidad;
 
-	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, Jugador* jugador);
+	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, Jugador* jugador, struct InformacionFondo* informacionFondo);
 	void plantarSemillasEnCampo();
 };
 

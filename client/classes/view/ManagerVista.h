@@ -15,14 +15,15 @@
 
 class ManagerVista {
 public:
-    ManagerVista(std::vector<NivelConfiguracion*> listNiveles, int nivelActual, int ancho, int alto);
+    ManagerVista(struct InformacionNivel, int nivelActual, int ancho, int alto);
     void render(EstadoTick estadoTick);
-    bool cambiarNivel(int nivel);
 
     void renderNivelIntermedio();
 
+    void setInformacionNivel(InformacionNivel &informacionNivel);
+
 private:
-    std::vector<NivelConfiguracion *> listNiveles;
+    struct InformacionNivel informacionNivel;
     HudVista hud;
     CampoVista* campoVista;
     Enemigo1Vista enemigo1Vista;

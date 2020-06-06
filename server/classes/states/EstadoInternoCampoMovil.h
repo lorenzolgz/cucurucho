@@ -7,7 +7,6 @@
 
 class EstadoInternoCampoMovil {
 public:
-//	struct EstadoJugador estadoJugador;
 	std::list<EstadoEnemigo> estadosEnemigos;
     std::list<EstadoJugador> estadosJugadores;
 };

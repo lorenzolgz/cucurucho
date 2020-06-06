@@ -23,9 +23,12 @@ public:
 
     void tick() override;
     bool estadoJuego();
-    bool pasajeDeNivel();
+    bool pasajeDeNivel(struct InformacionNivel* informacionNivel);
 	bool terminoNivelActual();
 	void setEstado(std::list<EstadoEnemigo> estadosEnemigos);
+    NivelConfiguracion *setNextNivel();
+
+    void setNivelIntermedio(char *archivo);
 
 private:
     std::list<NivelConfiguracion *> listNiveles;
@@ -34,7 +37,7 @@ private:
     int ancho;
     Jugador* jugador;
 
-    Nivel *configurarNuevoNivel();
+    Nivel *configurarNuevoNivel(struct InformacionFondo* informacionFondo);
 
 };
 

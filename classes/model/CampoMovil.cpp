@@ -68,10 +68,6 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 			(entidad->getPosicion().getX() >= 0) && (entidad->getPosicion().getY() >= 0);
 }
 
-bool CampoMovil::verificarPosicion() {
-    return posicion.getX() > (largoNivel + ancho);
-}
-
 void CampoMovil::setEstadosEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 	CampoMovil::estadosEnemigos = estadosEnemigos;
 }

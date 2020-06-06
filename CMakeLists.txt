@@ -26,7 +26,6 @@ link_libraries(stdc++fs)
 #set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;--filter=${CPPLINT_FILTER_OPTIONS}")
 # END CPPLINT
 
-
 add_executable(cliente
         client/main.cpp
         client/classes/view/FondoVista.cpp
@@ -125,7 +124,8 @@ add_executable(servidor
         server/classes/model/Partida.h
         server/classes/model/EntidadEnemigo.h
         server/classes/states/EstadoInternoCampoMovil.h
-        server/classes/states/EstadoInternoNivel.h commons/utils/Constantes.h)
+        server/classes/config/FondoConfiguracion.cpp
+        server/classes/config/FondoConfiguracion.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

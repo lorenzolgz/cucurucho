@@ -33,6 +33,7 @@ void configurar(std::string nivelLog) {
     l->info("Ancho pantalla: " + std::to_string(PANTALLA_ANCHO));
     l->info("Escala pantalla: " + std::to_string(1));
     l->info("Nivel de Log: " + nivelLog);
+
 }
 
 
@@ -119,18 +120,21 @@ void mainLoop() {
     jugadores.push_back(new JugadorVista(COLORES_ROSA));
     jugadores.push_back(new JugadorVista(COLORES_TURQUESA));
 
-    ManagerVista* manager = new ManagerVista(mockConfig(), 0, anchoPantalla, altoPantalla);
+    ManagerVista* manager = new ManagerVista({}, 0, anchoPantalla, altoPantalla);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
-    char* ip_address = "127.0.0.1";
-    int port = 3040;
-    IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    ConexionCliente* conexionCliente = nullptr;
+
+	// !!!!
+	//------------------------
+	// BEGIN socket configuration
     struct Comando client_command = { false, false, false, false };
     struct EstadoTick estadoTick;
     struct InformacionNivel informacionNivel;
 
-    // TODO: Cambios de niveles.
-    int nuevoNivel = 1;
+	bool nuevoNivel = true;
+	char* ip_address = "127.0.0.1";
+	int port = 3040;
+    IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
+    ConexionCliente* conexionCliente = nullptr;
 
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
@@ -173,6 +177,7 @@ void mainLoop() {
             continue;
         }
 
+
         if (conexionCliente == nullptr) {
             conexionCliente = iniciadorComunicacion->conectar();
         }
@@ -185,9 +190,10 @@ void mainLoop() {
         conexionCliente->enviarMensaje(&client_command);
 
         if (nuevoNivel) {
-            l->info("Nuevo nivel recibido: " + std::to_string(nuevoNivel));
             informacionNivel = conexionCliente->recibirInformacionNivel();
-            nuevoNivel = 0;
+            l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel.numeroNivel));
+            manager->setInformacionNivel(informacionNivel);
+            nuevoNivel = false;
         } else {
             estadoTick = conexionCliente->recibirEstadoTick();
             nuevoNivel = estadoTick.nuevoNivel;
@@ -199,14 +205,13 @@ void mainLoop() {
             jugadores[i]->render(estadoTick.estadosJugadores[i]);
         }
 
-        // TODO: Cambios de niveles
-		terminoNivelActual = false;
-        if (terminoNivelActual) {
-            manager->renderNivelIntermedio();
-			quit = !manager->cambiarNivel(1);
+        if (nuevoNivel) {
             SDL_RenderPresent(gRenderer);
             SDL_Delay(2000);
+            // Harcodeadisimo para que termine en el ultimo nivel
+            quit = quit || (informacionNivel.numeroNivel == 3);
         } else {
+			quit = quit || (informacionNivel.numeroNivel == 3);
 			SDL_RenderPresent(gRenderer);
 		}
     }
