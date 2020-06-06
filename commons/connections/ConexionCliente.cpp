@@ -10,6 +10,33 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::client_socket = client_socket;
 }
 
+int ConexionCliente::sincronizarInicio(){
+
+    int bytes_written = -1;
+    int bytes_receive = -1;
+    bool inicio = false;
+    bool validado = true;
+    int retry = 0;
+
+    while((bytes_receive < 0 || !inicio) && retry < 1000){
+        std::cout << "VALIDANDO INICIO";
+        bytes_receive = recv(client_socket, &inicio, sizeof(inicio), MSG_NOSIGNAL);
+        retry++;
+    }
+    while(bytes_written < 0 && retry < 1000){
+        std::cout << "ENVIANDO INICIO";
+        bytes_written = send(client_socket, &validado, sizeof(inicio), MSG_NOSIGNAL);
+        retry++;
+    }
+
+    if(retry < 100){
+        return 1;
+    }
+
+    return -1;
+
+}
+
 struct EstadoTick ConexionCliente::recibirEstadoTick() {
 	struct EstadoTick estadoTick;
 
@@ -47,12 +74,12 @@ void ConexionCliente::enviarMensaje(struct Comando *comando) {
 	l->debug("Cliente mando mensaje");
 }
 
-//---------------------------para logueo------------------------
+//---------------------------para login------------------------
 
-void ConexionCliente::enviarDatosDeLogueo(struct Logueo *logueo){
+void ConexionCliente::enviarDatosDeLogin(struct Logueo *logueo){
     //que lo loguee
     if(enviarUsuarioYContrasenia(&client_socket, logueo) < 0){
-        perror("Send Data Error enviarDatosDeLogueo");
+        perror("Send Data Error enviarDatosDeLogin");
         exit(1);
     }
     l->debug("Cliente mando datos de logueo");
@@ -84,7 +111,7 @@ bool ConexionCliente::contraseniaCorrecta(){
     bool esCorrecta;
 
     l->debug("Cliente por recibir mensaje");
-    if (recibirSiLaContraseniaEsCorrecta(&client_socket, esCorrecta) < 0) {
+    if (recibirValidacionContrasenia(&client_socket, esCorrecta) < 0) {
         perror("Receive Data Error");
         exit(1);
     }
@@ -93,7 +120,7 @@ bool ConexionCliente::contraseniaCorrecta(){
     return esCorrecta;
 }
 
-int ConexionCliente::recibirSiLaContraseniaEsCorrecta(int* client_socket, bool esCorrecta){
+int ConexionCliente::recibirValidacionContrasenia(int* client_socket, bool esCorrecta){
     int total_bytes_receive = 0;
     int bytes_receive = 0;
     int receive_data_size = sizeof(esCorrecta); // !!!!

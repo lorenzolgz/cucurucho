@@ -14,7 +14,7 @@ public:
 	AceptadorConexiones(int port);
 
 	void escuchar();
-    ConexionServidor* reconectar();
+    ConexionServidor* reconectar(int broken_socket);
 	ConexionServidor* aceptarConexion();
 	void dejarDeEscuchar();
 

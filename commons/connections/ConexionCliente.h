@@ -13,8 +13,9 @@ public:
 	struct InformacionNivel recibirInformacionNivel();
 	void enviarMensaje(struct Comando* comando);
 	void cerrarConexion();
+	int sincronizarInicio();
 	//para logueo
-    void enviarDatosDeLogueo(Logueo *logueo);
+    void enviarDatosDeLogin(Logueo *logueo);
     bool contraseniaCorrecta();
 
 private:
@@ -22,9 +23,9 @@ private:
 	int receiveDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
 	int receiveInformacionNivel(int* client_socket, struct InformacionNivel* header);
 	int sendData(int* client_socket, struct Comando* client_command);
-	//para logueo
+	//para login
     int enviarUsuarioYContrasenia(int *client_socket, Logueo *logueo);
-    int recibirSiLaContraseniaEsCorrecta(int *client_socket, bool esCorrecta);
+    int recibirValidacionContrasenia(int *client_socket, bool esCorrecta);
 
 
 };

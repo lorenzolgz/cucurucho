@@ -7,6 +7,8 @@
 #include "classes/model/Partida.h"
 #include "classes/config/ConfiguracionParser.h"
 #include "../commons/connections/ControladorDeSesiones.h"
+#include <signal.h>
+
 
 #define BACKUP_CONFIG "../server/config/backup.json"
 
@@ -19,7 +21,9 @@ Configuracion* parsearConfiguracion();
 
 
 int main(int argc , char *argv[]) {
-	l = new Log("server");
+
+    signal(SIGPIPE, SIG_IGN);
+    l = new Log("server");
 
 	Configuracion* config = parsearConfiguracion();
 	std::string nivelLog = config->getNivelLog();
@@ -55,13 +59,12 @@ int mainLoop(int puerto, Configuracion* config) {
 	ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
 
 	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
-	l->info("Connection accepted");
+    l->info("Connection accepted");
 
-
-	 //logueo con user y password
-	 ControladorDeSesiones* controlador = new ControladorDeSesiones(conexionServidor);
-	 controlador->iniciarSesion();
-     //
+    //login con user y password
+    ControladorDeSesiones* controlador = new ControladorDeSesiones(conexionServidor);
+    controlador->iniciarSesion();
+    //
 
 	bool quit = false;
 	struct Comando client_command;
@@ -78,6 +81,7 @@ int mainLoop(int puerto, Configuracion* config) {
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
 	bool closedSocket = false;
+
 
 	//keep communicating with client
 	while (!quit) {
@@ -118,12 +122,16 @@ int mainLoop(int puerto, Configuracion* config) {
 		// Send data (view)
 		if (nuevoNivel) {
 			if(conexionServidor->enviarInformacionNivel(&informacionNivel) < 0){
-			    conexionServidor = aceptadorConexiones->reconectar();
+			    int broken_socket = conexionServidor->getClientSocket();
+			    conexionServidor = aceptadorConexiones->reconectar(broken_socket);
+                controlador->iniciarSesion();
 			}
             nuevoNivel = false;
         } else {
             if(conexionServidor->enviarEstadoTick(&estadoTick) < 0){
-                conexionServidor = aceptadorConexiones->reconectar();
+                int broken_socket = conexionServidor->getClientSocket();
+                conexionServidor = aceptadorConexiones->reconectar(broken_socket);
+                controlador->iniciarSesion();
             }
 			nuevoNivel = estadoTick.nuevoNivel;
 		}

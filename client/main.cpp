@@ -9,6 +9,7 @@
 #include "../classes/config/ConfiguracionParser.h"
 #include "../classes/model/ManagerNiveles.h"
 #include "../classes/model/Titulo.h"
+#include <signal.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -177,9 +178,8 @@ void mainLoop() {
 	// END socket configuration
 
 	//------------------------
-    //se envian los datos de logueo
-
-	conexionCliente->enviarDatosDeLogueo(&logueo);
+    //se envian los datos de login
+    conexionCliente->enviarDatosDeLogin(&logueo);
 
 	//vuelve a ingresar la contraseña en el caso de que sea incorrecta
     //TODO esto funciona pero para una única vez
@@ -187,7 +187,7 @@ void mainLoop() {
 	esCorrecta = conexionCliente->contraseniaCorrecta();
 	if(!esCorrecta){
         strcpy(nuevoLogueo.contrasenia, "5678");
-	    conexionCliente->enviarDatosDeLogueo(&nuevoLogueo);
+        conexionCliente->enviarDatosDeLogin(&nuevoLogueo);
         esCorrecta = conexionCliente->contraseniaCorrecta(); //para futuro while
 	}
 	//------------------------
@@ -298,6 +298,7 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
 }
 
 int main(int argc, char *argv[]) {
+    signal(SIGPIPE, SIG_IGN);
     std::srand(std::time(NULL)); //use current time as seed for random generator
 
     std::string archivoConfig = BACKUP_CONFIG;

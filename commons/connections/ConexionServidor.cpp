@@ -21,7 +21,36 @@ struct Comando ConexionServidor::recibirMensaje() {
 	return client_command;
 }
 
-//----------------------------------------para logueo----------------------------------
+int ConexionServidor::sincronizarInicio(){
+
+    int bytes_written = -1;
+    int bytes_receive = -1;
+    bool inicio = true;
+    bool validado = false;
+    int retry = 0;
+
+
+
+    while(bytes_written < 0 && retry < 1000){
+        std::cout << "ENVIANDO INICIO";
+        bytes_written = send(client_socket, &inicio, sizeof(inicio), MSG_NOSIGNAL);
+        retry++;
+    }
+    while((bytes_receive < 0 || !validado) && retry < 1000){
+        std::cout << "VALIDANDO INICIO";
+        bytes_receive = recv(client_socket, &validado, sizeof(validado), MSG_NOSIGNAL);
+        retry++;
+    }
+
+    if(retry < 100){
+        return 1;
+    }
+
+    return -1;
+
+}
+
+//----------------------------------------para login----------------------------------
 struct Logueo ConexionServidor::recibirDatosDeLogueo() {
     struct Logueo logueo;
 
@@ -80,7 +109,7 @@ int ConexionServidor::sendBool(int* client_socket, bool esCorrecta){
     // Send
     // ssize_t send(int sockfd, const void *buf, size_t len, int flags);
     // sockfd -> file descriptor that refers to estadosEnemigos socket
-    // buf ->  the message is found in buf.
+    // buf ->  the message is found in buf.	aceptadorConexiones->escuchar();
     // len -> the message and has length len
     // flags
     // The system call send() is used to transmit estadosEnemigos message to another socket.
@@ -100,7 +129,7 @@ int ConexionServidor::sendBool(int* client_socket, bool esCorrecta){
 
     return 0;
 }
-//--------------------------------------fin logueo----------------------------------
+//--------------------------------------fin login----------------------------------
 
 
 int ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
@@ -153,6 +182,10 @@ int ConexionServidor::receiveData(int *client_socket, struct Comando *comando) {
 	}
 
 	return 0;
+}
+
+int ConexionServidor::getClientSocket() {
+    return client_socket;
 }
 
 int ConexionServidor::sendDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick) {
