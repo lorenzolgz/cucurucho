@@ -13,7 +13,7 @@ struct Comando {
 };
 
 //para el logueo
-struct Logueo {
+struct Login {
     char usuario[30];
     char contrasenia[50];
 };

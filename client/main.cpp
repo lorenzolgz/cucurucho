@@ -159,17 +159,17 @@ void mainLoop() {
 	int port = 3040;
 
 	//------------------
-	//se completa el struct de logueo por ahora HARDCODEADO
+	//se completa el struct de credencialesFAKE por ahora HARDCODEADO
 
-	struct Logueo logueo, nuevoLogueo;
-    memset(logueo.usuario,'\0',sizeof(logueo.usuario));
-    memset(logueo.contrasenia,'\0',sizeof(logueo.contrasenia));
-    memset(nuevoLogueo.usuario,'\0',sizeof(nuevoLogueo.usuario));
-    memset(nuevoLogueo.contrasenia,'\0',sizeof(nuevoLogueo.contrasenia));
-    strcpy(logueo.usuario, "ailu");
-	strcpy(logueo.contrasenia, "5679");
-    //preparado para cuando la contraseña sea incorrecta
-    strcpy(nuevoLogueo.usuario, "ailu");
+	struct Login credencialesFAKE, credencialesOK;
+    memset(credencialesFAKE.usuario, '\0', sizeof(credencialesFAKE.usuario));
+    memset(credencialesFAKE.contrasenia, '\0', sizeof(credencialesFAKE.contrasenia));
+    memset(credencialesOK.usuario, '\0', sizeof(credencialesOK.usuario));
+    memset(credencialesOK.contrasenia, '\0', sizeof(credencialesOK.contrasenia));
+    strcpy(credencialesFAKE.usuario, "ailu");
+	strcpy(credencialesFAKE.contrasenia, "XXXX");
+    strcpy(credencialesOK.usuario, "ailu");
+    strcpy(credencialesOK.contrasenia, "5678");
 
 	//---------------
 
@@ -179,18 +179,15 @@ void mainLoop() {
 
 	//------------------------
     //se envian los datos de login
-    conexionCliente->enviarDatosDeLogin(&logueo);
-
-	//vuelve a ingresar la contraseña en el caso de que sea incorrecta
-    //TODO esto funciona pero para una única vez
-    bool esCorrecta;
-	esCorrecta = conexionCliente->contraseniaCorrecta();
-	if(!esCorrecta){
-        strcpy(nuevoLogueo.contrasenia, "5678");
-        conexionCliente->enviarDatosDeLogin(&nuevoLogueo);
-        esCorrecta = conexionCliente->contraseniaCorrecta(); //para futuro while
-	}
-	//------------------------
+    conexionCliente->enviarDatosDeLogin(&credencialesFAKE);
+    bool esCorrecta = conexionCliente->contraseniaCorrecta();
+    esCorrecta ? std::cout << "Pass correcta \n" :  std::cout << "Pass incorrecta \n";
+	while(!esCorrecta){
+        conexionCliente->enviarDatosDeLogin(&credencialesOK);
+        esCorrecta = conexionCliente->contraseniaCorrecta();
+        esCorrecta ? std::cout << "Pass correcta \n" :  std::cout << "Pass incorrecta \n";
+    }
+    //------------------------
 
 	while (!quit) {
 		l->debug("client mainLoop");

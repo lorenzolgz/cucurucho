@@ -20,7 +20,7 @@ public:
 private:
     ConexionServidor* servidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
-    Logueo pedir();
+    Login pedir();
 };
 
 

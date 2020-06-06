@@ -43,7 +43,7 @@ struct EstadoTick ConexionCliente::recibirEstadoTick() {
 	l->debug("Cliente por recibir mensaje");
 	if (receiveDataEstadoTick(&client_socket, &estadoTick) < 0) {
 		perror("Receive Data Error");
-		exit(1);
+		// exit(1);
 	}
 
 	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadoJugador.posicionX));
@@ -57,7 +57,7 @@ struct InformacionNivel ConexionCliente::recibirInformacionNivel() {
 	l->debug("Cliente por recibir mensaje");
 	if (receiveInformacionNivel(&client_socket, &informacionNivel) < 0) {
 		perror("Receive Data Error");
-		exit(1);
+		// exit(1);
 	}
 
 	l->debug("Cliente recibio informacionNivel: ");
@@ -76,19 +76,19 @@ void ConexionCliente::enviarMensaje(struct Comando *comando) {
 
 //---------------------------para login------------------------
 
-void ConexionCliente::enviarDatosDeLogin(struct Logueo *logueo){
+void ConexionCliente::enviarDatosDeLogin(struct Login *logueo){
     //que lo loguee
     if(enviarUsuarioYContrasenia(&client_socket, logueo) < 0){
         perror("Send Data Error enviarDatosDeLogin");
-        exit(1);
+        // exit(1);
     }
     l->debug("Cliente mando datos de logueo");
 }
 
-int ConexionCliente::enviarUsuarioYContrasenia(int* client_socket, struct Logueo* logueo){
+int ConexionCliente::enviarUsuarioYContrasenia(int* client_socket, struct Login* logueo){
     int total_bytes_written = 0;
     int bytes_written = 0;
-    int send_data_size = sizeof(struct Logueo);
+    int send_data_size = sizeof(struct Login);
     bool client_socket_still_open = true;
 
     while ((send_data_size > total_bytes_written) && client_socket_still_open) {
@@ -108,26 +108,24 @@ int ConexionCliente::enviarUsuarioYContrasenia(int* client_socket, struct Logueo
 }
 
 bool ConexionCliente::contraseniaCorrecta(){
-    bool esCorrecta;
+    bool esCorrecta = false;
 
     l->debug("Cliente por recibir mensaje");
-    if (recibirValidacionContrasenia(&client_socket, esCorrecta) < 0) {
+    if (recibirValidacionContrasenia(&client_socket, &esCorrecta) < 0) {
         perror("Receive Data Error");
-        exit(1);
+        //exit(1);
     }
-    l->debug("Cliente recibio informacionNivel: ");
-
     return esCorrecta;
 }
 
-int ConexionCliente::recibirValidacionContrasenia(int* client_socket, bool esCorrecta){
+int ConexionCliente::recibirValidacionContrasenia(int* client_socket, bool* esCorrecta){
     int total_bytes_receive = 0;
     int bytes_receive = 0;
-    int receive_data_size = sizeof(esCorrecta); // !!!!
+    int receive_data_size = sizeof(bool); // !!!!
     bool client_socket_still_open = true;
 
     while ((receive_data_size > bytes_receive) && client_socket_still_open) {
-        bytes_receive = recv(*client_socket, (&esCorrecta + total_bytes_receive),
+        bytes_receive = recv(*client_socket, (esCorrecta + total_bytes_receive),
                              (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
 
         if (bytes_receive < 0) { // Error

@@ -15,7 +15,7 @@ public:
     int sincronizarInicio();
     void cerrarConexion();
 	//para logueo
-    Logueo recibirDatosDeLogueo();
+    Login recibirDatosDeLogin();
 	void enviarSiContraseniaEsCorrecta(bool esCorrecta);
 	int getClientSocket();
 
@@ -25,7 +25,7 @@ private:
 	int sendDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
 	int sendDataInformacionNivel(int* client_socket, InformacionNivel *estadoTick);
 	//para login
-    int recibirUsuarioYContrasenia(int *client_socket, Logueo *logueo);
+    int recibirUsuarioYContrasenia(int *client_socket, Login *login);
     int sendBool(int *client_socket, bool esCorrecta);
 };
 

@@ -12,7 +12,7 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor)
 void ControladorDeSesiones::iniciarSesion(){
 
     //pedirle un usuario y contraseña al cliente
-    struct Logueo logueo;
+    struct Login logueo;
     logueo = pedir();
 
     char* usuario;
@@ -24,7 +24,7 @@ void ControladorDeSesiones::iniciarSesion(){
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)) {
         //TODO se le informa al cliente que no se le permitirá jugar
-        servidor->cerrarConexion();
+        this->servidor->cerrarConexion();
     }
 }
 
@@ -46,18 +46,18 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
     //si está registrado, verifico la contraseña
     if(usuarioRegistrado){
         contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
-        if(!contraseniaCorrecta){
+        while(!contraseniaCorrecta){
             //TODO esto funciona pero para una única vez
-            servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
+            this->servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
             nuevaContrasenia = pedir().contrasenia;
             contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
         }
     }
-    servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
+    this->servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
 
     return usuarioRegistrado;
 }
 
-struct Logueo ControladorDeSesiones::pedir(){
-    return servidor->recibirDatosDeLogueo();
+struct Login ControladorDeSesiones::pedir(){
+    return this->servidor->recibirDatosDeLogin();
 }

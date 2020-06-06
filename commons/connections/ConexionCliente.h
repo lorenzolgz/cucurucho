@@ -15,7 +15,7 @@ public:
 	void cerrarConexion();
 	int sincronizarInicio();
 	//para logueo
-    void enviarDatosDeLogin(Logueo *logueo);
+    void enviarDatosDeLogin(Login *logueo);
     bool contraseniaCorrecta();
 
 private:
@@ -24,8 +24,8 @@ private:
 	int receiveInformacionNivel(int* client_socket, struct InformacionNivel* header);
 	int sendData(int* client_socket, struct Comando* client_command);
 	//para login
-    int enviarUsuarioYContrasenia(int *client_socket, Logueo *logueo);
-    int recibirValidacionContrasenia(int *client_socket, bool esCorrecta);
+    int enviarUsuarioYContrasenia(int *client_socket, Login *logueo);
+    int recibirValidacionContrasenia(int *client_socket, bool *esCorrecta);
 
 
 };

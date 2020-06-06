@@ -51,21 +51,21 @@ int ConexionServidor::sincronizarInicio(){
 }
 
 //----------------------------------------para login----------------------------------
-struct Logueo ConexionServidor::recibirDatosDeLogueo() {
-    struct Logueo logueo;
+struct Login ConexionServidor::recibirDatosDeLogin() {
+    struct Login login;
 
-    if (recibirUsuarioYContrasenia(&client_socket, &logueo) < 0) {
+    if (recibirUsuarioYContrasenia(&client_socket, &login) < 0) {
         perror("recibirMensaje receiveData -1");
         //exit(1);
     }
 
-    return logueo;
+    return login;
 }
 
-int ConexionServidor::recibirUsuarioYContrasenia(int *client_socket, struct Logueo *logueo) {
+int ConexionServidor::recibirUsuarioYContrasenia(int *client_socket, struct Login *login) {
     int total_bytes_receive = 0;
     int bytes_receive = 0;
-    int receive_data_size = sizeof(struct Logueo);
+    int receive_data_size = sizeof(struct Login);
     bool client_socket_still_open = true;
 
     // Receive
@@ -78,7 +78,7 @@ int ConexionServidor::recibirUsuarioYContrasenia(int *client_socket, struct Logu
     // If no messages are available at the socket, the receive call wait for estadosEnemigos message to arrive. (Blocking)
 
     while ((receive_data_size > bytes_receive) && client_socket_still_open) {
-        bytes_receive = recv(*client_socket, (logueo + total_bytes_receive),
+        bytes_receive = recv(*client_socket, (login + total_bytes_receive),
                              (receive_data_size - total_bytes_receive), MSG_NOSIGNAL);
         if (bytes_receive < 0) { // Error
             return bytes_receive;
