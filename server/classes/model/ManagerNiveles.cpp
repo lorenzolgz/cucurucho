@@ -78,6 +78,7 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
             informacionNivel->informacionFondo[i].pVelocidad = 0;
             strcpy(&informacionNivel->informacionFondo[i].pFondo[0],"\0");
         }
+        informacionNivel->velocidad= nivelConfig->getVelocidad();
         nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
         pasajeDeNivel();
     }

@@ -49,6 +49,7 @@ struct InformacionNivel {
 	int numeroNivel;
 	InformacionFondo informacionFondo[MAX_FONDOS];
 	char informacionFinNivel[LARGO_PATH];
+	float velocidad;
 };
 
 
