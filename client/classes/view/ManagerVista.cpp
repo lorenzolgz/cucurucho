@@ -51,7 +51,6 @@ void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }
 
-    std::cout<<informacionNivel.velocidad<<std::endl;
     posX = informacionNivel.velocidad;
 }
 
