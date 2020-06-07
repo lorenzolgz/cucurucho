@@ -41,51 +41,6 @@ std::vector<NivelConfiguracion*> mockConfig() {
     return nivelConfig;
 }
 
-void initialLoop(Titulo* pantallaPrincipal) {
-	bool quit = false;
-	SDL_Event e;
-
-	while (!quit) {
-		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
-		std::string inputText = "";
-
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0) {
-			//User requests quit
-			if (e.type == SDL_QUIT) {
-				quit = true;
-			} else if (e.type == SDL_TEXTINPUT) {
-				inputText += e.text.text;
-			} else if (e.type == SDL_KEYDOWN) {
-				if (e.key.keysym.sym == SDLK_BACKSPACE) {
-					inputText += 8;
-				} else if (e.key.keysym.sym == SDLK_UP) {
-					inputText += 9;
-				} else if (e.key.keysym.sym == SDLK_DOWN) {
-					inputText += 10;
-				} else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
-					inputText += 11;
-				} else if (e.key.keysym.sym == SDLK_d && SDL_GetModState() & KMOD_CTRL) {
-					inputText += 12;
-				}
-			}
-		}
-
-		SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
-		//Clear screen
-		SDL_RenderClear(gRenderer);
-
-		// El usuario presiona ENTER o INTRO o ESPACIO
-		bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
-
-		if (!pantallaPrincipal->isActivada(onStart)) {
-			pantallaPrincipal->tick(inputText);
-			SDL_RenderPresent(gRenderer);
-			quit = true;
-		}
-	}
-}
-
 void mainLoop() {
     int anchoPantalla = PANTALLA_ANCHO;
 	int altoPantalla = PANTALLA_ALTO;
@@ -113,27 +68,53 @@ void mainLoop() {
 	char* ip_address = "127.0.0.1";
 	int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
+    ConexionCliente* conexionCliente = nullptr;
 
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-    // !!!! sorry javi pero era un kilombo y lo rompi, te lo dejo para que lo arregles
-	// initialLoop(pantallaPrincipal);
+    while (!quit) {
+        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        std::string inputText = "";
 
-	while (!quit) {
-		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        //Handle events on queue
+        while (SDL_PollEvent(&e) != 0) {
+            //User requests quit
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            } else if (e.type == SDL_TEXTINPUT) {
+                inputText += e.text.text;
+            } else if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_BACKSPACE) {
+                    inputText += 8;
+                } else if (e.key.keysym.sym == SDLK_UP) {
+                    inputText += 9;
+                } else if (e.key.keysym.sym == SDLK_DOWN) {
+                    inputText += 10;
+                } else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
+                    inputText += 11;
+                } else if (e.key.keysym.sym == SDLK_d && SDL_GetModState() & KMOD_CTRL) {
+                    inputText += 12;
+                }
+            }
+        }
 
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0) {
-			//User requests quit
-			if (e.type == SDL_QUIT) {
-				quit = true;
-			}
-		}
-
-		SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
         //Clear screen
         SDL_RenderClear(gRenderer);
+
+        // El usuario presiona ENTER o INTRO o ESPACIO
+        bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
+
+        if (!pantallaPrincipal->isActivada(onStart)) {
+            pantallaPrincipal->tick(inputText);
+            SDL_RenderPresent(gRenderer);
+            continue;
+        }
+
+
+        if (conexionCliente == nullptr) {
+            conexionCliente = iniciadorComunicacion->conectar();
+        }
 
         client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
         client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
@@ -169,7 +150,7 @@ void mainLoop() {
 		}
     }
 
-	conexionCliente->cerrar();
+    if (conexionCliente != nullptr) conexionCliente->cerrar();
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
