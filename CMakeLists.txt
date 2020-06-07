@@ -125,7 +125,9 @@ add_executable(servidor
         server/classes/model/EntidadEnemigo.h
         server/classes/states/EstadoInternoCampoMovil.h
         server/classes/config/FondoConfiguracion.cpp
-        server/classes/config/FondoConfiguracion.h)
+        server/classes/config/FondoConfiguracion.h
+        commons/connections/ControladorDeSesiones.cpp
+        commons/connections/ControladorDeSesiones.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

@@ -28,6 +28,7 @@ private:
     CampoVista* campoVista;
     Enemigo1Vista enemigo1Vista;
     Enemigo2Vista enemigo2Vista;
+    std::vector<JugadorVista*> jugadores;
     int nivelActual;
     int alto;
     int ancho;

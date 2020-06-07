@@ -15,6 +15,12 @@ struct Comando {
 	int derecha;
 };
 
+//para el logueo
+struct Login {
+    char usuario[30];
+    char contrasenia[50];
+};
+
 struct EstadoHelper {
 	int posicionX;
 	int posicionY;

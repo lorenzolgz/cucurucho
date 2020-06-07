@@ -6,6 +6,8 @@
 #define CUCURUCHO_TITULO_H
 
 #include "../view/TituloVista.h"
+#include "../../../commons/protocols/protocolo.h"
+#include "../../../commons/connections/ConexionCliente.h"
 #include <string>
 
 const int INICIO_TIMEOUT = 120;
@@ -22,13 +24,15 @@ enum {
 class Titulo {
 public:
     Titulo(int ancho, int alto);
-    void tick(std::string input);
+    bool tick(std::string input, ConexionCliente *pCliente);
 
     bool isActivada(bool enter);
 
+    void getCredenciales(Login * credenciales);
 private:
     TituloVista* tituloVista;
     int contador;
+    int inicioTimeout;
     bool activada;
     std::string username;
     std::string password;
@@ -36,6 +40,8 @@ private:
     int estado;
 
     void leerInput(std::string input);
+
+    bool validarLogin(ConexionCliente *pCliente);
 };
 
 #endif //CUCURUCHO_TITULO_H

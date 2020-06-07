@@ -4,10 +4,13 @@
 
 #include "Titulo.h"
 #include "../Log.h"
+#include "../../../commons/connections/ConexionCliente.h"
+#include <string.h>
 
 Titulo::Titulo(int ancho, int alto) {
     activada = false;
     contador = 0;
+    inicioTimeout = INICIO_TIMEOUT;
     Titulo::tituloVista = new TituloVista(ancho, alto);
     username = "";
     password = "";
@@ -31,29 +34,44 @@ void Titulo::leerInput(std::string input) {
         } else if (c == 9 || c == 10 || (c == 11 && contador > 15)) {
             if (!seleccionadoUsuario && c == 11) estado = TITULO_VALIDAR;
             seleccionadoUsuario = !seleccionadoUsuario;
-        } else if (c == 12) {
-            estado = TITULO_ACEPTADO;
-            contador = 999;
+        } else if (c == 12) {   // Ctrl + D: Autoautenticar!
+            estado = TITULO_VALIDAR;
+            username = "cami";
+            password = "1234";
+            inicioTimeout = -30;
         }
     }
 }
 
 
-void Titulo::tick(std::string input) {
+bool Titulo::validarLogin(ConexionCliente *pCliente) {
+    Login credenciales;
+    strcpy(credenciales.usuario, username.c_str());
+    strcpy(credenciales.contrasenia, password.c_str());
+    pCliente->enviarDatosDeLogin(&credenciales);
+    return pCliente->contraseniaCorrecta();
+}
+
+
+// Devuelve un booleano indicando si el cliente debe reconectarse al servidor
+
+bool Titulo::tick(std::string input, ConexionCliente *pCliente) {
     tituloVista->render(estado, username, password, seleccionadoUsuario);
     leerInput(input);
+    bool reconectar = false;
 
-    if (!activada) {
-    }
     if (estado == TITULO_VALIDAR) {
-        if (username != "asd" || password != "123") {
+        if (!validarLogin(pCliente)) {
             estado = TITULO_ERROR_AUTENTICACION;
+            reconectar = true;
         } else {
             contador = 0;
             estado = TITULO_ACEPTADO;
         }
     }
     if (activada) contador++;
+
+    return reconectar;
 }
 
 bool Titulo::isActivada(bool enter) {
@@ -63,5 +81,9 @@ bool Titulo::isActivada(bool enter) {
         seleccionadoUsuario = true;
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");
     }
-    return estado == TITULO_ACEPTADO && contador > INICIO_TIMEOUT;
+    return estado == TITULO_ACEPTADO && contador > inicioTimeout;
+}
+
+
+void Titulo::getCredenciales(Login * credenciales) {
 }
