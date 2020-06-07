@@ -24,11 +24,11 @@ enum {
 class Titulo {
 public:
     Titulo(int ancho, int alto);
+
     bool tick(std::string input, ConexionCliente *pCliente);
 
     bool isActivada(bool enter);
 
-    void getCredenciales(Login * credenciales);
 private:
     TituloVista* tituloVista;
     int contador;

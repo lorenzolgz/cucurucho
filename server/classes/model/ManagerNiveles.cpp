@@ -18,11 +18,8 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> ju
     ManagerNiveles::nuevoNivel = 1;
 }
 
-
 Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = listNiveles.front();
-
-
 
     std::map<int, Jugador*>::iterator it;
     int pos = 1;
@@ -47,10 +44,6 @@ bool ManagerNiveles::terminoNivelActual() {
     return nuevoNivel;
 }
 
-bool ManagerNiveles::estadoJuego() {
-	return listNiveles.empty();
-}
-
 bool ManagerNiveles::pasajeDeNivel(){
     NivelConfiguracion* nivel = listNiveles.front();
 
@@ -64,24 +57,24 @@ bool ManagerNiveles::pasajeDeNivel(){
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {
-    if (nuevoNivel){
-        informacionNivel->numeroNivel++;
-        NivelConfiguracion* nivelConfig = listNiveles.front();
-        if ( nivelConfig == nullptr ) return nivelActual->state();
-        int i = 0;
-        for( FondoConfiguracion* f : nivelConfig->getFondos() ) {
-            informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
-            f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
-            i++;
-        }
-        for (i; i< MAX_FONDOS; i++){
-            informacionNivel->informacionFondo[i].pVelocidad = 0;
-            strcpy(&informacionNivel->informacionFondo[i].pFondo[0],"\0");
-        }
-        informacionNivel->velocidad= nivelConfig->getVelocidad();
-        nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
-        pasajeDeNivel();
-    }
+	if (nuevoNivel) {
+		informacionNivel->numeroNivel++;
+		NivelConfiguracion *nivelConfig = listNiveles.front();
+		if (nivelConfig == nullptr) return nivelActual->state();
+		int i = 0;
+		for (FondoConfiguracion *f : nivelConfig->getFondos()) {
+			informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
+			f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
+			i++;
+		}
+		for (i; i < MAX_FONDOS; i++) {
+			informacionNivel->informacionFondo[i].pVelocidad = 0;
+			strcpy(&informacionNivel->informacionFondo[i].pFondo[0], "\0");
+		}
+        informacionNivel->velocidad = nivelConfig->getVelocidad();
+		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
+		pasajeDeNivel();
+	}
 
 	return nivelActual->state();
 }

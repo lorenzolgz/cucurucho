@@ -3,9 +3,9 @@
 //
 
 #include "Titulo.h"
-#include "../Log.h"
 #include "../../../commons/connections/ConexionCliente.h"
 #include <string.h>
+#include "../../../commons/utils/Log.h"
 
 Titulo::Titulo(int ancho, int alto) {
     activada = false;
@@ -54,7 +54,6 @@ bool Titulo::validarLogin(ConexionCliente *pCliente) {
 
 
 // Devuelve un booleano indicando si el cliente debe reconectarse al servidor
-
 bool Titulo::tick(std::string input, ConexionCliente *pCliente) {
     tituloVista->render(estado, username, password, seleccionadoUsuario);
     leerInput(input);
@@ -82,8 +81,4 @@ bool Titulo::isActivada(bool enter) {
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");
     }
     return estado == TITULO_ACEPTADO && contador > inicioTimeout;
-}
-
-
-void Titulo::getCredenciales(Login * credenciales) {
 }

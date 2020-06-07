@@ -6,7 +6,7 @@
 #define CUCURUCHO_TEXTOVISTA_H
 
 #include <SDL_render.h>
-#include "../Vector.h"
+#include "../../../commons/utils/Vector.h"
 
 const int TEXTO_COLOR_AZUL = 1;
 const int TEXTO_COLOR_ROJO = 2;

@@ -1,6 +1,6 @@
 #include "JugadorVista.h"
-#include "../Utils.h"
-#include "../Log.h"
+#include "../../../commons/utils/Utils.h"
+#include "../../../commons/utils/Log.h"
 #include "../GeneradorDeTexturas.h"
 #include "../GraphicRenderer.h"
 #include "HelperVista.h"

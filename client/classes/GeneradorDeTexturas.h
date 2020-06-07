@@ -11,7 +11,7 @@
 #include <map>
 #include <iostream>
 #include "GraphicRenderer.h"
-#include "Log.h"
+#include "../../commons/utils/Log.h"
 #include <SDL_render.h>
 #include <SDL_image.h>
 using namespace std;

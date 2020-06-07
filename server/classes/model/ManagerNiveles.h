@@ -19,7 +19,6 @@ public:
     ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores);
 
     void tick() override;
-    bool estadoJuego();
     bool pasajeDeNivel();
 	bool terminoNivelActual();
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);

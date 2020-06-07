@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.7)
 project(cucurucho)
 
 find_package(PkgConfig REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(SDL2 REQUIRED)
 
 pkg_check_modules(SDL2 REQUIRED sdl2)
@@ -11,7 +12,11 @@ pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
 
 include_directories(${SDL2_INCLUDE_DIRS})
+
 link_libraries(stdc++fs)
+
+set(CMAKE_CXX_FLAGS -pthread)
+set(CMAKE_CXX_STANDARD 11)
 
 
 # CPPLINT
@@ -73,7 +78,16 @@ add_executable(cliente
         commons/connections/ConexionCliente.h
         commons/connections/IniciadorComunicacion.cpp
         commons/connections/IniciadorComunicacion.h
-        commons/protocols/protocolo.h commons/utils/Constantes.h client/classes/view/ToastVista.cpp client/classes/view/ToastVista.h)
+        commons/protocols/protocolo.h
+        commons/utils/Constantes.h
+        client/classes/view/ToastVista.cpp
+        client/classes/view/ToastVista.h
+        client/classes/GestorSDL.cpp
+        client/classes/GestorSDL.h
+        commons/ColaBloqueante.h
+        commons/connections/ConexionUtils.h
+        commons/connections/Conexion.cpp commons/connections/Conexion.h
+        )
 
 add_executable(servidor
         server/main.cpp
@@ -127,8 +141,17 @@ add_executable(servidor
         server/classes/config/FondoConfiguracion.cpp
         server/classes/config/FondoConfiguracion.h
         commons/connections/ControladorDeSesiones.cpp
-        commons/connections/ControladorDeSesiones.h)
+        commons/connections/ControladorDeSesiones.h
+        commons/Thread.cpp
+        commons/Thread.h
+        server/classes/HiloOrquestadorPartida.cpp
+        server/classes/HiloOrquestadorPartida.h
+        commons/ColaBloqueante.h
+        server/classes/HiloConexionServidor.cpp server/classes/HiloConexionServidor.h
+        commons/connections/ConexionUtils.h
+        commons/connections/Conexion.cpp commons/connections/Conexion.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)
 target_link_libraries(cliente ${JSONCPP_LIBRARIES})
+target_link_libraries(cliente nlohmann_json::nlohmann_json)

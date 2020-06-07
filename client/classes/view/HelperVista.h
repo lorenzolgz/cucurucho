@@ -4,7 +4,7 @@
 #include <array>
 #include <deque>
 #include <SDL_render.h>
-#include "../Vector.h"
+#include "../../../commons/utils/Vector.h"
 #include "Colores.h"
 #include "JugadorVista.h"
 

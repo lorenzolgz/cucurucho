@@ -15,11 +15,9 @@
 #include "classes/config/NivelConfiguracion.h"
 #include "../server/classes/states/EstadoInternoNivel.h"
 #include "../commons/utils/Constantes.h"
+#include "classes/GestorSDL.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
-
-//The window we'll be rendering to
-SDL_Window* gWindow = nullptr;
 
 Log* l;
 ToastVista* toast;
@@ -34,70 +32,6 @@ void configurar(std::string nivelLog) {
     l->info("Escala pantalla: " + std::to_string(1));
     l->info("Nivel de Log: " + nivelLog);
 
-}
-
-
-bool init() {
-	int anchoPantalla = PANTALLA_ANCHO;
-	int altoPantalla = PANTALLA_ALTO;
-	int escalaPantalla = 1;
-    toast = new ToastVista();
-
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		l->error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
-		return false;
-	}
-
-	// Set texture filtering to linear
-	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
-	{
-		l->debug("No se habilito el filro de la textura linear");
-	}
-
-	//Initialize SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG))) {
-		l->error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
-		return false;
-	}
-
-	gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-							   anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
-	if (gWindow == nullptr) {
-		l->error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
-		return false;
-	}
-	//Get window surface
-
-	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (gRenderer == nullptr) {
-		l->error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
-		return false;
-	}
-	GraphicRenderer::setInstance(gRenderer);
-
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND); // Para activar alpha/opacidad
-	SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
-
-	l->info("La ventana se creo correctamente");
-	return true;
-}
-
-
-void close() {
-	//Deallocate textures
-	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
-	SDL_DestroyRenderer(gRenderer);
-
-	//Destroy window
-	SDL_DestroyWindow(gWindow);
-
-	l->info("Se libero toda la memoria");
-	//Quit SDL subsystems
-	IMG_Quit();
-	SDL_Quit();
-	l->info("La ventana se cerro correctamente");
 }
 
 
@@ -143,7 +77,7 @@ bool pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion, ConexionCl
 
     if (!pantallaPrincipal->isActivada(onStart)) {
         if (pantallaPrincipal->tick(inputText, *conexionCliente)) {
-            (*conexionCliente)->cerrarConexion();
+            (*conexionCliente)->cerrar();
             *conexionCliente = iniciadorComunicacion->conectar();
         }
         SDL_RenderPresent(GraphicRenderer::getInstance());
@@ -168,7 +102,7 @@ ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
     client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
     // Send data (command)
-    conexionCliente->enviarMensaje(&client_command);
+    conexionCliente->enviarComando(&client_command);
 
     if (*nuevoNivel) {
         *informacionNivel = conexionCliente->recibirInformacionNivel();
@@ -250,7 +184,7 @@ void mainLoop() {
     }
 
     if (conexionCliente != nullptr) {
-        conexionCliente->cerrarConexion();
+        conexionCliente->cerrar();
     }
 }
 
@@ -268,6 +202,8 @@ int main(int argc, char *argv[]) {
 
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
+
+    GestorSDL* gestorSDL = new GestorSDL();
 
     for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
@@ -296,11 +232,11 @@ int main(int argc, char *argv[]) {
     configurar(nivelLog);
 
 	// Inicializa SDL con la configuracion
-	if (!init()) return 1;
+	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;
 
 	// Comienza el juego con la configuracion
 	mainLoop();
 
-	close();
+	gestorSDL->close();
 	return 0;
 }

@@ -7,6 +7,7 @@
 
 #define JSON_USUARIOS "../server/usuarios.json"
 #include "ConexionServidor.h"
+#include "../protocols/protocolo.h"
 #include <iostream>
 #include <jsoncpp/json/json.h>
 #include <fstream>
@@ -15,14 +16,14 @@ using namespace std;
 class ControladorDeSesiones {
 public:
     ControladorDeSesiones(ConexionServidor* conexionServidor);
-    void iniciarSesion();
+    bool iniciarSesion();
 
     void setServidor(ConexionServidor *servidor);
 
 private:
     ConexionServidor* servidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
-    Login pedir();
+    struct Login pedirCredenciales();
 };
 
 

@@ -9,11 +9,11 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor)
     this->servidor = conexionServidor;
 }
 
-void ControladorDeSesiones::iniciarSesion(){
+bool ControladorDeSesiones::iniciarSesion(){
 
     //pedirle un usuario y contraseña al cliente
     struct Login logueo;
-    logueo = pedir();
+    logueo = pedirCredenciales();
 
     char* usuario;
     char* contrasenia;
@@ -24,8 +24,11 @@ void ControladorDeSesiones::iniciarSesion(){
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)) {
         //TODO se le informa al cliente que no se le permitirá jugar
-        this->servidor->cerrarConexion();
+        this->servidor->cerrar();
+        return false;
     }
+
+    return true;
 }
 
 bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia)
@@ -48,18 +51,23 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
         contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
         while(!contraseniaCorrecta){
             //TODO esto funciona pero para una única vez
-            this->servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
-            nuevaContrasenia = pedir().contrasenia;
+            this->servidor->enviarEstadoLogin(contraseniaCorrecta);
+            nuevaContrasenia = pedirCredenciales().contrasenia;
             contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
         }
     }
-    this->servidor->enviarSiContraseniaEsCorrecta(contraseniaCorrecta);
+    this->servidor->enviarEstadoLogin(contraseniaCorrecta);
 
     return usuarioRegistrado;
 }
 
-struct Login ControladorDeSesiones::pedir(){
-    return this->servidor->recibirDatosDeLogin();
+struct Login ControladorDeSesiones::pedirCredenciales(){
+    nlohmann::json mensajeJson = this->servidor->recibirMensaje();
+    struct Login login;
+    strcpy(login.usuario, std::string(mensajeJson["usuario"]).c_str());
+    strcpy(login.contrasenia, std::string(mensajeJson["contrasenia"]).c_str());
+
+    return login;
 }
 
 void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {

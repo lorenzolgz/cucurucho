@@ -1,7 +1,3 @@
-//
-// Created by lorenzo on 4/18/20.
-//
-
 #ifndef CUCURUCHO_CONFIGURACION_H
 #define CUCURUCHO_CONFIGURACION_H
 
@@ -20,6 +16,8 @@ public:
     int getEscalaPantalla();
     std::string getNivelLog();
 	const std::list<NivelConfiguracion *> &getNiveles() const;
+	// TODO: mas jugadores.
+	int getCantidadJugadores() { return 2; };
 
 private:
     int altoPantalla;
@@ -28,5 +26,6 @@ private:
     std::string nivelLog;
 	std::list<NivelConfiguracion*> niveles;
 };
+
 
 #endif //CUCURUCHO_CONFIGURACION_H

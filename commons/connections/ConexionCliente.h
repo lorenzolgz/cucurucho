@@ -3,31 +3,30 @@
 
 
 #include <sys/socket.h>
+#include <jsoncpp/json/json.h>
 #include "../protocols/protocolo.h"
+#include "ConexionUtils.h"
+#include "Conexion.h"
 
-class ConexionCliente {
+
+class ConexionCliente : public Conexion {
 public:
 	ConexionCliente(int client_socket);
 
 	struct EstadoTick recibirEstadoTick();
+
 	struct InformacionNivel recibirInformacionNivel();
-	void enviarMensaje(struct Comando* comando);
-	void cerrarConexion();
-	int sincronizarInicio();
-	//para logueo
-    void enviarDatosDeLogin(Login *logueo);
+
+	void enviarComando(struct Comando* comando);
+
     bool contraseniaCorrecta();
 
+    void enviarDatosDeLogin(Login *logueo);
+
+	void cerrar();
+
 private:
-	int client_socket;
-	int receiveDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
-	int receiveInformacionNivel(int* client_socket, struct InformacionNivel* header);
-	int sendData(int* client_socket, struct Comando* client_command);
-	//para login
-    int enviarUsuarioYContrasenia(int *client_socket, Login *logueo);
-    int recibirValidacionContrasenia(int *client_socket, bool *esCorrecta);
-
-
+	int server_socket;
 };
 
 

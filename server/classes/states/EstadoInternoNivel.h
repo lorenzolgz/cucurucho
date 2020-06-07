@@ -1,7 +1,3 @@
-//
-// Created by rodrigosouto on 31/5/20.
-//
-
 #ifndef CUCURUCHO_ESTADOINTERNONIVEL_H
 #define CUCURUCHO_ESTADOINTERNONIVEL_H
 
