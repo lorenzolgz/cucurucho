@@ -118,7 +118,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
     Vector posicionPassLabel = Vector(ancho * 8 / 19, alto * 9 / 12);
 
     Vector posicionUserInput = Vector(ancho * 9 / 19, alto * 8 / 12);
-    Vector posicionPassInput = Vector(ancho *  / 19, alto * 9 / 12);
+    Vector posicionPassInput = Vector(ancho * 9 / 19, alto * 9 / 12);
 
     std::string passwordInput = "";
     for (int i = 0; i < password.length(); i++) passwordInput += "*";
