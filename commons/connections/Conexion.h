@@ -2,7 +2,7 @@
 #define CUCURUCHO_CONEXION_H
 
 
-#include <json.hpp>
+#include "../../libraries/json/json.hpp"
 
 class Conexion {
 public:

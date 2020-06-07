@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.7)
 project(cucurucho)
 
 find_package(PkgConfig REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(SDL2 REQUIRED)
 
 pkg_check_modules(SDL2 REQUIRED sdl2)
@@ -87,7 +86,7 @@ add_executable(cliente
         commons/ColaBloqueante.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        )
+        libraries/json/json.hpp)
 
 add_executable(servidor
         server/main.cpp
@@ -149,9 +148,9 @@ add_executable(servidor
         commons/ColaBloqueante.h
         server/classes/HiloConexionServidor.cpp server/classes/HiloConexionServidor.h
         commons/connections/ConexionUtils.h
-        commons/connections/Conexion.cpp commons/connections/Conexion.h)
+        commons/connections/Conexion.cpp commons/connections/Conexion.h
+        libraries/json/json.hpp)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)
 target_link_libraries(cliente ${JSONCPP_LIBRARIES})
-target_link_libraries(cliente nlohmann_json::nlohmann_json)
