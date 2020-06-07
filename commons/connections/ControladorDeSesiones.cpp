@@ -61,3 +61,7 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
 struct Login ControladorDeSesiones::pedir(){
     return this->servidor->recibirDatosDeLogin();
 }
+
+void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
+    ControladorDeSesiones::servidor = servidor;
+}

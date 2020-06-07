@@ -64,7 +64,7 @@ void AceptadorConexiones::escuchar() {
 
 ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	struct sockaddr_in client_addr;
-	int client_addrlen;
+	int client_addrlen = sizeof(client_addrlen);
 
 	// Accept incoming connection from estadosEnemigos client
 	// int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
@@ -82,7 +82,7 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 
 ConexionServidor *AceptadorConexiones::reconectar(int broken_socket) {
     struct sockaddr_in client_addr;
-    int client_addrlen;
+    int client_addrlen = sizeof client_addr;
 
     close(broken_socket);
 
@@ -92,6 +92,9 @@ ConexionServidor *AceptadorConexiones::reconectar(int broken_socket) {
     // addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
     // addrlen -> size of sockaddr structure for the CLIENT.
     int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
+    if (client_socket < 0) {
+        perror("Accept failed");
+    }
     return new ConexionServidor(client_socket);
 }
 

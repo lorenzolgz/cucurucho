@@ -120,21 +120,27 @@ int mainLoop(int puerto, Configuracion* config) {
 		}
 
 		// Send data (view)
-		if (nuevoNivel) {
-			if(conexionServidor->enviarInformacionNivel(&informacionNivel) < 0){
-			    int broken_socket = conexionServidor->getClientSocket();
-			    conexionServidor = aceptadorConexiones->reconectar(broken_socket);
-                controlador->iniciarSesion();
-			}
-            nuevoNivel = false;
-        } else {
-            if(conexionServidor->enviarEstadoTick(&estadoTick) < 0){
-                int broken_socket = conexionServidor->getClientSocket();
-                conexionServidor = aceptadorConexiones->reconectar(broken_socket);
-                controlador->iniciarSesion();
+		bool reconnect = false;
+        if (nuevoNivel) {
+            if (conexionServidor->enviarInformacionNivel(&informacionNivel) < 0) {
+                nuevoNivel = true;
+            } else {
+                nuevoNivel = false;
             }
-			nuevoNivel = estadoTick.nuevoNivel;
+        } else {
+            if (conexionServidor->enviarEstadoTick(&estadoTick) < 0){
+                reconnect = true;
+            } else {
+                nuevoNivel = estadoTick.nuevoNivel;
+            }
 		}
+        if (reconnect) {
+            int broken_socket = conexionServidor->getClientSocket();
+            conexionServidor = aceptadorConexiones->reconectar(broken_socket);
+            controlador->setServidor(conexionServidor);
+            controlador->iniciarSesion();
+            nuevoNivel = true;
+        }
 		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
 		//--------------------
 

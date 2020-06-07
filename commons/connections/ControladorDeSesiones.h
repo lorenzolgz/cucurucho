@@ -17,6 +17,8 @@ public:
     ControladorDeSesiones(ConexionServidor* conexionServidor);
     void iniciarSesion();
 
+    void setServidor(ConexionServidor *servidor);
+
 private:
     ConexionServidor* servidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
