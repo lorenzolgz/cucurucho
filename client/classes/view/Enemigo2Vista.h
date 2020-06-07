@@ -3,7 +3,7 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../../commons/utils/Vector.h"
 #include "../../../commons/protocols/protocolo.h"
 
 const int ENEMIGO2_SRC_ANCHO = 285;

@@ -5,7 +5,7 @@
 #include <list>
 #include <jsoncpp/json/value.h>
 #include "NivelConfiguracion.h"
-#include "../Log.h"
+#include "../../../commons/utils/Log.h"
 
 
 std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(std::string rutaRelativa, int nivel) {

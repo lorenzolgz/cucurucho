@@ -15,7 +15,7 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
 
     SDL_Texture * textura = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
     if (textura == nullptr) {
-        l->error(std::string("Error al crear la textura de la imagen! SDL_image Error:") + SDL_GetError());
+        l->error(std::string("Error al crear la textura de la imagen: " + path + "! SDL_image Error:") + SDL_GetError());
     }
 
     SDL_FreeSurface(loadedSurface);

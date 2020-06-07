@@ -8,17 +8,14 @@
 #include "classes/model/Partida.h"
 #include "classes/config/ConfiguracionParser.h"
 #include "classes/config/FondoConfiguracion.h"
+#include "classes/HiloOrquestadorPartida.h"
 
 
 #define BACKUP_CONFIG "../server/config/backup.json"
 
 Log* l;
 
-void initializeData(struct EstadoTick* estadoTick);
-void procesarNivel(struct InformacionNivel* informacionNivel, Partida* partida);
-void processData(Partida* partida, struct Comando action,struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel);
-void processNivel(struct InformacionNivel* informacionNivel);
-int mainLoop(int puerto, Configuracion* configuracion);
+int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion();
 
 
@@ -30,7 +27,7 @@ int main(int argc , char *argv[]) {
  	l->setConf(nivelLog);
 	l->info("Iniciando el servidor.");
 
-	return mainLoop(3040, config);
+	return esperarConexiones(3040, config);
 }
 
 Configuracion* parsearConfiguracion() {
@@ -51,117 +48,67 @@ Configuracion* parsearConfiguracion() {
 	return config;
 }
 
-int mainLoop(int puerto, Configuracion* config) {
+
+int esperarConexiones(int puerto, Configuracion* config) {
 	l->info("Port: " + std::to_string(puerto));
 
 	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
 	aceptadorConexiones->escuchar();
-	ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
 
-	// ConexionServidor* conexionServidor = new ConexionServidor(client_socket);
-	l->info("Connection accepted");
+	std::list<ConexionServidor*> conexiones;
+	int jugadoresConectados = 0;
 
-	bool quit = false;
-	struct Comando client_command;
-	struct InformacionNivel informacionNivel;
-	struct EstadoTick estadoTick;
-    bool terminoNivelActual = false;
-	clock_t t2, t1 = clock();
-
-	Partida* partida = new Partida(config);
-
-	int commands_count = 0;
-	int status = 0;
-    initializeData(&estadoTick);
-    informacionNivel.numeroNivel = 0;
-
-    // Comunicacion inicial.
-	int nuevoNivel = 1;
-
-	//keep communicating with client
-	while (!quit) {
-
-		// WIP. Para controlar la cantidad de ticks.
-		t2 = clock();
-		if((t2-t1) > 50) {
-			//DO the stuff!
-			// printf("!!!! %d\n", t2-t1);
-			t1 = clock();
-		}
-
-		// printf("Commands count: %d\n", commands_count + 1);
-
-		// Receive data (command)
-		client_command = conexionServidor->recibirMensaje();
-		// printf("Incomming command action: \n");
-		//--------------------
-
-		// Process model
-        processData(partida, client_command, &estadoTick, &informacionNivel);
-        //--------------------
-
-		if (nuevoNivel) {
-            l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
-		}
-
-		// Send data (view)
-		if (nuevoNivel) {
-			conexionServidor->enviarInformacionNivel(&informacionNivel);
-			nuevoNivel = false;
-		} else {
-			conexionServidor->enviarEstadoTick(&estadoTick);
-			nuevoNivel = estadoTick.nuevoNivel;
-		}
-		// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
-		//--------------------
-
-		commands_count++;
-
+	while (conexiones.size() < config->getCantidadJugadores()) {
+		l->info("Esperando usuario(s)");
+		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
+		conexiones.push_back(conexionServidor);
+		jugadoresConectados++;
+		l->info("Usuario " + std::to_string(jugadoresConectados) + "conectado");
 	}
+	l->info("Todos los usuarios fueron aceptados");
 
-	conexionServidor->cerrarConexion();
+	HiloOrquestadorPartida *hiloOrquestadorPartida;
+	hiloOrquestadorPartida = new HiloOrquestadorPartida(config, conexiones);
+
+	hiloOrquestadorPartida->start();
+
+	hiloOrquestadorPartida->join();
+	for (auto* conexion : conexiones) {
+		conexion->cerrar();
+	}
 	printf("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
 	printf("Server socket number closed\n");
 
-	return status;
-}
+	return 0;
 
 
-void processData(Partida* partida, struct Comando command, struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel) {
-	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
-    partida->tick(command);
 
-    // Seteando estadoTick
-	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
-	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
-	int i = 0;
-	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
-	    estadoTick->estadosJugadores[i] = estadoJugador;
-	    i++;
+	/*
+	std::list<ConexionServidor*> conexiones;
+
+	while (conexiones.size() < config->getCantidadJugadores()) {
+		ConexionServidor* conexionServidor = aceptadorConexiones->aceptarConexion();
+		if (conexionServidor == nullptr) {
+			continue;
+		}
+		conexiones.push_back(conexionServidor);
+		l->info("Connection " + std::to_string(conexiones.size()) + " accepted");
 	}
-	i = 0;
-	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {
-		estadoTick->estadosEnemigos[i] = estadoEnemigo;
-		i++;
-	}
-	// !!!! hardcodeadisimo
-	for (; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
-	}
-}
 
-void initializeData(struct EstadoTick* estadoTick) {
-    for (int i = 0; i < MAX_JUGADORES; i++) {
-        estadoTick->estadosJugadores[i].posicionX = -1000;
-        estadoTick->estadosJugadores[i].posicionY = -1000;
-        estadoTick->estadosJugadores[i].helper1.posicionX = -1000;
-        estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
-        estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
-        estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
-    }
+	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, conexiones);
 
-	for (int i = 0; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
+	hiloOrquestadorPartida->start();
+
+	hiloOrquestadorPartida->join();
+
+	for (auto* conexion : conexiones) {
+		conexion->cerrar();
 	}
+	printf("Client socket number closed\n");
+	aceptadorConexiones->dejarDeEscuchar();
+	printf("Server socket number closed\n");
+
+	return 0;
+	 */
 }

@@ -3,22 +3,18 @@
 
 
 #include "ManagerNiveles.h"
-#define FIN_ARCH '\0'
 
 class Partida {
 public:
 	Partida(Configuracion* config);
 
-	void tick(struct Comando command);
+	void tick(struct Comando comandos[]);
     EstadoInternoNivel state(struct InformacionNivel* informacionNivel);
-    bool estadoJuego();
 
 private:
 	int nuevoNivel;
 	std::map<int, Jugador*> jugadores;
 	ManagerNiveles* managerNiveles;
-    std::list<NivelConfiguracion *> nivelesPartida;
-
 };
 
 

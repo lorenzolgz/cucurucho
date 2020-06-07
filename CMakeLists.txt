@@ -13,6 +13,8 @@ link_libraries(${JSONCPP_LIBRARIES})
 include_directories(${SDL2_INCLUDE_DIRS})
 link_libraries(stdc++fs)
 
+set(CMAKE_CXX_FLAGS -pthread)
+
 
 # CPPLINT
 #set(CMAKE_CXX_STANDARD 11)
@@ -73,7 +75,16 @@ add_executable(cliente
         commons/connections/ConexionCliente.h
         commons/connections/IniciadorComunicacion.cpp
         commons/connections/IniciadorComunicacion.h
-        commons/protocols/protocolo.h commons/utils/Constantes.h client/classes/view/ToastVista.cpp client/classes/view/ToastVista.h)
+        commons/protocols/protocolo.h
+        commons/utils/Constantes.h
+        client/classes/view/ToastVista.cpp
+        client/classes/view/ToastVista.h
+        client/classes/GestorSDL.cpp
+        client/classes/GestorSDL.h
+        commons/ColaBloqueante.h
+        commons/connections/ConexionUtils.h
+        commons/connections/Conexion.cpp commons/connections/Conexion.h
+        )
 
 add_executable(servidor
         server/main.cpp
@@ -125,7 +136,15 @@ add_executable(servidor
         server/classes/model/EntidadEnemigo.h
         server/classes/states/EstadoInternoCampoMovil.h
         server/classes/config/FondoConfiguracion.cpp
-        server/classes/config/FondoConfiguracion.h)
+        server/classes/config/FondoConfiguracion.h
+        commons/Thread.cpp
+        commons/Thread.h
+        server/classes/HiloOrquestadorPartida.cpp
+        server/classes/HiloOrquestadorPartida.h
+        commons/ColaBloqueante.h
+        server/classes/HiloConexionServidor.cpp server/classes/HiloConexionServidor.h
+        commons/connections/ConexionUtils.h
+        commons/connections/Conexion.cpp commons/connections/Conexion.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

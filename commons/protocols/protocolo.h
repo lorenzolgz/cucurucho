@@ -3,7 +3,6 @@
 
 
 #define MAX_ENEMIGOS 15
-#define LARGO_RECURSO 10
 #define MAX_FONDOS 15
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4

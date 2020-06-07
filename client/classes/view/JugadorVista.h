@@ -3,7 +3,7 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../Vector.h"
+#include "../../../commons/utils/Vector.h"
 #include "Colores.h"
 #include "HelperVista.h"
 #include "../../../commons/protocols/protocolo.h"

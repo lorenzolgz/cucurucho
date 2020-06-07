@@ -3,22 +3,26 @@
 
 
 #include <sys/socket.h>
+#include <jsoncpp/json/json.h>
 #include "../protocols/protocolo.h"
+#include "ConexionUtils.h"
+#include "Conexion.h"
 
-class ConexionCliente {
+
+class ConexionCliente : public Conexion {
 public:
 	ConexionCliente(int client_socket);
 
 	struct EstadoTick recibirEstadoTick();
+
 	struct InformacionNivel recibirInformacionNivel();
-	void enviarMensaje(struct Comando* comando);
-	void cerrarConexion();
+
+	void enviarComando(struct Comando* comando);
+
+	void cerrar();
 
 private:
-	int client_socket;
-	int receiveDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
-	int receiveInformacionNivel(int* client_socket, struct InformacionNivel* header);
-	int sendData(int* client_socket, struct Comando* client_command);
+	int server_socket;
 };
 
 

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "GraphicRenderer.h"
-#include "Log.h"
+#include "../../commons/utils/Log.h"
 
 SDL_Renderer* GraphicRenderer::instance = nullptr;
 

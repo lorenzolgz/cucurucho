@@ -4,21 +4,22 @@
 
 #include <sys/socket.h>
 #include "../protocols/protocolo.h"
+#include <json.hpp>
+#include "ConexionUtils.h"
+#include "Conexion.h"
 
-class ConexionServidor {
+
+class ConexionServidor : public Conexion {
 public:
 	ConexionServidor(int client_socket);
 
-	struct Comando recibirMensaje();
+	nlohmann::json recibirMensaje();
 	void enviarEstadoTick(struct EstadoTick* estadoTick);
 	void enviarInformacionNivel(struct InformacionNivel* header);
-	void cerrarConexion();
+	void cerrar();
 
 private:
 	int client_socket;
-	int receiveData(int* client_socket, struct Comando* comando);
-	int sendDataEstadoTick(int* client_socket, struct EstadoTick* estadoTick);
-	int sendDataInformacionNivel(int* client_socket, InformacionNivel *estadoTick);
 };
 
 

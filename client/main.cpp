@@ -15,11 +15,9 @@
 #include "classes/config/NivelConfiguracion.h"
 #include "../server/classes/states/EstadoInternoNivel.h"
 #include "../commons/utils/Constantes.h"
+#include "classes/GestorSDL.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
-
-//The window we'll be rendering to
-SDL_Window* gWindow = nullptr;
 
 Log* l;
 ToastVista* toast;
@@ -36,75 +34,56 @@ void configurar(std::string nivelLog) {
 
 }
 
-
-bool init() {
-	int anchoPantalla = PANTALLA_ANCHO;
-	int altoPantalla = PANTALLA_ALTO;
-	int escalaPantalla = 1;
-    toast = new ToastVista();
-
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		l->error((std::string("No se logro inicializar SDL! SDL_Error: %s\n") + SDL_GetError()));
-		return false;
-	}
-
-	// Set texture filtering to linear
-	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
-	{
-		l->debug("No se habilito el filro de la textura linear");
-	}
-
-	//Initialize SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG))) {
-		l->error(std::string("No se logro inicializar SDL_image. SDL_image Error: ") + IMG_GetError());
-		return false;
-	}
-
-	gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-							   anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
-	if (gWindow == nullptr) {
-		l->error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
-		return false;
-	}
-	//Get window surface
-
-	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (gRenderer == nullptr) {
-		l->error(std::string("El Renderer no se creo correctamente! SDL_Error: ") + SDL_GetError());
-		return false;
-	}
-	GraphicRenderer::setInstance(gRenderer);
-
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND); // Para activar alpha/opacidad
-	SDL_RenderSetScale(gRenderer, escalaPantalla, escalaPantalla);
-
-	l->info("La ventana se creo correctamente");
-	return true;
-}
-
-
-void close() {
-	//Deallocate textures
-	SDL_Renderer* gRenderer = GraphicRenderer::getInstance();
-	SDL_DestroyRenderer(gRenderer);
-
-	//Destroy window
-	SDL_DestroyWindow(gWindow);
-
-	l->info("Se libero toda la memoria");
-	//Quit SDL subsystems
-	IMG_Quit();
-	SDL_Quit();
-	l->info("La ventana se cerro correctamente");
-}
-
 std::vector<NivelConfiguracion*> mockConfig() {
     std::vector<NivelConfiguracion*> nivelConfig;
     nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos1.json", 0), "cleared_con_nave1.png", 2, 1200));
     nivelConfig.push_back(new NivelConfiguracion(ConfiguracionParser().parsearArchivoFondos("fondos/fondos2.json", 1), "cleared_con_nave2.png", 2, 1200));
     return nivelConfig;
+}
+
+void initialLoop(Titulo* pantallaPrincipal) {
+	bool quit = false;
+	SDL_Event e;
+
+	while (!quit) {
+		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+		std::string inputText = "";
+
+		//Handle events on queue
+		while (SDL_PollEvent(&e) != 0) {
+			//User requests quit
+			if (e.type == SDL_QUIT) {
+				quit = true;
+			} else if (e.type == SDL_TEXTINPUT) {
+				inputText += e.text.text;
+			} else if (e.type == SDL_KEYDOWN) {
+				if (e.key.keysym.sym == SDLK_BACKSPACE) {
+					inputText += 8;
+				} else if (e.key.keysym.sym == SDLK_UP) {
+					inputText += 9;
+				} else if (e.key.keysym.sym == SDLK_DOWN) {
+					inputText += 10;
+				} else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
+					inputText += 11;
+				} else if (e.key.keysym.sym == SDLK_d && SDL_GetModState() & KMOD_CTRL) {
+					inputText += 12;
+				}
+			}
+		}
+
+		SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+		//Clear screen
+		SDL_RenderClear(gRenderer);
+
+		// El usuario presiona ENTER o INTRO o ESPACIO
+		bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
+
+		if (!pantallaPrincipal->isActivada(onStart)) {
+			pantallaPrincipal->tick(inputText);
+			SDL_RenderPresent(gRenderer);
+			quit = true;
+		}
+	}
 }
 
 void mainLoop() {
@@ -134,60 +113,34 @@ void mainLoop() {
 	char* ip_address = "127.0.0.1";
 	int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    ConexionCliente* conexionCliente = nullptr;
+    ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
 
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-    while (!quit) {
-        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
-        std::string inputText = "";
+    // !!!! sorry javi pero era un kilombo y lo rompi, te lo dejo para que lo arregles
+	// initialLoop(pantallaPrincipal);
 
-        //Handle events on queue
-        while (SDL_PollEvent(&e) != 0) {
-            //User requests quit
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            } else if (e.type == SDL_TEXTINPUT) {
-                inputText += e.text.text;
-            } else if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_BACKSPACE) {
-                    inputText += 8;
-                } else if (e.key.keysym.sym == SDLK_UP) {
-                    inputText += 9;
-                } else if (e.key.keysym.sym == SDLK_DOWN) {
-                    inputText += 10;
-                } else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
-                    inputText += 11;
-                } else if (e.key.keysym.sym == SDLK_d && SDL_GetModState() & KMOD_CTRL) {
-                    inputText += 12;
-                }
-            }
-        }
+	while (!quit) {
+		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-        SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
+		//Handle events on queue
+		while (SDL_PollEvent(&e) != 0) {
+			//User requests quit
+			if (e.type == SDL_QUIT) {
+				quit = true;
+			}
+		}
+
+		SDL_Renderer *gRenderer = GraphicRenderer::getInstance();
         //Clear screen
         SDL_RenderClear(gRenderer);
-
-        // El usuario presiona ENTER o INTRO o ESPACIO
-        bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
-
-        if (!pantallaPrincipal->isActivada(onStart)) {
-            pantallaPrincipal->tick(inputText);
-            SDL_RenderPresent(gRenderer);
-            continue;
-        }
-
-
-        if (conexionCliente == nullptr) {
-            conexionCliente = iniciadorComunicacion->conectar();
-        }
 
         client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
         client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
         client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
         client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
         // Send data (command)
-        conexionCliente->enviarMensaje(&client_command);
+		conexionCliente->enviarComando(&client_command);
 
         if (nuevoNivel) {
             informacionNivel = conexionCliente->recibirInformacionNivel();
@@ -216,7 +169,7 @@ void mainLoop() {
 		}
     }
 
-    if (conexionCliente != nullptr) conexionCliente->cerrarConexion();
+	conexionCliente->cerrar();
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
@@ -233,6 +186,8 @@ int main(int argc, char *argv[]) {
 
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
+
+    GestorSDL* gestorSDL = new GestorSDL();
 
     for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "-l") == 0) {
@@ -261,11 +216,11 @@ int main(int argc, char *argv[]) {
     configurar(nivelLog);
 
 	// Inicializa SDL con la configuracion
-	if (!init()) return 1;
+	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO, toast)) return 1;
 
 	// Comienza el juego con la configuracion
 	mainLoop();
 
-	close();
+	gestorSDL->close();
 	return 0;
 }

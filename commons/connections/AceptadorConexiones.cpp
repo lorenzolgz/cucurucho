@@ -73,8 +73,9 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// addrlen -> size of sockaddr structure for the CLIENT.
 	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
+		l->error("Accept failed (" + std::to_string(client_socket) + ")");
 		perror("Accept failed");
-		exit(1);
+		return nullptr;
 	}
 
 	return new ConexionServidor(client_socket);
