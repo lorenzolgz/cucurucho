@@ -17,7 +17,7 @@ public:
     std::string getNivelLog();
 	const std::list<NivelConfiguracion *> &getNiveles() const;
 	// TODO: mas jugadores.
-	int getCantidadJugadores() { return 2; };
+	int getCantidadJugadores() { return 1; };
 
 private:
     int altoPantalla;
