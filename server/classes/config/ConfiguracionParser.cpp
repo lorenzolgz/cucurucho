@@ -166,7 +166,7 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fo
 
 std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(Json::Value jsonConfig, int nivel) {
     try {
-        std::string rutaCarpetaConfig = "../config/";
+        std::string rutaCarpetaConfig = "../server/config/";
 
         std::string rutaRelativa = jsonConfig.asString();
         if (!rutaRelativa.compare("")) {
