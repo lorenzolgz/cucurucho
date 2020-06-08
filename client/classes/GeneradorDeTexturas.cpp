@@ -6,7 +6,7 @@
 
 
 SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const std::string& path) {
-    const std::string& SPRITES_LOCATION = "../assets/sprites/";
+    const std::string& SPRITES_LOCATION = "../client/assets/sprites/";
 
     SDL_Surface* loadedSurface = IMG_Load((SPRITES_LOCATION + path).c_str());
     if (loadedSurface == nullptr) {
