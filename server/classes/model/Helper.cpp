@@ -2,10 +2,7 @@
 // Created by javier on 12/4/20.
 //
 
-#include <iostream>
 #include "Helper.h"
-#include "../../../commons/utils/Utils.h"
-#include "../../../classes/model/Helper.h"
 
 
 Helper::Helper(Jugador* jugador, Vector posRelativa) {

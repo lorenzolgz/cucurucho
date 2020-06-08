@@ -1,5 +1,4 @@
 #include "NivelConfiguracion.h"
-#include "../../../classes/config/FondoConfiguracion.h"
 #include <string>
 #include <iostream>
 #include <cstring>

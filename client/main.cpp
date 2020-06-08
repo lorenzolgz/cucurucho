@@ -150,7 +150,6 @@ void mainLoop() {
     ManagerVista* manager = new ManagerVista({}, 0, anchoPantalla, altoPantalla);
     Titulo* pantallaPrincipal = new Titulo(anchoPantalla, altoPantalla);
 
-	// !!!!
 	//------------------------
 	// BEGIN socket configuration
     struct EstadoTick estadoTick;

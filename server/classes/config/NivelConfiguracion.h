@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 #include "EnemigosConfiguracion.h"
-#include "../../../classes/config/FondoConfiguracion.h"
+#include "FondoConfiguracion.h"
 
 class NivelConfiguracion {
 public:

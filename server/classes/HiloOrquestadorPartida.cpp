@@ -108,7 +108,6 @@ void processData(Partida* partida, struct Comando comandos[], struct EstadoTick*
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	int i = 0;
 	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
-		// !!!! l->error(std::to_string(i) + " - " + std::to_string(estadoJugador.posicionX) + " !!!! " + std::to_string(estadoJugador.posicionY));
 		estadoTick->estadosJugadores[i] = estadoJugador;
 		i++;
 	}

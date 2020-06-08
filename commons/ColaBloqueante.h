@@ -14,7 +14,7 @@ public:
 	void push(T const& value)  {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		d_queue.push_front(value);
-		this->d_condition.notify_all(); // !!!! notify_all
+		this->d_condition.notify_all();
 	}
 	T pop() {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
