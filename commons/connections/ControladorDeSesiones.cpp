@@ -7,6 +7,9 @@
 
 ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor){
     this->servidor = conexionServidor;
+    ifstream archivo(JSON_USUARIOS, ifstream::binary);
+    archivo >> this->jsonUsuarios;
+    this->contrasenias = jsonUsuarios["usuariosRegistrados"];
 }
 
 bool ControladorDeSesiones::iniciarSesion(){
@@ -22,11 +25,35 @@ bool ControladorDeSesiones::iniciarSesion(){
     contrasenia = logueo.contrasenia;
 
     //verifico que el usuario esté registrado
-    if(!usuarioEstaRegistrado(usuario, contrasenia)) {
+    if(!usuarioEstaRegistrado(usuario, contrasenia)){
         //TODO se le informa al cliente que no se le permitirá jugar
         this->servidor->cerrar();
         return false;
     }
+
+    //se verifica que ese usuario REGISTRADO no esté en juego ya
+    map<string, bool>::iterator i = this->jugadoresConectados.find(usuario);
+
+    if(i != this->jugadoresConectados.end()){ //si existe ese usuario en el map
+        if(this->jugadoresConectados[usuario]) {//si ese usuario está jugando
+            //TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
+            cout << "ya se encuentra en juego alguien con ese nombre de usuario" << endl;
+            return false;
+        } else { //TODO si ese usuario se conectó en esta partida pero se fue
+            cout<<"te desconectaste y volviste"<<endl;
+            this->jugadoresConectados[usuario] = true; //ver reconexión
+        }
+        //usuario que no posee un bool
+        cout<<"es basura"<<endl;
+        this->jugadoresConectados.erase(usuario); //lo elimino del map
+        return false;
+
+    } else { //si no se conectó en esta partida alguien con ese nombre de usuario
+        cout<<"no se encuentra en juego todavía alguien con ese nombre de usuario"<<endl;
+        this->jugadoresConectados.insert({usuario, true});
+    }
+
+    cout<<"Usuario "<<usuario<<" entró al juego"<<endl;
 
     return true;
 }
@@ -37,23 +64,16 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
     bool contraseniaCorrecta;
     char* nuevaContrasenia;
 
-    //abro json de usuarios
-    Json::Value jsonUsuarios, contrasenias;
-    ifstream archivo(JSON_USUARIOS, ifstream::binary);
-    archivo >> jsonUsuarios;
-    contrasenias = jsonUsuarios["usuariosRegistrados"];
-
     //chequeo si el usuario está registrado
-    usuarioRegistrado = !(contrasenias[usuario].empty());
+    usuarioRegistrado = !(this->contrasenias[usuario].empty());
 
     //si está registrado, verifico la contraseña
     if(usuarioRegistrado){
-        contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
+        contraseniaCorrecta = (this->contrasenias[usuario] == contrasenia);
         while(!contraseniaCorrecta){
-            //TODO esto funciona pero para una única vez
             this->servidor->enviarEstadoLogin(contraseniaCorrecta);
             nuevaContrasenia = pedirCredenciales().contrasenia;
-            contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
+            contraseniaCorrecta = (this->contrasenias[usuario] == nuevaContrasenia);
         }
     }
     this->servidor->enviarEstadoLogin(contraseniaCorrecta);
@@ -71,5 +91,10 @@ struct Login ControladorDeSesiones::pedirCredenciales(){
 }
 
 void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
-    ControladorDeSesiones::servidor = servidor;
+    this->servidor = servidor;
 }
+
+map<string, bool> ControladorDeSesiones::getJugadoresConectados(){
+    return this->jugadoresConectados;
+}
+
