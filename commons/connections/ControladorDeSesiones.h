@@ -21,7 +21,7 @@ public:
     void setServidor(ConexionServidor *servidor);
 
 private:
-    ConexionServidor* servidor;
+    ConexionServidor* conexionServidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
     struct Login pedirCredenciales();
 };

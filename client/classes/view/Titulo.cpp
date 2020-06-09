@@ -53,7 +53,7 @@ bool Titulo::validarLogin(ConexionCliente *pCliente) {
 }
 
 
-// Devuelve un booleano indicando si el cliente debe reconectarse al servidor
+// Devuelve un booleano indicando si el cliente debe reconectarse al conexionServidor
 bool Titulo::tick(std::string input, ConexionCliente *pCliente) {
     tituloVista->render(estado, username, password, seleccionadoUsuario);
     leerInput(input);

@@ -9,12 +9,13 @@
 
 class HiloConexionServidor : public Thread {
 public:
-	HiloConexionServidor(ConexionServidor* conexionServidor, ColaBloqueante<nlohmann::json>* colaComandos);
+	HiloConexionServidor(ConexionServidor* conexionServidor);
 	void run() override;
-
-private:
+	void enviarEstadoTick(struct EstadoTick* estadoTick);
+	void enviarInformacionNivel(struct InformacionNivel* header);
 	ConexionServidor* conexionServidor;
-	ColaBloqueante<nlohmann::json>* colaComandos;
+	ColaBloqueante<nlohmann::json>* colaReceptora = new ColaBloqueante<nlohmann::json>();
+	ColaBloqueante<nlohmann::json>* colaEnviadora = new ColaBloqueante<nlohmann::json>();
 };
 
 

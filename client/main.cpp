@@ -89,7 +89,7 @@ bool pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion, ConexionCl
 
 
 // Comunicacion con el cliente.
-// Primero envia la secuencia de teclas presionada, y despues recibe informacion del servidor
+// Primero envia la secuencia de teclas presionada, y despues recibe informacion del conexionServidor
 // Si `nuevoNivel` es true, debe recibir el nivel en vez de la informacion del escenario (!!)
 ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
                                 struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel, bool* nuevoNivel,
@@ -105,7 +105,7 @@ ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
     // Send data (command)
     conexionCliente->enviarComando(&client_command);
     conexionCliente->recibirMensaje(informacionNivel, estadoTick);
-    l->debug("Se recibió el mensaje del servidor");
+    l->debug("Se recibió el mensaje del conexionServidor");
 
     return conexionCliente;
 }

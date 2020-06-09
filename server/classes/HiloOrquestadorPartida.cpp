@@ -8,17 +8,58 @@ void processData(Partida* partida, struct Comando comandos[], struct EstadoTick*
 int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion();
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*> conexiones) {
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones) {
 	this->config = config;
 	this->conexiones = conexiones;
 	this->partida = new Partida(config);
 
 }
 
+void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
+	int contadorColasReceptoras = 0;
+	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
+		auto* colaReceptora = hiloConexionServidor->colaReceptora;
+		nlohmann::json comandoJson = colaReceptora->pop();
+		struct Comando comando = {comandoJson["arriba"], comandoJson["abajo"], comandoJson["izquierda"], comandoJson["derecha"]};
+		comandos[contadorColasReceptoras] = comando;
+		contadorColasReceptoras++;
+	}
+}
+
+void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
+	if (*nuevoNivel) {
+		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
+	}
+
+	if (*nuevoNivel) {
+		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
+			hiloConexionServidor->enviarInformacionNivel(informacionNivel);
+		}
+		*nuevoNivel = false;
+	} else {
+		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
+			hiloConexionServidor->enviarEstadoTick(estadoTick);
+		}
+		*nuevoNivel = estadoTick->nuevoNivel;
+	}
+}
+
+std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
+	auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
+
+	for (auto* conexion : *(conexiones)) {
+		auto* hiloConexionServidor = new HiloConexionServidor(conexion);
+		hiloConexionServidor->start();
+		hilosConexionesServidores->push_back(hiloConexionServidor);
+	}
+
+	return hilosConexionesServidores;
+}
+
 void HiloOrquestadorPartida::run() {
 	l->info("Comenzando a correr HiloOrquestadorPartida");
 	bool quit = false;
-	struct Comando comandos[conexiones.size()];
+	struct Comando comandos[conexiones->size()];
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
@@ -26,25 +67,18 @@ void HiloOrquestadorPartida::run() {
 
 	int commands_count = 0;
 	initializeData(&estadoTick);
+	// Todo esto es necesario?
 	informacionNivel.numeroNivel = 0;
-	std::list<HiloConexionServidor*> hilosConexionesServidores;
-	std::list<ColaBloqueante<nlohmann::json>*> colasReceptoras;
-
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
 
-	for (auto* conexion : conexiones) {
-		auto* colaReceptora = new ColaBloqueante<nlohmann::json>();
-		colasReceptoras.push_back(colaReceptora);
-		auto* hiloConexionServidor = new HiloConexionServidor(conexion, colaReceptora);
-		hiloConexionServidor->start();
-		hilosConexionesServidores.push_back(hiloConexionServidor);
-	}
+	std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(conexiones);
 
 	//keep communicating with client
 	try {
 		while (!quit) {
 
+			// TODO
 			// WIP. Para controlar la cantidad de ticks.
 			t2 = clock();
 			if ((t2 - t1) > 50) {
@@ -54,47 +88,23 @@ void HiloOrquestadorPartida::run() {
 			}
 
 			// Receive data (command)
-			int contadorColasReceptoras = 0;
-			for (auto* colaReceptora : colasReceptoras) {
-				nlohmann::json comandoJson = colaReceptora->pop();
-				struct Comando comando = {comandoJson["arriba"], comandoJson["abajo"], comandoJson["izquierda"], comandoJson["derecha"]};
-				comandos[contadorColasReceptoras] = comando;
-				contadorColasReceptoras++;
-			}
+			receiveData(hilosConexionesServidores, comandos);
 			//--------------------
 
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);
 			//--------------------
 
-			if (nuevoNivel) {
-				l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
-			}
-
 			// Send data (view)
-			if (nuevoNivel) {
-				for (auto *conexion : conexiones) {
-					conexion->enviarInformacionNivel(&informacionNivel);
-				}
-				nuevoNivel = false;
-			} else {
-				for (auto *conexion : conexiones) {
-					conexion->enviarEstadoTick(&estadoTick);
-				}
-				nuevoNivel = estadoTick.nuevoNivel;
-			}
-
-			// printf("Send data: pos(X,Y) = (%d,%d)\n\n", client_view.posicionX, client_view.posicionY);
+			sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
-
-			commands_count++;
 		}
 	}
 	catch (const std::exception& exc) {
 		l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
 	}
 
-	for (auto* hiloConexionServidor : hilosConexionesServidores) {
+	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		hiloConexionServidor->join();
 	}
 }

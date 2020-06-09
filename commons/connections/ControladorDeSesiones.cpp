@@ -6,7 +6,7 @@
 
 
 ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor){
-    this->servidor = conexionServidor;
+    this->conexionServidor = conexionServidor;
 }
 
 bool ControladorDeSesiones::iniciarSesion(){
@@ -24,7 +24,7 @@ bool ControladorDeSesiones::iniciarSesion(){
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)) {
         //TODO se le informa al cliente que no se le permitirá jugar
-        this->servidor->cerrar();
+        this->conexionServidor->cerrar();
         return false;
     }
 
@@ -51,18 +51,18 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
         contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
         while(!contraseniaCorrecta){
             //TODO esto funciona pero para una única vez
-            this->servidor->enviarEstadoLogin(contraseniaCorrecta);
+            this->conexionServidor->enviarEstadoLogin(contraseniaCorrecta);
             nuevaContrasenia = pedirCredenciales().contrasenia;
             contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
         }
     }
-    this->servidor->enviarEstadoLogin(contraseniaCorrecta);
+    this->conexionServidor->enviarEstadoLogin(contraseniaCorrecta);
 
     return usuarioRegistrado;
 }
 
 struct Login ControladorDeSesiones::pedirCredenciales(){
-    nlohmann::json mensajeJson = this->servidor->recibirMensaje();
+    nlohmann::json mensajeJson = this->conexionServidor->recibirMensaje();
     struct Login login;
     strcpy(login.usuario, std::string(mensajeJson["usuario"]).c_str());
     strcpy(login.contrasenia, std::string(mensajeJson["contrasenia"]).c_str());
@@ -71,5 +71,5 @@ struct Login ControladorDeSesiones::pedirCredenciales(){
 }
 
 void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
-    ControladorDeSesiones::servidor = servidor;
+    ControladorDeSesiones::conexionServidor = servidor;
 }
