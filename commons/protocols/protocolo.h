@@ -6,6 +6,8 @@
 #define MAX_FONDOS 15
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
+#define INFORMACION_NIVEL 0
+#define ESTADO_TICK 1
 
 struct Comando {
 	int arriba;
@@ -52,9 +54,9 @@ struct InformacionFondo{
 
 struct InformacionNivel {
 	int numeroNivel;
+    float velocidad;
+    char informacionFinNivel[LARGO_PATH];
 	InformacionFondo informacionFondo[MAX_FONDOS];
-	char informacionFinNivel[LARGO_PATH];
-	float velocidad;
 };
 
 

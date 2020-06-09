@@ -11,6 +11,29 @@ nlohmann::json ConexionServidor::recibirMensaje() {
 }
 
 void ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
+
+    nlohmann::json mensajeJson;
+    mensajeJson["tipoMensaje"] = ESTADO_TICK;
+    mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
+    int i = 0, j = 0;
+    for (; i< MAX_JUGADORES; i++){
+        mensajeJson["estadosJugadores"][i]["helper1"]["posicionX"] = estadoTick->estadosJugadores[i].helper1.posicionX;
+        mensajeJson["estadosJugadores"][i]["helper1"]["posicionY"] = estadoTick->estadosJugadores[i].helper1.posicionY;
+        mensajeJson["estadosJugadores"][i]["helper1"]["angulo"] = estadoTick->estadosJugadores[i].helper1.angulo;
+        mensajeJson["estadosJugadores"][i]["helper2"]["posicionX"] = estadoTick->estadosJugadores[i].helper2.posicionX;
+        mensajeJson["estadosJugadores"][i]["helper2"]["posicionY"] = estadoTick->estadosJugadores[i].helper2.posicionY;
+        mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
+        mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
+        mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
+    }
+    for (; j< MAX_ENEMIGOS; j++){
+        mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;
+        mensajeJson["estadosEnemigos"][j]["posicionY"] = estadoTick->estadosEnemigos[j].posicionY;
+        mensajeJson["estadosEnemigos"][j]["clase"] = estadoTick->estadosEnemigos[j].clase;
+    }
+    std::cout << mensajeJson << std::endl;
+    enviarData2(client_socket,mensajeJson);
+
 	if (enviarData<struct EstadoTick>(&client_socket, estadoTick) < 0) {
 		perror("Send Data Error");
 		exit(1);
@@ -18,6 +41,20 @@ void ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 }
 
 void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
+
+    nlohmann::json mensajeJson = {
+            {"tipoMensaje", INFORMACION_NIVEL},
+            {"numeroNivel",  informacionNivel->numeroNivel},
+            {"velocidad", informacionNivel->velocidad},
+            {"informacionFinNivel",   informacionNivel->informacionFinNivel}
+    };
+    for ( int i = 0 ; i < MAX_FONDOS ; i++ ){
+        mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo->pVelocidad;
+        mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo->pFondo;
+    }
+    std::cout << mensajeJson << std::endl;
+    enviarData2(client_socket,mensajeJson);
+
 	if (enviarData<struct InformacionNivel>(&client_socket, informacionNivel) < 0) {
 		perror("Send Data Error");
 		exit(1);

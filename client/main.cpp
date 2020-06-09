@@ -22,6 +22,9 @@
 Log* l;
 ToastVista* toast;
 
+void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json json);
+void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje);
+
 void configurar(std::string nivelLog) {
 	if (!nivelLog.empty()) {
         l->setConf(nivelLog);
@@ -101,19 +104,73 @@ ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
     client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
     client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+
     // Send data (command)
     conexionCliente->enviarComando(&client_command);
 
-    if (*nuevoNivel) {
-        *informacionNivel = conexionCliente->recibirInformacionNivel();
-        l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
+    nlohmann::json valorRecibido = conexionCliente->recibirMensaje();
+
+    if ( valorRecibido["tipoMensaje"] == INFORMACION_NIVEL ) {
+        setInformacionNivel(informacionNivel, valorRecibido);
+
+
+        l->error("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
         *nuevoNivel = false;
-    } else {
-        *estadoTick = conexionCliente->recibirEstadoTick();
+    }
+    else if (valorRecibido["tipoMensaje"] == ESTADO_TICK ){
+
+        setEstadoTick(estadoTick, valorRecibido);
+//        for (int i = 0 ; i<MAX_ENEMIGOS ; i++ ){
+//            std::cout<<"enemigo "<< i<< " poscionX "<<estadoTick->estadosEnemigos->posicionX<<" posicionY "<< estadoTick->estadosEnemigos->posicionY<<std::endl;
+//        }
         *nuevoNivel = estadoTick->nuevoNivel;
     }
 
+//    if (*nuevoNivel) {
+//        *informacionNivel = conexionCliente->recibirInformacionNivel();
+//        l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
+//        *nuevoNivel = false;
+//    } else {
+//
+//        *estadoTick = conexionCliente->recibirEstadoTick();
+//        *nuevoNivel = estadoTick->nuevoNivel;
+//    }
+
     return conexionCliente;
+}
+
+void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
+    estadoTick->nuevoNivel = mensaje["numeroNivel"];
+    int i = 0;
+    for (; i < MAX_JUGADORES; i++ ) {
+        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
+        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
+        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
+        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionY"];
+
+    }
+    int j = 0;
+    for (const nlohmann::json& m : mensaje["estadosEnemigos"]){
+        std::string enemigo = std::to_string(j);
+        estadoTick->estadosEnemigos[j].posicionX = m["posicionX"][enemigo];
+        estadoTick->estadosEnemigos[j].posicionY = m["posicionY"][enemigo];
+        estadoTick->estadosEnemigos[j].clase = m["clase"][enemigo];
+        j++;
+    }
+}
+
+void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
+    informacionNivel->numeroNivel = mensaje["numeroNivel"];
+    informacionNivel->velocidad = mensaje["velocidad"];
+    strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
+    for (int i = 0; i < MAX_FONDOS ; i++){
+        informacionNivel->informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
+        strcpy(informacionNivel->informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
+    }
 }
 
 // Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)

@@ -13,6 +13,8 @@ class ConexionCliente : public Conexion {
 public:
 	ConexionCliente(int client_socket);
 
+    nlohmann::json recibirMensaje();
+
 	struct EstadoTick recibirEstadoTick();
 
 	struct InformacionNivel recibirInformacionNivel();
@@ -27,6 +29,7 @@ public:
 
 private:
 	int server_socket;
+
 };
 
 

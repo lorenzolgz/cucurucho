@@ -3,7 +3,7 @@
 //
 
 #include "FondoConfiguracion.h"
-#include "../../../classes/config/FondoConfiguracion.h"
+#include "../../classes/config/FondoConfiguracion.h"
 
 
 #include <utility>

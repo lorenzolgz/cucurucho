@@ -6,6 +6,12 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::server_socket = client_socket;
 }
 
+
+nlohmann::json ConexionCliente::recibirMensaje() {
+    return recibirData2(server_socket);
+}
+
+
 struct EstadoTick ConexionCliente::recibirEstadoTick() {
 	struct EstadoTick estadoTick;
 
