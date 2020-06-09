@@ -31,13 +31,8 @@ void ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
         mensajeJson["estadosEnemigos"][j]["posicionY"] = estadoTick->estadosEnemigos[j].posicionY;
         mensajeJson["estadosEnemigos"][j]["clase"] = estadoTick->estadosEnemigos[j].clase;
     }
-    std::cout << mensajeJson << std::endl;
     enviarData2(client_socket,mensajeJson);
 
-	if (enviarData<struct EstadoTick>(&client_socket, estadoTick) < 0) {
-		perror("Send Data Error");
-		exit(1);
-	}
 }
 
 void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
@@ -49,16 +44,10 @@ void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informaci
             {"informacionFinNivel",   informacionNivel->informacionFinNivel}
     };
     for ( int i = 0 ; i < MAX_FONDOS ; i++ ){
-        mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo->pVelocidad;
-        mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo->pFondo;
+        mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo[i].pVelocidad;
+        mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo[i].pFondo;
     }
-    std::cout << mensajeJson << std::endl;
     enviarData2(client_socket,mensajeJson);
-
-	if (enviarData<struct InformacionNivel>(&client_socket, informacionNivel) < 0) {
-		perror("Send Data Error");
-		exit(1);
-	}
 }
 
 void ConexionServidor::cerrar() {

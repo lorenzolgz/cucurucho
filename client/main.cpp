@@ -144,22 +144,20 @@ void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
         estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estadoTick->estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
+        estadoTick->estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
         estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
-        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionY"];
+        estadoTick->estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
 
     }
     int j = 0;
-    for (const nlohmann::json& m : mensaje["estadosEnemigos"]){
-        std::string enemigo = std::to_string(j);
-        estadoTick->estadosEnemigos[j].posicionX = m["posicionX"][enemigo];
-        estadoTick->estadosEnemigos[j].posicionY = m["posicionY"][enemigo];
-        estadoTick->estadosEnemigos[j].clase = m["clase"][enemigo];
-        j++;
+    for (; j < MAX_ENEMIGOS; j++ ){
+        estadoTick->estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
+        estadoTick->estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
+        estadoTick->estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
     }
 }
 
