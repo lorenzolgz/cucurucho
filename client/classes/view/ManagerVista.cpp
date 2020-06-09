@@ -43,6 +43,12 @@ void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
         return;
     }
 
+    if (informacionNivel.numeroNivel > 1) {
+        this->renderNivelIntermedio();
+        SDL_RenderPresent(GraphicRenderer::getInstance());
+        SDL_Delay(2000);
+    }
+
     ManagerVista::informacionNivel = informacionNivel;
 
     campoVista = new CampoVista();

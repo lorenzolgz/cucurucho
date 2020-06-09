@@ -22,9 +22,6 @@
 Log* l;
 ToastVista* toast;
 
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json json);
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje);
-
 void configurar(std::string nivelLog) {
 	if (!nivelLog.empty()) {
         l->setConf(nivelLog);
@@ -107,68 +104,10 @@ ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
 
     // Send data (command)
     conexionCliente->enviarComando(&client_command);
-
-    nlohmann::json valorRecibido = conexionCliente->recibirMensaje();
-
-    if ( valorRecibido["tipoMensaje"] == INFORMACION_NIVEL ) {
-        setInformacionNivel(informacionNivel, valorRecibido);
-
-
-        l->error("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
-        *nuevoNivel = false;
-    }
-    else if (valorRecibido["tipoMensaje"] == ESTADO_TICK ){
-
-        setEstadoTick(estadoTick, valorRecibido);
-//        for (int i = 0 ; i<MAX_ENEMIGOS ; i++ ){
-//            std::cout<<"enemigo "<< i<< " poscionX "<<estadoTick->estadosEnemigos->posicionX<<" posicionY "<< estadoTick->estadosEnemigos->posicionY<<std::endl;
-//        }
-        *nuevoNivel = estadoTick->nuevoNivel;
-    }
-
-//    if (*nuevoNivel) {
-//        *informacionNivel = conexionCliente->recibirInformacionNivel();
-//        l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
-//        *nuevoNivel = false;
-//    } else {
-//
-//        *estadoTick = conexionCliente->recibirEstadoTick();
-//        *nuevoNivel = estadoTick->nuevoNivel;
-//    }
+    conexionCliente->recibirMensaje(informacionNivel, estadoTick);
+    l->debug("Se recibió el mensaje del servidor");
 
     return conexionCliente;
-}
-
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
-    estadoTick->nuevoNivel = mensaje["numeroNivel"];
-    int i = 0;
-    for (; i < MAX_JUGADORES; i++ ) {
-        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
-        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
-        estadoTick->estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
-
-    }
-    int j = 0;
-    for (; j < MAX_ENEMIGOS; j++ ){
-        estadoTick->estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
-        estadoTick->estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
-        estadoTick->estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
-    }
-}
-
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
-    informacionNivel->numeroNivel = mensaje["numeroNivel"];
-    informacionNivel->velocidad = mensaje["velocidad"];
-    strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
-    for (int i = 0; i < MAX_FONDOS ; i++){
-        informacionNivel->informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
-        strcpy(informacionNivel->informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
-    }
 }
 
 // Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)
@@ -181,17 +120,8 @@ bool renderLoop(ManagerVista* manager, struct EstadoTick estadoTick, struct Info
     //Render texture to screen
     manager->render(estadoTick);
 
-    if (nuevoNivel) {
-        manager->renderNivelIntermedio();
-        SDL_RenderPresent(GraphicRenderer::getInstance());
-        SDL_Delay(2000);
-        // Harcodeadisimo para que termine en el ultimo nivel
-        // TODO: Y tambien funciona mal. please reevaluar.
-        quit = quit || informacionNivel.numeroNivel > 3;
-    } else {
-        quit = quit || informacionNivel.numeroNivel > 3;
-        SDL_RenderPresent(GraphicRenderer::getInstance());
-    }
+    quit = quit || informacionNivel.numeroNivel > 3;
+    SDL_RenderPresent(GraphicRenderer::getInstance());
 
     return quit;
 }
