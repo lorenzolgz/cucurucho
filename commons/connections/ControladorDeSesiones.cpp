@@ -14,21 +14,20 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor)
 
 bool ControladorDeSesiones::iniciarSesion(){
 
+    bool ok = true;
+
     //pedirle un usuario y contraseña al cliente
-    struct Login logueo;
-    logueo = pedirCredenciales();
+    struct Login login;
+    login = pedirCredenciales();
 
-    char* usuario;
-    char* contrasenia;
-
-    usuario = logueo.usuario;
-    contrasenia = logueo.contrasenia;
+    char* usuario = login.usuario;
+    char* contrasenia = login.contrasenia;
 
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)){
         //TODO se le informa al cliente que no se le permitirá jugar
         this->servidor->cerrar();
-        return false;
+        ok = false;
     }
 
     //se verifica que ese usuario REGISTRADO no esté en juego ya
@@ -37,25 +36,25 @@ bool ControladorDeSesiones::iniciarSesion(){
     if(i != this->jugadoresConectados.end()){ //si existe ese usuario en el map
         if(this->jugadoresConectados[usuario]) {//si ese usuario está jugando
             //TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
-            cout << "ya se encuentra en juego alguien con ese nombre de usuario" << endl;
-            return false;
-        } else { //TODO si ese usuario se conectó en esta partida pero se fue
-            cout<<"te desconectaste y volviste"<<endl;
+            cout << "Ya se encuentra en juego alguien con ese nombre de usuario" << endl;
+            ok = false;
+        } else { //TODO si ese usuario se conectó en esta partida pero se fue, ponerle false
+            cout<<"Te desconectaste y volviste"<<endl;
             this->jugadoresConectados[usuario] = true; //ver reconexión
         }
         //usuario que no posee un bool
-        cout<<"es basura"<<endl;
+        cout<<"Es basura"<<endl;
         this->jugadoresConectados.erase(usuario); //lo elimino del map
-        return false;
+        ok = false;
 
     } else { //si no se conectó en esta partida alguien con ese nombre de usuario
-        cout<<"no se encuentra en juego todavía alguien con ese nombre de usuario"<<endl;
+        cout<<"No se encuentra en juego todavía alguien con ese nombre de usuario"<<endl;
         this->jugadoresConectados.insert({usuario, true});
     }
 
     cout<<"Usuario "<<usuario<<" entró al juego"<<endl;
 
-    return true;
+    return ok;
 }
 
 bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia)
