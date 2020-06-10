@@ -6,53 +6,10 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::server_socket = client_socket;
 }
 
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json json);
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje);
 
-void ConexionCliente::recibirMensaje(struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick) {
-    nlohmann::json mensaje = recibirData2(server_socket);
+nlohmann::json ConexionCliente::recibirMensaje() {
+     return recibirData2(server_socket);
 
-    if ( mensaje["tipoMensaje"] == INFORMACION_NIVEL ) {
-        setInformacionNivel(informacionNivel, mensaje);
-        l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
-        estadoTick->nuevoNivel = false;
-    }
-    else if (mensaje["tipoMensaje"] == ESTADO_TICK ){
-        setEstadoTick(estadoTick, mensaje);
-
-    }
-}
-
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
-    estadoTick->nuevoNivel = mensaje["numeroNivel"];
-    int i = 0;
-    for (; i < MAX_JUGADORES; i++ ) {
-        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
-        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
-        estadoTick->estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
-
-    }
-    int j = 0;
-    for (; j < MAX_ENEMIGOS; j++ ){
-        estadoTick->estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
-        estadoTick->estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
-        estadoTick->estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
-    }
-}
-
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
-    informacionNivel->numeroNivel = mensaje["numeroNivel"];
-    informacionNivel->velocidad = mensaje["velocidad"];
-    strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
-    for (int i = 0; i < MAX_FONDOS ; i++){
-        informacionNivel->informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
-        strcpy(informacionNivel->informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
-    }
 }
 
 struct EstadoTick ConexionCliente::recibirEstadoTick() {

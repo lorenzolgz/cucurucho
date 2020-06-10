@@ -84,9 +84,11 @@ add_executable(cliente
         client/classes/GestorSDL.cpp
         client/classes/GestorSDL.h
         commons/ColaBloqueante.h
+        commons/Thread.cpp
+        commons/Thread.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp)
+        libraries/json/json.hpp client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h)
 
 add_executable(servidor
         server/main.cpp

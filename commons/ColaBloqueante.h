@@ -24,12 +24,16 @@ public:
 		return rc;
 	}
 	// TODO esto hay que hacerlo bien, por ahora no se usa so fuck it.
-	/*
+	// or not !!!!
 	bool empty() {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		return d_queue.empty();
 	}
-	 */
+
+    int size() {
+        return d_queue.size();
+    }
+
 private:
 	std::mutex              d_mutex;
 	std::condition_variable d_condition;

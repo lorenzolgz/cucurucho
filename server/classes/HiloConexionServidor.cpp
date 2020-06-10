@@ -6,11 +6,16 @@ HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor) {
 }
 
 void HiloConexionServidor::run() {
+	l->info("Comenzando a correr HiloConexionServidor");
+
 	while (true) {
+		l->error("!!!! whileHiloConexionServidor");
 		nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+		l->error("!!!! recHiloConexionServidor " + mensajeRecibido.dump());
 		colaReceptora->push(mensajeRecibido);
 
 		nlohmann::json mensajeAEnviar = colaEnviadora->pop();
+		l->error("!!!! envHiloConexionServidor " + mensajeAEnviar.dump());
 		conexionServidor->enviarMensaje(mensajeAEnviar);
 	}
 }

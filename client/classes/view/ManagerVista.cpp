@@ -38,7 +38,7 @@ void ManagerVista::render(EstadoTick estadoTick) {
 }
 
 
-void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
+void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel) {
         return;
     }
@@ -53,7 +53,9 @@ void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
 
     campoVista = new CampoVista();
     for (InformacionFondo & f : informacionNivel.informacionFondo) {
-        if (f.pFondo[0] == '\0') continue;
+        if (f.pFondo[0] == '\0') {
+        	l->error("!!!!");
+        }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }
 
