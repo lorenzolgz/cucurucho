@@ -29,7 +29,11 @@ void ManagerVista::render(EstadoTick estadoTick) {
 
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
-	if (campoVista != nullptr) campoVista->render(); // !!!! TODO javi
+	if (campoVista == nullptr) {
+        return;
+	} // !!!! TODO javi
+	campoVista->render();
+
     renderEnemigos(estadoTick.estadosEnemigos);
 
     for (int i = 0; i < MAX_JUGADORES; i++) {

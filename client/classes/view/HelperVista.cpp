@@ -37,9 +37,9 @@ void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido) {
 
 	SDL_RenderCopy(gRenderer, texturaBall, &glowsrc, &glowdst);
 
-	if (contador % 7 < 3) {
-		// Una de las tres posibles particulas [0, 1, 2]
-		int glow = contador % 7;
+    // Una de las tres posibles particulas [0, 1, 2]
+	int glow = contador % 7;
+	if (glow < 3 && recorrido.size() > 6 * (glow + 1)) {
 		glowsrc = {HELPER_SRC_ANCHO * glow, HELPER_SRC_ALTO, HELPER_SRC_ANCHO, HELPER_SRC_ALTO};
 		glowdst = {(int) recorrido[6 * (glow + 1)].getX() - HELPER_BALL_SRC_RADIO,
 				   (int) recorrido[6 * (glow + 1)].getY() - HELPER_BALL_SRC_RADIO,

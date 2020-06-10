@@ -26,12 +26,14 @@ struct Login {
 };
 
 struct EstadoHelper {
+    EstadoHelper(): posicionX(-200), posicionY(-200) {}
 	int posicionX;
 	int posicionY;
 	int angulo;
 };
 
 struct EstadoJugador {
+    EstadoJugador(): posicionX(-200), posicionY(-200) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
@@ -39,6 +41,7 @@ struct EstadoJugador {
 };
 
 struct EstadoEnemigo {
+    EstadoEnemigo(): posicionX(-200), posicionY(-200) {}
 	int posicionX;
 	int posicionY;
 	int clase;
