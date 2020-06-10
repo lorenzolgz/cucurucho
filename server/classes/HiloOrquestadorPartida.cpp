@@ -19,16 +19,21 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
 	int contadorColasReceptoras = 0;
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		auto* colaReceptora = hiloConexionServidor->colaReceptora;
-		nlohmann::json comandoJson = colaReceptora->pop();
-		struct Comando comando = {comandoJson["arriba"], comandoJson["abajo"], comandoJson["izquierda"], comandoJson["derecha"]};
-		comandos[contadorColasReceptoras] = comando;
-		contadorColasReceptoras++;
+		nlohmann::json mensajeJson = colaReceptora->pop();
+		if (mensajeJson["_t"] == COMANDO) {
+			struct Comando comando = {mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+			// TODO muuy turbina esto, solucionar mandando nro de cliente, despues de hacer la autenticacion!!!!
+			comandos[contadorColasReceptoras] = comando;
+			contadorColasReceptoras++;
+		} else {
+			l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+		}
 	}
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
 	if (*nuevoNivel) {
-		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel.numeroNivel));
+		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
 
 	if (*nuevoNivel) {
@@ -83,7 +88,7 @@ void HiloOrquestadorPartida::run() {
 			t2 = clock();
 			if ((t2 - t1) > 50) {
 				//DO the stuff!
-				// printf("!!!! %d\n", t2-t1);
+				// printf("!!!! %d\n", t2-t1);i
 				t1 = clock();
 			}
 

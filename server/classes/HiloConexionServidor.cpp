@@ -7,8 +7,11 @@ HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor) {
 
 void HiloConexionServidor::run() {
 	while (true) {
-		nlohmann::json valorRecibido = conexionServidor->recibirMensaje();
-		colaReceptora->push(valorRecibido);
+		nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+		colaReceptora->push(mensajeRecibido);
+
+		nlohmann::json mensajeAEnviar = colaEnviadora->pop();
+		conexionServidor->enviarMensaje(mensajeAEnviar);
 	}
 }
 
@@ -35,8 +38,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosEnemigos"][j]["clase"] = estadoTick->estadosEnemigos[j].clase;
 	}
 
-	conexionServidor->enviarMensaje(mensajeJson);
-
+	colaEnviadora->push(mensajeJson);
 }
 
 void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
@@ -51,5 +53,6 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 		mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo[i].pVelocidad;
 		mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo[i].pFondo;
 	}
-	conexionServidor->enviarMensaje(mensajeJson);
+
+	colaEnviadora->push(mensajeJson);
 }

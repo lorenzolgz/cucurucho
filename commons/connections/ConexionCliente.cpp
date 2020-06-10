@@ -84,9 +84,11 @@ struct InformacionNivel ConexionCliente::recibirInformacionNivel() {
 }
 
 void ConexionCliente::enviarComando(struct Comando* comando) {
-	l->debug("Cliente por mandar mensaje: " + std::to_string(comando->arriba) + " " + std::to_string(comando->abajo) + " " + std::to_string(comando->izquierda)  + " " + std::to_string(comando->derecha));
+	l->debug("Cliente por mandar mensaje: " + std::to_string(comando->arriba) + " " + std::to_string(comando->abajo) +
+			 " " + std::to_string(comando->izquierda) + " " + std::to_string(comando->derecha));
 
 	nlohmann::json mensajeJson = {
+			{"_t", COMANDO},
 			{"arriba",    comando->arriba},
 			{"abajo",     comando->abajo},
 			{"izquierda", comando->izquierda},

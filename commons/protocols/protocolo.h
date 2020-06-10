@@ -6,8 +6,11 @@
 #define MAX_FONDOS 15
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
+
+// Tipos de mensajes
 #define INFORMACION_NIVEL 0
 #define ESTADO_TICK 1
+#define COMANDO 2
 
 struct Comando {
 	int arriba;

@@ -6,7 +6,7 @@
 #include <condition_variable>
 #include <deque>
 
-// Las definiciones estan puestas aca porque C++ es una garcha. Si queres saber mas leete esto: https://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
+// Las definiciones estan puestas aca porque C++ es una garcha. Si queres saber mas leete esto: https://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor.
 
 template <typename T>
 class ColaBloqueante {
@@ -23,10 +23,13 @@ public:
 		this->d_queue.pop_back();
 		return rc;
 	}
+	// TODO esto hay que hacerlo bien, por ahora no se usa so fuck it.
+	/*
 	bool empty() {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		return d_queue.empty();
 	}
+	 */
 private:
 	std::mutex              d_mutex;
 	std::condition_variable d_condition;
