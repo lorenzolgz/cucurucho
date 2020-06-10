@@ -52,6 +52,8 @@ void ConexionCliente::enviarComando(struct Comando* comando) {
 			{"derecha",   comando->derecha}
 	};
 
+	l->error("!!!! enviarComando " + mensajeJson.dump());
+
 	enviarData2(server_socket, mensajeJson);
 }
 

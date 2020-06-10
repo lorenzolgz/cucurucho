@@ -16,7 +16,7 @@ void HiloConexionCliente::run() {
 	l->info("Comenzando a correr HiloConexionCliente");
 
 	while (true) {
-		l->error("!!!! whileHiloConexionServidor");
+		l->error("!!!! whileHiloConexionCliente");
 		nlohmann::json mensajeRecibido = conexionCliente->recibirMensaje();
 		l->error("!!!! HiloConexionCliente " + mensajeRecibido.dump());
 		colaComandos->push(mensajeRecibido);

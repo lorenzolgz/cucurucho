@@ -29,7 +29,7 @@ void ManagerVista::render(EstadoTick estadoTick) {
 
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
-    campoVista->render();
+	if (campoVista != nullptr) campoVista->render(); // !!!! TODO javi
     renderEnemigos(estadoTick.estadosEnemigos);
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -53,8 +53,10 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
 
     campoVista = new CampoVista();
     for (InformacionFondo & f : informacionNivel.informacionFondo) {
+    	// TODO un comentario aca pls que es esta magia
         if (f.pFondo[0] == '\0') {
         	l->error("!!!!");
+			continue;
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }

@@ -171,17 +171,15 @@ void mainLoop() {
 	//------------------------
 	// BEGIN socket configuration
     struct EstadoTick estadoTick;
-    struct InformacionNivel informacionNivel;
+    struct InformacionNivel informacionNivel = {0}; // !!!! TODO javi
 
 	char* ip_address = (char*) "127.0.0.1";
 	int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
     auto* colaComandos = new ColaBloqueante<nlohmann::json>();
-    auto* hiloConexionCliente = new HiloConexionCliente(conexionCliente,colaComandos);
+	HiloConexionCliente* hiloConexionCliente = nullptr;
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
-
-    hiloConexionCliente->start();
 
     while (!quit) {
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -194,6 +192,12 @@ void mainLoop() {
         if (pantallaInicioLoop(iniciadorComunicacion, &conexionCliente, pantallaPrincipal, inputText, currentKeyStates)) {
             continue;
         }
+
+        // !!!! TODO javi
+		if (hiloConexionCliente == nullptr) {
+			hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaComandos);
+			hiloConexionCliente->start();
+		}
 
         if (!colaComandos->empty()) {
         	// TODO no es mejor primero vaciar y despues imprimir?

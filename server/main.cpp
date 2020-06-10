@@ -70,9 +70,14 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
 	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
 
-	hiloOrquestadorPartida->start();
+	try {
+		hiloOrquestadorPartida->start();
 
-	hiloOrquestadorPartida->join();
+		hiloOrquestadorPartida->join();
+	} catch (const std::exception& exc) {
+		l->error("HiloAceptador. main");
+	}
+
 	for (auto* conexion : conexiones) {
 		conexion->cerrar();
 	}
