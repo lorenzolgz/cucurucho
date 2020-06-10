@@ -26,10 +26,6 @@ public:
 
     void enviarDatosDeLogin(Login *logueo);
 
-    void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje);
-
-    void setEstadoTick(EstadoTick *estadoTick, nlohmann::json mensaje);
-
     void cerrar();
 
 private:

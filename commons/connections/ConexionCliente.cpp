@@ -12,38 +12,6 @@ nlohmann::json ConexionCliente::recibirMensaje() {
 
 }
 
-void ConexionCliente::setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
-    estadoTick->nuevoNivel = mensaje["numeroNivel"];
-    int i = 0;
-    for (; i < MAX_JUGADORES; i++ ) {
-        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
-        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
-        estadoTick->estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
-        estadoTick->estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
-        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
-        estadoTick->estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
-
-    }
-    int j = 0;
-    for (; j < MAX_ENEMIGOS; j++ ){
-        estadoTick->estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
-        estadoTick->estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
-        estadoTick->estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
-    }
-}
-
-void ConexionCliente::setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
-    informacionNivel->numeroNivel = mensaje["numeroNivel"];
-    informacionNivel->velocidad = mensaje["velocidad"];
-    strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
-    for (int i = 0; i < MAX_FONDOS ; i++){
-        informacionNivel->informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
-        strcpy(informacionNivel->informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
-    }
-}
-
 struct EstadoTick ConexionCliente::recibirEstadoTick() {
 	struct EstadoTick estadoTick;
 

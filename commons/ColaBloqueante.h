@@ -27,6 +27,9 @@ public:
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		return d_queue.empty();
 	}
+    int size() {
+        return d_queue.size();
+    }
 private:
 	std::mutex              d_mutex;
 	std::condition_variable d_condition;

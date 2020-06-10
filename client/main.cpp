@@ -125,6 +125,41 @@ bool renderLoop(ManagerVista* manager, struct EstadoTick estadoTick, struct Info
 }
 
 
+// TODO: Clase Partida que se encargue de organizar la información
+void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
+    estadoTick->nuevoNivel = mensaje["numeroNivel"];
+    int i = 0;
+    for (; i < MAX_JUGADORES; i++ ) {
+        estadoTick->estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
+        estadoTick->estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estadoTick->estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
+        estadoTick->estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
+        estadoTick->estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
+        estadoTick->estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
+        estadoTick->estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
+
+    }
+    int j = 0;
+    for (; j < MAX_ENEMIGOS; j++ ){
+        estadoTick->estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
+        estadoTick->estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
+        estadoTick->estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
+    }
+}
+
+void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
+    informacionNivel->numeroNivel = mensaje["numeroNivel"];
+    informacionNivel->velocidad = mensaje["velocidad"];
+    strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
+    for (int i = 0; i < MAX_FONDOS ; i++){
+        informacionNivel->informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
+        strcpy(informacionNivel->informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
+    }
+}
+
+
+
 void mainLoop() {
     int anchoPantalla = PANTALLA_ANCHO;
 	int altoPantalla = PANTALLA_ALTO;
@@ -146,10 +181,9 @@ void mainLoop() {
     auto* hiloConexionCliente = new HiloConexionCliente(conexionCliente,colaComandos);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-    hiloConexionCliente->run();
+    hiloConexionCliente->start();
 
     while (!quit) {
-        std::cout<<"hola"<<std::endl;
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
         SDL_RenderClear(GraphicRenderer::getInstance());
 
@@ -163,8 +197,9 @@ void mainLoop() {
 
         if (!colaComandos->empty()) {
             nlohmann::json instruccion = colaComandos->pop();
-            if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) conexionCliente->setInformacionNivel(&informacionNivel, instruccion);
-            else if (instruccion["tipoMensaje"] == ESTADO_TICK) conexionCliente->setEstadoTick(&estadoTick, instruccion);
+            if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) setInformacionNivel(&informacionNivel, instruccion);
+            else if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(&estadoTick, instruccion);
+            while (colaComandos->size() > 5) colaComandos->pop();
         }
 
         if (!conexionLoop(conexionCliente, currentKeyStates)) {
