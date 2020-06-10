@@ -88,7 +88,7 @@ add_executable(cliente
         commons/Thread.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h)
+        libraries/json/json.hpp client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h client/classes/Partida.cpp client/classes/Partida.h client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h)
 
 add_executable(servidor
         server/main.cpp

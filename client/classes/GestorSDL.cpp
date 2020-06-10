@@ -65,3 +65,32 @@ void GestorSDL::close() {
 	SDL_Quit();
 	l->info("La ventana se cerro correctamente");
 }
+
+bool GestorSDL::event(std::string* inputText) {
+    bool quit = false;
+    SDL_Event e;
+
+    //Handle events on queue
+    while (SDL_PollEvent(&e) != 0) {
+        //User requests quit
+        if (e.type == SDL_QUIT) {
+            quit = true;
+        } else if (e.type == SDL_TEXTINPUT) {
+            *inputText += e.text.text;
+        } else if (e.type == SDL_KEYDOWN) {
+            if (e.key.keysym.sym == SDLK_BACKSPACE) {
+                *inputText += 8;
+            } else if (e.key.keysym.sym == SDLK_UP) {
+                *inputText += 9;
+            } else if (e.key.keysym.sym == SDLK_DOWN) {
+                *inputText += 10;
+            } else if (e.key.keysym.sym == SDLK_KP_ENTER || e.key.keysym.sym == SDLK_RETURN) {
+                *inputText += 11;
+            } else if (e.key.keysym.sym == SDLK_d && (SDL_GetModState() & KMOD_CTRL)) {
+                *inputText += 12;
+            }
+        }
+    }
+
+    return quit;
+}

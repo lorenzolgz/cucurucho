@@ -8,6 +8,7 @@ class GestorSDL {
 public:
 	bool init(int anchoPantallas, int altoPantalla);
 	void close();
+    bool event(std::string* inputText);
 
 private:
 	SDL_Window* gWindow = nullptr;

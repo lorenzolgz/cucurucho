@@ -103,15 +103,15 @@ void HiloOrquestadorPartida::run() {
 			int receipts = receiveData(hilosConexionesServidores, comandos);
 			if (receipts == 0) continue; // TODO hardcodeado a un jugador
 			//--------------------
-			l->error("!!!! yyy 2");
+//			l->error("!!!! yyy 2");
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);
 			//--------------------
-			l->error("!!!! yyy 3");
+//			l->error("!!!! yyy 3");
 			// Send data (view)
 			sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
-			l->error("!!!! yyy 4");
+//			l->error("!!!! yyy 4");
 		}
 	}
 	catch (const std::exception& exc) {

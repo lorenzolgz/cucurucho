@@ -25,7 +25,7 @@ nlohmann::json Conexion::recibirData2(int client_socket) {
 		perror("recibirMensaje. Error cuando se recibe tamanioMensaje");
 		// !!!! exit(1);
 	}
-	l->error("!!!! conexionTamanio " + std::to_string(tamanioMensaje));
+	l->debug("!!!! conexionTamanio " + std::to_string(tamanioMensaje));
 
 	std::string mensajeStr(tamanioMensaje, '\0');
 	if (_recibirData<char>(&client_socket, &mensajeStr[0], tamanioMensaje) < 0) {
@@ -33,7 +33,7 @@ nlohmann::json Conexion::recibirData2(int client_socket) {
 		// !!!! exit(1);
 	}
 
-	l->error("!!!! conexion " + mensajeStr);
+	//l->error("!!!! conexion " + mensajeStr);
 	nlohmann::json mensajeJson = nlohmann::json::parse(mensajeStr);
     return mensajeJson;
 }

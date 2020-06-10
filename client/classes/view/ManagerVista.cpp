@@ -57,10 +57,9 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
 
     campoVista = new CampoVista();
     for (InformacionFondo & f : informacionNivel.informacionFondo) {
-    	// TODO un comentario aca pls que es esta magia
+    	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)
         if (f.pFondo[0] == '\0') {
-        	l->error("!!!!");
-			continue;
+        	continue;
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }

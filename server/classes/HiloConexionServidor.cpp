@@ -15,13 +15,13 @@ void HiloConexionServidor::run() {
 	while (true) {
 
 		nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-		l->error("!!!! recHiloConexionServidor " + mensajeRecibido.dump());
+		//l->error("!!!! recHiloConexionServidor " + mensajeRecibido.dump());
 		colaReceptora->push(mensajeRecibido);
 
-		l->error("!!!! whileHiloConexionServidor");
+		//l->error("!!!! whileHiloConexionServidor");
 		if (!colaEnviadora->empty()) {
 			nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-			l->error("!!!! envHiloConexionServidor " + mensajeAEnviar.dump());
+		//	l->error("!!!! envHiloConexionServidor " + mensajeAEnviar.dump());
 			conexionServidor->enviarMensaje(mensajeAEnviar);
 
 		} else {

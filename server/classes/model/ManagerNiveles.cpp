@@ -44,7 +44,7 @@ bool ManagerNiveles::terminoNivelActual() {
     return nuevoNivel;
 }
 
-bool ManagerNiveles::pasajeDeNivel(){
+void ManagerNiveles::pasajeDeNivel(){
     NivelConfiguracion* nivel = listNiveles.front();
 
     NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
@@ -53,7 +53,6 @@ bool ManagerNiveles::pasajeDeNivel(){
 
     nivelActual = configurarNuevoNivel();
     listNiveles.pop_front();
-    return false;
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {
@@ -75,7 +74,6 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
 		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
 		pasajeDeNivel();
 	}
-
-	return nivelActual->state();
+    return nivelActual->state();
 }
 
