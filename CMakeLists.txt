@@ -86,7 +86,7 @@ add_executable(cliente
         commons/ColaBloqueante.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp)
+        libraries/json/json.hpp client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h)
 
 add_executable(servidor
         server/main.cpp

@@ -16,6 +16,8 @@
 #include "../server/classes/states/EstadoInternoNivel.h"
 #include "../commons/utils/Constantes.h"
 #include "classes/GestorSDL.h"
+#include "classes/HiloConexionCliente.h"
+#include "../commons/Thread.h"
 
 #define BACKUP_CONFIG "../config/backup.json"
 
@@ -91,9 +93,7 @@ bool pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion, ConexionCl
 // Comunicacion con el cliente.
 // Primero envia la secuencia de teclas presionada, y despues recibe informacion del servidor
 // Si `nuevoNivel` es true, debe recibir el nivel en vez de la informacion del escenario (!!)
-ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
-                                struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel, bool* nuevoNivel,
-                                const Uint8 *currentKeyStates) {
+ConexionCliente* conexionLoop(ConexionCliente* conexionCliente, const Uint8 *currentKeyStates) {
 
     struct Comando client_command = { false, false, false, false };
 
@@ -104,15 +104,13 @@ ConexionCliente* conexionLoop(ConexionCliente* conexionCliente,
 
     // Send data (command)
     conexionCliente->enviarComando(&client_command);
-    conexionCliente->recibirMensaje(informacionNivel, estadoTick);
-    l->debug("Se recibió el mensaje del servidor");
 
     return conexionCliente;
 }
 
 // Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)
 // TODO: Hardcodeadisimo. Cambiar.
-bool renderLoop(ManagerVista* manager, struct EstadoTick estadoTick, struct InformacionNivel informacionNivel, bool nuevoNivel) {
+bool renderLoop(ManagerVista* manager, struct EstadoTick estadoTick, struct InformacionNivel informacionNivel, ConexionCliente* conexionCliente) {
 
     bool quit = false;
 
@@ -140,15 +138,18 @@ void mainLoop() {
     struct EstadoTick estadoTick;
     struct InformacionNivel informacionNivel;
 
-	bool nuevoNivel = true;
 	char* ip_address = (char*) "127.0.0.1";
 	int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     ConexionCliente* conexionCliente = iniciadorComunicacion->conectar();
-
+    auto* colaComandos = new ColaBloqueante<nlohmann::json>();
+    auto* hiloConexionCliente = new HiloConexionCliente(conexionCliente,colaComandos);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
+    hiloConexionCliente->run();
+
     while (!quit) {
+        std::cout<<"hola"<<std::endl;
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
         SDL_RenderClear(GraphicRenderer::getInstance());
 
@@ -160,11 +161,17 @@ void mainLoop() {
             continue;
         }
 
-        if (!conexionLoop(conexionCliente, &estadoTick, &informacionNivel, &nuevoNivel, currentKeyStates)) {
+        if (!colaComandos->empty()) {
+            nlohmann::json instruccion = colaComandos->pop();
+            if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) conexionCliente->setInformacionNivel(&informacionNivel, instruccion);
+            else if (instruccion["tipoMensaje"] == ESTADO_TICK) conexionCliente->setEstadoTick(&estadoTick, instruccion);
+        }
+
+        if (!conexionLoop(conexionCliente, currentKeyStates)) {
             continue;
         }
 
-        quit = quit || renderLoop(manager, estadoTick, informacionNivel, nuevoNivel);
+        quit = quit || renderLoop(manager, estadoTick, informacionNivel, conexionCliente);
     }
 
     if (conexionCliente != nullptr) {

@@ -1,0 +1,20 @@
+//
+// Created by camix on 9/6/20.
+//
+
+#include "HiloConexionCliente.h"
+
+HiloConexionCliente::HiloConexionCliente(ConexionCliente *conexionCliente,
+                                         ColaBloqueante<nlohmann::json> *colaComandos) {
+    HiloConexionCliente::conexionCliente = conexionCliente;
+    HiloConexionCliente::colaComandos = colaComandos;
+
+}
+
+
+void HiloConexionCliente::run() {
+    while (true) {
+        nlohmann::json valorRecibido = conexionCliente->recibirMensaje();
+        colaComandos->push(valorRecibido);
+    }
+}

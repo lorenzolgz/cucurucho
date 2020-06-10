@@ -20,7 +20,7 @@ public:
 
     void renderNivelIntermedio();
 
-    void setInformacionNivel(InformacionNivel &informacionNivel);
+    void setInformacionNivel(InformacionNivel informacionNivel);
 
 private:
     struct InformacionNivel informacionNivel;

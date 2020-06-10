@@ -7,13 +7,14 @@
 #include "../protocols/protocolo.h"
 #include "ConexionUtils.h"
 #include "Conexion.h"
+#include "../../commons/ColaBloqueante.h"
 
 
 class ConexionCliente : public Conexion {
 public:
 	ConexionCliente(int client_socket);
 
-    void recibirMensaje(InformacionNivel *informacionNivel, EstadoTick *estadoTick);
+    nlohmann::json recibirMensaje();
 
 	struct EstadoTick recibirEstadoTick();
 
@@ -25,11 +26,14 @@ public:
 
     void enviarDatosDeLogin(Login *logueo);
 
-	void cerrar();
+    void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje);
+
+    void setEstadoTick(EstadoTick *estadoTick, nlohmann::json mensaje);
+
+    void cerrar();
 
 private:
 	int server_socket;
-    nlohmann::json mensaje;
 
 };
 

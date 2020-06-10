@@ -6,24 +6,13 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::server_socket = client_socket;
 }
 
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json json);
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje);
 
-void ConexionCliente::recibirMensaje(struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick) {
-    nlohmann::json mensaje = recibirData2(server_socket);
+nlohmann::json ConexionCliente::recibirMensaje() {
+     return recibirData2(server_socket);
 
-    if ( mensaje["tipoMensaje"] == INFORMACION_NIVEL ) {
-        setInformacionNivel(informacionNivel, mensaje);
-        l->debug("Nuevo nivel recibido : " + std::to_string(informacionNivel->numeroNivel));
-        estadoTick->nuevoNivel = false;
-    }
-    else if (mensaje["tipoMensaje"] == ESTADO_TICK ){
-        setEstadoTick(estadoTick, mensaje);
-
-    }
 }
 
-void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
+void ConexionCliente::setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
     estadoTick->nuevoNivel = mensaje["numeroNivel"];
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
@@ -45,7 +34,7 @@ void setEstadoTick(struct EstadoTick *estadoTick, nlohmann::json mensaje) {
     }
 }
 
-void setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
+void ConexionCliente::setInformacionNivel(struct InformacionNivel *informacionNivel, nlohmann::json mensaje) {
     informacionNivel->numeroNivel = mensaje["numeroNivel"];
     informacionNivel->velocidad = mensaje["velocidad"];
     strcpy(informacionNivel->informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());

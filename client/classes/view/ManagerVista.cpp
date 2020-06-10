@@ -38,7 +38,7 @@ void ManagerVista::render(EstadoTick estadoTick) {
 }
 
 
-void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
+void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel) {
         return;
     }
