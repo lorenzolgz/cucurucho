@@ -20,39 +20,19 @@ bool ControladorDeSesiones::iniciarSesion(){
     struct Login login;
     login = pedirCredenciales();
 
-    char* usuario = login.usuario;
-    char* contrasenia = login.contrasenia;
+    char* usuario;
+    usuario = login.usuario;
+    char* contrasenia;
+    contrasenia = login.contrasenia;
 
     //verifico que el usuario esté registrado
     if(!usuarioEstaRegistrado(usuario, contrasenia)){
         //TODO se le informa al cliente que no se le permitirá jugar
         this->servidor->cerrar();
         ok = false;
+    } else {
+        this->usuarioConectado = (string)usuario;
     }
-
-    //se verifica que ese usuario REGISTRADO no esté en juego ya
-    map<string, bool>::iterator i = this->jugadoresConectados.find(usuario);
-
-    if(i != this->jugadoresConectados.end()){ //si existe ese usuario en el map
-        if(this->jugadoresConectados[usuario]) {//si ese usuario está jugando
-            //TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
-            cout << "Ya se encuentra en juego alguien con ese nombre de usuario" << endl;
-            ok = false;
-        } else { //TODO si ese usuario se conectó en esta partida pero se fue, ponerle false
-            cout<<"Te desconectaste y volviste"<<endl;
-            this->jugadoresConectados[usuario] = true; //ver reconexión
-        }
-        //usuario que no posee un bool
-        cout<<"Es basura"<<endl;
-        this->jugadoresConectados.erase(usuario); //lo elimino del map
-        ok = false;
-
-    } else { //si no se conectó en esta partida alguien con ese nombre de usuario
-        cout<<"No se encuentra en juego todavía alguien con ese nombre de usuario"<<endl;
-        this->jugadoresConectados.insert({usuario, true});
-    }
-
-    cout<<"Usuario "<<usuario<<" entró al juego"<<endl;
 
     return ok;
 }
@@ -93,7 +73,7 @@ void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
     this->servidor = servidor;
 }
 
-map<string, bool> ControladorDeSesiones::getJugadoresConectados(){
-    return this->jugadoresConectados;
+string ControladorDeSesiones::userConectado(){
+    return this->usuarioConectado;
 }
 

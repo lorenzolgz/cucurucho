@@ -17,14 +17,14 @@ class ControladorDeSesiones {
 public:
     ControladorDeSesiones(ConexionServidor* conexionServidor);
     bool iniciarSesion();
-    map<string, bool> getJugadoresConectados();
     void setServidor(ConexionServidor *servidor);
+    string usuarioConectado;
+    string userConectado();
 
 private:
     ConexionServidor* servidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
     struct Login pedirCredenciales();
-    map<string, bool> jugadoresConectados;
     Json::Value jsonUsuarios, contrasenias;
 };
 
