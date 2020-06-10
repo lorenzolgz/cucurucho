@@ -181,8 +181,6 @@ void mainLoop() {
 	HiloConexionCliente* hiloConexionCliente = nullptr;
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-    hiloConexionCliente->start();
-
     while (!quit) {
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
         SDL_RenderClear(GraphicRenderer::getInstance());
