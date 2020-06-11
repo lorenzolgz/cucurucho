@@ -36,33 +36,36 @@ void Titulo::leerInput(std::string input) {
             seleccionadoUsuario = !seleccionadoUsuario;
         } else if (c == 12) {   // Ctrl + D: Autoautenticar!
             estado = TITULO_VALIDAR;
-            username = "cami";
-            password = "1234";
+			username = "rodri";
+            password = "13141516";
             inicioTimeout = -30;
         }
     }
 }
 
 
-bool Titulo::validarLogin(ConexionCliente *pCliente) {
+int Titulo::validarLogin(ConexionCliente *pCliente) {
     Login credenciales;
     strcpy(credenciales.usuario, username.c_str());
     strcpy(credenciales.contrasenia, password.c_str());
     pCliente->enviarDatosDeLogin(&credenciales);
-    return pCliente->contraseniaCorrecta();
+    int nroJugador = pCliente->recibirEstadoLogin();
+    l->info("EstadoLogin enviado por el servidor: " + std::to_string(nroJugador));
+    return nroJugador;
 }
 
 
-// Devuelve un booleano indicando si el cliente debe reconectarse al servidor
-bool Titulo::tick(std::string input, ConexionCliente *pCliente) {
+// Devuelve un booleano indicando si el cliente debe reconectarse al conexionServidor
+int Titulo::tick(std::string input, ConexionCliente *pCliente) {
     tituloVista->render(estado, username, password, seleccionadoUsuario);
     leerInput(input);
-    bool reconectar = false;
+    int nroJugador = LOGIN_PENDIENTE;
 
     if (estado == TITULO_VALIDAR) {
-        if (!validarLogin(pCliente)) {
+    	nroJugador = validarLogin(pCliente);
+        if (!nroJugador) {
             estado = TITULO_ERROR_AUTENTICACION;
-            reconectar = true;
+			nroJugador = LOGIN_FALLO;
         } else {
             contador = 0;
             estado = TITULO_ACEPTADO;
@@ -70,10 +73,10 @@ bool Titulo::tick(std::string input, ConexionCliente *pCliente) {
     }
     if (activada) contador++;
 
-    return reconectar;
+    return nroJugador;
 }
 
-bool Titulo::isActivada(bool enter) {
+bool Titulo::estaActivada(bool enter) {
     if (enter && !activada) {
         activada = true;
         estado = TITULO_INGRESAR;

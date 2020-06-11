@@ -29,7 +29,11 @@ void ManagerVista::render(EstadoTick estadoTick) {
 
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
-    campoVista->render();
+	if (campoVista == nullptr) {
+        return;
+	} // TODO patch para race conditions
+	campoVista->render();
+
     renderEnemigos(estadoTick.estadosEnemigos);
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -38,16 +42,25 @@ void ManagerVista::render(EstadoTick estadoTick) {
 }
 
 
-void ManagerVista::setInformacionNivel(InformacionNivel &informacionNivel) {
+void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel) {
         return;
+    }
+
+    if (informacionNivel.numeroNivel > 1) {
+        this->renderNivelIntermedio();
+        SDL_RenderPresent(GraphicRenderer::getInstance());
+        SDL_Delay(2000);
     }
 
     ManagerVista::informacionNivel = informacionNivel;
 
     campoVista = new CampoVista();
     for (InformacionFondo & f : informacionNivel.informacionFondo) {
-        if (f.pFondo[0] == '\0') continue;
+    	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)
+        if (f.pFondo[0] == '\0') {
+        	continue;
+        }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
     }
 

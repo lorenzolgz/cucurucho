@@ -22,7 +22,7 @@ int main(int argc , char *argv[]) {
 	Configuracion* config = parsearConfiguracion();
 	std::string nivelLog = config->getNivelLog();
  	l->setConf(nivelLog);
-	l->info("Iniciando el servidor.");
+	l->info("Iniciando el conexionServidor.");
 
 	return esperarConexiones(3040, config);
 }
@@ -37,7 +37,7 @@ Configuracion* parsearConfiguracion() {
 	}
 		// Si el backup tampoco sirve, ya no puedo inicializar el juego
 	catch (const std::exception& exc) {
-		l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
+		l->error("Ocurrio un error alhilocon leer el archivo de configuración de backup, no puede configurarse el juego");
 		// Throw exception corta por completo la ejecucion del codigo
 		throw exc;
 	}
@@ -69,18 +69,22 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	}
 	l->info("Todos los usuarios fueron aceptados");
 
-	HiloOrquestadorPartida *hiloOrquestadorPartida;
-	hiloOrquestadorPartida = new HiloOrquestadorPartida(config, conexiones);
+	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
 
-	hiloOrquestadorPartida->start();
+	try {
+		hiloOrquestadorPartida->start();
 
-	hiloOrquestadorPartida->join();
+		hiloOrquestadorPartida->join();
+	} catch (const std::exception& exc) {
+		l->error("HiloAceptador. main");
+	}
+
 	for (auto* conexion : conexiones) {
 		conexion->cerrar();
 	}
-	printf("Client socket number closed\n");
+	l->info("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
-	printf("Server socket number closed\n");
+	l->info("Server socket number closed\n");
 
 	return 0;
 }

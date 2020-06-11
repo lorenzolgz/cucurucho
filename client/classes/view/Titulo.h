@@ -25,9 +25,9 @@ class Titulo {
 public:
     Titulo(int ancho, int alto);
 
-    bool tick(std::string input, ConexionCliente *pCliente);
+    int tick(std::string input, ConexionCliente *pCliente);
 
-    bool isActivada(bool enter);
+    bool estaActivada(bool enter);
 
 private:
     TituloVista* tituloVista;
@@ -41,7 +41,7 @@ private:
 
     void leerInput(std::string input);
 
-    bool validarLogin(ConexionCliente *pCliente);
+    int validarLogin(ConexionCliente *pCliente);
 };
 
 #endif //CUCURUCHO_TITULO_H

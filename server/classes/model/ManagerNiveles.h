@@ -10,6 +10,7 @@
 #include "Nivel.h"
 #include "NivelIntermedio.h"
 #include "../states/EstadoInternoNivel.h"
+#include "../../../commons/utils/Constantes.h"
 
 #define VELOCIDAD_INICIAL 2
 #define AUMENTO_VELOCIDAD_POR_NIVEL 1.1
@@ -19,7 +20,7 @@ public:
     ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores);
 
     void tick() override;
-    bool pasajeDeNivel();
+    void pasajeDeNivel();
 	bool terminoNivelActual();
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
     Nivel *configurarNuevoNivel();

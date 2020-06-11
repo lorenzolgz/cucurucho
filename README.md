@@ -39,11 +39,11 @@ cd cmake-build-debug
 ./cliente
 ```
 
-### Correr servidor
+### Correr conexionServidor
 ```sh
 # Desde el root del proyecto:
 cd cmake-build-debug
-./servidor
+./conexionServidor
 ```
 
 ![Gley Lancer](assets/screenshot.png)

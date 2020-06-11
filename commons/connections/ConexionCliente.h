@@ -7,26 +7,26 @@
 #include "../protocols/protocolo.h"
 #include "ConexionUtils.h"
 #include "Conexion.h"
+#include "../../commons/ColaBloqueante.h"
 
 
 class ConexionCliente : public Conexion {
 public:
 	ConexionCliente(int client_socket);
 
-	struct EstadoTick recibirEstadoTick();
-
-	struct InformacionNivel recibirInformacionNivel();
+    nlohmann::json recibirMensaje();
 
 	void enviarComando(struct Comando* comando);
 
-    bool contraseniaCorrecta();
+    bool recibirEstadoLogin();
 
     void enviarDatosDeLogin(Login *logueo);
 
-	void cerrar();
+    void cerrar();
 
 private:
 	int server_socket;
+
 };
 
 

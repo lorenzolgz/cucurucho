@@ -10,7 +10,7 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
 
     SDL_Surface* loadedSurface = IMG_Load((SPRITES_LOCATION + path).c_str());
     if (loadedSurface == nullptr) {
-        l->error(std::string("Error al cargar la imagen! SDL_image Error:") + IMG_GetError());
+        l->error(std::string("Error al cargar la imagen: " + path + " ! SDL_image Error:") + IMG_GetError());
     }
 
     SDL_Texture * textura = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);

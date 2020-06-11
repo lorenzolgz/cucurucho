@@ -14,9 +14,8 @@ public:
 	ConexionServidor(int client_socket);
 
 	nlohmann::json recibirMensaje();
-	void enviarEstadoTick(struct EstadoTick* estadoTick);
-	void enviarInformacionNivel(struct InformacionNivel* header);
-    void enviarEstadoLogin(bool esCorrecta);
+	void enviarMensaje(nlohmann::json mensaje);
+	void enviarEstadoLogin(int nroJugador);
 	void cerrar();
 
 private:

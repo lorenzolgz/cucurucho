@@ -20,7 +20,7 @@ Partida::Partida(Configuracion* config) {
 }
 
 void Partida::tick(struct Comando comandos[]) {
-	Partida::nuevoNivel = 1;
+
 
 	for (int i = 0; i < jugadores.size(); i++) {
 		struct Comando comando = comandos[i];

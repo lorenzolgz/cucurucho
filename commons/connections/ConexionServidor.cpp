@@ -10,15 +10,13 @@ nlohmann::json ConexionServidor::recibirMensaje() {
 	return recibirData2(client_socket);
 }
 
-void ConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
-	if (enviarData<struct EstadoTick>(&client_socket, estadoTick) < 0) {
-		perror("Send Data Error");
-		exit(1);
-	}
+void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
+	return enviarData2(client_socket, mensaje);
 }
 
-void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
-	if (enviarData<struct InformacionNivel>(&client_socket, informacionNivel) < 0) {
+void ConexionServidor::enviarEstadoLogin(int nroJugador) {
+	bool nroJugadorNormalizado = nroJugador;
+	if (enviarData<bool>(&client_socket, &nroJugadorNormalizado) < 0) {
 		perror("Send Data Error");
 		exit(1);
 	}
@@ -26,11 +24,4 @@ void ConexionServidor::enviarInformacionNivel(struct InformacionNivel* informaci
 
 void ConexionServidor::cerrar() {
 	close(client_socket);
-}
-
-void ConexionServidor::enviarEstadoLogin(bool esCorrecta) {
-    if (enviarData<bool>(&client_socket, &esCorrecta) < 0) {
-        perror("Send Data Error");
-        exit(1);
-    }
 }

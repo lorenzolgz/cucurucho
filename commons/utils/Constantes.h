@@ -8,4 +8,6 @@
 #define PANTALLA_ANCHO 960
 #define PANTALLA_ALTO 672
 
+#define FIN_JUEGO -1
+
 #endif //CUCURUCHO_CONSTANTES_H

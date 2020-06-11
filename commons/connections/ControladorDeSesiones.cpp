@@ -31,33 +31,33 @@ bool ControladorDeSesiones::iniciarSesion(){
         this->servidor->cerrar();
         ok = false;
     } else {
-        this->usuarioConectado = (string)usuario;
+        this->usuarioConectado = (string) usuario;
     }
 
     return ok;
 }
 
-bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia)
-{
-    bool usuarioRegistrado;
-    bool contraseniaCorrecta;
-    char* nuevaContrasenia;
+bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia) {
+	bool usuarioRegistrado;
+	bool contraseniaCorrecta;
+	char *nuevaContrasenia;
 
-    //chequeo si el usuario está registrado
-    usuarioRegistrado = !(this->contrasenias[usuario].empty());
+	//chequeo si el usuario está registrado
+	usuarioRegistrado = !(this->contrasenias[usuario].empty());
 
-    //si está registrado, verifico la contraseña
-    if(usuarioRegistrado){
-        contraseniaCorrecta = (this->contrasenias[usuario] == contrasenia);
-        while(!contraseniaCorrecta){
-            this->servidor->enviarEstadoLogin(contraseniaCorrecta);
-            nuevaContrasenia = pedirCredenciales().contrasenia;
-            contraseniaCorrecta = (this->contrasenias[usuario] == nuevaContrasenia);
-        }
-    }
-    this->servidor->enviarEstadoLogin(contraseniaCorrecta);
+	//si está registrado, verifico la contraseña
+	if (usuarioRegistrado) {
+		contraseniaCorrecta = (this->contrasenias[usuario] == contrasenia);
+		while (!contraseniaCorrecta) {
+			// TODO esto funciona pero para una única vez
+			this->servidor->enviarEstadoLogin(contraseniaCorrecta);
+			nuevaContrasenia = pedirCredenciales().contrasenia;
+			contraseniaCorrecta = (this->contrasenias[usuario] == nuevaContrasenia);
+		}
+	}
+	this->servidor->enviarEstadoLogin(contraseniaCorrecta);
 
-    return usuarioRegistrado;
+	return usuarioRegistrado;
 }
 
 struct Login ControladorDeSesiones::pedirCredenciales(){

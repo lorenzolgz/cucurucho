@@ -16,7 +16,7 @@ public:
     Titulo(int ancho, int alto);
     void tick() override;
 
-    bool isActivada(bool enter);
+    bool nroJugador(bool enter);
 
 private:
     TituloVista* tituloVista;
