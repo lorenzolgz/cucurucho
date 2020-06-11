@@ -39,13 +39,17 @@ void Partida::play() {
         }
 
         if (!colaComandos->empty()) {
-            // TODO no es mejor primero vaciar y despues imprimir?
-            nlohmann::json instruccion = colaComandos->pop();
-            manager->estadoNivel(instruccion);
-            while (colaComandos->size() > MAX_COLA){
-                colaComandos->pop();
-                l->info("Se desencola debido a la alta cantidad de comandos en la cola");
-            }
+
+			// TODO no es mejor primero vaciar y despues imprimir?
+			nlohmann::json instruccion = colaComandos->pop();
+			manager->estadoNivel(instruccion);
+
+			// !!!!! reducir MAX_COLA
+			// colaComandos->pop(MAX_COLA);
+			while (colaComandos->size() > MAX_COLA){
+				colaComandos->pop();
+				l->info("Se desencola debido a la alta cantidad de comandos en la cola");
+			}
         }
 
         if (!conexionLoop(currentKeyStates)) {
@@ -79,14 +83,14 @@ bool Partida::pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion,
     bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
     if (!pantallaPrincipal->estaActivada(onStart)) {
-    	int estadoLogin = pantallaPrincipal->tick(inputText, conexionCliente);
-		if (estadoLogin == LOGIN_FALLO) {
+    	struct EstadoLogin estadoLogin = pantallaPrincipal->tick(inputText, conexionCliente);
+		if (estadoLogin.nroJugador == LOGIN_FALLO) {
 			this->conexionCliente->cerrar();
 			this->conexionCliente = iniciadorComunicacion->conectar();
-		} else if (estadoLogin == LOGIN_PENDIENTE) {
+		} else if (estadoLogin.nroJugador == LOGIN_PENDIENTE) {
 
 		} else {
-			this->nroJugador = estadoLogin;
+			this->nroJugador = estadoLogin.nroJugador;
 		}
 
 		SDL_RenderPresent(GraphicRenderer::getInstance());
@@ -101,7 +105,8 @@ ConexionCliente* Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     struct Comando client_command = {false, false, false, false};
 
-    client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
+	client_command.nroJugador = nroJugador;
+	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
     client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
     client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];

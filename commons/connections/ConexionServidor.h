@@ -15,7 +15,7 @@ public:
 
 	nlohmann::json recibirMensaje();
 	void enviarMensaje(nlohmann::json mensaje);
-	void enviarEstadoLogin(int nroJugador);
+	void enviarEstadoLogin(struct EstadoLogin estadoLogin);
 	void cerrar();
 
 private:

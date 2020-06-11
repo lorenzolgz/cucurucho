@@ -70,5 +70,9 @@ struct InformacionNivel {
 	InformacionFondo informacionFondo[MAX_FONDOS];
 };
 
+struct EstadoLogin {
+	int nroJugador;
+};
+
 
 #endif //CUCURUCHO_PROTOCOLO_H

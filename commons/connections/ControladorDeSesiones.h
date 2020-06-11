@@ -15,7 +15,7 @@ using namespace std;
 
 class ControladorDeSesiones {
 public:
-    ControladorDeSesiones(ConexionServidor* conexionServidor);
+    ControladorDeSesiones(ConexionServidor* conexionServidor, int nroJugador);
     bool iniciarSesion();
     void setServidor(ConexionServidor *servidor);
     string usuarioConectado;
@@ -23,10 +23,12 @@ public:
     void controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados);
 
 private:
-    ConexionServidor* servidor;
-    bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
-    struct Login pedirCredenciales();
-    Json::Value jsonUsuarios, contrasenias;
+    ConexionServidor* conexionServidor;
+	Json::Value jsonUsuarios, contrasenias;
+	int nroJugador;
+
+	bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
+	struct Login pedirCredenciales();
 };
 
 

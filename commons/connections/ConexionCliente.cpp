@@ -33,17 +33,18 @@ void ConexionCliente::cerrar() {
 }
 
 // !!!!!
-bool ConexionCliente::recibirEstadoLogin() {
-    bool esCorrecta = false;
+struct EstadoLogin ConexionCliente::recibirEstadoLogin() {
+	uint32_t nroJugador = false;
 
     l->debug("Cliente por recibir mensaje");
-    if (recibirData<bool>(&server_socket, &esCorrecta) < 0) {
+    if (recibirData<uint32_t>(&server_socket, &nroJugador) < 0) {
         perror("Receive Data Error");
         //exit(1);
     }
 
-    l->debug("Cliente contrasenia correcta: " + std::to_string(esCorrecta));
-    return esCorrecta;
+    l->debug("Cliente contrasenia correcta: " + std::to_string(nroJugador));
+	struct EstadoLogin estadoLogin = { (int) nroJugador };
+    return estadoLogin;
 }
 
 void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {

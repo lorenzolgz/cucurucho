@@ -44,28 +44,29 @@ void Titulo::leerInput(std::string input) {
 }
 
 
-int Titulo::validarLogin(ConexionCliente *pCliente) {
+struct EstadoLogin Titulo::validarLogin(ConexionCliente *conexionCliente) {
     Login credenciales;
     strcpy(credenciales.usuario, username.c_str());
     strcpy(credenciales.contrasenia, password.c_str());
-    pCliente->enviarDatosDeLogin(&credenciales);
-    int nroJugador = pCliente->recibirEstadoLogin();
-    l->info("EstadoLogin enviado por el servidor: " + std::to_string(nroJugador));
-    return nroJugador;
+    conexionCliente->enviarDatosDeLogin(&credenciales);
+	struct EstadoLogin estadoLogin = conexionCliente->recibirEstadoLogin();
+    l->info("EstadoLogin enviado por el conexionServidor: " + std::to_string(estadoLogin.nroJugador));
+    return estadoLogin;
 }
 
 
 // Devuelve un booleano indicando si el cliente debe reconectarse al conexionServidor
-int Titulo::tick(std::string input, ConexionCliente *pCliente) {
+struct EstadoLogin Titulo::tick(std::string input, ConexionCliente *conexionCliente) {
     tituloVista->render(estado, username, password, seleccionadoUsuario);
     leerInput(input);
-    int nroJugador = LOGIN_PENDIENTE;
+	struct EstadoLogin estadoLogin;
+    estadoLogin.nroJugador = LOGIN_PENDIENTE;
 
     if (estado == TITULO_VALIDAR) {
-    	nroJugador = validarLogin(pCliente);
-        if (!nroJugador) {
+		estadoLogin = validarLogin(conexionCliente);
+        if (!estadoLogin.nroJugador) {
             estado = TITULO_ERROR_AUTENTICACION;
-			nroJugador = LOGIN_FALLO;
+			estadoLogin.nroJugador = LOGIN_FALLO;
         } else {
             contador = 0;
             estado = TITULO_ACEPTADO;
@@ -73,7 +74,7 @@ int Titulo::tick(std::string input, ConexionCliente *pCliente) {
     }
     if (activada) contador++;
 
-    return nroJugador;
+    return estadoLogin;
 }
 
 bool Titulo::estaActivada(bool enter) {

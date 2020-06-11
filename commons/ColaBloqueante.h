@@ -16,12 +16,23 @@ public:
 		d_queue.push_front(value);
 		this->d_condition.notify_all();
 	}
-	T pop() {
+	T pop(int cant = -1) {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		this->d_condition.wait(lock, [=] { return !this->d_queue.empty(); });
-		T rc(std::move(this->d_queue.back()));
-		this->d_queue.pop_back();
-		return rc;
+
+		if (cant == -1) {
+			T rc(std::move(this->d_queue.back()));
+			this->d_queue.pop_back();
+			return rc;
+		} else {
+			while (true) {
+				T rc(std::move(this->d_queue.back()));
+				this->d_queue.pop_back();
+				if (d_queue.size() <= cant) {
+					return rc;
+				}
+			}
+		}
 	}
 
 	bool empty() {

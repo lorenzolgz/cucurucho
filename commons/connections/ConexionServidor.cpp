@@ -14,9 +14,9 @@ void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
 	return enviarData2(client_socket, mensaje);
 }
 
-void ConexionServidor::enviarEstadoLogin(int nroJugador) {
-	bool nroJugadorNormalizado = nroJugador;
-	if (enviarData<bool>(&client_socket, &nroJugadorNormalizado) < 0) {
+void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
+	uint32_t nroJugadorNormalizado = estadoLogin.nroJugador;
+	if (enviarData<uint32_t>(&client_socket, &nroJugadorNormalizado) < 0) {
 		perror("Send Data Error");
 		exit(1);
 	}

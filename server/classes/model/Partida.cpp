@@ -21,9 +21,9 @@ Partida::Partida(Configuracion* config) {
 
 void Partida::tick(struct Comando comandos[]) {
 
-
 	for (int i = 0; i < jugadores.size(); i++) {
 		struct Comando comando = comandos[i];
+
 		jugadores.at(i)->calcularVectorVelocidad(comando.arriba,
 												 comando.abajo,
 												 comando.izquierda,

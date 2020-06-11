@@ -18,7 +18,7 @@ public:
 
 	void enviarComando(struct Comando* comando);
 
-    bool recibirEstadoLogin();
+	struct EstadoLogin recibirEstadoLogin();
 
     void enviarDatosDeLogin(Login *logueo);
 

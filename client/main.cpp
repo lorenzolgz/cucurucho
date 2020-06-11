@@ -24,7 +24,6 @@ void configurar(std::string nivelLog) {
     l->info("Ancho pantalla: " + std::to_string(PANTALLA_ANCHO));
     l->info("Escala pantalla: " + std::to_string(1));
     l->info("Nivel de Log: " + nivelLog);
-
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {

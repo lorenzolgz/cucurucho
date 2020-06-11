@@ -58,11 +58,11 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	while (conexiones.size() < config->getCantidadJugadores()) {
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-		ControladorDeSesiones c = ControladorDeSesiones(conexionServidor);
-        if (!c.iniciarSesion()) {//si entró un usuario no registrado
+		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones.size()+1);
+        if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
             continue;
         } else {
-            c.controlarQueNoIngreseUsuarioYaEnJuego(jugadoresConectados);
+            controladorDeSesiones->controlarQueNoIngreseUsuarioYaEnJuego(jugadoresConectados);
         }
 		conexiones.push_back(conexionServidor);
 		l->info("Usuario " + std::to_string(jugadoresConectados.size()) + " conectado");

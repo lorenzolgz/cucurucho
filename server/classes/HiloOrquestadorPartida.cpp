@@ -15,26 +15,38 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 
 }
 
-int receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
-	int contadorColasReceptoras = 0;
+bool receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
+	// Esta variable se necesita porque el servidor va mas rapido que los clientes, entonces cuando no hay actividad, que siga de largo.
+	bool seRecibioComando = false;
+
+	hilosConexionesServidores->reverse();
+
+	// Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		auto* colaReceptora = hiloConexionServidor->colaReceptora;
-		// TODO if
-		if (colaReceptora->empty()) {
-			continue;
-		}
-		nlohmann::json mensajeJson = colaReceptora->pop();
+		// TODO controlar el tamnio de la cola receptora?
+		nlohmann::json mensajeJson;
+		// Notar que esto es bloqueante si la cola esta vacia! Se queda esperando a que deje de estarlo.
+		mensajeJson = colaReceptora->pop();
+
 		if (mensajeJson["_t"] == COMANDO) {
+			seRecibioComando = true;
 			struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-			// TODO muuy turbina esto, solucionar mandando nro de cliente, despues de hacer la autenticacion!!!!
-			comandos[contadorColasReceptoras] = comando;
+			comandos[comando.nroJugador-1] = comando;
 		} else {
 			l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
 		}
-		contadorColasReceptoras++;
 	}
 
-	return contadorColasReceptoras;
+	return seRecibioComando;
+
+	// !!!! Dejo esta linea aca porque es muy buena
+	/*
+		struct Comando comando = comandos[i];
+		if (comando.arriba || comando.abajo || comando.izquierda || comando.derecha) {
+			huboMovimientos = true;
+			l->error("!!!!! " + std::to_string(comando.nroJugador) + " | " + std::to_string(comando.arriba) + " - " + std::to_string(comando.abajo) + " - " + std::to_string(comando.izquierda) + " - " + std::to_string(comando.derecha));
+			*/
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
@@ -68,7 +80,7 @@ std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<Conex
 }
 
 void HiloOrquestadorPartida::run() {
-	l->info("Comenzando a correr HiloOrquestadorPartida");
+	l->info("Comenzando a correr HiloOrquestadorPartida con " + std::to_string(conexiones->size()) + " jugadores.");
 	bool quit = false;
 	struct Comando comandos[conexiones->size()];
 	struct InformacionNivel informacionNivel;
@@ -84,6 +96,10 @@ void HiloOrquestadorPartida::run() {
 	int nuevoNivel = 1;
 
 	std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(conexiones);
+	for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+		struct Comando comando = comandos[i];
+		comando = {0, 0, 0, 0, 0};
+	}
 
 	//keep communicating with client
 	try {
@@ -92,15 +108,14 @@ void HiloOrquestadorPartida::run() {
 			// TODO
 			// WIP. Para controlar la cantidad de ticks.
 			t2 = clock();
-			if ((t2 - t1) > 50) {
+			if ((t2 - t1) > 1000 * 1000 / 60 / 2) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
 				t1 = clock();
 			} else {
 				continue;
 			}
 
 			// Receive data (command)
-			int receipts = receiveData(hilosConexionesServidores, comandos);
-			if (receipts == 0) continue; // TODO hardcodeado a un jugador
+			if (!receiveData(hilosConexionesServidores, comandos)) continue;
 			//--------------------
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);
