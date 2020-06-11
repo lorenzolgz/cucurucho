@@ -50,7 +50,7 @@ int Titulo::validarLogin(ConexionCliente *pCliente) {
     strcpy(credenciales.contrasenia, password.c_str());
     pCliente->enviarDatosDeLogin(&credenciales);
     int nroJugador = pCliente->recibirEstadoLogin();
-    l->error("!!!! login: " + std::to_string(nroJugador));
+    l->info("EstadoLogin enviado por el servidor: " + std::to_string(nroJugador));
     return nroJugador;
 }
 

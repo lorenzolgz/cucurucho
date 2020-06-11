@@ -53,18 +53,19 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	aceptadorConexiones->escuchar();
 
 	std::list<ConexionServidor*> conexiones;
-	int jugadoresConectados = 0;
+    map<string, bool> jugadoresConectados;
 
 	while (conexiones.size() < config->getCantidadJugadores()) {
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
 		ControladorDeSesiones c = ControladorDeSesiones(conexionServidor);
-        if (!c.iniciarSesion()) {
+        if (!c.iniciarSesion()) {//si entró un usuario no registrado
             continue;
+        } else {
+            c.controlarQueNoIngreseUsuarioYaEnJuego(jugadoresConectados);
         }
 		conexiones.push_back(conexionServidor);
-		jugadoresConectados++;
-		l->info("Usuario " + std::to_string(jugadoresConectados) + "conectado");
+		l->info("Usuario " + std::to_string(jugadoresConectados.size()) + " conectado");
 	}
 	l->info("Todos los usuarios fueron aceptados");
 

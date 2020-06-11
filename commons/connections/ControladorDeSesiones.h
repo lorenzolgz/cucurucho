@@ -17,13 +17,16 @@ class ControladorDeSesiones {
 public:
     ControladorDeSesiones(ConexionServidor* conexionServidor);
     bool iniciarSesion();
-
     void setServidor(ConexionServidor *servidor);
+    string usuarioConectado;
+    string userConectado();
+    void controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados);
 
 private:
-    ConexionServidor* conexionServidor;
+    ConexionServidor* servidor;
     bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
     struct Login pedirCredenciales();
+    Json::Value jsonUsuarios, contrasenias;
 };
 
 

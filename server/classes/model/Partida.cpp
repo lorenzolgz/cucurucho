@@ -10,6 +10,7 @@ Partida::Partida(Configuracion* config) {
 	int altoPantalla = config->getAltoPantalla();
 	Partida::nuevoNivel = 1;
 
+    //"jugadores" posee los jugadores que estarán en juego
 	for (int i = 0; i < config->getCantidadJugadores(); i++) {
 		Partida::jugadores.insert({i, new Jugador(anchoPantalla / 8 * (i + 1), altoPantalla / 2)});
 	}
