@@ -77,3 +77,23 @@ string ControladorDeSesiones::userConectado(){
     return this->usuarioConectado;
 }
 
+void ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados){
+    string usuario;
+    usuario = this->usuarioConectado;
+    map<string, bool>::iterator i = jugadoresConectados.find(usuario);
+
+    if(i != jugadoresConectados.end()){ //si existe ese usuario en el map
+        if(jugadoresConectados[usuario]){//si ese usuario está jugando
+            //TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
+            cout<<"Ya se encuentra en juego alguien con ese nombre de usuario"<<endl;
+            this->servidor->cerrar();
+        } else if(!jugadoresConectados[usuario]){ //TODO si ese usuario se conectó en esta partida pero se fue, ponerle false
+            cout<<"Te desconectaste y volviste"<<endl;
+            jugadoresConectados[usuario] = true; //ver reconexión
+        }
+    } else { //si no se conectó en esta partida alguien con ese nombre de usuario
+        cout<<"No se encuentra en juego todavía alguien con ese nombre de usuario"<<endl;
+        jugadoresConectados[usuario] = true;
+    }
+}
+

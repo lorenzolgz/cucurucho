@@ -20,6 +20,7 @@ public:
     void setServidor(ConexionServidor *servidor);
     string usuarioConectado;
     string userConectado();
+    void controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados);
 
 private:
     ConexionServidor* servidor;
