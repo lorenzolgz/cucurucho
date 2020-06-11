@@ -81,9 +81,9 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	for (auto* conexion : conexiones) {
 		conexion->cerrar();
 	}
-	printf("Client socket number closed\n");
+	l->info("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
-	printf("Server socket number closed\n");
+	l->info("Server socket number closed\n");
 
 	return 0;
 }

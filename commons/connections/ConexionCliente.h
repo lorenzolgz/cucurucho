@@ -16,13 +16,9 @@ public:
 
     nlohmann::json recibirMensaje();
 
-	struct EstadoTick recibirEstadoTick();
-
-	struct InformacionNivel recibirInformacionNivel();
-
 	void enviarComando(struct Comando* comando);
 
-    bool contraseniaCorrecta();
+    bool recibirEstadoLogin();
 
     void enviarDatosDeLogin(Login *logueo);
 

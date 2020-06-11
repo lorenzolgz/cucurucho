@@ -32,15 +32,16 @@ public:
 
 private:
     ConexionCliente* conexionCliente;
+    int nroJugador;
 
-    ConexionCliente *conexionLoop(ConexionCliente *conexionCliente, const Uint8 *currentKeyStates);
+    ConexionCliente *conexionLoop(const Uint8 *currentKeyStates);
 
-    bool pantallaInicioLoop(IniciadorComunicacion *iniciadorComunicacion, ConexionCliente **conexionCliente,
+    bool pantallaInicioLoop(IniciadorComunicacion *iniciadorComunicacion,
                             Titulo *pantallaPrincipal, std::string inputText, const Uint8 *currentKeyStates);
 
     bool eventLoop(std::string *inputText);
 
-    bool renderLoop(ManagerJuego *manager, ConexionCliente *conexionCliente);
+    bool renderLoop(ManagerJuego *manager);
 };
 
 

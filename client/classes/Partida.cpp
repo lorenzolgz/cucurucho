@@ -15,7 +15,7 @@ void Partida::play() {
     char* ip_address = (char*) "127.0.0.1";
     int port = 3040;
     IniciadorComunicacion* iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    Partida::conexionCliente = iniciadorComunicacion->conectar();
+    this->conexionCliente = iniciadorComunicacion->conectar();
     auto* colaComandos = new ColaBloqueante<nlohmann::json>();
     HiloConexionCliente* hiloConexionCliente = nullptr;
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
@@ -28,11 +28,11 @@ void Partida::play() {
         quit = quit || eventLoop(&inputText);
 
         // TODO: Separar mejor el logueo conexion del logueo vista
-        if (pantallaInicioLoop(iniciadorComunicacion, &conexionCliente, pantallaPrincipal, inputText, currentKeyStates)) {
+        if (pantallaInicioLoop(iniciadorComunicacion, pantallaPrincipal, inputText, currentKeyStates)) {
             continue;
         }
 
-        // !!!! TODO javi
+        // TODO patch para race conditions
         if (hiloConexionCliente == nullptr) {
             hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaComandos);
             hiloConexionCliente->start();
@@ -48,11 +48,11 @@ void Partida::play() {
             }
         }
 
-        if (!conexionLoop(conexionCliente, currentKeyStates)) {
+        if (!conexionLoop(currentKeyStates)) {
             continue;
         }
 
-        quit = quit || renderLoop(manager,conexionCliente);
+        quit = quit || renderLoop(manager);
     }
 
 }
@@ -72,18 +72,24 @@ bool Partida::eventLoop(std::string* inputText) {
 
 // Muestra la pantalla de logueo
 // En el caso que se haya rechazado la conexion, se vuelve a establecer
-bool Partida::pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion, ConexionCliente** conexionCliente,
+bool Partida::pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion,
                         Titulo *pantallaPrincipal, std::string inputText, const Uint8 *currentKeyStates) {
 
     // El usuario presiona ENTER o INTRO o ESPACIO
     bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
-    if (!pantallaPrincipal->isActivada(onStart)) {
-        if (pantallaPrincipal->tick(inputText, *conexionCliente)) {
-            (*conexionCliente)->cerrar();
-            *conexionCliente = iniciadorComunicacion->conectar();
-        }
-        SDL_RenderPresent(GraphicRenderer::getInstance());
+    if (!pantallaPrincipal->estaActivada(onStart)) {
+    	int estadoLogin = pantallaPrincipal->tick(inputText, conexionCliente);
+		if (estadoLogin == LOGIN_FALLO) {
+			this->conexionCliente->cerrar();
+			this->conexionCliente = iniciadorComunicacion->conectar();
+		} else if (estadoLogin == LOGIN_PENDIENTE) {
+
+		} else {
+			this->nroJugador = estadoLogin;
+		}
+
+		SDL_RenderPresent(GraphicRenderer::getInstance());
         return true;
     }
 
@@ -91,7 +97,7 @@ bool Partida::pantallaInicioLoop(IniciadorComunicacion* iniciadorComunicacion, C
 }
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
-ConexionCliente* Partida::conexionLoop(ConexionCliente* conexionCliente, const Uint8 *currentKeyStates) {
+ConexionCliente* Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     struct Comando client_command = {false, false, false, false};
 
@@ -108,7 +114,7 @@ ConexionCliente* Partida::conexionLoop(ConexionCliente* conexionCliente, const U
 
 // Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)
 // TODO: Hardcodeadisimo. Cambiar.
-bool Partida::renderLoop(ManagerJuego* manager, ConexionCliente* conexionCliente) {
+bool Partida::renderLoop(ManagerJuego* manager) {
 
     bool quit = false;
 

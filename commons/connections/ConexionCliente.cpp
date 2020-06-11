@@ -6,38 +6,8 @@ ConexionCliente::ConexionCliente(int client_socket) {
 	ConexionCliente::server_socket = client_socket;
 }
 
-
 nlohmann::json ConexionCliente::recibirMensaje() {
      return recibirData2(server_socket);
-
-}
-
-struct EstadoTick ConexionCliente::recibirEstadoTick() {
-	struct EstadoTick estadoTick;
-
-	l->debug("Cliente por recibir mensaje");
-	if (recibirData<struct EstadoTick>(&server_socket, &estadoTick) < 0) {
-		perror("Receive Data Error");
-		exit(1);
-	}
-
-	l->debug("Cliente recibio estadoTick.estadoJugador.posicionX: " + std::to_string(estadoTick.estadosJugadores[0].posicionX));
-
-	return estadoTick;
-}
-
-struct InformacionNivel ConexionCliente::recibirInformacionNivel() {
-	struct InformacionNivel informacionNivel;
-
-	l->debug("Cliente por recibir mensaje");
-	if (recibirData<struct InformacionNivel>(&server_socket, &informacionNivel) < 0) {
-		perror("Receive Data Error");
-		exit(1);
-	}
-
-	l->debug("Cliente recibio informacionNivel: ");
-
-	return informacionNivel;
 }
 
 void ConexionCliente::enviarComando(struct Comando* comando) {
@@ -46,13 +16,14 @@ void ConexionCliente::enviarComando(struct Comando* comando) {
 
 	nlohmann::json mensajeJson = {
 			{"_t", COMANDO},
-			{"arriba",    comando->arriba},
-			{"abajo",     comando->abajo},
-			{"izquierda", comando->izquierda},
-			{"derecha",   comando->derecha}
+			{"nroJugador", comando->nroJugador},
+			{"arriba",     comando->arriba},
+			{"abajo",      comando->abajo},
+			{"izquierda",  comando->izquierda},
+			{"derecha",    comando->derecha}
 	};
 
-	//l->error("!!!! enviarComando " + mensajeJson.dump());
+	l->debug("enviarComando " + mensajeJson.dump());
 
 	enviarData2(server_socket, mensajeJson);
 }
@@ -61,7 +32,8 @@ void ConexionCliente::cerrar() {
 	close(server_socket);
 }
 
-bool ConexionCliente::contraseniaCorrecta() {
+// !!!!!
+bool ConexionCliente::recibirEstadoLogin() {
     bool esCorrecta = false;
 
     l->debug("Cliente por recibir mensaje");
@@ -83,5 +55,4 @@ void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {
     };
 
     enviarData2(server_socket, mensajeJson);
-
 }

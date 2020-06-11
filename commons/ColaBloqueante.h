@@ -23,8 +23,7 @@ public:
 		this->d_queue.pop_back();
 		return rc;
 	}
-	// TODO esto hay que hacerlo bien, por ahora no se usa so fuck it.
-	// or not !!!!
+
 	bool empty() {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		return d_queue.empty();

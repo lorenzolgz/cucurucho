@@ -25,7 +25,7 @@ int receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, str
 		}
 		nlohmann::json mensajeJson = colaReceptora->pop();
 		if (mensajeJson["_t"] == COMANDO) {
-			struct Comando comando = {mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+			struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
 			// TODO muuy turbina esto, solucionar mandando nro de cliente, despues de hacer la autenticacion!!!!
 			comandos[contadorColasReceptoras] = comando;
 		} else {
@@ -93,34 +93,33 @@ void HiloOrquestadorPartida::run() {
 			// WIP. Para controlar la cantidad de ticks.
 			t2 = clock();
 			if ((t2 - t1) > 50) {
-				//DO the stuff!
-				// printf("!!!! %d\n", t2-t1);i
 				t1 = clock();
 			} else {
 				continue;
 			}
+
 			// Receive data (command)
 			int receipts = receiveData(hilosConexionesServidores, comandos);
 			if (receipts == 0) continue; // TODO hardcodeado a un jugador
 			//--------------------
-//			l->error("!!!! yyy 2");
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);
 			//--------------------
-//			l->error("!!!! yyy 3");
 			// Send data (view)
 			sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
-//			l->error("!!!! yyy 4");
 		}
 	}
 	catch (const std::exception& exc) {
 		l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
+		// TODO stoppear hilosConexionesServidores
 	}
 
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		hiloConexionServidor->join();
 	}
+
+	l->info("Terminando de correr HiloOrquestadorPartida");
 }
 
 void processData(Partida* partida, struct Comando comandos[], struct EstadoTick* estadoTick, struct InformacionNivel* informacionNivel) {

@@ -50,12 +50,14 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
     if(usuarioRegistrado){
         contraseniaCorrecta = (contrasenias[usuario] == contrasenia);
         while(!contraseniaCorrecta){
-            //TODO esto funciona pero para una única vez
+            // TODO esto funciona pero para una única vez
+            // !!!!
             this->conexionServidor->enviarEstadoLogin(contraseniaCorrecta);
             nuevaContrasenia = pedirCredenciales().contrasenia;
             contraseniaCorrecta = (contrasenias[usuario] == nuevaContrasenia);
         }
     }
+    // !!!!
     this->conexionServidor->enviarEstadoLogin(contraseniaCorrecta);
 
     return usuarioRegistrado;

@@ -15,7 +15,7 @@ public:
 
 	nlohmann::json recibirMensaje();
 	void enviarMensaje(nlohmann::json mensaje);
-	void enviarEstadoLogin(bool esCorrecta);
+	void enviarEstadoLogin(int nroJugador);
 	void cerrar();
 
 private:

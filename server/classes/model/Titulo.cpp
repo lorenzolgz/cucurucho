@@ -17,7 +17,7 @@ void Titulo::tick() {
     if (activada) contador++;
 }
 
-bool Titulo::isActivada(bool enter) {
+bool Titulo::nroJugador(bool enter) {
     if (enter && !activada) {
         activada = true;
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");

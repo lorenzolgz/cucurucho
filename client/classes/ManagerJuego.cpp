@@ -8,7 +8,7 @@
 #include "../../commons/utils/Constantes.h"
 
 ManagerJuego::ManagerJuego() {
-    ManagerJuego::informacionNivel = {0}; // !!!! TODO javi
+    ManagerJuego::informacionNivel = {0}; // TODO patch para race conditions
     ManagerJuego::managerVista = new ManagerVista({}, 0, PANTALLA_ANCHO, PANTALLA_ALTO);
 }
 

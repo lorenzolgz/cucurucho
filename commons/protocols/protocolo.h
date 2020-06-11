@@ -12,7 +12,12 @@
 #define ESTADO_TICK 1
 #define COMANDO 2
 
+// Codigos Estado Login
+#define LOGIN_FALLO -1
+#define LOGIN_PENDIENTE 0
+
 struct Comando {
+	int nroJugador;
 	int arriba;
 	int abajo;
 	int izquierda;

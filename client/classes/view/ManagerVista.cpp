@@ -31,7 +31,7 @@ void ManagerVista::render(EstadoTick estadoTick) {
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 	if (campoVista == nullptr) {
         return;
-	} // !!!! TODO javi
+	} // TODO patch para race conditions
 	campoVista->render();
 
     renderEnemigos(estadoTick.estadosEnemigos);

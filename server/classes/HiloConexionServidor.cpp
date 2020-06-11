@@ -9,26 +9,22 @@ void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
 
 	nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-	l->error("!!!! recHiloConexionServidor " + mensajeRecibido.dump());
+	l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
 	colaReceptora->push(mensajeRecibido);
 
 	while (true) {
+		l->debug("whileHiloConexionServidor");
 
 		nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-		//l->error("!!!! recHiloConexionServidor " + mensajeRecibido.dump());
+		l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
 		colaReceptora->push(mensajeRecibido);
 
-		//l->error("!!!! whileHiloConexionServidor");
 		if (!colaEnviadora->empty()) {
 			nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-		//	l->error("!!!! envHiloConexionServidor " + mensajeAEnviar.dump());
+			l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
 			conexionServidor->enviarMensaje(mensajeAEnviar);
 
-		} else {
-			l->error("!!!! colaVacia");
-			continue;
 		}
-
 	}
 }
 
