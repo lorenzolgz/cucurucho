@@ -20,7 +20,7 @@ Titulo::Titulo(int ancho, int alto) {
 }
 
 
-void Titulo::leerInput(std::string input) {
+void Titulo::leerInput(std::string input, bool *validarLogin) {
     std::string* campoActivo = &username;
     if (!seleccionadoUsuario) {
         campoActivo = &password;
@@ -32,10 +32,10 @@ void Titulo::leerInput(std::string input) {
         } else if (!campoActivo->empty() && (c == 8 || c == 127)) {
             campoActivo->pop_back();
         } else if (c == 9 || c == 10 || (c == 11 && contador > 15)) {
-            if (!seleccionadoUsuario && c == 11) estado = TITULO_VALIDAR;
+            if (!seleccionadoUsuario && c == 11) *validarLogin = true;
             seleccionadoUsuario = !seleccionadoUsuario;
         } else if (c == 12) {   // Ctrl + D: Autoautenticar!
-            estado = TITULO_VALIDAR;
+            *validarLogin = true;
 			username = "rodri";
             password = "13141516";
             inicioTimeout = -30;
@@ -44,45 +44,25 @@ void Titulo::leerInput(std::string input) {
 }
 
 
-struct EstadoLogin Titulo::validarLogin(ConexionCliente *conexionCliente) {
-    Login credenciales;
-    strcpy(credenciales.usuario, username.c_str());
-    strcpy(credenciales.contrasenia, password.c_str());
-    conexionCliente->enviarDatosDeLogin(&credenciales);
-	struct EstadoLogin estadoLogin = conexionCliente->recibirEstadoLogin();
-    l->info("EstadoLogin enviado por el conexionServidor: " + std::to_string(estadoLogin.nroJugador));
-    return estadoLogin;
+void Titulo::tick(std::string input, int estadoLogin, bool *validarLogin) {
+    tituloVista->render(estado, estadoLogin, username, password, seleccionadoUsuario);
+    leerInput(input, validarLogin);
+
+    if (estado == TITULO_INGRESAR) contador++;
 }
 
-
-// Devuelve un booleano indicando si el cliente debe reconectarse al conexionServidor
-struct EstadoLogin Titulo::tick(std::string input, ConexionCliente *conexionCliente) {
-    tituloVista->render(estado, username, password, seleccionadoUsuario);
-    leerInput(input);
-	struct EstadoLogin estadoLogin;
-    estadoLogin.nroJugador = LOGIN_PENDIENTE;
-
-    if (estado == TITULO_VALIDAR) {
-		estadoLogin = validarLogin(conexionCliente);
-        if (!estadoLogin.nroJugador) {
-            estado = TITULO_ERROR_AUTENTICACION;
-			estadoLogin.nroJugador = LOGIN_FALLO;
-        } else {
-            contador = 0;
-            estado = TITULO_ACEPTADO;
-        }
-    }
-    if (activada) contador++;
-
-    return estadoLogin;
-}
-
-bool Titulo::estaActivada(bool enter) {
+bool Titulo::estaActivada(bool enter, int estadoLogin) {
     if (enter && !activada) {
         activada = true;
         estado = TITULO_INGRESAR;
         seleccionadoUsuario = true;
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");
     }
-    return estado == TITULO_ACEPTADO && contador > inicioTimeout;
+    return estadoLogin > 0 && contador > inicioTimeout;
+}
+
+
+void Titulo::getCredenciales(struct Login* credenciales) {
+    strcpy(credenciales->usuario, username.c_str());
+    strcpy(credenciales->contrasenia, password.c_str());
 }

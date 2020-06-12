@@ -16,7 +16,7 @@ public:
 
     void estadoNivel(nlohmann::json instruccion);
 
-    void setInformacionNivel();
+    void render();
 
     bool terminoJuego();
 

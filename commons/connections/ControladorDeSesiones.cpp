@@ -13,13 +13,13 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor,
 	this->nroJugador = nroJugador;
 }
 
-bool ControladorDeSesiones::iniciarSesion() {
+bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados) {
 
 	bool ok = true;
 
 	//pedirle un usuario y contraseña al cliente
 	struct Login login;
-	login = pedirCredenciales();
+	pedirCredenciales(&login);
 
 	char *usuario;
 	usuario = login.usuario;
@@ -27,52 +27,53 @@ bool ControladorDeSesiones::iniciarSesion() {
 	contrasenia = login.contrasenia;
 
 	//verifico que el usuario esté registrado
-	if (!usuarioEstaRegistrado(usuario, contrasenia)) {
-		//TODO se le informa al cliente que no se le permitirá jugar
+	if (!usuarioEstaRegistrado(usuario, contrasenia) || !controlarQueNoIngreseUsuarioYaEnJuego(usuario, jugadoresConectados)) {
+        this->conexionServidor->enviarEstadoLogin({LOGIN_FALLO});
 		this->conexionServidor->cerrar();
 		ok = false;
 	} else {
-		this->usuarioConectado = (string) usuario;
+        this->conexionServidor->enviarEstadoLogin({nroJugador});
+		this->usuarioConectado = std::string(usuario);
 	}
 
 	return ok;
 }
 
 bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia) {
-	bool usuarioRegistrado;
-	bool contraseniaCorrecta;
-	char *nuevaContrasenia;
-
 	// Chequeo si el usuario está registrado
-	usuarioRegistrado = !(this->contrasenias[usuario].empty());
-
-	// Si está registrado, verifico la contraseña
-	if (usuarioRegistrado) {
-		contraseniaCorrecta = (this->contrasenias[usuario] == contrasenia);
-		while (!contraseniaCorrecta) {
-			// TODO esto funciona pero para una única vez
-			struct EstadoLogin estadoLogin;
-			estadoLogin.nroJugador = nroJugador;
-			this->conexionServidor->enviarEstadoLogin(estadoLogin);
-			nuevaContrasenia = pedirCredenciales().contrasenia;
-			contraseniaCorrecta = (this->contrasenias[usuario] == nuevaContrasenia);
-		}
+	if (this->contrasenias[usuario].empty()) {
+	    return false;
+	}
+	// Chequeo si la contrasenia es correcta
+	if (strcmp(this->contrasenias[usuario].asCString(), contrasenia) != 0) {
+	    return false;
 	}
 
-	struct EstadoLogin estadoLogin;
-	estadoLogin.nroJugador = nroJugador;
-	this->conexionServidor->enviarEstadoLogin(estadoLogin);
+	return true;
 
-	return usuarioRegistrado;
+	// Si está registrado, verifico la contraseña
+//	if (usuarioRegistrado) {
+//		contraseniaCorrecta = strcmp(this->contrasenias[usuario].asCString(), contrasenia) == 0;
+//		while (!contraseniaCorrecta) {
+//			// TODO esto funciona pero para una única vez
+//			struct EstadoLogin estadoLogin;
+//			estadoLogin.nroJugador = nroJugador;
+//			this->conexionServidor->enviarEstadoLogin(estadoLogin);
+//			pedirCredenciales(login);
+//			contraseniaCorrecta = strcmp(this->contrasenias[usuario].asCString(), login.contrasenia);
+//		}
+//	}
+//
+//	struct EstadoLogin estadoLogin;
+//	estadoLogin.nroJugador = nroJugador;
+//	this->conexionServidor->enviarEstadoLogin(estadoLogin);
+
 }
 
-struct Login ControladorDeSesiones::pedirCredenciales(){
+void ControladorDeSesiones::pedirCredenciales(Login *login){
     nlohmann::json mensajeJson = this->conexionServidor->recibirMensaje();
-    struct Login login;
-    strcpy(login.usuario, std::string(mensajeJson["usuario"]).c_str());
-    strcpy(login.contrasenia, std::string(mensajeJson["contrasenia"]).c_str());
-
-    return login;
+    strcpy(login->usuario, std::string(mensajeJson["usuario"]).c_str());
+    strcpy(login->contrasenia, std::string(mensajeJson["contrasenia"]).c_str());
 }
 
 void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
@@ -83,16 +84,12 @@ string ControladorDeSesiones::userConectado(){
     return this->usuarioConectado;
 }
 
-void ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados) {
-	string usuario;
-	usuario = this->usuarioConectado;
-	map<string, bool>::iterator i = jugadoresConectados.find(usuario);
-
-	if (i != jugadoresConectados.end()) { //si existe ese usuario en el map
+bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario, map<string, bool> &jugadoresConectados) {
+	if (jugadoresConectados.count(usuario) == 1) { //si existe ese usuario en el map
 		if (jugadoresConectados[usuario]) {//si ese usuario está jugando
 			//TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
 			cout << "Ya se encuentra en juego alguien con ese nombre de usuario" << endl;
-			this->conexionServidor->cerrar();
+			return false;
 		} else if (!jugadoresConectados[usuario]) { //TODO si ese usuario se conectó en esta partida pero se fue, ponerle false
 			cout << "Te desconectaste y volviste" << endl;
 			jugadoresConectados[usuario] = true; //ver reconexión
@@ -101,5 +98,6 @@ void ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(map<string, bo
 		cout << "No se encuentra en juego todavía alguien con ese nombre de usuario" << endl;
 		jugadoresConectados[usuario] = true;
 	}
+	return true;
 }
 

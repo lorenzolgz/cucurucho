@@ -53,7 +53,7 @@ void ManagerJuego::setInformacionNivel(nlohmann::json mensaje) {
     ManagerJuego::informacionNivel = info;
 }
 
-void ManagerJuego::setInformacionNivel(){
+void ManagerJuego::render(){
     managerVista->setInformacionNivel(reinterpret_cast<const InformacionNivel &>(informacionNivel));
     //Render texture to screen
     managerVista->render(reinterpret_cast<const EstadoTick &>(estadoTick));

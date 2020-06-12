@@ -40,6 +40,8 @@ int main(int argc, char *argv[]) {
 
     std::string archivoConfig = BACKUP_CONFIG;
     std::string nivelLog;
+    int port = 3040;
+    std::string dir_ip = "127.0.0.1";
 
     GestorSDL* gestorSDL = new GestorSDL();
     Partida* partida = new Partida();
@@ -59,12 +61,31 @@ int main(int argc, char *argv[]) {
 			if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
 			archivoConfig = std::string(argv[i + 1]);
 		} else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
-        	std::string help = "Gley Lancer en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
-        	std::string opciones = "Opciones:\n\t-l\tSetea el nivel de log\n\t-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)";
-			std::cout << help << std::endl;
+            std::string help = "Gley Lancer (cliente) en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
+            std::string opciones = std::string("Opciones:\n\t")
+                                   + "-l\tSetea el nivel de log\n\t"
+                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)"
+                                   + "-h\tEspecifica la direccion IP a la cual conectarse"
+                                   + "-p\tEspecifica el puerto a conectarse";
+            std::cout << help << std::endl;
 			std::cout << opciones << std::endl;
 			return 0;
-		}
+		} else if (strcmp(argv[i], "-p") == 0) {
+            if (!validarParametroSimple(argc, argv, "-p", i)) {
+                return -1;
+            }
+            int new_port = atoi(argv[i + 1]);
+            if (new_port < 1024 || new_port > 49151) {
+                std::cout << "Numero de puerto invalido" << std::endl;
+                return -1;
+            }
+            port = new_port;
+        } else if (strcmp(argv[i], "-h") == 0) {
+            if (!validarParametroSimple(argc, argv, "-h", i)) {
+                return -1;
+            }
+            dir_ip = std::string(argv[i + 1]);
+        }
 	}
 
     l = new Log("client");
@@ -74,7 +95,7 @@ int main(int argc, char *argv[]) {
 	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;
 
 	// Comienza el juego con la configuracion
-    partida->play();
+    partida->play(dir_ip.c_str(), port);
 
     partida->cerrar();
     gestorSDL->close();

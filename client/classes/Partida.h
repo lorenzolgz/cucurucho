@@ -26,22 +26,29 @@ class Partida {
 public:
     Partida();
 
-    void play();
+    void play(const char *ip_address, int port);
 
     void cerrar();
 
 private:
     ConexionCliente* conexionCliente;
-    int nroJugador;
+    Titulo* pantallaPrincipal;
+    ManagerJuego* manager;
+    IniciadorComunicacion* iniciadorComunicacion;
+    HiloConexionCliente* hiloConexionCliente;
+    ColaBloqueante<nlohmann::json>* colaComandos;
+    struct EstadoLogin estadoLogin;
+    bool validarLogin;
 
     ConexionCliente *conexionLoop(const Uint8 *currentKeyStates);
 
-    bool pantallaInicioLoop(IniciadorComunicacion *iniciadorComunicacion,
-                            Titulo *pantallaPrincipal, std::string inputText, const Uint8 *currentKeyStates);
+    bool pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
 
     bool eventLoop(std::string *inputText);
 
-    bool renderLoop(ManagerJuego *manager);
+    bool renderLoop();
+
+    void autenticarServidor();
 };
 
 

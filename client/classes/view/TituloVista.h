@@ -23,7 +23,7 @@ class TituloVista {
     std::set<TituloParticula*> particulas;
 public:
     TituloVista(int ancho, int alto);
-    void render(int estado, std::string username, std::string password, bool seleccionadoUsuario);
+    void render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario);
 
     void nuevaParticula();
 
@@ -37,7 +37,7 @@ public:
 
     void renderInput(std::string username, std::string password, bool seleccionadoUsuario);
 
-    void renderInfo(int estado);
+    void renderInfo(int estado, int i);
 };
 
 

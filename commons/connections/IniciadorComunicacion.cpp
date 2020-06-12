@@ -2,7 +2,7 @@
 #include "ConexionCliente.h"
 #include "../utils/Log.h"
 
-IniciadorComunicacion::IniciadorComunicacion(char* ip_address, int port) {
+IniciadorComunicacion::IniciadorComunicacion(const char* ip_address, int port) {
 	IniciadorComunicacion::ip_address = ip_address;
 	IniciadorComunicacion::port = port;
 }
@@ -27,7 +27,7 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 	//------------------------
 
 	// Prepare the sockaddr_in structure
-	server.sin_addr.s_addr = inet_addr((const char *) ip_address);
+	server.sin_addr.s_addr = inet_addr(ip_address);
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
 	//------------------------
@@ -40,7 +40,7 @@ ConexionCliente* IniciadorComunicacion::conectar() {
 	// The connect() system call connects the socket referred to by the file descriptor sockfd to the address specified by addr.
 	if (connect(client_socket, (struct sockaddr *) &server, sizeof(struct sockaddr_in)) < 0) {
 		perror("connect failed. Error");
-		exit(1);
+		return nullptr;
 	}
 
 	l->info("Connected");

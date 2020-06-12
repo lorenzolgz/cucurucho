@@ -16,11 +16,11 @@ using namespace std;
 class ControladorDeSesiones {
 public:
     ControladorDeSesiones(ConexionServidor* conexionServidor, int nroJugador);
-    bool iniciarSesion();
+    bool iniciarSesion(map<string, bool> &jugadoresConectados);
     void setServidor(ConexionServidor *servidor);
     string usuarioConectado;
     string userConectado();
-    void controlarQueNoIngreseUsuarioYaEnJuego(map<string, bool> &jugadoresConectados);
+    bool controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario, map<string, bool> &jugadoresConectados);
 
 private:
     ConexionServidor* conexionServidor;
@@ -28,7 +28,7 @@ private:
 	int nroJugador;
 
 	bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
-	struct Login pedirCredenciales();
+	void pedirCredenciales(Login *login);
 };
 
 

@@ -75,9 +75,6 @@ const Vector Jugador::getVelocidad() const {
     return velocidad;
 }
 
-int Jugador::getContador() const {
-}
-
 void Jugador::setPosicion(int x, int y) {
     Jugador::posicion = Vector(x, y);
 }

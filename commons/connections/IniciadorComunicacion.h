@@ -12,12 +12,12 @@
 
 class IniciadorComunicacion {
 public:
-	IniciadorComunicacion(char* ip_address, int port);
+	IniciadorComunicacion(const char* ip_address, int port);
 
 	ConexionCliente* conectar();
 
 private:
-	char* ip_address;
+	const char* ip_address;
 	int port;
 };
 

@@ -13,6 +13,7 @@
 #define COMANDO 2
 
 // Codigos Estado Login
+#define LOGIN_SIN_CONEXION -2
 #define LOGIN_FALLO -1
 #define LOGIN_PENDIENTE 0
 
