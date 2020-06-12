@@ -123,8 +123,8 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
     std::string passwordInput = "";
     for (int i = 0; i < password.length(); i++) passwordInput += "*";
 
-    TextoVista::eRender("usuario:", posicionUserLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
-    TextoVista::eRender("password:", posicionPassLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
+    TextoVista::eRender("USUARIO:", posicionUserLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
+    TextoVista::eRender("PASSWORD:", posicionPassLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
 
     TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
@@ -134,11 +134,11 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
     Vector posicion = Vector(ancho / 2, alto * 5 / 6);
     std::string texto = "";
     if (estadoLogin == LOGIN_FALLO) {
-        texto = "error de autenticacion";
+        texto = "ERROR DE AUTENTICACION";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
-        texto = "problema de conexion";
+        texto = "PROBLEMA DE CONEXION";
     } else if (estadoLogin > 0) {
-        texto = "inciando juego";
+        texto = "INICIANDO JUEGO";
     }
     TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
 }
