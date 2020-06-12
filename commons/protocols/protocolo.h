@@ -6,16 +6,28 @@
 #define MAX_FONDOS 15
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
+#define LARGO_USERNAME 30
+#define LARGO_PASSWORD 30
+
+// Parametros para controlar la cantidad maxima de elementos de
+// las colas del cliente y del servidor
+#define MAX_COLA_CLIENTE 1
+#define MAX_COLA_SERVIDOR 1
 
 // Tipos de mensajes
-#define INFORMACION_NIVEL 0
-#define ESTADO_TICK 1
-#define COMANDO 2
+enum {
+    INFORMACION_NIVEL,
+    ESTADO_TICK,
+    COMANDO,
+    ESTADO_LOGIN
+};
 
 // Codigos Estado Login
 #define LOGIN_SIN_CONEXION -2
 #define LOGIN_FALLO -1
 #define LOGIN_PENDIENTE 0
+#define LOGIN_ESPERAR 1
+#define LOGIN_COMENZAR 2
 
 struct Comando {
 	int nroJugador;
@@ -27,8 +39,8 @@ struct Comando {
 
 //para el logueo
 struct Login {
-    char usuario[30];
-    char contrasenia[50];
+    char usuario[LARGO_USERNAME];
+    char contrasenia[LARGO_PASSWORD];
 };
 
 struct EstadoHelper {
@@ -72,7 +84,12 @@ struct InformacionNivel {
 };
 
 struct EstadoLogin {
-	int nroJugador;
+    int nroJugador;
+    int estadoLogin;
+    char jugador1[LARGO_USERNAME];
+    char jugador2[LARGO_USERNAME];
+    char jugador3[LARGO_USERNAME];
+    char jugador4[LARGO_USERNAME];
 };
 
 

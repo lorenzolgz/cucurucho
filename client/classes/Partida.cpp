@@ -44,22 +44,18 @@ void Partida::play(const char* ip_address, int port) {
         }
 
         if (!colaComandos->empty()) {
-
-			// TODO no es mejor primero vaciar y despues imprimir?
-			nlohmann::json instruccion = colaComandos->pop();
-			manager->estadoNivel(instruccion);
-
 			// !!!!! reducir MAX_COLA
 			// colaComandos->pop(MAX_COLA);
-			while (colaComandos->size() > MAX_COLA){
+			while (colaComandos->size() > MAX_COLA_CLIENTE){
 				colaComandos->pop();
 				l->info("Se desencola debido a la alta cantidad de comandos en la cola");
 			}
+
+            nlohmann::json instruccion = colaComandos->pop();
+            manager->estadoNivel(instruccion);
         }
 
-        if (!conexionLoop(currentKeyStates)) {
-            continue;
-        }
+        conexionLoop(currentKeyStates);
 
         quit = quit || renderLoop();
     }
@@ -84,6 +80,8 @@ void Partida::autenticarServidor() {
     if (estadoLogin.nroJugador < 0) {
         conexionCliente->cerrar();
     }
+
+    manager->setEstadoLogin(estadoLogin);
 }
 
 void Partida::cerrar() {
@@ -115,7 +113,9 @@ bool Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
 }
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
-ConexionCliente* Partida::conexionLoop(const Uint8 *currentKeyStates) {
+void Partida::conexionLoop(const Uint8 *currentKeyStates) {
+
+    if (!manager->enJuego()) return;
 
     struct Comando client_command = {false, false, false, false};
 
@@ -127,8 +127,6 @@ ConexionCliente* Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     // Send data (command)
     conexionCliente->enviarComando(&client_command);
-
-    return conexionCliente;
 }
 
 // Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)

@@ -16,18 +16,23 @@ public:
 
     void estadoNivel(nlohmann::json instruccion);
 
+    void setEstadoLogin(struct EstadoLogin estadoLogin);
+
     void render();
 
     bool terminoJuego();
+
+    bool enJuego();
 
 private:
     InformacionNivel informacionNivel;
     EstadoTick estadoTick;
     ManagerVista *managerVista;
+    EstadoLogin estadoLogin;
 
     void setEstadoTick(nlohmann::json mensaje);
     void setInformacionNivel(nlohmann::json mensaje);
-
+    void setEstadoLogin(nlohmann::json mensaje);
 };
 
 

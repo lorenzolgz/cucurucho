@@ -24,8 +24,12 @@ bool receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
 	// Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		auto* colaReceptora = hiloConexionServidor->colaReceptora;
-		// TODO controlar el tamnio de la cola receptora?
 		nlohmann::json mensajeJson;
+
+		while (colaReceptora->size() > MAX_COLA_SERVIDOR) {
+            colaReceptora->pop();
+		}
+
 		// Notar que esto es bloqueante si la cola esta vacia! Se queda esperando a que deje de estarlo.
 		mensajeJson = colaReceptora->pop();
 

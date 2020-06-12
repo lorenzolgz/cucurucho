@@ -98,6 +98,24 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	}
 	l->info("Todos los usuarios fueron aceptados");
 
+	int i = 1;
+	for (ConexionServidor* & c : conexiones) {
+		nlohmann::json json;
+
+		json["tipoMensaje"] = ESTADO_LOGIN;
+		json["nroJugador"] = i;
+		json["estadoLogin"] = LOGIN_COMENZAR;
+
+		// TODO: Los otros jugadores
+        json["jugador1"] = "\0";
+        json["jugador2"] = "\0";
+        json["jugador3"] = "\0";
+        json["jugador4"] = "\0";
+		c->enviarMensaje(json);
+
+		i++;
+	}
+
 	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
 
 	try {

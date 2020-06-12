@@ -13,6 +13,11 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor,
 	this->nroJugador = nroJugador;
 }
 
+
+// Dada la `conexionServidor` de la clase, se pide por la misma credenciales de logueo.
+// Si las credenciales no estan en el archivo `usuarios.json`, se envia el estado
+// de login correspondiente, se cierra la conexion y se devuelve false.
+// Caso contrario, se le envia el numero de jugador y se devuelve true.
 bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados) {
 
 	bool ok = true;
@@ -32,7 +37,7 @@ bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados
 		this->conexionServidor->cerrar();
 		ok = false;
 	} else {
-        this->conexionServidor->enviarEstadoLogin({nroJugador});
+        this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
 		this->usuarioConectado = std::string(usuario);
 	}
 

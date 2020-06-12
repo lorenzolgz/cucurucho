@@ -15,6 +15,7 @@ ManagerJuego::ManagerJuego() {
 void ManagerJuego::estadoNivel(nlohmann::json instruccion) {
     if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) setInformacionNivel(instruccion);
     else if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
+    else if (instruccion["tipoMensaje"] == ESTADO_LOGIN) setEstadoLogin(instruccion);
 }
 
 void ManagerJuego::setEstadoTick(nlohmann::json mensaje) {
@@ -53,6 +54,35 @@ void ManagerJuego::setInformacionNivel(nlohmann::json mensaje) {
     ManagerJuego::informacionNivel = info;
 }
 
+void ManagerJuego::setEstadoLogin(nlohmann::json mensaje) {
+    // TODO: Hacer algo con los jugadores?
+    struct EstadoLogin estadoLogin;
+
+    estadoLogin.nroJugador = mensaje["nroJugador"];
+    estadoLogin.estadoLogin = mensaje["estadoLogin"];
+    std::string jugador1 = mensaje["jugador1"];
+    strcpy(estadoLogin.jugador1, jugador1.c_str());
+    std::string jugador2 = mensaje["jugador2"];
+    strcpy(estadoLogin.jugador2, jugador2.c_str());
+    std::string jugador3 = mensaje["jugador3"];
+    strcpy(estadoLogin.jugador3, jugador3.c_str());
+    std::string jugador4 = mensaje["jugador4"];
+    strcpy(estadoLogin.jugador4, jugador4.c_str());
+
+    ManagerJuego::estadoLogin = estadoLogin;
+}
+
+void ManagerJuego::setEstadoLogin(struct EstadoLogin estadoLogin) {
+    // TODO: Hacer algo con los jugadores?
+
+    ManagerJuego::estadoLogin.nroJugador = estadoLogin.nroJugador;
+    ManagerJuego::estadoLogin.estadoLogin = estadoLogin.estadoLogin;
+    strcpy(ManagerJuego::estadoLogin.jugador1, estadoLogin.jugador1);
+    strcpy(ManagerJuego::estadoLogin.jugador2, estadoLogin.jugador2);
+    strcpy(ManagerJuego::estadoLogin.jugador3, estadoLogin.jugador3);
+    strcpy(ManagerJuego::estadoLogin.jugador4, estadoLogin.jugador4);
+}
+
 void ManagerJuego::render(){
     managerVista->setInformacionNivel(reinterpret_cast<const InformacionNivel &>(informacionNivel));
     //Render texture to screen
@@ -62,4 +92,9 @@ void ManagerJuego::render(){
 // TODO: che no da
 bool ManagerJuego::terminoJuego() {
     return informacionNivel.numeroNivel > 3;
+}
+
+// TODO: che tampoco da
+bool ManagerJuego::enJuego() {
+    return estadoLogin.estadoLogin == LOGIN_COMENZAR;
 }

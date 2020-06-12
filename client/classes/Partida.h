@@ -20,8 +20,6 @@
 #include "view/ManagerVista.h"
 #include "ManagerJuego.h"
 
-#define MAX_COLA 5
-
 class Partida {
 public:
     Partida();
@@ -40,7 +38,7 @@ private:
     struct EstadoLogin estadoLogin;
     bool validarLogin;
 
-    ConexionCliente *conexionLoop(const Uint8 *currentKeyStates);
+    void conexionLoop(const Uint8 *currentKeyStates);
 
     bool pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
 
