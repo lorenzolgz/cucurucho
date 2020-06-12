@@ -55,7 +55,6 @@ void ManagerJuego::setInformacionNivel(nlohmann::json mensaje) {
 }
 
 void ManagerJuego::setEstadoLogin(nlohmann::json mensaje) {
-    // TODO: Hacer algo con los jugadores?
     struct EstadoLogin estadoLogin;
 
     estadoLogin.nroJugador = mensaje["nroJugador"];
@@ -73,8 +72,6 @@ void ManagerJuego::setEstadoLogin(nlohmann::json mensaje) {
 }
 
 void ManagerJuego::setEstadoLogin(struct EstadoLogin estadoLogin) {
-    // TODO: Hacer algo con los jugadores?
-
     ManagerJuego::estadoLogin.nroJugador = estadoLogin.nroJugador;
     ManagerJuego::estadoLogin.estadoLogin = estadoLogin.estadoLogin;
     strcpy(ManagerJuego::estadoLogin.jugador1, estadoLogin.jugador1);
@@ -84,9 +81,9 @@ void ManagerJuego::setEstadoLogin(struct EstadoLogin estadoLogin) {
 }
 
 void ManagerJuego::render(){
-    managerVista->setInformacionNivel(reinterpret_cast<const InformacionNivel &>(informacionNivel));
+    managerVista->setInformacionNivel(informacionNivel);
     //Render texture to screen
-    managerVista->render(reinterpret_cast<const EstadoTick &>(estadoTick));
+    managerVista->render(estadoTick, estadoLogin);
 }
 
 // TODO: che no da
@@ -96,5 +93,5 @@ bool ManagerJuego::terminoJuego() {
 
 // TODO: che tampoco da
 bool ManagerJuego::enJuego() {
-    return estadoLogin.estadoLogin == LOGIN_COMENZAR;
+    return estadoLogin.estadoLogin == LOGIN_FIN;
 }

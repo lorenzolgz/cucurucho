@@ -12,6 +12,8 @@ const int TEXTO_COLOR_AZUL = 1;
 const int TEXTO_COLOR_ROJO = 2;
 const int TEXTO_COLOR_NARANJA = 3;
 const int TEXTO_COLOR_VERDE = 4;
+const int TEXTO_COLOR_ROSA = 5;
+const int TEXTO_COLOR_TURQUESA = 6;
 
 const int ALINEACION_IZQUIERDA = 1;
 const int ALINEACION_DERECHA = 0;

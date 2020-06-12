@@ -77,6 +77,30 @@ Configuracion* parsearConfiguracion() {
 }
 
 
+void notificarEstadoConexion(std::list<ConexionServidor*> conexiones, int estadoLogin) {
+    nlohmann::json json;
+    json["tipoMensaje"] = ESTADO_LOGIN;
+    json["estadoLogin"] = estadoLogin;
+    json["jugador1"] = "\0";
+    json["jugador2"] = "\0";
+    json["jugador3"] = "\0";
+    json["jugador4"] = "\0";
+
+    int i = 1;
+    for (ConexionServidor* & c : conexiones) {
+        json["jugador" + std::to_string(i)] = c->getUsuario();
+        i++;
+    }
+
+    i = 1;
+    for (ConexionServidor* & c : conexiones) {
+        json["nroJugador"] = i;
+        c->enviarMensaje(json);
+        i++;
+    }
+}
+
+
 int esperarConexiones(int puerto, Configuracion* config) {
 	l->info("Port: " + std::to_string(puerto));
 
@@ -94,27 +118,15 @@ int esperarConexiones(int puerto, Configuracion* config) {
             continue;
         }
 		conexiones.push_back(conexionServidor);
+        notificarEstadoConexion(conexiones, LOGIN_ESPERAR);
 		l->info("Usuario " + std::to_string(jugadoresConectados.size()) + " conectado");
 	}
 	l->info("Todos los usuarios fueron aceptados");
+    notificarEstadoConexion(conexiones, LOGIN_COMENZAR);
 
-	int i = 1;
-	for (ConexionServidor* & c : conexiones) {
-		nlohmann::json json;
-
-		json["tipoMensaje"] = ESTADO_LOGIN;
-		json["nroJugador"] = i;
-		json["estadoLogin"] = LOGIN_COMENZAR;
-
-		// TODO: Los otros jugadores
-        json["jugador1"] = "\0";
-        json["jugador2"] = "\0";
-        json["jugador3"] = "\0";
-        json["jugador4"] = "\0";
-		c->enviarMensaje(json);
-
-		i++;
-	}
+    // TODO: Pre-procesamiento?
+    std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
+    notificarEstadoConexion(conexiones, LOGIN_FIN);
 
 	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
 

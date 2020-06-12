@@ -12,6 +12,11 @@
 
 const int INICIO_TIMEOUT = 120;
 
+const struct Login autoCredenciales[4] = {{"rodri", "13141516"},
+        {"cami", "1234"},
+        {"ailu", "5678"},
+        {"lolo", "9012"}};
+
 enum {
     TITULO_VACIO,
     TITULO_INGRESAR,
@@ -40,6 +45,8 @@ private:
     std::string password;
     bool seleccionadoUsuario;
     int estado;
+    bool autoCompletar;
+    int autoCompletarIndice;
 
     void leerInput(std::string input, bool *validarLogin);
 };

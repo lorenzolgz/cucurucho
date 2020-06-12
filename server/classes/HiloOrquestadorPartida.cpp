@@ -113,7 +113,6 @@ void HiloOrquestadorPartida::run() {
 			// WIP. Para controlar la cantidad de ticks.
 			t2 = clock();
 			if ((t2 - t1) > 1000 * 1000 / 60 / 2) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
-				t1 = clock();
 			} else {
 				continue;
 			}
@@ -127,6 +126,8 @@ void HiloOrquestadorPartida::run() {
 			// Send data (view)
 			sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
+
+			t1 = clock();
 		}
 	}
 	catch (const std::exception& exc) {

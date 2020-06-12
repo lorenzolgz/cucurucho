@@ -16,7 +16,7 @@
 class ManagerVista {
 public:
     ManagerVista(struct InformacionNivel, int nivelActual, int ancho, int alto);
-    void render(EstadoTick estadoTick);
+    void render(EstadoTick estadoTick, EstadoLogin estadoLogin);
 
     void renderNivelIntermedio();
 
@@ -35,6 +35,10 @@ private:
     float posX;
 
     void renderEnemigos(EstadoEnemigo pEnemigo[15]);
+
+    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto);
+
+    void renderEspera(struct EstadoLogin estadoLogin);
 };
 
 

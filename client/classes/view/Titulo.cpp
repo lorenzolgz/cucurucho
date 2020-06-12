@@ -16,6 +16,8 @@ Titulo::Titulo(int ancho, int alto) {
     password = "";
     seleccionadoUsuario = true;
     estado = TITULO_VACIO;
+    autoCompletar = false;
+    autoCompletarIndice = 0;
     l->info("La pantalla incial fue creada correctamente.");
 }
 
@@ -27,19 +29,23 @@ void Titulo::leerInput(std::string input, bool *validarLogin) {
     }
 
     for (char c : input) {
-        if (campoActivo->size() < 15 && ((c > 32 && c < 127) || (c == 32 && contador > 15))) {
-            *campoActivo += c;
-        } else if (!campoActivo->empty() && (c == 8 || c == 127)) {
-            campoActivo->pop_back();
-        } else if (c == 9 || c == 10 || (c == 11 && contador > 15)) {
-            if (!seleccionadoUsuario && c == 11) *validarLogin = true;
-            seleccionadoUsuario = !seleccionadoUsuario;
+        if (activada) {
+            if (campoActivo->size() < 15 && ((c > 32 && c < 127) || (c == 32 && contador > 15))) {
+                *campoActivo += c;
+            } else if (!campoActivo->empty() && (c == 8 || c == 127)) {
+                campoActivo->pop_back();
+            } else if (c == 9 || c == 10 || (c == 11 && contador > 15)) {
+                if (!seleccionadoUsuario && c == 11) *validarLogin = true;
+                seleccionadoUsuario = !seleccionadoUsuario;
+            }
         } else if (c == 12) {   // Ctrl + D: Autoautenticar!
             *validarLogin = true;
-			username = "rodri";
-            password = "13141516";
+            autoCompletar = true;
             inicioTimeout = -30;
         }
+    }
+    if (autoCompletar) {
+        *validarLogin = true;
     }
 }
 
@@ -58,11 +64,17 @@ bool Titulo::estaActivada(bool enter, int estadoLogin) {
         seleccionadoUsuario = true;
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");
     }
-    return estadoLogin > 0 && contador > inicioTimeout;
+    return estadoLogin > 0;
 }
 
 
 void Titulo::getCredenciales(struct Login* credenciales) {
-    strcpy(credenciales->usuario, username.c_str());
-    strcpy(credenciales->contrasenia, password.c_str());
+    if (!autoCompletar) {
+        strcpy(credenciales->usuario, username.c_str());
+        strcpy(credenciales->contrasenia, password.c_str());
+    } else {
+        strcpy(credenciales->usuario, autoCredenciales[autoCompletarIndice].usuario);
+        strcpy(credenciales->contrasenia, autoCredenciales[autoCompletarIndice].contrasenia);
+        autoCompletarIndice++;
+    }
 }

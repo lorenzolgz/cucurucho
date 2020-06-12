@@ -39,6 +39,7 @@ bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados
 	} else {
         this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
 		this->usuarioConectado = std::string(usuario);
+		conexionServidor->setUsuario(std::string(usuario));
 	}
 
 	return ok;
@@ -55,24 +56,6 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
 	}
 
 	return true;
-
-	// Si está registrado, verifico la contraseña
-//	if (usuarioRegistrado) {
-//		contraseniaCorrecta = strcmp(this->contrasenias[usuario].asCString(), contrasenia) == 0;
-//		while (!contraseniaCorrecta) {
-//			// TODO esto funciona pero para una única vez
-//			struct EstadoLogin estadoLogin;
-//			estadoLogin.nroJugador = nroJugador;
-//			this->conexionServidor->enviarEstadoLogin(estadoLogin);
-//			pedirCredenciales(login);
-//			contraseniaCorrecta = strcmp(this->contrasenias[usuario].asCString(), login.contrasenia);
-//		}
-//	}
-//
-//	struct EstadoLogin estadoLogin;
-//	estadoLogin.nroJugador = nroJugador;
-//	this->conexionServidor->enviarEstadoLogin(estadoLogin);
-
 }
 
 void ControladorDeSesiones::pedirCredenciales(Login *login){

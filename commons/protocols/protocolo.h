@@ -11,8 +11,8 @@
 
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor
-#define MAX_COLA_CLIENTE 1
-#define MAX_COLA_SERVIDOR 1
+#define MAX_COLA_CLIENTE 2
+#define MAX_COLA_SERVIDOR 2
 
 // Tipos de mensajes
 enum {
@@ -28,6 +28,10 @@ enum {
 #define LOGIN_PENDIENTE 0
 #define LOGIN_ESPERAR 1
 #define LOGIN_COMENZAR 2
+#define LOGIN_FIN 3
+
+// Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
+#define TIMEOUT_LOGIN_FIN 0
 
 struct Comando {
 	int nroJugador;
@@ -44,7 +48,7 @@ struct Login {
 };
 
 struct EstadoHelper {
-    EstadoHelper(): posicionX(-200), posicionY(-200) {}
+    EstadoHelper(): posicionX(-200), posicionY(-200), angulo(0) {}
 	int posicionX;
 	int posicionY;
 	int angulo;

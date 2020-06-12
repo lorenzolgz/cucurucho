@@ -18,8 +18,13 @@ public:
 	void enviarEstadoLogin(struct EstadoLogin estadoLogin);
 	void cerrar();
 
+    const std::string &getUsuario() const;
+
+    void setUsuario(const std::string &usuario);
+
 private:
 	int client_socket;
+	std::string usuario;
 };
 
 

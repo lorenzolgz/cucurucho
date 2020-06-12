@@ -25,3 +25,11 @@ void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 void ConexionServidor::cerrar() {
 	close(client_socket);
 }
+
+const std::string &ConexionServidor::getUsuario() const {
+    return usuario;
+}
+
+void ConexionServidor::setUsuario(const std::string &usuario) {
+    ConexionServidor::usuario = usuario;
+}
