@@ -1,4 +1,5 @@
 #include "ConexionCliente.h"
+#include "ConexionExcepcion.h"
 #include <unistd.h>
 #include <iostream>
 
@@ -32,14 +33,14 @@ void ConexionCliente::cerrar() {
 	close(server_socket);
 }
 
-// !!!!!
+// "Siempre" va a funcionar porque se llama apenas se inicia la conexion
 struct EstadoLogin ConexionCliente::recibirEstadoLogin() {
 	uint32_t nroJugador = false;
 
     l->debug("Cliente por recibir mensaje");
     if (recibirData<uint32_t>(&server_socket, &nroJugador) < 0) {
         perror("Receive Data Error");
-        //exit(1);
+        throw ConexionExcepcion();
     }
 
     l->debug("Cliente contrasenia correcta: " + std::to_string(nroJugador));
@@ -47,6 +48,8 @@ struct EstadoLogin ConexionCliente::recibirEstadoLogin() {
     return estadoLogin;
 }
 
+
+// "Siempre" va a funcionar porque se llama apenas se inicia la conexion
 void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {
     l->debug("Cliente por mandar credenciales");
 

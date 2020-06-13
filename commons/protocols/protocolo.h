@@ -19,7 +19,8 @@ enum {
     INFORMACION_NIVEL,
     ESTADO_TICK,
     COMANDO,
-    ESTADO_LOGIN
+    ESTADO_LOGIN,
+    MENSAJE_PING
 };
 
 // Codigos Estado Login

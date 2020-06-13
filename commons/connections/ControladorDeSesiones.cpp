@@ -3,10 +3,12 @@
 //
 
 #include "ControladorDeSesiones.h"
+#include "ConexionExcepcion.h"
 
 
-ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor, int nroJugador){
+ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor, std::list<ConexionServidor*> &conexiones, int nroJugador){
     this->conexionServidor = conexionServidor;
+    this->conexiones = conexiones;
     ifstream archivo(JSON_USUARIOS, ifstream::binary);
     archivo >> this->jsonUsuarios;
     this->contrasenias = jsonUsuarios["usuariosRegistrados"];
@@ -18,7 +20,7 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor,
 // Si las credenciales no estan en el archivo `usuarios.json`, se envia el estado
 // de login correspondiente, se cierra la conexion y se devuelve false.
 // Caso contrario, se le envia el numero de jugador y se devuelve true.
-bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados) {
+bool ControladorDeSesiones::iniciarSesion() {
 
 	bool ok = true;
 
@@ -32,7 +34,7 @@ bool ControladorDeSesiones::iniciarSesion(map<string, bool> &jugadoresConectados
 	contrasenia = login.contrasenia;
 
 	//verifico que el usuario esté registrado
-	if (!usuarioEstaRegistrado(usuario, contrasenia) || !controlarQueNoIngreseUsuarioYaEnJuego(usuario, jugadoresConectados)) {
+	if (!usuarioEstaRegistrado(usuario, contrasenia) || !controlarQueNoIngreseUsuarioYaEnJuego(usuario)) {
         this->conexionServidor->enviarEstadoLogin({LOGIN_FALLO});
 		this->conexionServidor->cerrar();
 		ok = false;
@@ -72,20 +74,23 @@ string ControladorDeSesiones::userConectado(){
     return this->usuarioConectado;
 }
 
-bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario, map<string, bool> &jugadoresConectados) {
-	if (jugadoresConectados.count(usuario) == 1) { //si existe ese usuario en el map
-		if (jugadoresConectados[usuario]) {//si ese usuario está jugando
-			//TODO informar que ya se encuentra en juego alguien con ese nombre de usuario
-			cout << "Ya se encuentra en juego alguien con ese nombre de usuario" << endl;
-			return false;
-		} else if (!jugadoresConectados[usuario]) { //TODO si ese usuario se conectó en esta partida pero se fue, ponerle false
-			cout << "Te desconectaste y volviste" << endl;
-			jugadoresConectados[usuario] = true; //ver reconexión
-		}
-	} else { //si no se conectó en esta partida alguien con ese nombre de usuario
-		cout << "No se encuentra en juego todavía alguien con ese nombre de usuario" << endl;
-		jugadoresConectados[usuario] = true;
-	}
-	return true;
+bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario) {
+    auto j = conexiones.begin();
+    while (j != conexiones.end()) {
+        if ((*j)->getUsuario() != usuario) {
+            j++;
+            continue;
+        }
+        try {
+            nlohmann::json json;
+            json["tipoMensaje"] = MENSAJE_PING;
+            (*j)->enviarMensaje(json);
+            return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
+        } catch (const ConexionExcepcion& e) {
+            j = conexiones.erase(j);
+        }
+    }
+
+    return true;
 }
 

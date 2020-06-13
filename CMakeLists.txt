@@ -88,7 +88,11 @@ add_executable(cliente
         commons/Thread.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h client/classes/Partida.cpp client/classes/Partida.h client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h)
+        libraries/json/json.hpp
+        client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h
+        client/classes/Partida.cpp client/classes/Partida.h
+        client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
+        commons/connections/ConexionExcepcion.h)
 
 add_executable(servidor
         server/main.cpp
@@ -151,7 +155,9 @@ add_executable(servidor
         server/classes/HiloConexionServidor.cpp server/classes/HiloConexionServidor.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp server/classes/PaqueteUsuario.cpp server/classes/PaqueteUsuario.h)
+        libraries/json/json.hpp server/classes/PaqueteUsuario.cpp
+        server/classes/PaqueteUsuario.h
+        commons/connections/ConexionExcepcion.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

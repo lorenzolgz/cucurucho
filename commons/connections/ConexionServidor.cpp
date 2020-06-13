@@ -1,4 +1,5 @@
 #include "ConexionServidor.h"
+#include "ConexionExcepcion.h"
 #include <unistd.h>
 #include <iostream>
 
@@ -18,7 +19,7 @@ void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 	uint32_t nroJugadorNormalizado = estadoLogin.nroJugador;
 	if (enviarData<uint32_t>(&client_socket, &nroJugadorNormalizado) < 0) {
 		perror("Send Data Error");
-		exit(1);
+		throw ConexionExcepcion();
 	}
 }
 
