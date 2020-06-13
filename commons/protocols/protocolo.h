@@ -60,6 +60,7 @@ struct EstadoJugador {
 	int posicionY;
 	EstadoHelper helper1;
 	EstadoHelper helper2;
+    int presente;
 };
 
 struct EstadoEnemigo {

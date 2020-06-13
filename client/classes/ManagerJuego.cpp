@@ -31,6 +31,7 @@ void ManagerJuego::setEstadoTick(nlohmann::json mensaje) {
         estado.estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
         estado.estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
         estado.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
+        estado.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
     }
     int j = 0;
     for (; j < MAX_ENEMIGOS; j++ ){

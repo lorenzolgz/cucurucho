@@ -14,26 +14,36 @@ void Conexion::enviarData2(int client_socket, nlohmann::json dataJson) {
 	}
 	if (_enviarData(&client_socket, &mensajeStr[0], tamanioMensaje) < 0) {
 		perror("Send Data Error 2");
-		exit(1);
+		//exit(1);
 	}
 }
 
 nlohmann::json Conexion::recibirData2(int client_socket) {
-	uint32_t tamanioMensaje;
+    try{
 
-	if (_recibirData<uint32_t>(&client_socket, &tamanioMensaje, sizeof(uint32_t)) < 0) {
-		perror("recibirMensaje. Error cuando se recibe tamanioMensaje");
-		// !!!! exit(1);
+        uint32_t tamanioMensaje;
+
+        if (_recibirData<uint32_t>(&client_socket, &tamanioMensaje, sizeof(uint32_t)) < 0) {
+            perror("recibirMensaje. Error cuando se recibe tamanioMensaje");
+            throw std::runtime_error(std::string("Se recibio un tamanioMensaje inadecuado"));
+            // !!!! exit(1);
+        }
+        l->info("conexionTamanio: " + std::to_string(tamanioMensaje));
+
+        std::string mensajeStr(tamanioMensaje, '\0');
+        if (_recibirData<char>(&client_socket, &mensajeStr[0], tamanioMensaje) < 0) {
+            perror("recibirMensaje. Error cuando se recibe mensaje json");
+            // !!!! exit(1);
+        }
+
+        l->info("Conexion recibio:  " + mensajeStr);
+
+        nlohmann::json mensajeJson = nlohmann::json::parse(mensajeStr);
+        return mensajeJson;
 	}
-	l->debug("conexionTamanio: " + std::to_string(tamanioMensaje));
+    // TODO throw que haga --> conexionServidor ---> hiloConexionServidor ---> hiloOrquestador --> matarConexion
+	catch (std::runtime_error e){
+        l->info("Se recibio un tamanioMensaje inadecuado");
+    }
 
-	std::string mensajeStr(tamanioMensaje, '\0');
-	if (_recibirData<char>(&client_socket, &mensajeStr[0], tamanioMensaje) < 0) {
-	    perror("recibirMensaje. Error cuando se recibe mensaje json");
-		// !!!! exit(1);
-	}
-
-	l->debug("Conexion recibio:  " + mensajeStr);
-	nlohmann::json mensajeJson = nlohmann::json::parse(mensajeStr);
-    return mensajeJson;
 }

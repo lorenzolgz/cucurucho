@@ -9,22 +9,26 @@ void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
 
 	nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-	l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
+	l->info("recHiloConexionServidor " + mensajeRecibido.dump());
 	colaReceptora->push(mensajeRecibido);
 
-	while (true) {
-		l->debug("whileHiloConexionServidor");
+	try{
+        while (true) {
+            nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+            l->info("recHiloConexionServidor " + mensajeRecibido.dump());
+            colaReceptora->push(mensajeRecibido);
 
-		nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-		l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-		colaReceptora->push(mensajeRecibido);
+            if (!colaEnviadora->empty()) {
+                nlohmann::json mensajeAEnviar = colaEnviadora->pop();
+                l->info("envHiloConexionServidor " + mensajeAEnviar.dump());
+                conexionServidor->enviarMensaje(mensajeAEnviar);
 
-		if (!colaEnviadora->empty()) {
-			nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-			l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
-			conexionServidor->enviarMensaje(mensajeAEnviar);
-
-		}
+            }
+        }
+    }
+	catch (...){
+	    // TODO throw a hilo orquestador para matar conexion
+        l->info("CATCH PRODUCIDO AL RECIBIR MENSAJE");
 	}
 }
 
@@ -44,7 +48,10 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
 		mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
-	}
+		// TODO que presente dependa de si se perdio la conexion de ese jugador o no
+        mensajeJson["estadosJugadores"][i]["presente"] = 1;
+
+    }
 	for (; j< MAX_ENEMIGOS; j++) {
 		mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;
 		mensajeJson["estadosEnemigos"][j]["posicionY"] = estadoTick->estadosEnemigos[j].posicionY;

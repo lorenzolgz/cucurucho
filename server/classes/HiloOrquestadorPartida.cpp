@@ -30,16 +30,18 @@ bool receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
             colaReceptora->pop();
 		}
 
-		// Notar que esto es bloqueante si la cola esta vacia! Se queda esperando a que deje de estarlo.
-		mensajeJson = colaReceptora->pop();
+		if(!colaReceptora->empty()){
+            // Notar que esto es bloqueante si la cola esta vacia! Se queda esperando a que deje de estarlo.
+            mensajeJson = colaReceptora->pop();
 
-		if (mensajeJson["_t"] == COMANDO) {
-			seRecibioComando = true;
-			struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-			comandos[comando.nroJugador-1] = comando;
-		} else {
-			l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
-		}
+            if (mensajeJson["_t"] == COMANDO) {
+                seRecibioComando = true;
+                struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                comandos[comando.nroJugador-1] = comando;
+            } else {
+                l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+            }
+        }
 	}
 
 	return seRecibioComando;
@@ -57,7 +59,6 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 	if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
-
 	if (*nuevoNivel) {
 		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
 			hiloConexionServidor->enviarInformacionNivel(informacionNivel);
@@ -65,7 +66,7 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 		*nuevoNivel = false;
 	} else {
 		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
-			hiloConexionServidor->enviarEstadoTick(estadoTick);
+            hiloConexionServidor->enviarEstadoTick(estadoTick);
 		}
 		*nuevoNivel = estadoTick->nuevoNivel;
 	}
@@ -170,7 +171,8 @@ void initializeData(struct EstadoTick* estadoTick) {
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 		estadoTick->estadosJugadores[i].posicionX = -1000;
 		estadoTick->estadosJugadores[i].posicionY = -1000;
-		estadoTick->estadosJugadores[i].helper1.posicionX = -1000;
+        estadoTick->estadosJugadores[i].presente = 0;
+        estadoTick->estadosJugadores[i].helper1.posicionX = -1000;
 		estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
