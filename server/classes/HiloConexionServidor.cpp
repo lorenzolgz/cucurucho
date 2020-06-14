@@ -1,8 +1,9 @@
 #include "HiloConexionServidor.h"
 #include "../../commons/utils/Log.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador) {
 	this->conexionServidor = conexionServidor;
+	this->jugador = jugador;
 }
 
 void HiloConexionServidor::run() {
@@ -36,8 +37,11 @@ void HiloConexionServidor::run() {
         }
     }
 	catch (...){
-	    // TODO throw a hilo orquestador para matar conexion
-        l->info("CATCH PRODUCIDO AL RECIBIR MENSAJE");
+        nlohmann::json mensajeError;
+        l->info("Caatch hiloConexionServidor");
+        mensajeError["usuario"] = conexionServidor->getUsuario();
+        mensajeError["_t"] = ERROR_CONEXION;
+        colaReceptora->push(mensajeError);
 	}
 }
 
@@ -57,9 +61,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
 		mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
-		// TODO que presente dependa de si se perdio la conexion de ese jugador o no
-        mensajeJson["estadosJugadores"][i]["presente"] = 1;
-
+        mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
     }
 	for (; j< MAX_ENEMIGOS; j++) {
 		mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;

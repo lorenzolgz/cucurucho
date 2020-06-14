@@ -9,7 +9,8 @@
 
 class HiloConexionServidor : public Thread {
 public:
-	HiloConexionServidor(ConexionServidor* conexionServidor);
+	HiloConexionServidor(ConexionServidor* conexionServidor, int jugador);
+	int jugador;
 	void run() override;
 	void enviarEstadoTick(struct EstadoTick* estadoTick);
 	void enviarInformacionNivel(struct InformacionNivel* header);

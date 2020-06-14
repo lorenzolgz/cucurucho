@@ -35,7 +35,8 @@ enum {
     ESTADO_TICK,
     COMANDO,
     ESTADO_LOGIN,
-    MENSAJE_PING
+    MENSAJE_PING,
+    ERROR_CONEXION
 };
 
 
