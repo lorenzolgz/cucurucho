@@ -99,6 +99,7 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
     struct EstadoJugador estadoJugador;
     estadoJugador.posicionX = posicion.getX();
     estadoJugador.posicionY = posicion.getY();
+    estadoJugador.presente = true;
 
     // Sin helpers
     Vector posicionHelper1 = posicion + Vector(-10000, -10000);

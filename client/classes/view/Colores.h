@@ -129,4 +129,13 @@ static const ColoresJugador COLORES_TURQUESA = ColoresJugador(
          {151, 242, 211},
          {159, 242, 215}});
 
+static const ColoresJugador COLORES_GRIS = ColoresJugador(
+        {{80, 80, 80},
+         {120, 120, 120},
+         {80, 80, 80}},
+        {{80, 80, 80},
+         {80, 80, 80},
+         {80, 80, 80},
+         {80, 80, 80}});
+
 #endif //CUCURUCHO_COLORES_H

@@ -4,29 +4,36 @@
 #include "../GeneradorDeTexturas.h"
 
 
-HelperVista::HelperVista(ColoresJugador colores) {
+HelperVista::HelperVista() {
 	HelperVista::gRenderer = GraphicRenderer::getInstance();
-    HelperVista::colores = colores;
 	GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     HelperVista::textura = generadorDeTexturas->generarTextura("helper.png");
     HelperVista::texturaBall = generadorDeTexturas->generarTextura("helper-ball.png");
     HelperVista::contador = 0;
 }
 
-void HelperVista::render(struct EstadoHelper estadoHelper) {
+void HelperVista::render(struct EstadoHelper estadoHelper, ColoresJugador colores, bool presente) {
+    if (presente) {
+        HelperVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("helper.png");
+        HelperVista::texturaBall = GeneradorDeTexturas::getInstance()->generarTextura("helper-ball.png");
+    } else {
+        textura = GeneradorDeTexturas::getInstance()->generarTextura("helper-g.png");
+        texturaBall = GeneradorDeTexturas::getInstance()->generarTextura("helper-ball-g.png");
+    }
+
 	Vector posicion = Vector(estadoHelper.posicionX, estadoHelper.posicionY);
 	double angulo = estadoHelper.angulo;
 
     contador++;
     if (recorrido.size() > 20) recorrido.pop_back();
-	renderGlow(posicion, recorrido);
-	renderBall(posicion);
-	renderHelper(posicion, angulo);
+	renderGlow(posicion, recorrido, colores);
+	renderBall(posicion, colores);
+	renderHelper(posicion, angulo, colores);
     recorrido.push_front(posicion);
 }
 
 
-void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido) {
+void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido, ColoresJugador colores) {
     std::array<int, 3> color = colores.getColorGlow(contador);
 	SDL_SetTextureColorMod(texturaBall, color[0], color[1], color[2]);
 
@@ -51,7 +58,7 @@ void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido) {
 }
 
 
-void HelperVista::renderBall(Vector posicion) {
+void HelperVista::renderBall(Vector posicion, ColoresJugador colores) {
 	SDL_Rect ballsrc = {0, 0, HELPER_SRC_ANCHO, HELPER_SRC_ALTO};
 	SDL_Rect balldst = {(int) posicion.getX() - HELPER_BALL_SRC_RADIO,
 						(int) posicion.getY() - HELPER_BALL_SRC_RADIO,
@@ -67,7 +74,7 @@ void HelperVista::renderBall(Vector posicion) {
 
 
 
-void HelperVista::renderHelper(Vector posicion, double angulo) {
+void HelperVista::renderHelper(Vector posicion, double angulo, ColoresJugador colores) {
 	int renderPosX = (int) posicion.getX() - HELPER_BALL_SRC_RADIO + (int) (cos_d(angulo) * HELPER_SRC_DISTANCIA);
 	int renderPosY = (int) posicion.getY() - HELPER_BALL_SRC_RADIO - (int) (sin_d(angulo) * HELPER_SRC_DISTANCIA);
 

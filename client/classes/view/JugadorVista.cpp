@@ -12,8 +12,8 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::contador = 0;
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
-    helperAbove = new HelperVista(colores);
-    helperBelow = new HelperVista(colores);
+    helperAbove = new HelperVista();
+    helperBelow = new HelperVista();
 	l->info("La vista del jugador fue creada correctamente.");
 }
 
@@ -31,6 +31,14 @@ void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
 
 //void JugadorVista::render(Vector nuevaPosicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2) {
 void JugadorVista::render(struct EstadoJugador estadoJugador) {
+    if (estadoJugador.presente) {
+        coloresRender = colores;
+        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player.png");
+    } else {
+        coloresRender = COLORES_GRIS;
+        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player-g.png");
+    }
+
     Vector nuevaPosicion = Vector(estadoJugador.posicionX, estadoJugador.posicionY);
 
     calcularVelocidadY(nuevaPosicion);
@@ -47,17 +55,10 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     colorShip(srcrect, dstrect);
 
-    helperAbove->render(estadoJugador.helper1);
-    helperBelow->render(estadoJugador.helper2);
+    helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador.presente);
+    helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador.presente);
 
     colorGlow();
-
-    // TODO cambiar glow por black and white
-    if(estadoJugador.presente){
-//        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " esta presente" << std::endl;
-    } else {
-//        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " (NO) esta presente" << std::endl;
-    }
 
 	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 			   0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
@@ -67,7 +68,7 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 
 
 void JugadorVista::colorShip(SDL_Rect srcrect, SDL_Rect dstrect) {
-    for (auto & i : colores.base) {
+    for (auto & i : coloresRender.base) {
         srcrect.y += JUGADOR_SRC_ALTO;
         SDL_SetTextureColorMod(textura, i[0], i[1], i[2]);
         SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
@@ -77,7 +78,7 @@ void JugadorVista::colorShip(SDL_Rect srcrect, SDL_Rect dstrect) {
 
 void JugadorVista::colorGlow() {
 	contador++;
-    std::array<int, 3> color = colores.getColorGlow(contador);
+    std::array<int, 3> color = coloresRender.getColorGlow(contador);
 	SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
 }
 

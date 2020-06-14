@@ -17,8 +17,8 @@ const int HELPER_SRC_ALTO = 48;
 
 class HelperVista {
 public:
-	HelperVista(ColoresJugador coloresJugador);
-	void render(struct EstadoHelper estadoHelper);
+	HelperVista();
+	void render(struct EstadoHelper estadoHelper, ColoresJugador coloresJugador, bool presente);
 
 private:
 	SDL_Renderer* gRenderer;
@@ -27,11 +27,9 @@ private:
     int contador;
     std::deque<Vector> recorrido;
 
-	void renderGlow(Vector posicion, std::deque<Vector> recorrido);
-	void renderBall(Vector posicion);
-	void renderHelper(Vector posicion, double angulo);
-
-    ColoresJugador colores = ColoresJugador({}, {});
+	void renderGlow(Vector posicion, std::deque<Vector> recorrido, ColoresJugador coloresJugador);
+	void renderBall(Vector posicion, ColoresJugador coloresJugador);
+	void renderHelper(Vector posicion, double angulo, ColoresJugador coloresJugador);
 };
 
 

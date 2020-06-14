@@ -26,7 +26,8 @@ private:
 	SDL_Texture* textura;
 	HelperVista* helperAbove;
 	HelperVista* helperBelow;
-    ColoresJugador colores = ColoresJugador({}, {});
+	ColoresJugador colores = ColoresJugador({}, {});
+	ColoresJugador coloresRender = COLORES_GRIS;
 	int contador;
 	Vector posicion;
 

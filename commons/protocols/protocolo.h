@@ -24,7 +24,7 @@
 #define LOGIN_FIN 3
 
 // Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
-#define TIMEOUT_LOGIN_FIN 
+#define TIMEOUT_LOGIN_FIN 0
 
 // Tiempo de pasaje entre niveles
 #define TIMEOUT_PROXIMO_NIVEL 1
