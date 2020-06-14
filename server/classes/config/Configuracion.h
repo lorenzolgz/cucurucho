@@ -9,20 +9,20 @@
 class Configuracion {
 public:
     Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
-    		std::list<NivelConfiguracion*> niveles);
+    		std::list<NivelConfiguracion*> niveles, int cantidadJugadores);
 
     int getAltoPantalla();
     int getAnchoPantalla();
     int getEscalaPantalla();
     std::string getNivelLog();
 	const std::list<NivelConfiguracion *> &getNiveles() const;
-	// TODO: mas jugadores.
-	int getCantidadJugadores() { return 2; };
+	int getCantidadJugadores();
 
 private:
     int altoPantalla;
     int anchoPantalla;
     int escalaPantalla;
+    int cantidadJugadores;
     std::string nivelLog;
 	std::list<NivelConfiguracion*> niveles;
 };

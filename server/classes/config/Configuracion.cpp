@@ -6,12 +6,13 @@
 #include <list>
 
 Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
-		std::list<NivelConfiguracion*> niveles){
+		std::list<NivelConfiguracion*> niveles, int cantidadJugadores){
     this->altoPantalla = altoPantalla;
     this->anchoPantalla = anchoPantalla;
     this->escalaPantalla = escalaPantalla;
     this->nivelLog = nivelLog;
     this->niveles = niveles;
+    this->cantidadJugadores = cantidadJugadores;
 }
 
 int Configuracion::getAltoPantalla(){
@@ -28,6 +29,10 @@ int Configuracion::getEscalaPantalla(){
 
 std::string Configuracion::getNivelLog() {
     return this->nivelLog;
+}
+
+int Configuracion::getCantidadJugadores() {
+    return this->cantidadJugadores;
 }
 
 const std::list<NivelConfiguracion *> &Configuracion::getNiveles() const {

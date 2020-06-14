@@ -3,6 +3,7 @@
       "log": {
          "nivel": "info"
       },
+      "cantidadJugadores": 2,
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",

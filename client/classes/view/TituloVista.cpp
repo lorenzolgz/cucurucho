@@ -13,7 +13,7 @@
 const int PARTICULA_ALTO = 21;
 const int TITULO_ANCHO = 825;
 const int TITULO_ALTO = 123;
-const int PARTICULA_VELOCIDAD = 4.5;
+const float PARTICULA_VELOCIDAD = 4.5;
 
 
 class TituloParticula {

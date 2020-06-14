@@ -1,4 +1,5 @@
 #include "NivelConfiguracion.h"
+#include "../../../commons/utils/Constantes.h"
 #include <string>
 #include <iostream>
 #include <cstring>
@@ -21,7 +22,7 @@ const char* NivelConfiguracion::getFinalNivel() const {
 }
 
 float NivelConfiguracion::getVelocidad() const {
-    return velocidad;
+    return velocidad * (PANTALLA_ANCHO / 960.0);
 }
 
 float NivelConfiguracion::getLargo() const {

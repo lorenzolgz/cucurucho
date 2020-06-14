@@ -19,9 +19,9 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 
 
 void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
-    if ((posicion - nuevaPosicion).getY() > 1) {
+    if ((posicion - nuevaPosicion).getY() > 0.25) {
         contadorVelocidadY += contadorVelocidadY < 14;
-    } else if ((posicion - nuevaPosicion).getY() < -1) {
+    } else if ((posicion - nuevaPosicion).getY() < -0.25) {
         contadorVelocidadY -= contadorVelocidadY > -14;
     } else {
         contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);

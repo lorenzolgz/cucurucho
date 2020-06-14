@@ -5,9 +5,10 @@
 #include "GraphicRenderer.h"
 #include "../../commons/utils/Log.h"
 #include "view/HudVista.h"
+#include "../../commons/utils/Constantes.h"
 
 bool GestorSDL::init(int anchoPantalla, int altoPantalla) {
-	int escalaPantalla = 1;
+	int escalaPantalla = PANTALLA_ESCALA;
 	toast = new ToastVista();
 
 	//Initialize SDL

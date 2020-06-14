@@ -51,7 +51,7 @@ std::string parsearNivelLog(Json::Value root) {
 void parsearResolucion(const Json::Value &root, int &anchoPantalla, int &altoPantalla, int &escala) {
 	anchoPantalla = PANTALLA_ANCHO;
 	altoPantalla = PANTALLA_ALTO;
-	escala = 1;
+	escala = PANTALLA_ESCALA;
 	return;
 
 	try {
@@ -89,6 +89,19 @@ void parsearResolucion(const Json::Value &root, int &anchoPantalla, int &altoPan
 		l->error("Ocurrio un error al cargar la resolucion de pantalla");
 		throw exc;
 	}
+}
+
+int ConfiguracionParser::parsearCantidadJugadores(Json::Value cantidadJson) {
+    try {
+        validarJsonNoNulo(cantidadJson, "Cantidad de jugadores");
+        validarJsonGenerico(!cantidadJson.isNumeric(), "La cantidad de jugadores no es numerica");
+        validarJsonGenerico(cantidadJson.asInt() < 1, "La cantidad de jugadores es menor a 1");
+        validarJsonGenerico(cantidadJson.asInt() > 4, "La cantidad de jugadores es mayor a 4");
+        return cantidadJson.asInt();
+    } catch(const std::exception& exc) {
+        l->error("Ocurrio un error al cargar la cantidad de jugadores");
+        throw exc;
+    }
 }
 
 EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigosJson, int nivel) {
@@ -272,6 +285,7 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	int altoPantalla;
 	int anchoPantalla;
 	int escala;
+	int cantidadJugadores;
 	std::map<int, std::queue <int>> enemigos;
 	std::string nivelLog;
 	Json::Value fondosPorNivel;
@@ -281,8 +295,11 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	validarJsonNoNulo(configuracionJson, "configuracion");
 
 	parsearResolucion(configuracionJson["resolucion"], anchoPantalla, altoPantalla, escala);
+
+    cantidadJugadores = parsearCantidadJugadores(configuracionJson["cantidadJugadores"]);
+
 	nivelLog = parsearNivelLog(configuracionJson);
 	niveles = parsearNiveles(configuracionJson["niveles"]);
 
-	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles);
+	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles, cantidadJugadores);
 }
