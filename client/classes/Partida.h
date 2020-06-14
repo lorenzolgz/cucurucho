@@ -34,7 +34,7 @@ private:
     ManagerJuego* manager;
     IniciadorComunicacion* iniciadorComunicacion;
     HiloConexionCliente* hiloConexionCliente;
-    ColaBloqueante<nlohmann::json>* colaComandos;
+    ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
 

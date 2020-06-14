@@ -5,9 +5,9 @@
 #include "HiloConexionCliente.h"
 
 HiloConexionCliente::HiloConexionCliente(ConexionCliente *conexionCliente,
-                                         ColaBloqueante<nlohmann::json> *colaComandos) {
+                                         ColaBloqueante<nlohmann::json> *colaMensajes) {
     HiloConexionCliente::conexionCliente = conexionCliente;
-    HiloConexionCliente::colaComandos = colaComandos;
+    HiloConexionCliente::colaMensajes = colaMensajes;
 
 }
 
@@ -19,7 +19,7 @@ void HiloConexionCliente::run() {
 		l->info("whileHiloConexionCliente");
 		nlohmann::json mensajeRecibido = conexionCliente->recibirMensaje();
 		l->info("recHiloConexionCliente " + mensajeRecibido.dump());
-		colaComandos->push(mensajeRecibido);
+		colaMensajes->push(mensajeRecibido);
     }
 
 	l->info("Terminando de correr HiloConexionCliente");

@@ -14,7 +14,7 @@ void Partida::play(const char* ip_address, int port) {
     validarLogin = false;
 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    colaComandos = new ColaBloqueante<nlohmann::json>();
+    colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
 
     hiloConexionCliente = nullptr;
@@ -39,19 +39,19 @@ void Partida::play(const char* ip_address, int port) {
 
         // TODO patch para race conditions
         if (hiloConexionCliente == nullptr) {
-            hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaComandos);
+            hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaMensajes);
             hiloConexionCliente->start();
         }
 
-        if (!colaComandos->empty()) {
+        if (!colaMensajes->empty()) {
 			// !!!!! reducir MAX_COLA
-			// colaComandos->pop(MAX_COLA);
-			while (colaComandos->size() > MAX_COLA_CLIENTE){
-				colaComandos->pop();
-				l->info("Se desencola debido a la alta cantidad de comandos en la cola");
+			// colaMensajes->pop(MAX_COLA);
+			while (colaMensajes->size() > MAX_COLA_CLIENTE){
+				colaMensajes->pop();
+				l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
 			}
 
-            nlohmann::json instruccion = colaComandos->pop();
+            nlohmann::json instruccion = colaMensajes->pop();
             manager->estadoNivel(instruccion);
         }
 
