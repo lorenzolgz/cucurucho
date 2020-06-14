@@ -119,7 +119,8 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     struct Comando client_command = {false, false, false, false};
 
-	client_command.nroJugador = estadoLogin.nroJugador;
+    // TODO: estadoLogin esta repetido e inconsistente
+	client_command.nroJugador = manager->getEstadoLogin().nroJugador;
 	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
     client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];

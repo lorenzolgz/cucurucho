@@ -15,27 +15,22 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 
 }
 
-bool receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
-	// Esta variable se necesita porque el servidor va mas rapido que los clientes, entonces cuando no hay actividad, que siga de largo.
-	bool seRecibioComando = false;
-
-	hilosConexionesServidores->reverse();
+void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
+    hilosConexionesServidores->reverse();
 
 	// Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		auto* colaReceptora = hiloConexionServidor->colaReceptora;
 		nlohmann::json mensajeJson;
 
-		while (colaReceptora->size() > MAX_COLA_SERVIDOR) {
+		while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
             colaReceptora->pop();
 		}
 
-		if(!colaReceptora->empty()){
-            // Notar que esto es bloqueante si la cola esta vacia! Se queda esperando a que deje de estarlo.
+		if(colaReceptora->size() > 0){
             mensajeJson = colaReceptora->pop();
 
             if (mensajeJson["_t"] == COMANDO) {
-                seRecibioComando = true;
                 struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
                 comandos[comando.nroJugador-1] = comando;
             } else {
@@ -43,8 +38,6 @@ bool receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
             }
         }
 	}
-
-	return seRecibioComando;
 
 	// !!!! Dejo esta linea aca porque es muy buena
 	/*
@@ -101,25 +94,23 @@ void HiloOrquestadorPartida::run() {
 	int nuevoNivel = 1;
 
 	std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(conexiones);
-	for (int i = 0; i < hilosConexionesServidores->size(); i++) {
-		struct Comando comando = comandos[i];
-		comando = {0, 0, 0, 0, 0};
-	}
 
 	//keep communicating with client
 	try {
 		while (!quit) {
 
-			// TODO
-			// WIP. Para controlar la cantidad de ticks.
 			t2 = clock();
-			if ((t2 - t1) > 1000 * 1000 / 60 / 2) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
+			if ((t2 - t1) > 1000 * 1000 / 60) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
 			} else {
 				continue;
 			}
 
+			for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+				comandos[i] = {0, 0, 0, 0, 0};
+			}
+
 			// Receive data (command)
-			if (!receiveData(hilosConexionesServidores, comandos)) continue;
+			receiveData(hilosConexionesServidores, comandos);
 			//--------------------
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);

@@ -96,3 +96,7 @@ bool ManagerJuego::terminoJuego() {
 bool ManagerJuego::enJuego() {
     return estadoLogin.estadoLogin == LOGIN_FIN;
 }
+
+const EstadoLogin &ManagerJuego::getEstadoLogin() const {
+    return estadoLogin;
+}

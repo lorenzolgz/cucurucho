@@ -24,6 +24,8 @@ public:
 
     bool enJuego();
 
+    const EstadoLogin &getEstadoLogin() const;
+
 private:
     InformacionNivel informacionNivel;
     EstadoTick estadoTick;

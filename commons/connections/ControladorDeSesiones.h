@@ -11,20 +11,22 @@
 #include <iostream>
 #include <jsoncpp/json/json.h>
 #include <fstream>
+#include <list>
 using namespace std;
 
 class ControladorDeSesiones {
 public:
-    ControladorDeSesiones(ConexionServidor* conexionServidor, int nroJugador);
-    bool iniciarSesion(map<string, bool> &jugadoresConectados);
+    ControladorDeSesiones(ConexionServidor* conexionServidor, std::list<ConexionServidor*>& conexiones, int nroJugador);
+    bool iniciarSesion();
     void setServidor(ConexionServidor *servidor);
     string usuarioConectado;
     string userConectado();
-    bool controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario, map<string, bool> &jugadoresConectados);
+    bool controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario);
 
 private:
     ConexionServidor* conexionServidor;
 	Json::Value jsonUsuarios, contrasenias;
+    std::list<ConexionServidor*> conexiones;
 	int nroJugador;
 
 	bool usuarioEstaRegistrado(char* usuario, char* contrasenia);

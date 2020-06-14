@@ -12,15 +12,8 @@
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor
 #define MAX_COLA_CLIENTE 2
-#define MAX_COLA_SERVIDOR 2
-
-// Tipos de mensajes
-enum {
-    INFORMACION_NIVEL,
-    ESTADO_TICK,
-    COMANDO,
-    ESTADO_LOGIN
-};
+#define MAX_COLA_RECEPTORA_SERVIDOR 2
+#define MAX_COLA_EMISORA_SERVIDOR 2
 
 // Codigos Estado Login
 #define LOGIN_SIN_CONEXION -2
@@ -31,7 +24,20 @@ enum {
 #define LOGIN_FIN 3
 
 // Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
-#define TIMEOUT_LOGIN_FIN 0
+#define TIMEOUT_LOGIN_FIN 
+
+// Tiempo de pasaje entre niveles
+#define TIMEOUT_PROXIMO_NIVEL 1
+
+// Tipos de mensajes
+enum {
+    INFORMACION_NIVEL,
+    ESTADO_TICK,
+    COMANDO,
+    ESTADO_LOGIN,
+    MENSAJE_PING
+};
+
 
 struct Comando {
 	int nroJugador;

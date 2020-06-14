@@ -15,12 +15,21 @@ void HiloConexionServidor::run() {
 	try{
         while (true) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-            l->info("recHiloConexionServidor " + mensajeRecibido.dump());
+            l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
             colaReceptora->push(mensajeRecibido);
+
+            while (colaEnviadora->size() > MAX_COLA_EMISORA_SERVIDOR) {
+                nlohmann::json json = colaEnviadora->pop();
+                // Solo se deberian matar los mensajes de ESTADO_TICK
+                if (json["tipoMensaje"] != ESTADO_TICK) {
+                    colaEnviadora->push(json);
+                    break;
+                }
+            }
 
             if (!colaEnviadora->empty()) {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-                l->info("envHiloConexionServidor " + mensajeAEnviar.dump());
+                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
                 conexionServidor->enviarMensaje(mensajeAEnviar);
 
             }

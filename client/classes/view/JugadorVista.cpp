@@ -50,12 +50,13 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
     helperAbove->render(estadoJugador.helper1);
     helperBelow->render(estadoJugador.helper2);
 
+    colorGlow();
+
     // TODO cambiar glow por black and white
     if(estadoJugador.presente){
-        colorGlow();
-        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " esta presente" << std::endl;
+//        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " esta presente" << std::endl;
     } else {
-        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " (NO) esta presente" << std::endl;
+//        std::cout << "El jugador que en Y tiene: " << estadoJugador.posicionY << " (NO) esta presente" << std::endl;
     }
 
 	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),

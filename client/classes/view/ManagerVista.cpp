@@ -53,7 +53,7 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     if (informacionNivel.numeroNivel > 1) {
         this->renderNivelIntermedio();
         SDL_RenderPresent(GraphicRenderer::getInstance());
-        SDL_Delay(2000);
+        SDL_Delay(TIMEOUT_PROXIMO_NIVEL * 1000);
     }
 
     ManagerVista::informacionNivel = informacionNivel;

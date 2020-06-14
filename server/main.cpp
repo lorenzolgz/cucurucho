@@ -6,6 +6,7 @@
 #include "classes/config/FondoConfiguracion.h"
 #include "classes/HiloOrquestadorPartida.h"
 #include "../commons/connections/ControladorDeSesiones.h"
+#include "../commons/connections/ConexionExcepcion.h"
 
 
 #define BACKUP_CONFIG "../server/config/backup.json"
@@ -77,7 +78,7 @@ Configuracion* parsearConfiguracion() {
 }
 
 
-void notificarEstadoConexion(std::list<ConexionServidor*> conexiones, int estadoLogin) {
+void notificarEstadoConexion(std::list<ConexionServidor*>* conexiones, int estadoLogin) {
     nlohmann::json json;
     json["tipoMensaje"] = ESTADO_LOGIN;
     json["estadoLogin"] = estadoLogin;
@@ -87,16 +88,26 @@ void notificarEstadoConexion(std::list<ConexionServidor*> conexiones, int estado
     json["jugador4"] = "\0";
 
     int i = 1;
-    for (ConexionServidor* & c : conexiones) {
+    for (ConexionServidor* & c : *conexiones) {
         json["jugador" + std::to_string(i)] = c->getUsuario();
         i++;
     }
 
     i = 1;
-    for (ConexionServidor* & c : conexiones) {
-        json["nroJugador"] = i;
-        c->enviarMensaje(json);
-        i++;
+    auto j = conexiones->begin();
+    while (j != conexiones->end()) {
+        try {
+            json["nroJugador"] = i;
+            (*j)->enviarMensaje(json);
+            j++;
+            i++;
+        } catch (const ConexionExcepcion& e) {
+            // Si el usuario se desconecta antes de comenzar la partida puede conectarse otro (evaluar?)
+            conexiones->erase(j);
+            // Volver a enviar mensajes con lista actualizada
+            notificarEstadoConexion(conexiones, estadoLogin);
+            return;
+        }
     }
 }
 
@@ -108,25 +119,24 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	aceptadorConexiones->escuchar();
 
 	std::list<ConexionServidor*> conexiones;
-    map<string, bool> jugadoresConectados;
 
 	while (conexiones.size() < config->getCantidadJugadores()) {
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones.size()+1);
-        if (!controladorDeSesiones->iniciarSesion(jugadoresConectados)) {//si entró un usuario no registrado
+		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones, conexiones.size()+1);
+        if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
             continue;
         }
-		conexiones.push_back(conexionServidor);
-        notificarEstadoConexion(conexiones, LOGIN_ESPERAR);
-		l->info("Usuario " + std::to_string(jugadoresConectados.size()) + " conectado");
+        conexiones.push_back(conexionServidor);
+        notificarEstadoConexion(&conexiones, LOGIN_ESPERAR);
+        l->info("Usuario " + std::to_string(conexiones.size()) + " conectado");
 	}
 	l->info("Todos los usuarios fueron aceptados");
-    notificarEstadoConexion(conexiones, LOGIN_COMENZAR);
+    notificarEstadoConexion(&conexiones, LOGIN_COMENZAR);
 
     // TODO: Pre-procesamiento?
     std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
-    notificarEstadoConexion(conexiones, LOGIN_FIN);
+    notificarEstadoConexion(&conexiones, LOGIN_FIN);
 
 	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
 
