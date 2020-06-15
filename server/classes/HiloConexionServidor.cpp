@@ -4,7 +4,9 @@
 HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
+	this->activo = true;
 }
+
 
 void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
@@ -37,11 +39,26 @@ void HiloConexionServidor::run() {
         }
     }
 	catch (...){
+        l->info("Catch hiloConexionServidor");
+        // Notificar Desconexion
+        std::string usuarioPerdido = conexionServidor->getUsuario();
         nlohmann::json mensajeError;
-        l->info("Caatch hiloConexionServidor");
-        mensajeError["usuario"] = conexionServidor->getUsuario();
+        mensajeError["usuario"] = usuarioPerdido;
         mensajeError["_t"] = ERROR_CONEXION;
         colaReceptora->push(mensajeError);
+        /*
+        // Intentar Reconexion
+        aceptadorConexiones->escuchar();
+        conexionServidor = aceptadorConexiones->aceptarConexion();
+        conexionServidor->setUsuario(usuarioPerdido);
+
+        // Notificar Reconexion
+        nlohmann::json mensajeReconexion;
+        l->info("Voy a reconectar");
+        mensajeReconexion["usuario"] = conexionServidor->getUsuario();
+        mensajeReconexion["_t"] = RECONEXION;
+        colaReceptora->push(mensajeReconexion);
+        */
 	}
 }
 

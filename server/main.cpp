@@ -120,7 +120,7 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
 	std::list<ConexionServidor*> conexiones;
 
-	while (conexiones.size() < config->getCantidadJugadores()) {
+	while (conexiones.size() < config->getCantidadJugadores()) { //usuario != usuarioPerdido
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
 		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones, conexiones.size()+1);

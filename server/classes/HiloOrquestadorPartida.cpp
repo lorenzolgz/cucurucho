@@ -19,8 +19,9 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 
 }
 
-void desconectarUsuario(std::string usuarioPerdido, std::list<HiloConexionServidor*>* hilos, HiloConexionServidor* hiloADesconectar){
+void desconectarUsuario(std::string usuarioPerdido, std::list<HiloConexionServidor*>* hilos , HiloConexionServidor* hiloADesconectar){
     hilos->remove(hiloADesconectar);
+    hiloADesconectar->activo = false;
     bool anotado = false;
     for(int i=0; i<MAX_JUGADORES && !anotado; i++){
         if(!usuariosPorID[i].compare(usuarioPerdido)){
@@ -37,6 +38,24 @@ void desconectarUsuario(std::string usuarioPerdido, std::list<HiloConexionServid
     throw new std::exception();
 }
 
+void reconectarUsuario(std::string usuarioPerdido, HiloConexionServidor* hiloADesconectar){
+    hiloADesconectar->activo = true;
+    bool anotado = false;
+    for(int i=0; i<MAX_JUGADORES && !anotado; i++){
+        if(!usuariosPorID[i].compare(usuarioPerdido)){
+            usuarioConectado[i] = 1;
+            anotado = true;
+            break;
+        }
+    }
+    if(!anotado){
+        l->error("Ocurrio un error al procesar que el jugador " + usuarioPerdido + " retomo su conexion");
+        throw new std::exception();
+    }
+    l->info("Se retomo la conexion con el usuario " + usuarioPerdido);
+    throw new std::exception();
+}
+
 void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
     hilosConexionesServidores->reverse();
 
@@ -45,31 +64,37 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
     try {
         // Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
         for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
-            auto* colaReceptora = hiloConexionServidor->colaReceptora;
-            nlohmann::json mensajeJson;
+            // Solo opero sobre hilos activos
+            if(hiloConexionServidor->activo){
+                auto* colaReceptora = hiloConexionServidor->colaReceptora;
+                nlohmann::json mensajeJson;
 
-            while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
-                mensajeJson = colaReceptora->pop();
-                if(mensajeJson["_t"] == ERROR_CONEXION){
-                    usuarioPerdido = mensajeJson["usuario"];
-                    desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
-                }
-            }
-
-            if(colaReceptora->size() > 0){
-                mensajeJson = colaReceptora->pop();
-
-                if(mensajeJson["_t"] == ERROR_CONEXION){
-                    usuarioPerdido = mensajeJson["usuario"];
-                    desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
-                }
-                else if (mensajeJson["_t"] == COMANDO) {
-                    struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-                    comandos[comando.nroJugador-1] = comando;
-                } else {
-                    l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+                while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
+                    mensajeJson = colaReceptora->pop();
+                    if(mensajeJson["_t"] == ERROR_CONEXION){
+                        usuarioPerdido = mensajeJson["usuario"];
+                        desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
+                    }
                 }
 
+                if(colaReceptora->size() > 0 && hiloConexionServidor->activo){
+                    mensajeJson = colaReceptora->pop();
+
+                    if(mensajeJson["_t"] == ERROR_CONEXION){
+                        usuarioPerdido = mensajeJson["usuario"];
+                        desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
+                    }
+                    else if (mensajeJson["_t"] == COMANDO) {
+                        struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        comandos[comando.nroJugador-1] = comando;
+                    }
+                    else if (mensajeJson["_t"] == RECONEXION) {
+                        usuarioPerdido = mensajeJson["usuario"];
+                        reconectarUsuario(usuarioPerdido, hiloConexionServidor);
+                    } else {
+                        l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+                    }
+                }
             }
         }
     }
