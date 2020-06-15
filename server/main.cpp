@@ -138,7 +138,7 @@ int esperarConexiones(int puerto, Configuracion* config) {
     std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
     notificarEstadoConexion(&conexiones, LOGIN_FIN);
 
-	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
+	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones, aceptadorConexiones);
 
 	try {
 		hiloOrquestadorPartida->start();

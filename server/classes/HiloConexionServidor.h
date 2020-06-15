@@ -10,7 +10,7 @@
 
 class HiloConexionServidor : public Thread {
 public:
-	HiloConexionServidor(ConexionServidor* conexionServidor, int jugador);
+	HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, AceptadorConexiones* aceptador);
 	int jugador;
 	bool activo;
 	void run() override;
@@ -20,7 +20,7 @@ public:
 	ColaBloqueante<nlohmann::json>* colaReceptora = new ColaBloqueante<nlohmann::json>();
 	ColaBloqueante<nlohmann::json>* colaEnviadora = new ColaBloqueante<nlohmann::json>();
 	// TODO inyectar puerto apropiamente
-	//AceptadorConexiones* aceptadorConexiones= new AceptadorConexiones(3040);
+	AceptadorConexiones* aceptadorConexiones;
 };
 
 

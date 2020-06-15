@@ -12,11 +12,11 @@ std::string usuariosPorID[MAX_JUGADORES];
 int usuarioConectado[MAX_JUGADORES];
 
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones) {
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones, AceptadorConexiones* aceptador) {
 	this->config = config;
 	this->conexiones = conexiones;
 	this->partida = new Partida(config);
-
+	this->aceptadorConexiones = aceptador;
 }
 
 void desconectarUsuario(std::string usuarioPerdido, HiloConexionServidor* hiloADesconectar){
@@ -89,6 +89,7 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
                     }
                     else if (mensajeJson["_t"] == RECONEXION) {
                         usuarioPerdido = mensajeJson["usuario"];
+                        l->info("Reconectando al usuario " + usuarioPerdido);
                         reconectarUsuario(usuarioPerdido, hiloConexionServidor);
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
@@ -130,14 +131,14 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 	}
 }
 
-std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
+std::list<HiloConexionServidor*>* HiloOrquestadorPartida::crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
 	auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
 
 	int i = 0;
 	for (auto* conexion : *(conexiones)) {
         usuariosPorID[i] = conexion->getUsuario();
         usuarioConectado[i] = 1;
-		auto* hiloConexionServidor = new HiloConexionServidor(conexion, i);
+		auto* hiloConexionServidor = new HiloConexionServidor(conexion, i, aceptadorConexiones);
 		hiloConexionServidor->start();
 		hilosConexionesServidores->push_back(hiloConexionServidor);
 		i++;

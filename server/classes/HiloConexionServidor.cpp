@@ -1,10 +1,11 @@
 #include "HiloConexionServidor.h"
 #include "../../commons/utils/Log.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, AceptadorConexiones* aceptador) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
 	this->activo = true;
+	this->aceptadorConexiones = aceptador;
 }
 
 
@@ -46,19 +47,23 @@ void HiloConexionServidor::run() {
         mensajeError["usuario"] = usuarioPerdido;
         mensajeError["_t"] = ERROR_CONEXION;
         colaReceptora->push(mensajeError);
-        /*
+        conexionServidor->cerrar();
+
         // Intentar Reconexion
-        aceptadorConexiones->escuchar();
+        l->info("ESTOY ACEPTANDO LA CONEXION");
         conexionServidor = aceptadorConexiones->aceptarConexion();
+        l->info("ACEPTE LA CONEXION");
         conexionServidor->setUsuario(usuarioPerdido);
 
         // Notificar Reconexion
+        this->activo = true;
         nlohmann::json mensajeReconexion;
         l->info("Voy a reconectar");
         mensajeReconexion["usuario"] = conexionServidor->getUsuario();
         mensajeReconexion["_t"] = RECONEXION;
         colaReceptora->push(mensajeReconexion);
-        */
+        run();
+
 	}
 }
 

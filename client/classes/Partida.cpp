@@ -50,6 +50,7 @@ void Partida::play(const char* ip_address, int port) {
 
             // TODO patch para race conditions
             if (hiloConexionCliente == nullptr) {
+                std::cout << "Creando un nuevo hiloConexionCliente\n";
                 hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaMensajes);
                 hiloConexionCliente->start();
             }
@@ -71,15 +72,16 @@ void Partida::play(const char* ip_address, int port) {
         }
         catch(...){ // ConexionExcepcion
             std::cout << "Ocurrio una excepcion\n";
-            /*
+            std::cout << ".:. Reconectando .:.\n";
             conexionCliente = iniciadorComunicacion->conectar();
-            while(conexionCliente == NULL){
+            while(conexionCliente == nullptr){
                 std::cout << ".:. Reconectando .:.\n";
             }
-            // STOPEADO ACA
-            std::cout << "Esto no lo voy a ver\n";
-            hiloConexionCliente->conexionCliente = conexionCliente;
-            */
+            std::cout << "Ya reconecte!\n";
+            hiloConexionCliente = nullptr;
+            //hiloConexionCliente->conexionCliente = conexionCliente;
+            std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
+
         }
     }
 
