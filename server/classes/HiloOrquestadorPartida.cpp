@@ -19,8 +19,7 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 
 }
 
-void desconectarUsuario(std::string usuarioPerdido, std::list<HiloConexionServidor*>* hilos , HiloConexionServidor* hiloADesconectar){
-    hilos->remove(hiloADesconectar);
+void desconectarUsuario(std::string usuarioPerdido, HiloConexionServidor* hiloADesconectar){
     hiloADesconectar->activo = false;
     bool anotado = false;
     for(int i=0; i<MAX_JUGADORES && !anotado; i++){
@@ -73,7 +72,7 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
                     mensajeJson = colaReceptora->pop();
                     if(mensajeJson["_t"] == ERROR_CONEXION){
                         usuarioPerdido = mensajeJson["usuario"];
-                        desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
+                        desconectarUsuario(usuarioPerdido, hiloConexionServidor);
                     }
                 }
 
@@ -82,7 +81,7 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
 
                     if(mensajeJson["_t"] == ERROR_CONEXION){
                         usuarioPerdido = mensajeJson["usuario"];
-                        desconectarUsuario(usuarioPerdido, hilosConexionesServidores, hiloConexionServidor);
+                        desconectarUsuario(usuarioPerdido, hiloConexionServidor);
                     }
                     else if (mensajeJson["_t"] == COMANDO) {
                         struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
