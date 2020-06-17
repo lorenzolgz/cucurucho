@@ -106,6 +106,7 @@ void Partida::autenticarServidor() {
         conexionCliente->cerrar();
     }
 
+    manager->setUsername(std::string(credenciales.usuario));
     manager->setEstadoLogin(estadoLogin);
 }
 

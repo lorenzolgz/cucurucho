@@ -24,8 +24,8 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 
 }
 
-void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin) {
-    hud.render();
+void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
+    hud.render(estadoLogin, username);
 
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);

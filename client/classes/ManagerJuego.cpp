@@ -84,7 +84,7 @@ void ManagerJuego::setEstadoLogin(struct EstadoLogin estadoLogin) {
 void ManagerJuego::render(){
     managerVista->setInformacionNivel(informacionNivel);
     //Render texture to screen
-    managerVista->render(estadoTick, estadoLogin);
+    managerVista->render(estadoTick, estadoLogin, username);
 }
 
 // TODO: che no da
@@ -99,4 +99,8 @@ bool ManagerJuego::enJuego() {
 
 const EstadoLogin &ManagerJuego::getEstadoLogin() const {
     return estadoLogin;
+}
+
+void ManagerJuego::setUsername(const std::string &username) {
+    ManagerJuego::username = username;
 }

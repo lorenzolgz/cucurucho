@@ -16,7 +16,7 @@
 class ManagerVista {
 public:
     ManagerVista(struct InformacionNivel, int nivelActual, int ancho, int alto);
-    void render(EstadoTick estadoTick, EstadoLogin estadoLogin);
+    void render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
 
     void renderNivelIntermedio();
 

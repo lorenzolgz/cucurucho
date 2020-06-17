@@ -13,7 +13,6 @@ HudVista::HudVista() {
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
     this->nuevoTexto(new std::string("10000"), Vector(240, 24), TEXTO_COLOR_ROJO, false);
-    this->nuevoTexto(new std::string("00"), Vector(240, 48), TEXTO_COLOR_NARANJA, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -26,7 +25,7 @@ HudVista::HudVista() {
 
 }
 
-void HudVista::render() {
+void HudVista::render(EstadoLogin estadoLogin, std::string username) {
     SDL_Rect hudrect = {(PANTALLA_ANCHO - HUD_SRC_ANCHO) / 2, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderSetViewport(gRenderer, &hudrect);
 
@@ -37,6 +36,8 @@ void HudVista::render() {
     for (TextoVista* c : textos){
         c->render();
     }
+
+    TextoVista::eRender(username, Vector(24, 48), estadoLogin.nroJugador + 1, true);
 
     if (toast != nullptr) {
         toast->render();

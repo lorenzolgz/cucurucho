@@ -31,8 +31,8 @@ int main(int argc , char *argv[]) {
             // TODO: Ver si falta actualizar el help
             std::string opciones = std::string("Opciones:\n\t")
                                    + "-l\tSetea el nivel de log\n\t"
-                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)"
-                                   + "-p\tEspecifica el puerto sobre el cual va a correr el servidor";
+                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)\n\t"
+                                   + "-p\tEspecifica el puerto sobre el cual va a correr el servidor\n\t";
             std::cout << help << std::endl;
             std::cout << opciones << std::endl;
             return 0;

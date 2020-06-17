@@ -83,9 +83,9 @@ int main(int argc, char *argv[]) {
             std::string help = "Gley Lancer (cliente) en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
             std::string opciones = std::string("Opciones:\n\t")
                                    + "-l\tSetea el nivel de log\n\t"
-                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)"
-                                   + "-h\tEspecifica la direccion IP a la cual conectarse"
-                                   + "-p\tEspecifica el puerto a conectarse";
+                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)\n\t"
+                                   + "-h\tEspecifica la direccion IP a la cual conectarse\n\t"
+                                   + "-p\tEspecifica el puerto a conectarse\n\t";
             std::cout << help << std::endl;
 			std::cout << opciones << std::endl;
 			return 0;

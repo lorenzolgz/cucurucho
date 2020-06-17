@@ -18,6 +18,8 @@ public:
 
     void setEstadoLogin(struct EstadoLogin estadoLogin);
 
+    void setUsername(const std::string &username);
+
     void render();
 
     bool terminoJuego();
@@ -31,6 +33,7 @@ private:
     EstadoTick estadoTick;
     ManagerVista *managerVista;
     EstadoLogin estadoLogin;
+    std::string username;
 
     void setEstadoTick(nlohmann::json mensaje);
     void setInformacionNivel(nlohmann::json mensaje);
