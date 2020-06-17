@@ -24,7 +24,7 @@ void HiloConexionCliente::run() {
         }
     }
     catch(...){
-        std::cout << "Ocurrio un error en el hiloConexionCliente" << std::endl;
+        l->error("Ocurrio un error en el hiloConexionCliente");
     }
 
 	l->info("Terminando de correr HiloConexionCliente");

@@ -50,7 +50,7 @@ void Partida::play(const char* ip_address, int port) {
 
             // TODO patch para race conditions
             if (hiloConexionCliente == nullptr) {
-                std::cout << "Creando un nuevo hiloConexionCliente\n";
+                l->info("Creando un nuevo hiloConexionCliente\n");
                 hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaMensajes);
                 hiloConexionCliente->start();
             }

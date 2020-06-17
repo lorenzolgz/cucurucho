@@ -9,6 +9,7 @@
 #include "../../../commons/utils/Log.h"
 #include "../../../commons/utils/Constantes.h"
 
+
 Json::Value ConfiguracionParser::get(Json::Value value, std::string mensaje, bool requerido) {
 	Json::Value campo = value["mensaje"];
 	// Todo validar si es necesario, paja lo del mensaje

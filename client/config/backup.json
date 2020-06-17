@@ -2,38 +2,6 @@
    "configuracion": {
       "log": {
          "nivel": "debug"
-      },
-      "niveles": [
-         {
-            "archivoFondos": "fondos/fondos1.json",
-            "fin": "cleared_con_nave1.png",
-            "enemigos": {
-               "clase1": 5,
-               "clase2": 1
-            },
-            "velocidad": 2,
-            "largo": 30000
-         },
-         {
-            "archivoFondos": "fondos/fondos2.json",
-            "fin": "cleared_con_nave2.png",
-            "enemigos": {
-               "clase1": 5,
-               "clase2": 2
-            },
-            "velocidad": 2,
-            "largo": 30000
-         },
-         {
-            "archivoFondos": "fondos/fondos3.json",
-            "fin": "cleared_con_nave3.png",
-            "enemigos": {
-               "clase1": 4,
-               "clase2": 1
-            },
-            "velocidad": 2,
-            "largo": 30000
-         }
-      ]
+      }
    }
 }
