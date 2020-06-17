@@ -12,10 +12,10 @@
 
 const int INICIO_TIMEOUT = 120;
 
-const struct Login autoCredenciales[4] = {{"rodri", "13141516"},
-        {"cami", "1234"},
-        {"ailu", "5678"},
-        {"lolo", "9012"}};
+const struct Login autoCredenciales[4] = {{"rodri", "12"},
+        {"cami", "12"},
+        {"ailu", "12"},
+        {"lolo", "12"}};
 
 enum {
     TITULO_VACIO,

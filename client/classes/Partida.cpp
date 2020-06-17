@@ -13,51 +13,76 @@ void Partida::play(const char* ip_address, int port) {
     manager = new ManagerJuego();
     validarLogin = false;
 
+    bool primeraVez = true;
+
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
-    colaComandos = new ColaBloqueante<nlohmann::json>();
+    colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
 
     hiloConexionCliente = nullptr;
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     while (!quit) {
-        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
-        SDL_RenderClear(GraphicRenderer::getInstance());
+        try{
 
-        std::string inputText;
-        quit = quit || eventLoop(&inputText);
+            const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-        if (estadoLogin.nroJugador <= 0 && validarLogin) {
-            autenticarServidor();
-            validarLogin = false;
+            if(currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X] && primeraVez){
+                std::cout << "Apretaste CTRL+X \n";
+                primeraVez = false;
+                conexionCliente->cerrar();
+            }
+
+            SDL_RenderClear(GraphicRenderer::getInstance());
+
+            std::string inputText;
+            quit = quit || eventLoop(&inputText);
+
+            if (estadoLogin.nroJugador <= 0 && validarLogin) {
+                autenticarServidor();
+                validarLogin = false;
+            }
+
+            // TODO: Separar mejor el logueo conexion del logueo vista
+            if (pantallaInicioLoop(inputText, currentKeyStates)) {
+                continue;
+            }
+
+            // TODO patch para race conditions
+            if (hiloConexionCliente == nullptr) {
+                l->info("Creando un nuevo hiloConexionCliente\n");
+                hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaMensajes);
+                hiloConexionCliente->start();
+            }
+
+            if (!colaMensajes->empty()) {
+                // !!!!! reducir MAX_COLA
+                // colaMensajes->pop(MAX_COLA);
+                while (colaMensajes->size() > MAX_COLA_CLIENTE){
+                    colaMensajes->pop();
+                    l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
+                }
+
+                nlohmann::json instruccion = colaMensajes->pop();
+                manager->estadoNivel(instruccion);
+            }
+
+            conexionLoop(currentKeyStates);
+            quit = quit || renderLoop();
         }
+        catch(...){ // ConexionExcepcion
+            std::cout << "Ocurrio una excepcion\n";
+            std::cout << ".:. Reconectando .:.\n";
+            conexionCliente = iniciadorComunicacion->conectar();
+            while(conexionCliente == nullptr){
+                std::cout << ".:. Reconectando .:.\n";
+            }
+            std::cout << "Ya reconecte!\n";
+            hiloConexionCliente = nullptr;
+            //hiloConexionCliente->conexionCliente = conexionCliente;
+            std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
 
-        // TODO: Separar mejor el logueo conexion del logueo vista
-        if (pantallaInicioLoop(inputText, currentKeyStates)) {
-            continue;
         }
-
-        // TODO patch para race conditions
-        if (hiloConexionCliente == nullptr) {
-            hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaComandos);
-            hiloConexionCliente->start();
-        }
-
-        if (!colaComandos->empty()) {
-			// !!!!! reducir MAX_COLA
-			// colaComandos->pop(MAX_COLA);
-			while (colaComandos->size() > MAX_COLA_CLIENTE){
-				colaComandos->pop();
-				l->info("Se desencola debido a la alta cantidad de comandos en la cola");
-			}
-
-            nlohmann::json instruccion = colaComandos->pop();
-            manager->estadoNivel(instruccion);
-        }
-
-        conexionLoop(currentKeyStates);
-
-        quit = quit || renderLoop();
     }
 
 }

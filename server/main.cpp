@@ -120,7 +120,7 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
 	std::list<ConexionServidor*> conexiones;
 
-	while (conexiones.size() < config->getCantidadJugadores()) {
+	while (conexiones.size() < config->getCantidadJugadores()) { //usuario != usuarioPerdido
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
 		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones, conexiones.size()+1);
@@ -138,7 +138,7 @@ int esperarConexiones(int puerto, Configuracion* config) {
     std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
     notificarEstadoConexion(&conexiones, LOGIN_FIN);
 
-	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones);
+	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones, aceptadorConexiones);
 
 	try {
 		hiloOrquestadorPartida->start();

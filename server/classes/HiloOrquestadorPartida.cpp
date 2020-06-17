@@ -8,38 +8,104 @@ void processData(Partida* partida, struct Comando comandos[], struct EstadoTick*
 int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion();
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones) {
+std::string usuariosPorID[MAX_JUGADORES];
+int usuarioConectado[MAX_JUGADORES];
+
+
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones, AceptadorConexiones* aceptador) {
 	this->config = config;
 	this->conexiones = conexiones;
 	this->partida = new Partida(config);
+	this->aceptadorConexiones = aceptador;
+}
 
+void desconectarUsuario(std::string usuarioPerdido, HiloConexionServidor* hiloADesconectar){
+    hiloADesconectar->activo = false;
+    bool anotado = false;
+    for(int i=0; i<MAX_JUGADORES && !anotado; i++){
+        if(!usuariosPorID[i].compare(usuarioPerdido)){
+            usuarioConectado[i] = 0;
+            anotado = true;
+            break;
+        }
+    }
+    if(!anotado){
+        l->error("Ocurrio un error al procesar que el jugador " + usuarioPerdido + " perdio su conexion");
+        throw new std::exception();
+    }
+    l->info("Se perdio la conexion con el usuario " + usuarioPerdido);
+    throw new std::exception();
+}
+
+void reconectarUsuario(std::string usuarioPerdido, HiloConexionServidor* hiloADesconectar){
+    hiloADesconectar->activo = true;
+    bool anotado = false;
+    for(int i=0; i<MAX_JUGADORES && !anotado; i++){
+        if(!usuariosPorID[i].compare(usuarioPerdido)){
+            usuarioConectado[i] = 1;
+            anotado = true;
+            break;
+        }
+    }
+    if(!anotado){
+        l->error("Ocurrio un error al procesar que el jugador " + usuarioPerdido + " retomo su conexion");
+        throw new std::exception();
+    }
+    l->info("Se retomo la conexion con el usuario " + usuarioPerdido);
+    throw new std::exception();
 }
 
 void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
     hilosConexionesServidores->reverse();
 
-	// Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
-	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
-		auto* colaReceptora = hiloConexionServidor->colaReceptora;
-		nlohmann::json mensajeJson;
+    std::string usuarioPerdido;
 
-		while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
-            colaReceptora->pop();
-		}
+    try {
+        // Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
+        for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
+            // Solo opero sobre hilos activos
+            if(hiloConexionServidor->activo){
+                auto* colaReceptora = hiloConexionServidor->colaReceptora;
+                nlohmann::json mensajeJson;
 
-		if(colaReceptora->size() > 0){
-            mensajeJson = colaReceptora->pop();
+                while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
+                    mensajeJson = colaReceptora->pop();
+                    if(mensajeJson["_t"] == ERROR_CONEXION){
+                        usuarioPerdido = mensajeJson["usuario"];
+                        desconectarUsuario(usuarioPerdido, hiloConexionServidor);
+                    }
+                }
 
-            if (mensajeJson["_t"] == COMANDO) {
-                struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-                comandos[comando.nroJugador-1] = comando;
-            } else {
-                l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+                if(colaReceptora->size() > 0 && hiloConexionServidor->activo){
+                    mensajeJson = colaReceptora->pop();
+
+                    if(mensajeJson["_t"] == ERROR_CONEXION){
+                        usuarioPerdido = mensajeJson["usuario"];
+                        desconectarUsuario(usuarioPerdido, hiloConexionServidor);
+                    }
+                    else if (mensajeJson["_t"] == COMANDO) {
+                        struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        comandos[comando.nroJugador-1] = comando;
+                    }
+                    else if (mensajeJson["_t"] == RECONEXION) {
+                        usuarioPerdido = mensajeJson["usuario"];
+                        l->info("Reconectando al usuario " + usuarioPerdido);
+                        reconectarUsuario(usuarioPerdido, hiloConexionServidor);
+                    } else {
+                        l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
+                    }
+                }
             }
         }
-	}
+    }
+    catch(...) {
+        // TODO: Algo mas para hacer tras eliminar al jugador de la lista y marcarlo como no presente?
+        //l->info("Ocurrio un error al recibir los movimientos de los jugadores");
+        //l->info(excepcion.what());
+    }
 
-	// !!!! Dejo esta linea aca porque es muy buena
+
+    // !!!! Dejo esta linea aca porque es muy buena
 	/*
 		struct Comando comando = comandos[i];
 		if (comando.arriba || comando.abajo || comando.izquierda || comando.derecha) {
@@ -65,15 +131,18 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 	}
 }
 
-std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
+std::list<HiloConexionServidor*>* HiloOrquestadorPartida::crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
 	auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
 
+	int i = 0;
 	for (auto* conexion : *(conexiones)) {
-		auto* hiloConexionServidor = new HiloConexionServidor(conexion);
+        usuariosPorID[i] = conexion->getUsuario();
+        usuarioConectado[i] = 1;
+		auto* hiloConexionServidor = new HiloConexionServidor(conexion, i, aceptadorConexiones);
 		hiloConexionServidor->start();
 		hilosConexionesServidores->push_back(hiloConexionServidor);
+		i++;
 	}
-
 	return hilosConexionesServidores;
 }
 
@@ -108,23 +177,23 @@ void HiloOrquestadorPartida::run() {
 			for (int i = 0; i < hilosConexionesServidores->size(); i++) {
 				comandos[i] = {0, 0, 0, 0, 0};
 			}
-
 			// Receive data (command)
 			receiveData(hilosConexionesServidores, comandos);
-			//--------------------
+            //--------------------
 			// Process model
 			processData(partida, comandos, &estadoTick, &informacionNivel);
-			//--------------------
+            //--------------------
 			// Send data (view)
-			sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
+            sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
 
 			t1 = clock();
 		}
 	}
-	catch (const std::exception& exc) {
-		l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
-		// TODO stoppear hilosConexionesServidores
+	catch (...) {
+        // TODO stoppear hilosConexionesServidores
+        // Si se llegó aca, quiere decir que no se pudo catchear la desconexion dentro de receiveData
+        l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
 	}
 
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
@@ -144,6 +213,8 @@ void processData(Partida* partida, struct Comando comandos[], struct EstadoTick*
 	int i = 0;
 	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
 		estadoTick->estadosJugadores[i] = estadoJugador;
+		// Asumiendo que el orden es el mismo que el del inicio de la partida
+		estadoTick->estadosJugadores[i].presente = usuarioConectado[i];
 		i++;
 	}
 	i = 0;

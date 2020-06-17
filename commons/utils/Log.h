@@ -15,7 +15,7 @@
 class Log {
 private:
 	std::string homePath;
-    std::string nivel = "error";
+    std::string nivel;
     char logEntrada [30]{};
 
 public:

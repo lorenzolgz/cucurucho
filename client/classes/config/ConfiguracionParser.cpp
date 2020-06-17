@@ -69,3 +69,71 @@ std::list<FondoConfiguracion*> ConfiguracionParser::parsearFondos(Json::Value fo
 	return fondosConfiguracion;
 }
 
+std::string parsearNivelLog(Json::Value root) {
+    try {
+        std::string nivelLog = root["log"]["nivel"].asString();
+        if (!nivelLog.compare("")){
+            l->error("No se hayó un nivel de log");
+            throw std::exception();
+        }
+        if (nivelLog.compare("error") && nivelLog.compare("info") && nivelLog.compare("debug")){
+            l->error("Se intento setear un nivel de log invalido. Los valores validos son 'debug', 'info' o 'error'");
+            throw std::exception();
+        }
+        return nivelLog;
+    }
+    catch(const std::exception& exc) {
+        l->error("Ocurrio un error al obtener el nivel de logging");
+        throw exc;
+    }
+}
+
+
+Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonConfig){
+    Json::Value jsonConfig;
+    std::ifstream archivo(rutaJsonConfig);
+    if (archivo.fail()){
+        std::cout<<rutaJsonConfig<<" no direcciona estadosEnemigos un archivo JSON de configuracion"<<std::endl;
+        throw std::exception();
+    }
+
+    try {
+        archivo >> jsonConfig;
+    }
+    catch(Json::Exception const& a){
+        // Acomodo el mensaje de la libreria para que quede de una sola linea
+        const std::string mensaje(a.what());
+        std::regex caracterIgnorado("\n+");
+        auto mensajeUnaLinea = std::regex_replace(mensaje, caracterIgnorado, "");
+        std::cout<<"Ocurrio un error al parsear el archivo de configuracion \"" + rutaJsonConfig + "\" por favor revise que este escrito correctamente"<<std::endl;
+        std::cout<<"Referencia de la libreria: " + mensajeUnaLinea<<std::endl;
+        throw std::exception();
+    }
+
+    std::string nivelLog;
+
+    Json::Value configuracionJson = jsonConfig["configuracion"];
+    validarJsonNoNulo(configuracionJson, "configuracion");
+
+    nivelLog = parsearNivelLog(configuracionJson);
+
+    return new Configuracion(nivelLog);
+}
+
+
+
+void ConfiguracionParser::validarJsonNoNulo(Json::Value value, std::string ruta) {
+    validarJsonGenerico(value.isNull(), "Campo nulo: " + ruta);
+}
+
+void ConfiguracionParser::validarJsonGenerico(bool hayError, std::string mensaje) {
+    if (hayError) {
+        l->error(mensaje);
+        throw std::exception();
+    }
+}
+
+void ConfiguracionParser::validarJsonNoNegativo(Json::Value value, std::string campo) {
+    validarJsonGenerico(value.asInt64() < 0 || value.asFloat() < 0, "Campo negativo: " + campo);
+}
+

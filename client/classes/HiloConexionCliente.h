@@ -13,12 +13,12 @@
 
 class HiloConexionCliente : public Thread {
 public:
-    HiloConexionCliente(ConexionCliente* conexionCliente, ColaBloqueante<nlohmann::json>* colaComandos);
+    HiloConexionCliente(ConexionCliente* conexionCliente, ColaBloqueante<nlohmann::json>* colaMensajes);
+    ConexionCliente* conexionCliente;
     void run() override;
 
 private:
-    ConexionCliente* conexionCliente;
-    ColaBloqueante<nlohmann::json>* colaComandos;
+    ColaBloqueante<nlohmann::json>* colaMensajes;
 };
 
 #endif //CUCURUCHO_HILOCONEXIONCLIENTE_H

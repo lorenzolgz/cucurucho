@@ -1,9 +1,13 @@
 #include "HiloConexionServidor.h"
 #include "../../commons/utils/Log.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, AceptadorConexiones* aceptador) {
 	this->conexionServidor = conexionServidor;
+	this->jugador = jugador;
+	this->activo = true;
+	this->aceptadorConexiones = aceptador;
 }
+
 
 void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
@@ -36,8 +40,30 @@ void HiloConexionServidor::run() {
         }
     }
 	catch (...){
-	    // TODO throw a hilo orquestador para matar conexion
-        l->info("CATCH PRODUCIDO AL RECIBIR MENSAJE");
+        l->info("Catch hiloConexionServidor");
+        // Notificar Desconexion
+        std::string usuarioPerdido = conexionServidor->getUsuario();
+        nlohmann::json mensajeError;
+        mensajeError["usuario"] = usuarioPerdido;
+        mensajeError["_t"] = ERROR_CONEXION;
+        colaReceptora->push(mensajeError);
+        conexionServidor->cerrar();
+
+        // Intentar Reconexion
+        l->info("ESTOY ACEPTANDO LA CONEXION");
+        conexionServidor = aceptadorConexiones->aceptarConexion();
+        l->info("ACEPTE LA CONEXION");
+        conexionServidor->setUsuario(usuarioPerdido);
+
+        // Notificar Reconexion
+        this->activo = true;
+        nlohmann::json mensajeReconexion;
+        l->info("Voy a reconectar");
+        mensajeReconexion["usuario"] = conexionServidor->getUsuario();
+        mensajeReconexion["_t"] = RECONEXION;
+        colaReceptora->push(mensajeReconexion);
+        run();
+
 	}
 }
 
@@ -57,9 +83,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
 		mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
-		// TODO que presente dependa de si se perdio la conexion de ese jugador o no
-        mensajeJson["estadosJugadores"][i]["presente"] = 1;
-
+        mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
     }
 	for (; j< MAX_ENEMIGOS; j++) {
 		mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;

@@ -16,7 +16,7 @@
 namespace fs = std::experimental::filesystem;
 
 Log::Log(std::string basePath) {
-	Log::homePath = "../" + basePath + RELATIVE_HOME_PATH;
+    Log::homePath = "../" + basePath + RELATIVE_HOME_PATH;
 
     if (!fs::is_directory(homePath) || !fs::exists(homePath)) { // Check if src folder exists
         fs::create_directory(homePath); // create src folder
@@ -28,6 +28,7 @@ Log::Log(std::string basePath) {
 	char pathlogthimeAsCharArray[pathlogtime.size() + 1];
 	strcpy(pathlogthimeAsCharArray, pathlogtime.c_str());	// or pass &s[0]
     std::strftime(Log::logEntrada, 50, pathlogthimeAsCharArray , std::localtime(&t));
+
     std::fstream archivo;
     archivo.open(logEntrada , std::fstream::out);
     archivo.close();
@@ -38,11 +39,10 @@ Log::Log(std::string basePath) {
 
 
 void Log::output(const std::string& estado_log, const std::string& mensaje) {
-	std::string pathlog = homePath + RELATIVE_PATHLOG;
-    std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     cargar_log(logEntrada, timenow, estado_log, mensaje);
-    // !!!! cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
+    cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
 }
 
 void Log::error(const std::string& string) {
@@ -58,7 +58,7 @@ void Log::info(const std::string& string) {
 }
 
 bool Log::confValida(std::string nivel) {
-    return ERROR;
+    return nivel == "error" or nivel == "info" or nivel == "debug";
 }
 
 void Log::setConf(std::string string) {
@@ -70,9 +70,8 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo.open(log , std::fstream::app);
     char horario[30];
     std::strftime(horario, 30, "%x %X" , std::localtime(&timestamp));
-    // !!!! archivo << horario << estado << msj << std::endl;
-    // !!!!
-	std::cout << horario << estado << msj << std::endl;
-	archivo.flush();
+    archivo << horario << estado << msj << std::endl;
+    archivo.flush();
     archivo.close();
 }
+

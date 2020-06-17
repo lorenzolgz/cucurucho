@@ -4,26 +4,43 @@
 #include "../commons/utils/Log.h"
 #include "classes/GraphicRenderer.h"
 #include "../commons/connections/IniciadorComunicacion.h"
-#include "classes/config/NivelConfiguracion.h"
 #include "../server/classes/states/EstadoInternoNivel.h"
 #include "../commons/utils/Constantes.h"
 #include "classes/GestorSDL.h"
 #include "classes/Partida.h"
+#include "classes/config/Configuracion.h"
+#include "classes/config/ConfiguracionParser.h"
 
-#define BACKUP_CONFIG "../config/backup.json"
+#define BACKUP_CONFIG"../client/config/backup.json"
 
 Log* l;
 ToastVista* toast;
 
 void configurar(std::string nivelLog) {
-	if (!nivelLog.empty()) {
-        l->setConf(nivelLog);
-    }
+    l->setConf(nivelLog);
 
     l->info("Alto pantalla: " + std::to_string(PANTALLA_ALTO));
     l->info("Ancho pantalla: " + std::to_string(PANTALLA_ANCHO));
     l->info("Escala pantalla: " + std::to_string(1));
     l->info("Nivel de Log: " + nivelLog);
+}
+
+Configuracion* parsearConfiguracion() {
+    ConfiguracionParser configuracionParser;
+    Configuracion* config;
+
+    // Ahoro intento con el backup
+    try {
+        config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+    }
+        // Si el backup tampoco sirve, ya no puedo inicializar el juego
+    catch (const std::exception& exc) {
+        std::cout<<"Ocurrio un error alhilocon leer el archivo de configuración de backup, no puede configurarse el juego"<<std::endl;
+        // Throw exception corta por completo la ejecucion del codigo
+        throw exc;
+    }
+
+    return config;
 }
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
@@ -38,8 +55,10 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
 int main(int argc, char *argv[]) {
     std::srand(std::time(NULL)); //use current time as seed for random generator
 
-    std::string archivoConfig = BACKUP_CONFIG;
-    std::string nivelLog;
+    std::string archivoConfig;
+    Configuracion* config = parsearConfiguracion();
+    std::string nivelLog = config->getNivelLog();
+
     int port = 3040;
     std::string dir_ip = "127.0.0.1";
 

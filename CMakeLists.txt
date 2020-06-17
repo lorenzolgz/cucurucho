@@ -92,7 +92,9 @@ add_executable(cliente
         client/classes/HiloConexionCliente.cpp client/classes/HiloConexionCliente.h
         client/classes/Partida.cpp client/classes/Partida.h
         client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
-        commons/connections/ConexionExcepcion.h)
+        commons/connections/ConexionExcepcion.h
+        client/classes/config/Configuracion.cpp
+        client/classes/config/Configuracion.h)
 
 add_executable(servidor
         server/main.cpp

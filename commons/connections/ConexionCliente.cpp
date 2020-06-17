@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include <iostream>
 
-ConexionCliente::ConexionCliente(int client_socket) {
-	ConexionCliente::server_socket = client_socket;
+ConexionCliente::ConexionCliente(int server_socket) {
+	ConexionCliente::server_socket = server_socket;
 }
 
 nlohmann::json ConexionCliente::recibirMensaje() {
