@@ -42,6 +42,7 @@ nlohmann::json Conexion::recibirData2(int client_socket) {
 	}
     // TODO throw que haga --> conexionServidor ---> hiloConexionServidor ---> hiloOrquestador --> matarConexion
 	catch (std::runtime_error e){
-        l->debug("Se recibio un tamanioMensaje inadecuado");
+        l->info("Se recibio un tamanioMensaje inadecuado");
+        throw new std::exception();
     }
 }

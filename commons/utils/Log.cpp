@@ -40,7 +40,7 @@ Log::Log(std::string basePath) {
 
 void Log::output(const std::string& estado_log, const std::string& mensaje) {
 	std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
+    std::cout << mensaje << std::endl;
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
 }
@@ -74,4 +74,3 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo.flush();
     archivo.close();
 }
-

@@ -76,10 +76,10 @@ void Partida::play(const char* ip_address, int port) {
             conexionCliente = iniciadorComunicacion->conectar();
             while(conexionCliente == nullptr){
                 std::cout << ".:. Reconectando .:.\n";
+                conexionCliente = iniciadorComunicacion->conectar();
             }
             std::cout << "Ya reconecte!\n";
-            hiloConexionCliente = nullptr;
-            //hiloConexionCliente->conexionCliente = conexionCliente;
+            hiloConexionCliente->conexionCliente = conexionCliente;
             std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
 
         }
