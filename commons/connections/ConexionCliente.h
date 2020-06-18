@@ -12,7 +12,7 @@
 
 class ConexionCliente : public Conexion {
 public:
-	ConexionCliente(int server_socket);
+	ConexionCliente(int client_socket);
 
     nlohmann::json recibirMensaje();
 
@@ -25,7 +25,7 @@ public:
     void cerrar();
 
 private:
-	int server_socket;
+	int client_socket;
 
 };
 
