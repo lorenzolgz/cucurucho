@@ -3,12 +3,12 @@
 #include <unistd.h>
 #include <iostream>
 
-ConexionCliente::ConexionCliente(int server_socket) {
-	ConexionCliente::server_socket = server_socket;
+ConexionCliente::ConexionCliente(int client_socket) {
+	ConexionCliente::client_socket = client_socket;
 }
 
 nlohmann::json ConexionCliente::recibirMensaje() {
-     return recibirData2(server_socket);
+     return recibirData2(client_socket);
 }
 
 void ConexionCliente::enviarComando(struct Comando* comando) {
@@ -26,11 +26,11 @@ void ConexionCliente::enviarComando(struct Comando* comando) {
 
 	l->debug("enviarComando " + mensajeJson.dump());
 
-	enviarData2(server_socket, mensajeJson);
+	enviarData2(client_socket, mensajeJson);
 }
 
 void ConexionCliente::cerrar() {
-	close(server_socket);
+	close(client_socket);
 }
 
 // "Siempre" va a funcionar porque se llama apenas se inicia la conexion
@@ -38,7 +38,7 @@ struct EstadoLogin ConexionCliente::recibirEstadoLogin() {
 	uint32_t nroJugador = false;
 
     l->debug("Cliente por recibir mensaje");
-    if (recibirData<uint32_t>(&server_socket, &nroJugador) < 0) {
+    if (recibirData<uint32_t>(&client_socket, &nroJugador) < 0) {
         perror("Receive Data Error");
         throw ConexionExcepcion();
     }
@@ -58,5 +58,5 @@ void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {
             {"contrasenia",     logueo->contrasenia}
     };
 
-    enviarData2(server_socket, mensajeJson);
+    enviarData2(client_socket, mensajeJson);
 }
