@@ -123,7 +123,9 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	while (conexiones.size() < config->getCantidadJugadores()) { //usuario != usuarioPerdido
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones, conexiones.size()+1);
+		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
+                                                                                 conexiones.size() + 1,
+                                                                                 true);
         if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
             continue;
         }
@@ -142,6 +144,22 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
 	try {
 		hiloOrquestadorPartida->start();
+
+		while (true) {
+            auto* conexionServidor = aceptadorConexiones->aceptarConexion();
+            ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
+                                                                                     conexiones.size() + 1,
+                                                                                     false);
+            if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
+                continue;
+            }
+            for (ConexionServidor* c :conexiones) {
+                if (c->getUsuario() == controladorDeSesiones->getUsuarioConectado()) {
+                    c->setClientSocket(controladorDeSesiones->getConexionServidor()->getClientSocket());
+                    notificarEstadoConexion(&conexiones, LOGIN_FIN);
+                }
+            }
+		}
 
 		hiloOrquestadorPartida->join();
 	} catch (const std::exception& exc) {

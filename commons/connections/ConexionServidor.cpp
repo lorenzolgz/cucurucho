@@ -34,3 +34,19 @@ const std::string &ConexionServidor::getUsuario() const {
 void ConexionServidor::setUsuario(const std::string &usuario) {
     ConexionServidor::usuario = usuario;
 }
+
+void ConexionServidor::setNroJugador(int nroJugador) {
+    ConexionServidor::nroJugador = nroJugador;
+}
+
+int ConexionServidor::getNroJugador() const {
+    return nroJugador;
+}
+
+int ConexionServidor::getClientSocket() const {
+    return client_socket;
+}
+
+void ConexionServidor::setClientSocket(int clientSocket) {
+    client_socket = clientSocket;
+}

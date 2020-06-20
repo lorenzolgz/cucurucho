@@ -1,9 +1,11 @@
 #include "HiloConexionServidor.h"
 #include "../../commons/utils/Log.h"
+#include "../../commons/connections/ControladorDeSesiones.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, AceptadorConexiones* aceptador) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username, AceptadorConexiones* aceptador) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
+	this->username = username;
 	this->activo = true;
 	this->aceptadorConexiones = aceptador;
 }
@@ -13,7 +15,7 @@ void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
 
 	nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-	l->info("recHiloConexionServidor " + mensajeRecibido.dump());
+	l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
 	colaReceptora->push(mensajeRecibido);
 
 	try{
@@ -38,31 +40,44 @@ void HiloConexionServidor::run() {
 
             }
         }
-    }
-	catch (...){
-        l->info("Catch hiloConexionServidor");
-        // Notificar Desconexion
-        std::string usuarioPerdido = conexionServidor->getUsuario();
-        nlohmann::json mensajeError;
-        mensajeError["usuario"] = usuarioPerdido;
-        mensajeError["_t"] = ERROR_CONEXION;
-        colaReceptora->push(mensajeError);
-        conexionServidor->cerrar();
+    } catch (...) {
+	    this->activo = false;
+	    this->conexionServidor->cerrar();
+	    this->conexionServidor->setClientSocket(-1);
 
-        // Intentar Reconexion
-        l->info("ESTOY ACEPTANDO LA CONEXION");
-        conexionServidor = aceptadorConexiones->aceptarConexion();
-        l->info("ACEPTE LA CONEXION");
-        conexionServidor->setUsuario(usuarioPerdido);
+	    while (this->conexionServidor->getClientSocket() < 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+	    }
 
-        // Notificar Reconexion
         this->activo = true;
-        nlohmann::json mensajeReconexion;
-        l->info("Voy a reconectar");
-        mensajeReconexion["usuario"] = conexionServidor->getUsuario();
-        mensajeReconexion["_t"] = RECONEXION;
-        colaReceptora->push(mensajeReconexion);
-        run();
+	    while (this->colaEnviadora->size() != 0) this->colaEnviadora->pop();
+	    this->enviarInformacionNivel(this->informacionNivel);
+
+	    run();
+
+//        l->info("Catch hiloConexionServidor");
+//        // Notificar Desconexion
+//        std::string usuarioPerdido = conexionServidor->getUsuario();
+//        nlohmann::json mensajeError;
+//        mensajeError["usuario"] = usuarioPerdido;
+//        mensajeError["_t"] = ERROR_CONEXION;
+//        colaReceptora->push(mensajeError);
+//        conexionServidor->cerrar();
+//
+//        // Intentar Reconexion
+//        l->info("ESTOY ACEPTANDO LA CONEXION");
+//        conexionServidor = aceptadorConexiones->aceptarConexion();
+//        l->info("ACEPTE LA CONEXION");
+//        conexionServidor->setUsuario(usuarioPerdido);
+//
+//        // Notificar Reconexion
+//        this->activo = true;
+//        nlohmann::json mensajeReconexion;
+//        l->info("Voy a reconectar");
+//        mensajeReconexion["usuario"] = conexionServidor->getUsuario();
+//        mensajeReconexion["_t"] = RECONEXION;
+//        colaReceptora->push(mensajeReconexion);
+//        run();
 
 	}
 }
@@ -108,4 +123,6 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 	}
 
 	colaEnviadora->push(mensajeJson);
+
+    HiloConexionServidor::informacionNivel = informacionNivel;
 }

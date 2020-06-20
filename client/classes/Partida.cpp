@@ -19,7 +19,9 @@ void Partida::play(const char* ip_address, int port) {
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
 
-    hiloConexionCliente = nullptr;
+    hiloConexionCliente = new HiloConexionCliente(nullptr, colaMensajes);
+    hiloConexionCliente->start();
+
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     while (!quit) {
@@ -51,7 +53,6 @@ void Partida::play(const char* ip_address, int port) {
             // TODO patch para race conditions
             if (hiloConexionCliente == nullptr) {
                 l->info("Creando un nuevo hiloConexionCliente\n");
-                hiloConexionCliente = new HiloConexionCliente(conexionCliente, colaMensajes);
                 hiloConexionCliente->start();
             }
 
@@ -69,18 +70,22 @@ void Partida::play(const char* ip_address, int port) {
 
             conexionLoop(currentKeyStates);
             quit = quit || renderLoop();
-        }
-        catch(...){ // ConexionExcepcion
-            std::cout << "Ocurrio una excepcion\n";
-            std::cout << ".:. Reconectando .:.\n";
-            conexionCliente = iniciadorComunicacion->conectar();
-            while(conexionCliente == nullptr){
-                std::cout << ".:. Reconectando .:.\n";
-                conexionCliente = iniciadorComunicacion->conectar();
-            }
-            std::cout << "Ya reconecte!\n";
-            hiloConexionCliente->conexionCliente = conexionCliente;
-            std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
+
+        } catch(...) { // ConexionExcepcion
+
+            validarLogin = true;
+            hiloConexionCliente->conexionCliente = nullptr;
+
+//            std::cout << "Ocurrio una excepcion\n";
+//            std::cout << ".:. Reconectando .:.\n";
+//            conexionCliente = iniciadorComunicacion->conectar();
+//            while(conexionCliente == nullptr){
+//                std::cout << ".:. Reconectando .:.\n";
+//                conexionCliente = iniciadorComunicacion->conectar();
+//            }
+//            std::cout << "Ya reconecte!\n";
+//            hiloConexionCliente->conexionCliente = conexionCliente;
+//            std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
 
         }
     }
@@ -106,6 +111,7 @@ void Partida::autenticarServidor() {
         conexionCliente->cerrar();
     }
 
+    hiloConexionCliente->conexionCliente = conexionCliente;
     manager->setEstadoLogin(estadoLogin);
 }
 

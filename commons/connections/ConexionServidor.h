@@ -22,9 +22,18 @@ public:
 
     void setUsuario(const std::string &usuario);
 
+    void setNroJugador(int nroJugador);
+
+    int getNroJugador() const;
+
+    int getClientSocket() const;
+
+    void setClientSocket(int clientSocket);
+
 private:
 	int client_socket;
 	std::string usuario;
+	int nroJugador;
 };
 
 

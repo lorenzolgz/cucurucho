@@ -17,8 +17,11 @@ public:
     ConexionCliente* conexionCliente;
     void run() override;
 
+
+
 private:
     ColaBloqueante<nlohmann::json>* colaMensajes;
+    bool activo;
 };
 
 #endif //CUCURUCHO_HILOCONEXIONCLIENTE_H

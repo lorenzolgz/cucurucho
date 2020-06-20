@@ -6,13 +6,15 @@
 #include "ConexionExcepcion.h"
 
 
-ControladorDeSesiones::ControladorDeSesiones(ConexionServidor* conexionServidor, std::list<ConexionServidor*> &conexiones, int nroJugador){
+ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor, list<ConexionServidor *> *conexiones,
+                                             int nroJugador, bool modificarConexiones) {
     this->conexionServidor = conexionServidor;
     this->conexiones = conexiones;
     ifstream archivo(JSON_USUARIOS, ifstream::binary);
     archivo >> this->jsonUsuarios;
     this->contrasenias = jsonUsuarios["usuariosRegistrados"];
 	this->nroJugador = nroJugador;
+	this->modificarConexiones = modificarConexiones;
 }
 
 
@@ -34,7 +36,8 @@ bool ControladorDeSesiones::iniciarSesion() {
 	contrasenia = login.contrasenia;
 
 	//verifico que el usuario esté registrado
-	if (!usuarioEstaRegistrado(usuario, contrasenia) || !controlarQueNoIngreseUsuarioYaEnJuego(usuario)) {
+	if (!usuarioEstaRegistrado(usuario, contrasenia)
+	        || !controlarQueNoIngreseUsuarioYaEnJuego(usuario)) {
         this->conexionServidor->enviarEstadoLogin({LOGIN_FALLO});
 		this->conexionServidor->cerrar();
 		ok = false;
@@ -42,6 +45,7 @@ bool ControladorDeSesiones::iniciarSesion() {
         this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
 		this->usuarioConectado = std::string(usuario);
 		conexionServidor->setUsuario(std::string(usuario));
+		conexionServidor->setNroJugador(nroJugador);
 	}
 
 	return ok;
@@ -70,13 +74,17 @@ void ControladorDeSesiones::setServidor(ConexionServidor *servidor) {
     this->conexionServidor = servidor;
 }
 
-string ControladorDeSesiones::userConectado(){
+string ControladorDeSesiones::getUsuarioConectado(){
     return this->usuarioConectado;
 }
 
 bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario) {
-    auto j = conexiones.begin();
-    while (j != conexiones.end()) {
+    if (conexiones == nullptr) {
+        return true;
+    }
+
+    auto j = conexiones->begin();
+    while (j != conexiones->end()) {
         if ((*j)->getUsuario() != usuario) {
             j++;
             continue;
@@ -87,10 +95,15 @@ bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string us
             (*j)->enviarMensaje(json);
             return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
         } catch (const ConexionExcepcion& e) {
-            j = conexiones.erase(j);
+            if (modificarConexiones) j = conexiones->erase(j);
+            else j++;
         }
     }
 
     return true;
+}
+
+ConexionServidor *ControladorDeSesiones::getConexionServidor() const {
+    return conexionServidor;
 }
 

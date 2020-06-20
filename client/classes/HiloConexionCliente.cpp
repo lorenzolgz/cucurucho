@@ -15,7 +15,10 @@ HiloConexionCliente::HiloConexionCliente(ConexionCliente *conexionCliente,
 void HiloConexionCliente::run() {
 	l->info("Comenzando a correr HiloConexionCliente");
 
-    try{
+    try {
+        while (conexionCliente == nullptr) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        }
         while (true) {
             l->info("whileHiloConexionCliente");
             nlohmann::json mensajeRecibido = conexionCliente->recibirMensaje();
@@ -24,7 +27,8 @@ void HiloConexionCliente::run() {
         }
     }
     catch(...){
-        l->error("Ocurrio un error en el hiloConexionCliente");
+        conexionCliente = nullptr;
+        run();
     }
 
 	l->info("Terminando de correr HiloConexionCliente");
