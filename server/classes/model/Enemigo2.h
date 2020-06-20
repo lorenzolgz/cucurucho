@@ -1,7 +1,6 @@
 #ifndef CUCURUCHO_ENEMIGO2_H
 #define CUCURUCHO_ENEMIGO2_H
 
-#include <SDL_render.h>
 #include <string>
 #include "../../../commons/utils/Vector.h"
 #include "Ticker.h"

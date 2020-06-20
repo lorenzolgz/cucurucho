@@ -30,6 +30,8 @@ public:
     void tick();
 	struct EstadoHelper state();
 
+    void setAngulo(double angulo);
+
 private:
     Vector posicion;
     Vector velocidad;

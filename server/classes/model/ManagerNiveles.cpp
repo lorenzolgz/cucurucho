@@ -24,6 +24,7 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
     std::map<int, Jugador*>::iterator it;
     int pos = 1;
     for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        it->second->resetState();
         it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
         pos++;
     }

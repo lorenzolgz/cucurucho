@@ -11,7 +11,7 @@
 #include "classes/config/Configuracion.h"
 #include "classes/config/ConfiguracionParser.h"
 
-#define BACKUP_CONFIG"../client/config/backup.json"
+#define BACKUP_CONFIG "../client/config/backup.json"
 
 Log* l;
 ToastVista* toast;

@@ -94,3 +94,8 @@ int Jugador::getAlto() {
 Vector Jugador::getPosicion() {
 	return posicion;
 }
+
+void Jugador::resetState() {
+    helperAbove->setAngulo(0);
+    helperBelow->setAngulo(0);
+}

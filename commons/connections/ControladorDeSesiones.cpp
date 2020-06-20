@@ -26,7 +26,12 @@ bool ControladorDeSesiones::iniciarSesion() {
 
 	//pedirle un usuario y contraseña al cliente
 	struct Login login;
-	pedirCredenciales(&login);
+	try {
+        pedirCredenciales(&login);
+    } catch (...) {
+	    l->info("Error de protocolo. Credenciales rechazadas.");
+	    return false;
+    }
 
 	char *usuario;
 	usuario = login.usuario;
@@ -50,11 +55,13 @@ bool ControladorDeSesiones::iniciarSesion() {
 bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia) {
 	// Chequeo si el usuario está registrado
 	if (this->contrasenias[usuario].empty()) {
-	    return false;
+		l->info("Usuario " + std::string(usuario) + " no esta registrado");
+		return false;
 	}
 	// Chequeo si la contrasenia es correcta
 	if (strcmp(this->contrasenias[usuario].asCString(), contrasenia) != 0) {
-	    return false;
+		l->info("Password del usuario " + std::string(usuario) + " no coincide");
+		return false;
 	}
 
 	return true;
@@ -85,6 +92,7 @@ bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string us
             nlohmann::json json;
             json["tipoMensaje"] = MENSAJE_PING;
             (*j)->enviarMensaje(json);
+            l->info("Usuario " + std::string(usuario) + " ya se encuentra conectado");
             return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
         } catch (const ConexionExcepcion& e) {
             j = conexiones.erase(j);

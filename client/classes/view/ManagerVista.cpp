@@ -115,14 +115,18 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
 
 
 void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto) {
-    if (strlen(nombre) <= 0) return;
-
     Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
     Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
     Vector distancia_y = Vector(0, alto / 7);
+    struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + (distancia_y * indice));
 
-    jugador->render(generarEstadoJugador(posicionJugadorBase + (distancia_y * indice)));
-    TextoVista::eRender(std::string(nombre), posicionNombreBase + (distancia_y * indice), colorTexto, ALINEACION_IZQUIERDA);
+    if (strlen(nombre) > 0) {
+        estado.presente = true;
+        TextoVista::eRender(std::string(nombre), posicionNombreBase + (distancia_y * indice), colorTexto, ALINEACION_IZQUIERDA);
+    } else {
+        estado.presente = false;
+    }
+    jugador->render(estado);
 }
 
 
@@ -135,6 +139,6 @@ void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
     if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
         TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
     } else if (estadoLogin.estadoLogin == LOGIN_COMENZAR) {
-        TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
+        TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
     }
 }

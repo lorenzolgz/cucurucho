@@ -103,6 +103,7 @@ void notificarEstadoConexion(std::list<ConexionServidor*>* conexiones, int estad
             i++;
         } catch (const ConexionExcepcion& e) {
             // Si el usuario se desconecta antes de comenzar la partida puede conectarse otro (evaluar?)
+            l->info("Usuario " + (*j)->getUsuario() + " perdio la conexion. Eliminando de la lista.");
             conexiones->erase(j);
             // Volver a enviar mensajes con lista actualizada
             notificarEstadoConexion(conexiones, estadoLogin);

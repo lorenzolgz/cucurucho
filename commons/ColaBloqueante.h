@@ -16,6 +16,11 @@ public:
 		d_queue.push_front(value);
 		this->d_condition.notify_all();
 	}
+	void push_back(T const& value)  {
+		std::unique_lock<std::mutex> lock(this->d_mutex);
+		d_queue.push_back(value);
+		this->d_condition.notify_all();
+	}
 	T pop(int cant = -1) {
 		std::unique_lock<std::mutex> lock(this->d_mutex);
 		this->d_condition.wait(lock, [=] { return !this->d_queue.empty(); });

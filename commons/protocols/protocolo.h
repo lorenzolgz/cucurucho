@@ -6,8 +6,8 @@
 #define MAX_FONDOS 15
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
-#define LARGO_USERNAME 30
-#define LARGO_PASSWORD 30
+#define LARGO_USERNAME 16
+#define LARGO_PASSWORD 16
 
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor

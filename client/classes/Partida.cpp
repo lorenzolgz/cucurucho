@@ -56,10 +56,14 @@ void Partida::play(const char* ip_address, int port) {
             }
 
             if (!colaMensajes->empty()) {
-                // !!!!! reducir MAX_COLA
-                // colaMensajes->pop(MAX_COLA);
+
                 while (colaMensajes->size() > MAX_COLA_CLIENTE){
-                    colaMensajes->pop();
+                    nlohmann::json json = colaMensajes->pop();
+                    // Solo se deberian matar los mensajes de ESTADO_TICK
+                    if (json["tipoMensaje"] != ESTADO_TICK) {
+                        colaMensajes->push_back(json);
+                        break;
+                    }
                     l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
                 }
 

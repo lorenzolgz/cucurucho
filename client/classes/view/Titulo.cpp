@@ -30,7 +30,7 @@ void Titulo::leerInput(std::string input, bool *validarLogin) {
 
     for (char c : input) {
         if (activada) {
-            if (campoActivo->size() < 15 && ((c > 32 && c < 127) || (c == 32 && contador > 15))) {
+            if (campoActivo->size() < (LARGO_USERNAME - 1) && ((c > 32 && c < 127) || (c == 32 && contador > 15))) {
                 *campoActivo += c;
             } else if (!campoActivo->empty() && (c == 8 || c == 127)) {
                 campoActivo->pop_back();

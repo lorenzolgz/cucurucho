@@ -1,5 +1,4 @@
 #include "Enemigo2.h"
-#include <SDL_image.h>
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "Nivel.h"

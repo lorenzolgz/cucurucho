@@ -52,3 +52,7 @@ struct EstadoHelper Helper::state() {
 	view.angulo = angulo;
 	return view;
 }
+
+void Helper::setAngulo(double angulo) {
+    Helper::angulo = angulo;
+}

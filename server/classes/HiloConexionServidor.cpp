@@ -26,7 +26,7 @@ void HiloConexionServidor::run() {
                 nlohmann::json json = colaEnviadora->pop();
                 // Solo se deberian matar los mensajes de ESTADO_TICK
                 if (json["tipoMensaje"] != ESTADO_TICK) {
-                    colaEnviadora->push(json);
+                    colaEnviadora->push_back(json);
                     break;
                 }
             }

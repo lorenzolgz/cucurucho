@@ -12,7 +12,7 @@ HudVista::HudVista() {
     HudVista::textura = generadorDeTexturas->generarTextura("hud.png");
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
-    this->nuevoTexto(new std::string("10000"), Vector(240, 24), TEXTO_COLOR_ROJO, false);
+    this->nuevoTexto(new std::string("100000"), Vector(240, 24), TEXTO_COLOR_ROJO, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -37,7 +37,7 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
         c->render();
     }
 
-    TextoVista::eRender(username, Vector(24, 48), estadoLogin.nroJugador + 1, true);
+    TextoVista::eRender(username.substr(0, 10), Vector(132, 48), estadoLogin.nroJugador + 1, ALINEACION_CENTRO);
 
     if (toast != nullptr) {
         toast->render();

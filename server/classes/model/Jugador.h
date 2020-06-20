@@ -33,9 +33,10 @@ public:
 
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
-    int getContador() const;
     void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
+
+    void resetState();
 
 private:
     Vector posicion;
