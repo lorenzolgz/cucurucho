@@ -51,7 +51,7 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 			(entidad->getPosicion().getX() >= 0) && (entidad->getPosicion().getY() >= 0);
 }
 
-bool CampoMovil::verificarPosicion() {
+bool CampoMovil::verificarPosicionNivel() {
     return posicion.getX() > (largoNivel + ancho);
 }
 
@@ -59,7 +59,7 @@ EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
     std::list<EstadoJugador> estadosJugadores;
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
-		estadosEnemigos.push_back(entidadEnemigo->state());
+        if (verificarPosicionEnemigo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
 	}
 
     std::map<int, Jugador*>::iterator it;
@@ -73,5 +73,11 @@ EstadoInternoCampoMovil CampoMovil::state() {
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
 
 	return estadoCampoMovil;
+}
+
+bool CampoMovil::verificarPosicionEnemigo(EntidadEnemigo *pEnemigo) {
+    int posX = pEnemigo->getPosicion().getX();
+    int posY = pEnemigo->getPosicion().getY();
+    return !(posX < 0 - BORDE || posX > ancho + BORDE || posY < 0 - BORDE|| posY > alto + BORDE);
 }
 

@@ -9,6 +9,7 @@
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
+#define BORDE 30
 
 class Entidad;
 class Ticker;
@@ -26,7 +27,7 @@ public:
 	bool entidadEstaDentroDelCampo(Entidad* entidad);
 	void tick() override;
 
-	bool verificarPosicion();
+	bool verificarPosicionNivel();
 	EstadoInternoCampoMovil state();
 
 
@@ -38,6 +39,8 @@ private:
     float largoNivel;
     std::map<int, Jugador *> jugadores;
 	std::list<EntidadEnemigo*> entidadesEnemigos;
+
+    bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
 };
 
 
