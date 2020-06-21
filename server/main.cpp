@@ -115,7 +115,7 @@ void notificarEstadoConexion(std::list<ConexionServidor*>* conexiones, int estad
 
 
 int esperarConexiones(int puerto, Configuracion* config) {
-	l->info("Port: " + std::to_string(puerto));
+	l->info("Puerto: " + std::to_string(puerto));
 
 	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
 	aceptadorConexiones->escuchar();
