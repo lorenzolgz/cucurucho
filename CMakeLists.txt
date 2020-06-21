@@ -159,7 +159,7 @@ add_executable(servidor
         commons/connections/Conexion.cpp commons/connections/Conexion.h
         libraries/json/json.hpp server/classes/PaqueteUsuario.cpp
         server/classes/PaqueteUsuario.h
-        commons/connections/ConexionExcepcion.h)
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

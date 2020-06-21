@@ -5,6 +5,7 @@
 #include "classes/config/ConfiguracionParser.h"
 #include "classes/config/FondoConfiguracion.h"
 #include "classes/HiloOrquestadorPartida.h"
+#include "classes/HiloAceptadorConexiones.h"
 #include "../commons/connections/ControladorDeSesiones.h"
 #include "../commons/connections/ConexionExcepcion.h"
 
@@ -149,8 +150,14 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
     hiloOrquestadorPartida->start();
 
+    HiloAceptadorConexiones* hiloAceptadorConexiones = new HiloAceptadorConexiones(&conexiones,
+            hilosConexionesServidores,
+            aceptadorConexiones);
+
+    hiloAceptadorConexiones->start();
+
     while (true) {
-        auto* conexionServidor = aceptadorConexiones->aceptarConexion();
+        /*auto* conexionServidor = aceptadorConexiones->aceptarConexion();
         ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
                                                                                  conexiones.size() + 1,
                                                                                  true);
@@ -182,7 +189,7 @@ int esperarConexiones(int puerto, Configuracion* config) {
                 c->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
             }
         }
-        reinstanciarListaConexiones(&conexiones, hilosConexionesServidores);
+        reinstanciarListaConexiones(&conexiones, hilosConexionesServidores);*/
     }
 
 
@@ -221,11 +228,11 @@ std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<Conex
     return hilosConexionesServidores;
 }
 
-void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones) {
+/*void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones) {
     while (!conexiones->empty()) {
         conexiones->pop_back();
     }
     for (HiloConexionServidor* c : *hiloConexiones) {
         conexiones->push_back(c->conexionServidor);
     }
-}
+}*/
