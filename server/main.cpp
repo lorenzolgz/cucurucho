@@ -6,7 +6,6 @@
 #include "classes/config/FondoConfiguracion.h"
 #include "classes/HiloOrquestadorPartida.h"
 #include "classes/HiloAceptadorConexiones.h"
-#include "../commons/connections/ControladorDeSesiones.h"
 #include "../commons/connections/ConexionExcepcion.h"
 
 
@@ -19,7 +18,6 @@ Configuracion* parsearConfiguracion();
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
 std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
                                                                  AceptadorConexiones* aceptadorConexiones);
-void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones);
 
 
 int main(int argc , char *argv[]) {
@@ -156,49 +154,14 @@ int esperarConexiones(int puerto, Configuracion* config) {
 
     hiloAceptadorConexiones->start();
 
-    while (true) {
-        /*auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-        ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
-                                                                                 conexiones.size() + 1,
-                                                                                 true);
-        if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
-            continue;
-        }
+    hiloOrquestadorPartida->join();
+    hiloAceptadorConexiones->join();
 
-        conexiones.push_back(conexionServidor);
-        for (HiloConexionServidor* c : *hilosConexionesServidores) {
-            if (c->username == conexionServidor->getUsuario()) {
-                nlohmann::json json;
-                json["tipoMensaje"] = ESTADO_LOGIN;
-                json["estadoLogin"] = LOGIN_FIN;
-                json["nroJugador"] = c->conexionServidor->getNroJugador();
-                json["jugador1"] = "";
-                json["jugador2"] = "";
-                json["jugador3"] = "";
-                json["jugador4"] = "";
-
-                try {
-                    conexionServidor->enviarMensaje(json);
-                } catch (const std::exception& exc) {
-                    l->error("HiloAceptador, rechazando a cliente reconectado: " + std::string(exc.what()));
-                    conexionServidor->cerrar();
-                    conexiones.pop_back();
-                    break;
-                }
-
-                c->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
-            }
-        }
-        reinstanciarListaConexiones(&conexiones, hilosConexionesServidores);*/
-    }
-
-
-	for (auto* conexion : conexiones) {
+    for (auto* conexion : conexiones) {
 		conexion->cerrar();
 	}
-	aceptadorConexiones->dejarDeEscuchar();
 
-    hiloOrquestadorPartida->join();
+	aceptadorConexiones->dejarDeEscuchar();
 
 	return 0;
 }
@@ -227,12 +190,3 @@ std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<Conex
     }
     return hilosConexionesServidores;
 }
-
-/*void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones) {
-    while (!conexiones->empty()) {
-        conexiones->pop_back();
-    }
-    for (HiloConexionServidor* c : *hiloConexiones) {
-        conexiones->push_back(c->conexionServidor);
-    }
-}*/

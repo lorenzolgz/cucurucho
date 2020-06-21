@@ -10,6 +10,7 @@
 #include "../../commons/connections/AceptadorConexiones.h"
 #include "../../commons/connections/ControladorDeSesiones.h"
 #include "HiloConexionServidor.h"
+#include "../../commons/utils/Log.h"
 #include <list>
 
 class HiloAceptadorConexiones : public Thread {
@@ -21,6 +22,10 @@ public:
 
     void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones,
                                     std::list<HiloConexionServidor*>* hiloConexiones);
+
+    void atenderPosiblesReconexiones(std::list<ConexionServidor *> *conexiones,
+                                     std::list<HiloConexionServidor *> *hiloConexiones,
+                                     AceptadorConexiones* aceptadorConexiones);
 
     void run() override;
 
