@@ -12,10 +12,11 @@
 
 const int INICIO_TIMEOUT = 120;
 
-const struct Login autoCredenciales[4] = {{"rodri", "12"},
+const struct Login autoCredenciales[5] = {{"rodri", "12"},
         {"cami", "12"},
         {"ailu", "12"},
-        {"lolo", "12"}};
+        {"lolo", "12"},
+        {"javi", "12"}};
 
 enum {
     TITULO_VACIO,
@@ -32,7 +33,7 @@ public:
 
     void tick(std::string input, int estado, bool *validarLogin);
 
-    bool estaActivada(bool enter, int estadoLogin);
+    void estaActivada(bool enter);
 
     void getCredenciales(struct Login* login);
 

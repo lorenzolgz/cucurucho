@@ -137,6 +137,8 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
         texto = "ERROR DE AUTENTICACION";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
         texto = "PROBLEMA DE CONEXION";
+    } else if (estadoLogin == LOGIN_ESPERANDO_RESPUESTA) {
+        texto = "ESPERANDO RESPUESTA...";
     } else if (estadoLogin > 0) {
         texto = "INICIANDO JUEGO";
     }

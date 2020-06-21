@@ -17,6 +17,7 @@ public:
 	void run() override;
 	void enviarEstadoTick(struct EstadoTick* estadoTick);
 	void enviarInformacionNivel(struct InformacionNivel* header);
+	void cicloReconectar();
 	ConexionServidor* conexionServidor;
 	ColaBloqueante<nlohmann::json>* colaReceptora = new ColaBloqueante<nlohmann::json>();
 	ColaBloqueante<nlohmann::json>* colaEnviadora = new ColaBloqueante<nlohmann::json>();

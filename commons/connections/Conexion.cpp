@@ -36,6 +36,11 @@ nlohmann::json Conexion::recibirData2(int client_socket) {
 
     l->debug("Conexion recibio:  " + mensajeStr);
 
+    if (mensajeStr.empty()) {
+        l->error("Conexion recibio un mensaje vacio");
+        throw ConexionExcepcion();
+    }
+
     nlohmann::json mensajeJson = nlohmann::json::parse(mensajeStr);
     return mensajeJson;
 }

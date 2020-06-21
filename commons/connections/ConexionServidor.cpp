@@ -16,11 +16,17 @@ void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
 }
 
 void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
-	uint32_t nroJugadorNormalizado = estadoLogin.nroJugador;
-	if (enviarData<uint32_t>(&client_socket, &nroJugadorNormalizado) < 0) {
-		perror("Send Data Error");
-		throw ConexionExcepcion();
-	}
+	nlohmann::json json;
+
+	// TODO: unificarlo con el enviar estado del main
+    json["tipoMensaje"] = ESTADO_LOGIN;
+    json["nroJugador"] = estadoLogin.nroJugador;
+    json["estadoLogin"] = estadoLogin.estadoLogin;
+    json["jugador1"] = "\0";
+    json["jugador2"] = "\0";
+    json["jugador3"] = "\0";
+    json["jugador4"] = "\0";
+    enviarMensaje(json);
 }
 
 void ConexionServidor::cerrar() {

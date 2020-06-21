@@ -7,14 +7,14 @@
 
 
 ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor, list<ConexionServidor *> *conexiones,
-                                             int nroJugador, bool modificarConexiones) {
+                                             int nroJugador, bool usuarioEnJuego) {
     this->conexionServidor = conexionServidor;
     this->conexiones = conexiones;
     ifstream archivo(JSON_USUARIOS, ifstream::binary);
     archivo >> this->jsonUsuarios;
     this->contrasenias = jsonUsuarios["usuariosRegistrados"];
 	this->nroJugador = nroJugador;
-	this->modificarConexiones = modificarConexiones;
+	this->usuarioEnJuego = usuarioEnJuego;
 }
 
 
@@ -28,7 +28,12 @@ bool ControladorDeSesiones::iniciarSesion() {
 
 	//pedirle un usuario y contraseña al cliente
 	struct Login login;
-	pedirCredenciales(&login);
+	try {
+        pedirCredenciales(&login);
+    } catch (...) {
+	    l->info("ControladorDeSesiones. Error de protocolo. Rechazando conexion.");
+	    return false;
+	}
 
 	char *usuario;
 	usuario = login.usuario;
@@ -36,17 +41,22 @@ bool ControladorDeSesiones::iniciarSesion() {
 	contrasenia = login.contrasenia;
 
 	//verifico que el usuario esté registrado
-	if (!usuarioEstaRegistrado(usuario, contrasenia)
-	        || !controlarQueNoIngreseUsuarioYaEnJuego(usuario)) {
-        this->conexionServidor->enviarEstadoLogin({LOGIN_FALLO});
-		this->conexionServidor->cerrar();
-		ok = false;
-	} else {
-        this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
-		this->usuarioConectado = std::string(usuario);
-		conexionServidor->setUsuario(std::string(usuario));
-		conexionServidor->setNroJugador(nroJugador);
-	}
+    try {
+        if (!usuarioEstaRegistrado(usuario, contrasenia)
+                || !controlarConUsuariosEnJuego(usuario)) {
+            this->conexionServidor->enviarEstadoLogin({LOGIN_FALLO});
+            this->conexionServidor->cerrar();
+            ok = false;
+        } else {
+            this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
+            this->usuarioConectado = std::string(usuario);
+            conexionServidor->setUsuario(std::string(usuario));
+            conexionServidor->setNroJugador(nroJugador);
+        }
+    } catch (...) {
+        l->info("ControladorDeSesiones. Error al enviar resultado de logueo");
+        return false;
+    }
 
 	return ok;
 }
@@ -78,7 +88,7 @@ string ControladorDeSesiones::getUsuarioConectado(){
     return this->usuarioConectado;
 }
 
-bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario) {
+bool ControladorDeSesiones::controlarConUsuariosEnJuego(std::string usuario) {
     if (conexiones == nullptr) {
         return true;
     }
@@ -95,12 +105,20 @@ bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string us
             (*j)->enviarMensaje(json);
             return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
         } catch (const ConexionExcepcion& e) {
-            if (modificarConexiones) j = conexiones->erase(j);
-            else j++;
+            (*j)->cerrar();
+            if (usuarioEnJuego) {
+                return true;
+            }
+            j = conexiones->erase(j);
+            j++;
+            // Si solo se aceptan usuarios que ya esten en el juego, se lo deja aceptar
+            // porque se lo encontro en la lista y desconectado
         }
     }
 
-    return true;
+    // Si `usuarioEnJuego` es false, significa que se pueden aceptar usuarios fuera de la lista original de jugadores
+    return !usuarioEnJuego;
+
 }
 
 ConexionServidor *ControladorDeSesiones::getConexionServidor() const {

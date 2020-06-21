@@ -42,6 +42,9 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin) {
     for (int i = 0; i < MAX_JUGADORES; i++) {
         jugadores[i]->render(estadoTick.estadosJugadores[i]);
     }
+
+    posCampo = { 0, 0, ancho, alto };
+    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 }
 
 

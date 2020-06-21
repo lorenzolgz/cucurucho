@@ -57,14 +57,13 @@ void Titulo::tick(std::string input, int estadoLogin, bool *validarLogin) {
     if (estado == TITULO_INGRESAR) contador++;
 }
 
-bool Titulo::estaActivada(bool enter, int estadoLogin) {
+void Titulo::estaActivada(bool enter) {
     if (enter && !activada) {
         activada = true;
         estado = TITULO_INGRESAR;
         seleccionadoUsuario = true;
         l->info("Comenzando juego en " + std::to_string(INICIO_TIMEOUT / 60) + " segundos");
     }
-    return estadoLogin > 0;
 }
 
 
@@ -73,8 +72,8 @@ void Titulo::getCredenciales(struct Login* credenciales) {
         strcpy(credenciales->usuario, username.c_str());
         strcpy(credenciales->contrasenia, password.c_str());
     } else {
-        strcpy(credenciales->usuario, autoCredenciales[autoCompletarIndice].usuario);
-        strcpy(credenciales->contrasenia, autoCredenciales[autoCompletarIndice].contrasenia);
+        strcpy(credenciales->usuario, autoCredenciales[autoCompletarIndice % 5].usuario);
+        strcpy(credenciales->contrasenia, autoCredenciales[autoCompletarIndice % 5].contrasenia);
         autoCompletarIndice++;
     }
 }

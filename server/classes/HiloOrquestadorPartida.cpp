@@ -10,11 +10,11 @@ int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion();
 
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<ConexionServidor*>* conexiones, AceptadorConexiones* aceptador) {
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config,
+        std::list<HiloConexionServidor*>* hilosConexionesServidores) {
 	this->config = config;
-	this->conexiones = conexiones;
 	this->partida = new Partida(config);
-	this->aceptadorConexiones = aceptador;
+	this->hilosConexionesServidores = hilosConexionesServidores;
 }
 
 
@@ -81,23 +81,10 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 	}
 }
 
-std::list<HiloConexionServidor*>* HiloOrquestadorPartida::crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones) {
-	auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
-
-	int i = 0;
-	for (auto* conexion : *(conexiones)) {
-		auto* hiloConexionServidor = new HiloConexionServidor(conexion, conexion->getNroJugador(), conexion->getUsuario(), aceptadorConexiones);
-		hiloConexionServidor->start();
-		hilosConexionesServidores->push_back(hiloConexionServidor);
-		i++;
-	}
-	return hilosConexionesServidores;
-}
-
 void HiloOrquestadorPartida::run() {
-	l->info("Comenzando a correr HiloOrquestadorPartida con " + std::to_string(conexiones->size()) + " jugadores.");
+	l->info("Comenzando a correr HiloOrquestadorPartida con " + std::to_string(hilosConexionesServidores->size()) + " jugadores.");
 	bool quit = false;
-	struct Comando comandos[conexiones->size()];
+	struct Comando comandos[hilosConexionesServidores->size()];
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
@@ -109,8 +96,6 @@ void HiloOrquestadorPartida::run() {
 	informacionNivel.numeroNivel = 0;
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
-
-	std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(conexiones);
 
 	//keep communicating with client
 	try {

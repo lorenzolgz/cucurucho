@@ -14,11 +14,11 @@ HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, i
 void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor");
 
-	nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-	l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-	colaReceptora->push(mensajeRecibido);
-
 	try{
+        nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+        l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
+        colaReceptora->push(mensajeRecibido);
+
         while (true) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
@@ -28,7 +28,7 @@ void HiloConexionServidor::run() {
                 nlohmann::json json = colaEnviadora->pop();
                 // Solo se deberian matar los mensajes de ESTADO_TICK
                 if (json["tipoMensaje"] != ESTADO_TICK) {
-                    colaEnviadora->push(json);
+                    colaEnviadora->push_back(json);
                     break;
                 }
             }
@@ -37,48 +37,10 @@ void HiloConexionServidor::run() {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
                 l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
                 conexionServidor->enviarMensaje(mensajeAEnviar);
-
             }
         }
     } catch (...) {
-	    this->activo = false;
-	    this->conexionServidor->cerrar();
-	    this->conexionServidor->setClientSocket(-1);
-
-	    while (this->conexionServidor->getClientSocket() < 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(150));
-	    }
-
-        this->activo = true;
-	    while (this->colaEnviadora->size() != 0) this->colaEnviadora->pop();
-	    this->enviarInformacionNivel(this->informacionNivel);
-
-	    run();
-
-//        l->info("Catch hiloConexionServidor");
-//        // Notificar Desconexion
-//        std::string usuarioPerdido = conexionServidor->getUsuario();
-//        nlohmann::json mensajeError;
-//        mensajeError["usuario"] = usuarioPerdido;
-//        mensajeError["_t"] = ERROR_CONEXION;
-//        colaReceptora->push(mensajeError);
-//        conexionServidor->cerrar();
-//
-//        // Intentar Reconexion
-//        l->info("ESTOY ACEPTANDO LA CONEXION");
-//        conexionServidor = aceptadorConexiones->aceptarConexion();
-//        l->info("ACEPTE LA CONEXION");
-//        conexionServidor->setUsuario(usuarioPerdido);
-//
-//        // Notificar Reconexion
-//        this->activo = true;
-//        nlohmann::json mensajeReconexion;
-//        l->info("Voy a reconectar");
-//        mensajeReconexion["usuario"] = conexionServidor->getUsuario();
-//        mensajeReconexion["_t"] = RECONEXION;
-//        colaReceptora->push(mensajeReconexion);
-//        run();
-
+	    cicloReconectar();
 	}
 }
 
@@ -125,4 +87,28 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 	colaEnviadora->push(mensajeJson);
 
     HiloConexionServidor::informacionNivel = informacionNivel;
+}
+
+void HiloConexionServidor::cicloReconectar() {
+    this->activo = false;
+    this->conexionServidor->cerrar();
+    this->conexionServidor->setClientSocket(-1);
+    l->error("Cliente " + this->username + " perdio la conexion");
+
+    while (this->conexionServidor->getClientSocket() < 0) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    }
+
+    l->error("Cliente " + this->username + " reconectado");
+
+    this->activo = true;
+    while (this->colaEnviadora->size() != 0) this->colaEnviadora->pop();
+    try {
+        this->enviarInformacionNivel(this->informacionNivel);
+    } catch (...) {
+        cicloReconectar();
+        return;
+    }
+
+    run();
 }

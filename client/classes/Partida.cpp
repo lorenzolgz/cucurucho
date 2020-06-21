@@ -3,6 +3,7 @@
 //
 #include "Partida.h"
 #include "GestorSDL.h"
+#include "../../commons/connections/ConexionExcepcion.h"
 
 Partida::Partida() {}
 
@@ -11,115 +12,102 @@ void Partida::play(const char* ip_address, int port) {
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO);
     manager = new ManagerJuego();
+    estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
 
-    bool primeraVez = true;
-
-    iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
-
-    hiloConexionCliente = new HiloConexionCliente(nullptr, colaMensajes);
-    hiloConexionCliente->start();
+    iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
+    hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
-    while (!quit) {
-        try{
+    try{
+        while (!quit) {
 
-            const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+                const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-            if(currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X] && primeraVez){
-                std::cout << "Apretaste CTRL+X \n";
-                primeraVez = false;
-                conexionCliente->cerrar();
-            }
-
-            SDL_RenderClear(GraphicRenderer::getInstance());
-
-            std::string inputText;
-            quit = quit || eventLoop(&inputText);
-
-            if (estadoLogin.nroJugador <= 0 && validarLogin) {
-                autenticarServidor();
-                validarLogin = false;
-            }
-
-            // TODO: Separar mejor el logueo conexion del logueo vista
-            if (pantallaInicioLoop(inputText, currentKeyStates)) {
-                continue;
-            }
-
-            // TODO patch para race conditions
-            if (hiloConexionCliente == nullptr) {
-                l->info("Creando un nuevo hiloConexionCliente\n");
-                hiloConexionCliente->start();
-            }
-
-            if (!colaMensajes->empty()) {
-                // !!!!! reducir MAX_COLA
-                // colaMensajes->pop(MAX_COLA);
-                while (colaMensajes->size() > MAX_COLA_CLIENTE){
-                    colaMensajes->pop();
-                    l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
+                if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
+                    std::cout << "Apretaste CTRL+X \n";
+                    hiloConexionCliente->cerrarConexion();
                 }
 
-                nlohmann::json instruccion = colaMensajes->pop();
-                manager->estadoNivel(instruccion);
-            }
+                SDL_RenderClear(GraphicRenderer::getInstance());
 
-            conexionLoop(currentKeyStates);
-            quit = quit || renderLoop();
+                std::string inputText;
+                quit = quit || eventLoop(&inputText);
 
-        } catch(...) { // ConexionExcepcion
+                if (estadoLogin.nroJugador <= 0 && validarLogin) {
+                    autenticarServidor();
+                }
 
-            validarLogin = true;
-            hiloConexionCliente->conexionCliente = nullptr;
+                if (!colaMensajes->empty()) {
+                    while (colaMensajes->size() > MAX_COLA_CLIENTE){
+                        nlohmann::json json = colaMensajes->pop();
+                        // Solo se deberian matar los mensajes de ESTADO_TICK
+                        if (json["tipoMensaje"] != ESTADO_TICK) {
+                            colaMensajes->push_back(json);
+                            break;
+                        }
+                        l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
+                    }
 
-//            std::cout << "Ocurrio una excepcion\n";
-//            std::cout << ".:. Reconectando .:.\n";
-//            conexionCliente = iniciadorComunicacion->conectar();
-//            while(conexionCliente == nullptr){
-//                std::cout << ".:. Reconectando .:.\n";
-//                conexionCliente = iniciadorComunicacion->conectar();
-//            }
-//            std::cout << "Ya reconecte!\n";
-//            hiloConexionCliente->conexionCliente = conexionCliente;
-//            std::cout << "Cambie conexionCliente del hiloConexionCliente\n";
+                    nlohmann::json instruccion = colaMensajes->pop();
 
+                    if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) setInformacionNivel(instruccion);
+                    else if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
+                    else if (instruccion["tipoMensaje"] == ESTADO_LOGIN) setEstadoLogin(instruccion);
+                }
+
+                pantallaInicioLoop(inputText, currentKeyStates);
+
+                conexionLoop(currentKeyStates);
+
+                renderLoop();
+
+                quit = quit || manager->terminoJuego();
         }
+    } catch (std::exception& exc) {
+        l->error("Se interrumpio el juego: " + std::string(exc.what()));
+        l->error("Reiniciando...");
+        reiniciarInstanciaHilo();
+        play(ip_address, port);
     }
+
+    hiloConexionCliente->cerrarConexion();
 
 }
 
 
 void Partida::autenticarServidor() {
     Login credenciales;
-    conexionCliente = iniciadorComunicacion->conectar();
 
-    if (conexionCliente == nullptr) {
-        estadoLogin.nroJugador = LOGIN_SIN_CONEXION;
+    if (estadoLogin.nroJugador != LOGIN_ESPERANDO_RESPUESTA && !hiloConexionCliente->isActivo()) {
+        comenzarHilo();
+        estadoLogin.nroJugador = LOGIN_ESPERANDO_RESPUESTA;
+        return;
+    }
+
+    if (hiloConexionCliente->conexionCliente == nullptr) {
+        if (!hiloConexionCliente->isActivo()) {
+            estadoLogin.nroJugador = LOGIN_SIN_CONEXION;
+            reiniciarInstanciaHilo();
+            validarLogin = false;
+        }
         return;
     }
 
     pantallaPrincipal->getCredenciales(&credenciales);
-    conexionCliente->enviarDatosDeLogin(&credenciales);
-    estadoLogin = conexionCliente->recibirEstadoLogin();
-    l->info("EstadoLogin enviado por el conexionServidor: " + std::to_string(estadoLogin.nroJugador));
-
-    if (estadoLogin.nroJugador < 0) {
-        conexionCliente->cerrar();
+    try {
+        hiloConexionCliente->conexionCliente->enviarDatosDeLogin(&credenciales);
+    } catch (std::exception& exc) {
+        estadoLogin.nroJugador = LOGIN_SIN_CONEXION;
     }
 
-    hiloConexionCliente->conexionCliente = conexionCliente;
-    manager->setEstadoLogin(estadoLogin);
+    validarLogin = false;
+
 }
 
-void Partida::cerrar() {
-    if (conexionCliente != nullptr) {
-        conexionCliente->cerrar();
-    }
-}
 
 // Manejar eventos (teclas, texto) de SDL
 // Si se cumple `SDL_QUIT`, devuelve true.
@@ -129,47 +117,115 @@ bool Partida::eventLoop(std::string* inputText) {
 }
 
 
-bool Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates) {
+void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates) {
 
     // El usuario presiona ENTER o INTRO o ESPACIO
     bool onStart = currentKeyStates[SDL_SCANCODE_KP_ENTER] || currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_SPACE];
 
-    if (!pantallaPrincipal->estaActivada(onStart, estadoLogin.nroJugador)) {
-    	pantallaPrincipal->tick(inputText, estadoLogin.nroJugador, &validarLogin);
-		SDL_RenderPresent(GraphicRenderer::getInstance());
-        return true;
+    pantallaPrincipal->estaActivada(onStart);
+
+    if (estadoLogin.estadoLogin > 0) {
+        return;
     }
 
-    return false;
+    pantallaPrincipal->tick(inputText, estadoLogin.nroJugador, &validarLogin);
+	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
 void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
-    if (!manager->enJuego()) return;
+    if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
     struct Comando client_command = {false, false, false, false};
 
-    // TODO: estadoLogin esta repetido e inconsistente
-	client_command.nroJugador = manager->getEstadoLogin().nroJugador;
+	client_command.nroJugador = estadoLogin.nroJugador;
 	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
     client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
     client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
 
     // Send data (command)
-    conexionCliente->enviarComando(&client_command);
+    if (!hiloConexionCliente->isActivo()) {
+        throw ConexionExcepcion();
+    }
+    hiloConexionCliente->conexionCliente->enviarComando(&client_command);
 }
 
-// Renderiza el juego. Devuelve `false` si llego al nivel final (para salir del juego)
-// TODO: Hardcodeadisimo. Cambiar.
-bool Partida::renderLoop() {
-
-    bool quit = false;
+void Partida::renderLoop() {
+    if (estadoLogin.estadoLogin <= 0) return;
 
     manager->render();
-    quit = quit || manager->terminoJuego();
     SDL_RenderPresent(GraphicRenderer::getInstance());
+}
 
-    return quit;
+
+void Partida::comenzarHilo() {
+    hiloConexionCliente->start();
+}
+
+
+void Partida::reiniciarInstanciaHilo() {
+    hiloConexionCliente->cerrarConexion();
+    hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
+}
+
+
+void Partida::setEstadoTick(nlohmann::json mensaje) {
+    struct EstadoTick estado;
+    estado.nuevoNivel = mensaje["numeroNivel"];
+    int i = 0;
+    for (; i < MAX_JUGADORES; i++ ) {
+        estado.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
+        estado.estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+        estado.estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+        estado.estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
+        estado.estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
+        estado.estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
+        estado.estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
+        estado.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
+        estado.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
+    }
+    int j = 0;
+    for (; j < MAX_ENEMIGOS; j++ ){
+        estado.estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
+        estado.estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
+        estado.estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
+    }
+    manager->setEstadoTick(estado);
+}
+
+void Partida::setInformacionNivel(nlohmann::json mensaje) {
+    struct InformacionNivel info;
+
+    info.numeroNivel = mensaje["numeroNivel"];
+    info.velocidad = mensaje["velocidad"];
+    strcpy(info.informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
+    for (int i = 0; i < MAX_FONDOS ; i++){
+        info.informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
+        strcpy(info.informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
+    }
+    manager->setInformacionNivel(info);
+}
+
+void Partida::setEstadoLogin(nlohmann::json mensaje) {
+    struct EstadoLogin estadoLogin;
+
+    estadoLogin.nroJugador = mensaje["nroJugador"];
+    estadoLogin.estadoLogin = mensaje["estadoLogin"];
+    std::string jugador1 = mensaje["jugador1"];
+    strcpy(estadoLogin.jugador1, jugador1.c_str());
+    std::string jugador2 = mensaje["jugador2"];
+    strcpy(estadoLogin.jugador2, jugador2.c_str());
+    std::string jugador3 = mensaje["jugador3"];
+    strcpy(estadoLogin.jugador3, jugador3.c_str());
+    std::string jugador4 = mensaje["jugador4"];
+    strcpy(estadoLogin.jugador4, jugador4.c_str());
+
+    manager->setEstadoLogin(estadoLogin);
+
+    if (estadoLogin.estadoLogin <= 0) {
+        reiniciarInstanciaHilo();
+    }
+    Partida::estadoLogin = estadoLogin;
 }

@@ -1,7 +1,7 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "debug"
+         "nivel": "info"
       },
       "niveles": [
          {

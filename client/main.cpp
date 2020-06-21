@@ -114,9 +114,8 @@ int main(int argc, char *argv[]) {
 	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;
 
 	// Comienza el juego con la configuracion
-    partida->play(dir_ip.c_str(), port);
+	partida->play(dir_ip.c_str(), port);
 
-    partida->cerrar();
     gestorSDL->close();
 	return 0;
 }
