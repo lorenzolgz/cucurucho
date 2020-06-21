@@ -14,7 +14,7 @@
 Log* l;
 
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion();
+Configuracion* parsearConfiguracion(std::string archivoConfig);
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
 
 
@@ -22,7 +22,8 @@ int main(int argc , char *argv[]) {
 
     // TODO: Recibir los parametros se dejo en el cliente y nunca se trajo al server
     // Faltan traer nivel de log y archivo de configuracion
-
+    std::string archivoConfig;
+    std::string nivelLog = "";
     int port = 3040;
 
     for (int i = 1; i < argc; i ++) {
@@ -36,7 +37,20 @@ int main(int argc , char *argv[]) {
             std::cout << help << std::endl;
             std::cout << opciones << std::endl;
             return 0;
-        } else if (strcmp(argv[i], "-p") == 0) {
+        } else if (strcmp(argv[i], "-l") == 0) {
+            if (!validarParametroSimple(argc, argv, "-l", i)) {
+                return -1;
+            }
+            if (!Log::confValida(argv[i + 1])) {
+                std::cout << "ERROR: nivel de log invalido: " + std::string(argv[i + 1]) + ". Los niveles validos son \"debug\", \"info\" y \"error\"" << std::endl;
+                return -1;
+            } else {
+                nivelLog = std::string(argv[i + 1]);
+            }
+        } else if (strcmp(argv[i], "-c") == 0) {
+            if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
+            archivoConfig = std::string(argv[i + 1]);
+        }else if (strcmp(argv[i], "-p") == 0) {
             if (!validarParametroSimple(argc, argv, "-p", i)) {
                 return -1;
             }
@@ -51,31 +65,39 @@ int main(int argc , char *argv[]) {
 
     l = new Log("server");
 
-	Configuracion* config = parsearConfiguracion();
-	std::string nivelLog = config->getNivelLog();
- 	l->setConf(nivelLog);
-	l->info("Iniciando el conexionServidor.");
+    Configuracion* config = parsearConfiguracion(archivoConfig);
+    if (nivelLog == "") nivelLog = config->getNivelLog();
+    l->setConf(nivelLog);
+    l->info("Iniciando el conexionServidor.");
 
-	return esperarConexiones(port, config);
+    return esperarConexiones(port, config);
 }
 
-Configuracion* parsearConfiguracion() {
-	ConfiguracionParser configuracionParser;
-	Configuracion* config;
+Configuracion* parsearConfiguracion(std::string archivoConfig) {
+    ConfiguracionParser configuracionParser;
+    Configuracion* config;
 
-	// Ahoro intento con el backup
-	try {
-		config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
-	}
-		// Si el backup tampoco sirve, ya no puedo inicializar el juego
-	catch (const std::exception& exc) {
-		l->error("Ocurrio un error alhilocon leer el archivo de configuración de backup, no puede configurarse el juego");
-		// Throw exception corta por completo la ejecucion del codigo
-		throw exc;
-	}
+    try {
+        config = configuracionParser.parsearConfiguracion(archivoConfig);
+    }
+    catch (const std::exception& exc) {
+        l->error("Ocurrio un error al leer el archivo de configuración, intento con backup");
+        // Ahoro intento con el backup
+        try {
+            config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        }
+            // Si el backup tampoco sirve, ya no puedo inicializar el juego
+        catch (const std::exception& exc) {
+            l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
+            // Throw exception corta por completo la ejecucion del codigo
+            throw exc;
+        }
+    }
 
-	return config;
+    return config;
 }
+
+
 
 
 void notificarEstadoConexion(std::list<ConexionServidor*>* conexiones, int estadoLogin) {

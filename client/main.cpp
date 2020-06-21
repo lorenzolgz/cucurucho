@@ -25,23 +25,28 @@ void configurar(std::string nivelLog) {
     l->info("Nivel de Log: " + nivelLog);
 }
 
-Configuracion* parsearConfiguracion() {
+Configuracion* parsearConfiguracion(std::string archivoConfig) {
     ConfiguracionParser configuracionParser;
     Configuracion* config;
 
-    // Ahoro intento con el backup
     try {
-        config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        config = configuracionParser.parsearConfiguracion(archivoConfig);
     }
-        // Si el backup tampoco sirve, ya no puedo inicializar el juego
     catch (const std::exception& exc) {
-        std::cout<<"Ocurrio un error alhilocon leer el archivo de configuración de backup, no puede configurarse el juego"<<std::endl;
-        // Throw exception corta por completo la ejecucion del codigo
-        throw exc;
+        std::cout<<"Ocurrio un error al leer el archivo de configuración, intento con el backup"<<std::endl;
+        try {
+            config = configuracionParser.parsearConfiguracion(BACKUP_CONFIG);
+        }
+        catch (const std::exception& exc) {
+            std::cout<<"Ocurrio un error al leer el archivo de configuración, intento con el backup"<<std::endl;
+            // Throw exception corta por completo la ejecucion del codigo
+            throw exc;
+        }
     }
 
     return config;
 }
+
 
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg) {
 	if (posArg + 1 >= argc || argv[posArg+1][0] == '-') {
@@ -55,9 +60,8 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
 int main(int argc, char *argv[]) {
     std::srand(std::time(NULL)); //use current time as seed for random generator
 
-    std::string archivoConfig;
-    Configuracion* config = parsearConfiguracion();
-    std::string nivelLog = config->getNivelLog();
+    std::string archivoConfig = BACKUP_CONFIG;
+    std::string nivelLog = "";
 
     int port = 3040;
     std::string dir_ip = "127.0.0.1";
@@ -66,8 +70,19 @@ int main(int argc, char *argv[]) {
     Partida* partida = new Partida();
 
     for (int i = 1; i < argc; i ++) {
-        if (strcmp(argv[i], "-l") == 0) {
-        	if (!validarParametroSimple(argc, argv, "-l", i)) {
+        if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
+            std::string help = "Gley Lancer (cliente) en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
+            std::string opciones = std::string("Opciones:\n\t")
+                                   + "-l\tSetea el nivel de log\n\t"
+                                   +
+                                   "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)\n\t"
+                                   + "-h\tEspecifica la direccion IP a la cual conectarse\n\t"
+                                   + "-p\tEspecifica el puerto a conectarse\n\t";
+            std::cout << help << std::endl;
+            std::cout << opciones << std::endl;
+            return 0;
+        } else if (strcmp(argv[i], "-l") == 0) {
+            if (!validarParametroSimple(argc, argv, "-l", i)) {
                 return -1;
             }
             if (!Log::confValida(argv[i + 1])) {
@@ -77,19 +92,9 @@ int main(int argc, char *argv[]) {
                 nivelLog = std::string(argv[i + 1]);
             }
         } else if (strcmp(argv[i], "-c") == 0) {
-			if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
-			archivoConfig = std::string(argv[i + 1]);
-		} else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
-            std::string help = "Gley Lancer (cliente) en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
-            std::string opciones = std::string("Opciones:\n\t")
-                                   + "-l\tSetea el nivel de log\n\t"
-                                   + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)\n\t"
-                                   + "-h\tEspecifica la direccion IP a la cual conectarse\n\t"
-                                   + "-p\tEspecifica el puerto a conectarse\n\t";
-            std::cout << help << std::endl;
-			std::cout << opciones << std::endl;
-			return 0;
-		} else if (strcmp(argv[i], "-p") == 0) {
+            if (!validarParametroSimple(argc, argv, "-c", i)) return -1;
+            archivoConfig = std::string(argv[i + 1]);
+        }else if (strcmp(argv[i], "-p") == 0) {
             if (!validarParametroSimple(argc, argv, "-p", i)) {
                 return -1;
             }
@@ -108,9 +113,11 @@ int main(int argc, char *argv[]) {
 	}
 
     l = new Log("client");
+    Configuracion* config = parsearConfiguracion(archivoConfig);
+    if (nivelLog == "") nivelLog = config->getNivelLog();
     configurar(nivelLog);
 
-	// Inicializa SDL con la configuracion
+    // Inicializa SDL con la configuracion
 	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;
 
 	// Comienza el juego con la configuracion
