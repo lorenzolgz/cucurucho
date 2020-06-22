@@ -6,7 +6,6 @@
 #include "classes/config/FondoConfiguracion.h"
 #include "classes/HiloOrquestadorPartida.h"
 #include "classes/HiloAceptadorConexiones.h"
-#include "../commons/connections/ConexionExcepcion.h"
 
 
 #define BACKUP_CONFIG "../server/config/backup.json"
@@ -80,88 +79,14 @@ Configuracion* parsearConfiguracion() {
 }
 
 
-void notificarEstadoConexion(std::list<ConexionServidor*>* conexiones, int estadoLogin) {
-    nlohmann::json json;
-    json["tipoMensaje"] = ESTADO_LOGIN;
-    json["estadoLogin"] = estadoLogin;
-    json["jugador1"] = "\0";
-    json["jugador2"] = "\0";
-    json["jugador3"] = "\0";
-    json["jugador4"] = "\0";
-
-    int i = 1;
-    for (ConexionServidor* & c : *conexiones) {
-        json["jugador" + std::to_string(i)] = c->getUsuario();
-        i++;
-    }
-
-    i = 1;
-    auto j = conexiones->begin();
-    while (j != conexiones->end()) {
-        try {
-            json["nroJugador"] = i;
-            (*j)->enviarMensaje(json);
-            j++;
-            i++;
-        } catch (const ConexionExcepcion& e) {
-            // Si el usuario se desconecta antes de comenzar la partida puede conectarse otro (evaluar?)
-            conexiones->erase(j);
-            // Volver a enviar mensajes con lista actualizada
-            notificarEstadoConexion(conexiones, estadoLogin);
-            return;
-        }
-    }
-}
-
 
 int esperarConexiones(int puerto, Configuracion* config) {
 	l->info("Puerto: " + std::to_string(puerto));
 
-	AceptadorConexiones* aceptadorConexiones = new AceptadorConexiones(puerto);
-	aceptadorConexiones->escuchar();
-
-	std::list<ConexionServidor*> conexiones;
-
-	while (conexiones.size() < config->getCantidadJugadores()) { //usuario != usuarioPerdido
-		l->info("Esperando usuario(s)");
-		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
-                                                                                 conexiones.size() + 1,
-                                                                                 false);
-        if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
-            continue;
-        }
-        conexiones.push_back(conexionServidor);
-        notificarEstadoConexion(&conexiones, LOGIN_ESPERAR);
-        l->info("Usuario " + std::to_string(conexiones.size()) + " conectado");
-	}
-	l->info("Todos los usuarios fueron aceptados");
-    notificarEstadoConexion(&conexiones, LOGIN_COMENZAR);
-
-    // TODO: Pre-procesamiento?
-    std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
-    notificarEstadoConexion(&conexiones, LOGIN_FIN);
-
-    std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(&conexiones, aceptadorConexiones);
-
-	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, hilosConexionesServidores);
-
-    hiloOrquestadorPartida->start();
-
-    HiloAceptadorConexiones* hiloAceptadorConexiones = new HiloAceptadorConexiones(&conexiones,
-            hilosConexionesServidores,
-            aceptadorConexiones);
+    HiloAceptadorConexiones* hiloAceptadorConexiones = new HiloAceptadorConexiones(puerto, config);
 
     hiloAceptadorConexiones->start();
-
-    hiloOrquestadorPartida->join();
     hiloAceptadorConexiones->join();
-
-    for (auto* conexion : conexiones) {
-		conexion->cerrar();
-	}
-
-	aceptadorConexiones->dejarDeEscuchar();
 
 	return 0;
 }
@@ -174,19 +99,4 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
     }
 
     return true;
-}
-
-
-std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
-        AceptadorConexiones* aceptadorConexiones) {
-    auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
-
-    int i = 0;
-    for (auto* conexion : *(conexiones)) {
-        auto* hiloConexionServidor = new HiloConexionServidor(conexion, conexion->getNroJugador(), conexion->getUsuario(), aceptadorConexiones);
-        hiloConexionServidor->start();
-        hilosConexionesServidores->push_back(hiloConexionServidor);
-        i++;
-    }
-    return hilosConexionesServidores;
 }
