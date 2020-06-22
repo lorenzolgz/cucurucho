@@ -16,6 +16,9 @@ Log* l;
 int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out);
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
+std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
+                                                                 AceptadorConexiones* aceptadorConexiones);
+void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones);
 
 
 int main(int argc , char *argv[]) {
@@ -150,13 +153,15 @@ int esperarConexiones(int puerto, Configuracion* config) {
 	while (conexiones.size() < config->getCantidadJugadores()) { //usuario != usuarioPerdido
 		l->info("Esperando usuario(s)");
 		auto* conexionServidor = aceptadorConexiones->aceptarConexion();
-		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexiones, conexiones.size()+1);
+		ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
+                                                                                 conexiones.size() + 1,
+                                                                                 false);
         if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
             continue;
         }
         conexiones.push_back(conexionServidor);
         notificarEstadoConexion(&conexiones, LOGIN_ESPERAR);
-        l->info("Usuario " + std::to_string(conexiones.size()) + " conectado");
+        l->info("Usuario " + std::to_string(conexiones.size()) + ", " + conexionServidor->getUsuario() + " conectado");
 	}
 	l->info("Todos los usuarios fueron aceptados");
     notificarEstadoConexion(&conexiones, LOGIN_COMENZAR);
@@ -165,22 +170,55 @@ int esperarConexiones(int puerto, Configuracion* config) {
     std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
     notificarEstadoConexion(&conexiones, LOGIN_FIN);
 
-	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, &conexiones, aceptadorConexiones);
+    std::list<HiloConexionServidor*>* hilosConexionesServidores = crearHilosConexionesServidores(&conexiones, aceptadorConexiones);
 
-	try {
-		hiloOrquestadorPartida->start();
+	HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, hilosConexionesServidores);
 
-		hiloOrquestadorPartida->join();
-	} catch (const std::exception& exc) {
-		l->error("HiloAceptador. main");
-	}
+    hiloOrquestadorPartida->start();
+
+    while (true) {
+        auto* conexionServidor = aceptadorConexiones->aceptarConexion();
+        ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, &conexiones,
+                                                                                 conexiones.size() + 1,
+                                                                                 true);
+        if (!controladorDeSesiones->iniciarSesion()) {//si entró un usuario no registrado
+            continue;
+        }
+
+        conexiones.push_back(conexionServidor);
+        for (HiloConexionServidor* c : *hilosConexionesServidores) {
+            if (c->username == conexionServidor->getUsuario()) {
+                nlohmann::json json;
+                json["tipoMensaje"] = ESTADO_LOGIN;
+                json["estadoLogin"] = LOGIN_FIN;
+                json["nroJugador"] = c->conexionServidor->getNroJugador();
+                json["jugador1"] = "";
+                json["jugador2"] = "";
+                json["jugador3"] = "";
+                json["jugador4"] = "";
+
+                try {
+                    conexionServidor->enviarMensaje(json);
+                } catch (const std::exception& exc) {
+                    l->error("HiloAceptador, rechazando a cliente reconectado: " + std::string(exc.what()));
+                    conexionServidor->cerrar();
+                    conexiones.pop_back();
+                    break;
+                }
+
+                c->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
+            }
+        }
+        reinstanciarListaConexiones(&conexiones, hilosConexionesServidores);
+    }
+
 
 	for (auto* conexion : conexiones) {
 		conexion->cerrar();
 	}
-	l->info("Client socket number closed\n");
 	aceptadorConexiones->dejarDeEscuchar();
-	l->info("Server socket number closed\n");
+
+    hiloOrquestadorPartida->join();
 
 	return 0;
 }
@@ -193,4 +231,28 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
     }
 
     return true;
+}
+
+
+std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
+        AceptadorConexiones* aceptadorConexiones) {
+    auto* hilosConexionesServidores = new std::list<HiloConexionServidor*>();
+
+    int i = 0;
+    for (auto* conexion : *(conexiones)) {
+        auto* hiloConexionServidor = new HiloConexionServidor(conexion, conexion->getNroJugador(), conexion->getUsuario(), aceptadorConexiones);
+        hiloConexionServidor->start();
+        hilosConexionesServidores->push_back(hiloConexionServidor);
+        i++;
+    }
+    return hilosConexionesServidores;
+}
+
+void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones, std::list<HiloConexionServidor*>* hiloConexiones) {
+    while (!conexiones->empty()) {
+        conexiones->pop_back();
+    }
+    for (HiloConexionServidor* c : *hiloConexiones) {
+        conexiones->push_back(c->conexionServidor);
+    }
 }

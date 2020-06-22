@@ -30,6 +30,7 @@ private:
     Enemigo2Vista enemigo2Vista;
     std::vector<JugadorVista*> jugadores;
     int nivelActual;
+    bool primerNivel;
     int alto;
     int ancho;
     float posX;
@@ -39,6 +40,7 @@ private:
     void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto);
 
     void renderEspera(struct EstadoLogin estadoLogin);
+
 };
 
 

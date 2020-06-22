@@ -33,23 +33,7 @@ void ConexionCliente::cerrar() {
 	close(client_socket);
 }
 
-// "Siempre" va a funcionar porque se llama apenas se inicia la conexion
-struct EstadoLogin ConexionCliente::recibirEstadoLogin() {
-	uint32_t nroJugador = false;
 
-    l->debug("Cliente por recibir mensaje");
-    if (recibirData<uint32_t>(&client_socket, &nroJugador) < 0) {
-        perror("Receive Data Error");
-        throw ConexionExcepcion();
-    }
-
-    l->debug("Cliente contrasenia correcta: " + std::to_string(nroJugador));
-	struct EstadoLogin estadoLogin = { (int) nroJugador };
-    return estadoLogin;
-}
-
-
-// "Siempre" va a funcionar porque se llama apenas se inicia la conexion
 void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {
     l->debug("Cliente por mandar credenciales");
 

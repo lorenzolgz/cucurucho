@@ -15,7 +15,7 @@ void AceptadorConexiones::escuchar() {
 	// Protocol: 0 (chosen automatically)
 	this->server_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->server_socket == -1) {
-		perror("Could not create socket");
+	    l->error("Error al crear socket");
 		exit(1);
 	}
 	//------------------------
@@ -43,10 +43,10 @@ void AceptadorConexiones::escuchar() {
 	// addrlen -> size of the sockaddr_in structure
 	// bind() assigns the address specified by addr to the socket referred to by the file descriptor sockfd.
 	if (bind(this->server_socket, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		perror("Bind failed. Error");
+		l->error("Bind del puerto fallo: " + std::string(strerror(errno)));
 		exit(1);
 	}
-	l->info("Bind done");
+	l->info("Bind finalizado");
 	//------------------------
 
 	// Listen
@@ -55,10 +55,10 @@ void AceptadorConexiones::escuchar() {
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
 	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
 	if (listen(this->server_socket, 100) < 0) {
-		perror("Listen failed. Error");
+		l->error("Listen fallo: " + std::string(strerror(errno)));
 		exit(1);
 	}
-	l->info("Listening on port: " + std::to_string(port) + " Waiting for incoming connections...");
+	l->info("Escuchando puerto: " + std::to_string(port) + " Esperando conexiones...");
 	//------------------------
 }
 
@@ -73,8 +73,7 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// addrlen -> size of sockaddr structure for the CLIENT.
 	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
-		l->error("Accept failed (" + std::to_string(client_socket) + ")");
-		perror("Accept failed");
+		l->error("Accept fallo (" + std::to_string(client_socket) + "): " + std::string(strerror(errno)));
 		return nullptr;
 	}
 
@@ -94,7 +93,7 @@ ConexionServidor *AceptadorConexiones::reconectar(int broken_socket) {
     // addrlen -> size of sockaddr structure for the CLIENT.
     int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
     if (client_socket < 0) {
-        perror("Accept failed");
+        l->error("Accept fallo: " + std::string(strerror(errno)));
     }
     return new ConexionServidor(client_socket);
 }

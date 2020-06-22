@@ -104,7 +104,7 @@ void TituloVista::renderTitulo() {
 void TituloVista::renderFadeout(bool activada) {
     if (!activada) return;
 
-    int alpha = contadorActivada * 255 / INICIO_TIMEOUT;
+    int alpha = contadorActivada * 25;
     if (alpha > 255) alpha = 255;
 
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, alpha);
@@ -137,6 +137,8 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
         texto = "ERROR DE AUTENTICACION";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
         texto = "PROBLEMA DE CONEXION";
+    } else if (estadoLogin == LOGIN_ESPERANDO_RESPUESTA) {
+        texto = "ESPERANDO RESPUESTA...";
     } else if (estadoLogin > 0) {
         texto = "INICIANDO JUEGO";
     }

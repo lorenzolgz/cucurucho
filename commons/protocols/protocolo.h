@@ -16,6 +16,7 @@
 #define MAX_COLA_EMISORA_SERVIDOR 2
 
 // Codigos Estado Login
+#define LOGIN_ESPERANDO_RESPUESTA -3
 #define LOGIN_SIN_CONEXION -2
 #define LOGIN_FALLO -1
 #define LOGIN_PENDIENTE 0
@@ -35,9 +36,7 @@ enum {
     ESTADO_TICK,
     COMANDO,
     ESTADO_LOGIN,
-    MENSAJE_PING,
-    ERROR_CONEXION,
-    RECONEXION
+    MENSAJE_PING
 };
 
 

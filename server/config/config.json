@@ -1,41 +1,41 @@
 {
-  "configuracion": {
-    "log": {
-      "nivel": "debug",
-      "std_out": true
-    },
-    "cantidadJugadores": 2,
-    "niveles": [
-      {
-        "archivoFondos": "fondos/fondos3.json",
-        "fin": "cleared_con_nave1.png",
-        "enemigos": {
-          "clase1": 5,
-          "clase2": 1
-        },
-        "velocidad": 2,
-        "largo": 600
+   "configuracion": {
+      "log": {
+         "nivel": "info",
+         "std_out": true
       },
-      {
-        "archivoFondos": "fondos/fondos1.json",
-        "fin": "cleared_con_nave2.png",
-        "enemigos": {
-          "clase1": 5,
-          "clase2": 2
-        },
-        "velocidad": 3,
-        "largo": 200
-      },
-      {
-        "archivoFondos": "fondos/fondos2.json",
-        "fin": "cleared_con_nave3.png",
-        "enemigos": {
-          "clase1": 4,
-          "clase2": 1
-        },
-        "velocidad": 2.5,
-        "largo": 200
-      }
-    ]
-  }
+      "cantidadJugadores": 4,
+      "niveles": [
+         {
+            "archivoFondos": "fondos/fondos1.json",
+            "fin": "cleared_con_nave1.png",
+            "enemigos": {
+               "clase1": 105,
+               "clase2": 75
+            },
+            "velocidad": 2,
+            "largo": 30000
+         },
+         {
+            "archivoFondos": "fondos/fondos2.json",
+            "fin": "cleared_con_nave2.png",
+            "enemigos": {
+               "clase1": 135,
+               "clase2": 45
+            },
+            "velocidad": 3,
+            "largo": 48000
+         },
+         {
+            "archivoFondos": "fondos/fondos4.json",
+            "fin": "cleared_con_nave3.png",
+            "enemigos": {
+               "clase1": 40,
+               "clase2": 90
+            },
+            "velocidad": 3.5,
+            "largo": 43000
+         }
+      ]
+   }
 }

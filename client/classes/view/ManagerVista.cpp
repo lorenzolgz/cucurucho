@@ -16,6 +16,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     campoVista = nullptr;
     enemigo1Vista = Enemigo1Vista();
     enemigo2Vista = Enemigo2Vista();
+    primerNivel = true;
 
     jugadores.push_back(new JugadorVista(COLORES_AZUL));
     jugadores.push_back(new JugadorVista(COLORES_ROJO));
@@ -42,6 +43,9 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
     for (int i = 0; i < MAX_JUGADORES; i++) {
         jugadores[i]->render(estadoTick.estadosJugadores[i]);
     }
+
+    posCampo = { 0, 0, ancho, alto };
+    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 }
 
 
@@ -50,11 +54,13 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
         return;
     }
 
-    if (informacionNivel.numeroNivel > 1) {
+    if (!primerNivel) {
         this->renderNivelIntermedio();
         SDL_RenderPresent(GraphicRenderer::getInstance());
         SDL_Delay(TIMEOUT_PROXIMO_NIVEL * 1000);
     }
+
+    primerNivel = false;
 
     ManagerVista::informacionNivel = informacionNivel;
 

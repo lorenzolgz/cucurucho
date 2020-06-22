@@ -21,7 +21,7 @@ Log::Log(std::string basePath) {
     if (!fs::is_directory(homePath) || !fs::exists(homePath)) { // Check if src folder exists
         fs::create_directory(homePath); // create src folder
     }
-//  ../cliente/log/log-200621-22380.txt
+
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     std::string pathlogtime = homePath + RELATIVE_PATHLOGTIME;
@@ -38,7 +38,6 @@ Log::Log(std::string basePath) {
 
 void Log::output(const std::string& estado_log, const std::string& mensaje) {
 	std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
 }
@@ -72,7 +71,7 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo.flush();
     archivo.close();
 
-    if(this->std_out){
+    if(this->std_out && logEntrada == log){
         std::cout<<horario<<estado<<msj<<std::endl;
     }
 }

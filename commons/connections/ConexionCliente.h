@@ -18,8 +18,6 @@ public:
 
 	void enviarComando(struct Comando* comando);
 
-	struct EstadoLogin recibirEstadoLogin();
-
     void enviarDatosDeLogin(Login *logueo);
 
     void cerrar();

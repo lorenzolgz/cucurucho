@@ -14,10 +14,6 @@ class ManagerJuego {
 public:
     ManagerJuego();
 
-    void estadoNivel(nlohmann::json instruccion);
-
-    void setEstadoLogin(struct EstadoLogin estadoLogin);
-
     void setUsername(const std::string &username);
 
     void render();
@@ -26,18 +22,20 @@ public:
 
     bool enJuego();
 
-    const EstadoLogin &getEstadoLogin() const;
+    void setInformacionNivel(const InformacionNivel &informacionNivel);
+
+    void setEstadoTick(const EstadoTick &estadoTick);
+
+    void setEstadoLogin(const EstadoLogin &estadoLogin);
 
 private:
     InformacionNivel informacionNivel;
     EstadoTick estadoTick;
-    ManagerVista *managerVista;
+    ManagerVista* managerVista;
     EstadoLogin estadoLogin;
     std::string username;
+    Titulo* titulo;
 
-    void setEstadoTick(nlohmann::json mensaje);
-    void setInformacionNivel(nlohmann::json mensaje);
-    void setEstadoLogin(nlohmann::json mensaje);
 };
 
 

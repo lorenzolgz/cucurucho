@@ -26,27 +26,34 @@ public:
 
     void play(const char *ip_address, int port);
 
-    void cerrar();
-
 private:
-    ConexionCliente* conexionCliente;
     Titulo* pantallaPrincipal;
     ManagerJuego* manager;
-    IniciadorComunicacion* iniciadorComunicacion;
     HiloConexionCliente* hiloConexionCliente;
+    IniciadorComunicacion* iniciadorComunicacion;
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
 
     void conexionLoop(const Uint8 *currentKeyStates);
 
-    bool pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
+    void pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
 
     bool eventLoop(std::string *inputText);
 
-    bool renderLoop();
+    void renderLoop();
 
     void autenticarServidor();
+
+    void comenzarHilo();
+
+    void reiniciarInstanciaHilo();
+
+    void setEstadoTick(nlohmann::json mensaje);
+
+    void setInformacionNivel(nlohmann::json mensaje);
+
+    void setEstadoLogin(nlohmann::json mensaje);
 };
 
 
