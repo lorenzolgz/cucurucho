@@ -2,8 +2,8 @@
 #define CUCURUCHO_PROTOCOLO_H
 
 
-#define MAX_ENEMIGOS 15
-#define MAX_FONDOS 15
+#define MAX_ENEMIGOS 25
+#define MAX_FONDOS 25
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
 #define LARGO_USERNAME 16

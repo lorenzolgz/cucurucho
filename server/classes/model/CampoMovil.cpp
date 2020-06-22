@@ -78,6 +78,6 @@ EstadoInternoCampoMovil CampoMovil::state() {
 bool CampoMovil::verificarPosicionEnemigo(EntidadEnemigo *pEnemigo) {
     int posX = pEnemigo->getPosicion().getX();
     int posY = pEnemigo->getPosicion().getY();
-    return !(posX < 0 - BORDE || posX > ancho + BORDE || posY < 0 - BORDE|| posY > alto + BORDE);
+    return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 }
 

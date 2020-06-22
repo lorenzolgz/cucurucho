@@ -9,7 +9,8 @@
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
-#define BORDE 30
+
+const int CAMPO_OFFSET = 300;
 
 class Entidad;
 class Ticker;
