@@ -2,7 +2,6 @@
 // Created by javier on 11/4/20.
 //
 
-#include <SDL_render.h>
 #include "Utils.h"
 
 

@@ -40,9 +40,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
     renderEnemigos(estadoTick.estadosEnemigos);
 
-    for (int i = 0; i < MAX_JUGADORES; i++) {
-        jugadores[i]->render(estadoTick.estadosJugadores[i]);
-    }
+    renderJugadores(estadoTick, estadoLogin);
 
     posCampo = { 0, 0, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
@@ -96,6 +94,27 @@ void ManagerVista::renderEnemigos(EstadoEnemigo *estadosEnemigos) {
                 enemigo2Vista.render(estadosEnemigos[i]);
         }
     }
+}
+
+
+void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin) {
+
+    // Primero se renderizan los jugadores desconectados
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        if (!estadoTick.estadosJugadores[i].presente) {
+            jugadores[i]->render(estadoTick.estadosJugadores[i]);
+        }
+    }
+
+    // Luego se renderizan los jugadores presentes que no sea el propio del usuario/cliente
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        if (estadoTick.estadosJugadores[i].presente && (estadoLogin.nroJugador-1) != i) {
+            jugadores[i]->render(estadoTick.estadosJugadores[i]);
+        }
+    }
+
+    // Finalmente, se renderiza el jugador del propio usuario/cliente
+    jugadores[estadoLogin.nroJugador-1]->render(estadoTick.estadosJugadores[estadoLogin.nroJugador-1]);
 }
 
 

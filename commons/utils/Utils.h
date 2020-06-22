@@ -5,8 +5,8 @@
 #ifndef CPP_SANDBOX_UTILS_H
 #define CPP_SANDBOX_UTILS_H
 
-#include <SDL_render.h>
 #include <string>
+#include <cmath>
 
 #define PI 3.14159265358979323846
 
