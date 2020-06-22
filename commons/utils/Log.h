@@ -16,7 +16,7 @@ class Log {
 private:
 	std::string homePath;
     std::string nivel;
-    char logEntrada [30]{};
+    char logEntrada [40]{};
     bool std_out;
 
 public:
