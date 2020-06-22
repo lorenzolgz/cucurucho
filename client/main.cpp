@@ -25,7 +25,7 @@ void configurar(std::string nivelLog) {
     l->info("Nivel de Log: " + nivelLog);
 }
 
-Configuracion* parsearConfiguracion(std::string archivoConfig) {
+Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
     ConfiguracionParser configuracionParser;
     Configuracion* config;
 
@@ -43,6 +43,8 @@ Configuracion* parsearConfiguracion(std::string archivoConfig) {
             throw exc;
         }
     }
+
+    std_out = configuracionParser.std_out;
 
     return config;
 }
@@ -113,9 +115,12 @@ int main(int argc, char *argv[]) {
 	}
 
     l = new Log("client");
-    Configuracion* config = parsearConfiguracion(archivoConfig);
+    bool std_out;
+    Configuracion* config = parsearConfiguracion(archivoConfig, std_out);
     if (nivelLog == "") nivelLog = config->getNivelLog();
+    l->set_stdout(std_out);
     configurar(nivelLog);
+
 
     // Inicializa SDL con la configuracion
 	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;

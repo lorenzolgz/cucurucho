@@ -1,7 +1,8 @@
 {
   "configuracion": {
     "log": {
-      "nivel": "debug"
+      "nivel": "debug",
+      "std_out": true
     },
     "cantidadJugadores": 2,
     "niveles": [

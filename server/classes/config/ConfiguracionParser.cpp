@@ -302,5 +302,7 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	nivelLog = parsearNivelLog(configuracionJson);
 	niveles = parsearNiveles(configuracionJson["niveles"]);
 
+    this->std_out = configuracionJson["log"]["std_out"].asBool();
+
 	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles, cantidadJugadores);
 }

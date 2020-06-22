@@ -21,13 +21,11 @@ Log::Log(std::string basePath) {
     if (!fs::is_directory(homePath) || !fs::exists(homePath)) { // Check if src folder exists
         fs::create_directory(homePath); // create src folder
     }
-
+//  ../cliente/log/log-200621-22380.txt
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     std::string pathlogtime = homePath + RELATIVE_PATHLOGTIME;
-	char pathlogthimeAsCharArray[pathlogtime.size() + 1];
-	strcpy(pathlogthimeAsCharArray, pathlogtime.c_str());	// or pass &s[0]
-    std::strftime(Log::logEntrada, 50, pathlogthimeAsCharArray , std::localtime(&t));
+    std::strftime(Log::logEntrada, 50, pathlogtime.c_str() , std::localtime(&t));
 
     std::fstream archivo;
     archivo.open(logEntrada , std::fstream::out);
@@ -69,9 +67,16 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     std::fstream archivo;
     archivo.open(log , std::fstream::app);
     char horario[30];
-    std::strftime(horario, 30, "%x %X" , std::localtime(&timestamp));
+    std::strftime(horario, 100, "%x %X" , std::localtime(&timestamp));
     archivo << horario << estado << msj << std::endl;
     archivo.flush();
     archivo.close();
+
+    if(this->std_out){
+        std::cout<<horario<<estado<<msj<<std::endl;
+    }
 }
 
+void Log::set_stdout(bool std_out) {
+    this->std_out = std_out;
+}

@@ -8,6 +8,7 @@
 class ConfiguracionParser {
 public:
 	Configuracion* parsearConfiguracion(std::string rutaJsonConfig);
+	bool std_out;
 
 private:
 	Json::Value get(Json::Value value, std::string mensaje, bool requerido = true);

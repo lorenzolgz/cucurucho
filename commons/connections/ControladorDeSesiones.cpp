@@ -46,7 +46,7 @@ bool ControladorDeSesiones::iniciarSesion() {
 	} else {
         this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
 		this->usuarioConectado = std::string(usuario);
-		conexionServidor->setUsuario(std::string(usuario));
+		this->conexionServidor->setUsuario(std::string(usuario));
 	}
 
 	return ok;
@@ -82,8 +82,8 @@ string ControladorDeSesiones::userConectado(){
 }
 
 bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string usuario) {
-    auto j = conexiones.begin();
-    while (j != conexiones.end()) {
+    auto j = this->conexiones.begin();
+    while (j != this->conexiones.end()) {
         if ((*j)->getUsuario() != usuario) {
             j++;
             continue;
@@ -95,7 +95,7 @@ bool ControladorDeSesiones::controlarQueNoIngreseUsuarioYaEnJuego(std::string us
             l->info("Usuario " + std::string(usuario) + " ya se encuentra conectado");
             return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
         } catch (const ConexionExcepcion& e) {
-            j = conexiones.erase(j);
+            j = this->conexiones.erase(j);
         }
     }
 

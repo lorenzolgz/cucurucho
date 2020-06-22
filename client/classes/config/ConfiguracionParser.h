@@ -13,6 +13,7 @@ public:
     std::list<FondoConfiguracion*> parsearArchivoFondos(std::string rutaRelativa, int nivel);
 
     Configuracion *parsearConfiguracion(std::string rutaJsonConfig);
+    bool std_out;
 
 private:
 	void validarJsonGenerico(bool hayError, std::string mensaje);

@@ -16,7 +16,8 @@ class Log {
 private:
 	std::string homePath;
     std::string nivel;
-    char logEntrada [30]{};
+    char logEntrada [40]{};
+    bool std_out;
 
 public:
     Log(std::string basePath);
@@ -28,9 +29,11 @@ public:
     void setConf(std::string string);
 
     void output(const std::string& estado_log, const std::string& mensaje);
-    static void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
+    void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
 
     static bool confValida(std::string nivel);
+
+    void set_stdout(bool std_out);
 };
 
 extern Log* l;

@@ -1,7 +1,8 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error"
+         "nivel": "error",
+         "std_out": true
       },
       "niveles": [
          {
