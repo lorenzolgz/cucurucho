@@ -29,7 +29,7 @@ public:
     void setConf(std::string string);
 
     void output(const std::string& estado_log, const std::string& mensaje);
-    static void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
+    void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
 
     static bool confValida(std::string nivel);
 

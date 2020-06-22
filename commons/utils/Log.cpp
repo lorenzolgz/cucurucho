@@ -43,10 +43,6 @@ void Log::output(const std::string& estado_log, const std::string& mensaje) {
 
     cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
-
-    if(this->std_out){
-        std::cout<<timenow<<estado_log<<mensaje<<std::endl;
-    }
 }
 
 void Log::error(const std::string& string) {
@@ -77,6 +73,10 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo << horario << estado << msj << std::endl;
     archivo.flush();
     archivo.close();
+
+    if(this->std_out){
+        std::cout<<horario<<estado<<msj<<std::endl;
+    }
 }
 
 void Log::set_stdout(bool std_out) {
