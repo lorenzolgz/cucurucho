@@ -117,6 +117,8 @@ Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCo
 
     nivelLog = parsearNivelLog(configuracionJson);
 
+    this->std_out = configuracionJson["log"]["std_out"].asBool();
+
     return new Configuracion(nivelLog);
 }
 

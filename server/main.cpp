@@ -14,7 +14,7 @@
 Log* l;
 
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion(std::string archivoConfig);
+Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out);
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
 
 
@@ -65,15 +65,18 @@ int main(int argc , char *argv[]) {
 
     l = new Log("server");
 
-    Configuracion* config = parsearConfiguracion(archivoConfig);
+    bool std_out;
+
+    Configuracion* config = parsearConfiguracion(archivoConfig, std_out);
     if (nivelLog == "") nivelLog = config->getNivelLog();
+    l->set_stdout(std_out);
     l->setConf(nivelLog);
     l->info("Iniciando el conexionServidor.");
 
     return esperarConexiones(port, config);
 }
 
-Configuracion* parsearConfiguracion(std::string archivoConfig) {
+Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
     ConfiguracionParser configuracionParser;
     Configuracion* config;
 
@@ -94,6 +97,7 @@ Configuracion* parsearConfiguracion(std::string archivoConfig) {
         }
     }
 
+    std_out = configuracionParser.std_out;
     return config;
 }
 

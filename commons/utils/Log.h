@@ -17,6 +17,7 @@ private:
 	std::string homePath;
     std::string nivel;
     char logEntrada [30]{};
+    bool std_out;
 
 public:
     Log(std::string basePath);
@@ -31,6 +32,8 @@ public:
     static void cargar_log(std::string log, time_t timestamp, const std::string& estado, const std::string& msj);
 
     static bool confValida(std::string nivel);
+
+    void set_stdout(bool std_out);
 };
 
 extern Log* l;
