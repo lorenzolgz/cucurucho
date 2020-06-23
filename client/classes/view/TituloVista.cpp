@@ -133,8 +133,14 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
 void TituloVista::renderInfo(int estado, int estadoLogin) {
     Vector posicion = Vector(ancho / 2, alto * 5 / 6);
     std::string texto = "";
-    if (estadoLogin == LOGIN_FALLO) {
+    if (estadoLogin == LOGIN_ERROR_PASS_INVALIDA) {
         texto = "ERROR DE AUTENTICACION";
+    } else if (estadoLogin == LOGIN_ERROR_USUARIO_INEXISTENTE) {
+        texto = "USUARIO NO REGISTRADO";
+    } else if (estadoLogin == LOGIN_ERROR_USUARIO_EN_JUEGO) {
+        texto = "USUARIO YA SE ENCUENTRA CONECTADO";
+    } else if (estadoLogin == LOGIN_ERROR_EN_PARTIDA) {
+        texto = "PARTIDA EN CURSO";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
         texto = "PROBLEMA DE CONEXION";
     } else if (estadoLogin == LOGIN_ESPERANDO_RESPUESTA) {
