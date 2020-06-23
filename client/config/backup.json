@@ -1,0 +1,8 @@
+{
+   "configuracion": {
+      "log": {
+         "nivel": "debug",
+         "std_out": true
+      }
+   }
+}
