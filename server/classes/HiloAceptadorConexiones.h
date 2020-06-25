@@ -17,32 +17,19 @@
 
 class HiloAceptadorConexiones : public Thread {
 public:
-
-
-    HiloAceptadorConexiones(
-            int puerto,
-            Configuracion *config);
-
-    void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexiones,
-                                     std::list<HiloConexionServidor*>* hiloConexiones);
-
-    void atenderPosiblesReconexiones(std::list<ConexionServidor *> *conexiones,
-                                     std::list<HiloConexionServidor *> *hiloConexiones,
-                                     AceptadorConexiones* aceptadorConexiones);
+    HiloAceptadorConexiones(int puerto, Configuracion *config);
 
     void run() override;
 
 private:
-    std::list<ConexionServidor*>* conexiones;
-    std::list<HiloConexionServidor*>* hiloConexiones;
-    AceptadorConexiones* aceptadorConexiones;
-    Configuracion* config;
-    int puerto;
+	Configuracion* config;
+	std::list<HiloConexionServidor*>* hilosConexionesServidores;
+	AceptadorConexiones* aceptadorConexiones;
 
-    void notificarEstadoConexion(list<ConexionServidor *> *conexiones, int estadoLogin);
-
-    list<HiloConexionServidor *> *
-    crearHilosConexionesServidores(list<ConexionServidor *> *conexiones, AceptadorConexiones *aceptadorConexiones);
+    void notificarEstadoConexion(list<ConexionServidor *> *conexionesServidores, int estadoLogin);
+    std::list<HiloConexionServidor*>* crearHilosConexionesServidores(list<ConexionServidor*>* conexionesServidores);
+	void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexionesServidores);
+	void atenderPosiblesReconexiones(std::list<ConexionServidor*> *conexionesServidores);
 };
 
 

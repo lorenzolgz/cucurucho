@@ -13,10 +13,8 @@ class HiloOrquestadorPartida : public Thread {
 public:
     HiloOrquestadorPartida(Configuracion* config, std::list<HiloConexionServidor*>* hilosConexionesServidores);
 	void run() override;
-    std::list<HiloConexionServidor *> *crearHilosConexionesServidores(std::list<ConexionServidor *> *conexiones);
 
 private:
-    Configuracion* config;
     Partida *partida;
     std::list<HiloConexionServidor*>* hilosConexionesServidores;
 };

@@ -7,12 +7,9 @@ void initializeData(struct EstadoTick* estadoTick);
 void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *pList);
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion();
 
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config,
-        std::list<HiloConexionServidor*>* hilosConexionesServidores) {
-	this->config = config;
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<HiloConexionServidor*>* hilosConexionesServidores) {
 	this->partida = new Partida(config);
 	this->hilosConexionesServidores = hilosConexionesServidores;
 }
