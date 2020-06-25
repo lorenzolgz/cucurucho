@@ -45,7 +45,7 @@ void HiloAceptadorConexiones::run() {
     try {
         atenderPosiblesReconexiones(conexionesServidores);
     }
-    catch (exception& e) {
+    catch (const std::exception &e) {
         l->error("Ocurrio un error al atender las reconexiones. No se aceptaran mas reconexiones");
 		l->error(e.what());
     }
@@ -84,8 +84,8 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServ
 
                 try {
                     conexionServidor->enviarMensaje(json);
-                } catch (const std::exception &exc) {
-                    l->error("HiloAceptador, rechazando a cliente reconectado: " + std::string(exc.what()));
+                } catch (const std::exception &e) {
+                    l->error("HiloAceptador, rechazando a cliente reconectado: " + std::string(e.what()));
                     conexionServidor->cerrar();
                     conexionesServidores->pop_back();
                     break;

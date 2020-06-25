@@ -4,7 +4,7 @@
 #include "../../commons/ColaBloqueante.h"
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *pList);
 int esperarConexiones(int puerto, Configuracion* config);
 
@@ -45,10 +45,10 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
             }
         }
     }
-    catch(...) {
+    catch(const std::exception &e) {
         // TODO: Algo mas para hacer tras eliminar al jugador de la lista y marcarlo como no presente?
-        //l->info("Ocurrio un error al recibir los movimientos de los jugadores");
-        //l->info(excepcion.what());
+        l->error("Ocurrio un error al recibir los movimientos de los jugadores");
+        l->error(e.what());
     }
 
 
@@ -111,7 +111,10 @@ void HiloOrquestadorPartida::run() {
 			receiveData(hilosConexionesServidores, comandos);
             //--------------------
 			// Process model
-            processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+            quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+            if (quit) {
+				break;
+            }
             //--------------------
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
@@ -120,12 +123,14 @@ void HiloOrquestadorPartida::run() {
 			t1 = clock();
 		}
 	}
-	catch (...) {
+	catch (const std::exception &e) {
         // TODO stoppear hilosConexionesServidores
         // Si se llegó aca, quiere decir que no se pudo catchear la desconexion dentro de receiveData
         l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
+        l->error(e.what());
 	}
 
+	l->error("Esperando que terminen los hilosConexionesServidores");
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		hiloConexionServidor->join();
 	}
@@ -133,10 +138,15 @@ void HiloOrquestadorPartida::run() {
 	l->info("Terminando de correr HiloOrquestadorPartida");
 }
 
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones) {
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	partida->tick(comandos);
+
+	if (partida->termino()) {
+		l->error("!!!! La partida finalizo");
+		return true;
+	}
 
 	// Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
@@ -160,6 +170,8 @@ void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	for (; i < MAX_ENEMIGOS; i++) {
 		estadoTick->estadosEnemigos[i].clase = 0;
 	}
+
+	return false;
 }
 
 

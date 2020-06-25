@@ -19,6 +19,7 @@ void ManagerJuego::render(){
     managerVista->render(estadoTick, estadoLogin, username);
 }
 
+// !!!!!
 // TODO: che no da
 bool ManagerJuego::terminoJuego() {
     return informacionNivel.numeroNivel > 3;

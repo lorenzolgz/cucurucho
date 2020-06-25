@@ -28,7 +28,7 @@ void Partida::play(const char* ip_address, int port) {
             const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
             if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
-                l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log?
+                l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
                 hiloConexionCliente->cerrarConexion();
             }
 
