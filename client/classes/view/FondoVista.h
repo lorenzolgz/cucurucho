@@ -12,15 +12,11 @@
 
 class FondoVista {
 public:
-    FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad, float* velocidadNivelX);
     FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad);
-    void render();
+    void render(float posX);
     int getY() const;
     int getWidth() const;
     int getHeight() const;
-
-
-    void tickintermedio();
 
 private:
     float x1;
@@ -30,11 +26,10 @@ private:
     float modVelocidad;
     int width;
     int height;
-    float* velocidadNivelX;
     SDL_Texture* textura;
 	SDL_Renderer* gRenderer;
 
-	SDL_Rect calcularCoords(float* x, int y, int width, int height, float speed, float xOffset);
+	SDL_Rect calcularCoords(float x, int y, int width, int height, float speed, float xOffset);
 
 };
 

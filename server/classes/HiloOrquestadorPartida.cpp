@@ -143,7 +143,9 @@ void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 
 	// Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
+	estadoTick->posX = estadoCampoMovil.posX;
 	int i = 0;
 	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
 		estadoTick->estadosJugadores[i] = estadoJugador;

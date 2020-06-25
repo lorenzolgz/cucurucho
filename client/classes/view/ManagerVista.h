@@ -33,7 +33,7 @@ private:
     bool primerNivel;
     int alto;
     int ancho;
-    float posX;
+    float velocidadNivel;
 
     void renderEnemigos(EstadoEnemigo pEnemigo[15]);
 

@@ -12,7 +12,7 @@
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor
 #define MAX_COLA_CLIENTE 2
-#define MAX_COLA_RECEPTORA_SERVIDOR 2
+#define MAX_COLA_RECEPTORA_SERVIDOR 1
 #define MAX_COLA_EMISORA_SERVIDOR 2
 
 // Codigos Estado Login
@@ -81,7 +81,9 @@ struct EstadoEnemigo {
 };
 
 struct EstadoTick {
+    EstadoTick(): posX(0) {}
 	int nuevoNivel;
+	int posX;
 	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };

@@ -49,6 +49,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	nlohmann::json mensajeJson;
 	mensajeJson["tipoMensaje"] = ESTADO_TICK;
 	mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
+	mensajeJson["posX"] = estadoTick->posX;
 	int i = 0, j = 0;
 	// TODO enviar solo los enemigos necesarios. Ya no tiene que ser un struct con un array de largo fijo, porque el JSON es dinamico.
 	for (; i< MAX_JUGADORES; i++) {

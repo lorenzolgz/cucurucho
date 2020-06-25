@@ -12,7 +12,7 @@
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
         : informacionNivel(infoNivel), nivelActual(nivelActual), alto(alto), ancho(ancho) {
     hud = HudVista();
-    posX = 0;
+    velocidadNivel = 0;
     campoVista = nullptr;
     enemigo1Vista = Enemigo1Vista();
     enemigo2Vista = Enemigo2Vista();
@@ -36,7 +36,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	    }
         return;
 	} // TODO patch para race conditions
-	campoVista->render();
+    campoVista->render(estadoTick);
 
     renderEnemigos(estadoTick.estadosEnemigos);
 
@@ -62,16 +62,16 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
 
     ManagerVista::informacionNivel = informacionNivel;
 
-    campoVista = new CampoVista();
+    velocidadNivel = informacionNivel.velocidad;
+    campoVista = new CampoVista(velocidadNivel);
+
     for (InformacionFondo & f : informacionNivel.informacionFondo) {
     	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)
         if (f.pFondo[0] == '\0') {
         	continue;
         }
-        campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
+        campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
-
-    posX = informacionNivel.velocidad;
 }
 
 

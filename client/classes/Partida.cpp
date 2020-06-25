@@ -175,6 +175,7 @@ void Partida::reiniciarInstanciaHilo() {
 void Partida::setEstadoTick(nlohmann::json mensaje) {
     struct EstadoTick estado;
     estado.nuevoNivel = mensaje["numeroNivel"];
+    estado.posX = mensaje["posX"];
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
         estado.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];

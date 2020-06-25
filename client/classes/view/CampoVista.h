@@ -5,17 +5,18 @@
 #include <list>
 #include <vector>
 #include "../view/FondoVista.h"
+#include "../../../commons/protocols/protocolo.h"
 
 class CampoVista {
 public:
-	CampoVista();
-	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad, float *velocidadMovilX);
-	void render();
+	CampoVista(float velocidadMovilX);
+	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
+	void render(EstadoTick tick);
 
 private:
 	SDL_Renderer* gRenderer;
-	// Posicion del campo del juego en la pantalla principal
-	SDL_Rect posCampo;
+	float velocidadNivel;
+	float posX;
 	std::list<FondoVista*> fondos;
 
 };
