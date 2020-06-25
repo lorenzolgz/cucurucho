@@ -1,5 +1,6 @@
 #include "AceptadorConexiones.h"
 #include "../utils/Log.h"
+#include "AceptarConexionExcepcion.h"
 
 AceptadorConexiones::AceptadorConexiones(int port) {
 	AceptadorConexiones::port = port;
@@ -73,31 +74,17 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// addrlen -> size of sockaddr structure for the CLIENT.
 	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
-		l->error("Accept fallo (" + std::to_string(client_socket) + "): " + std::string(strerror(errno)));
-		return nullptr;
+		l->info("Accept fallo (" + std::to_string(client_socket) + "): " + std::string(strerror(errno)));
+		throw AceptarConexionExcepcion();
 	}
 
 	return new ConexionServidor(client_socket);
 }
 
-ConexionServidor *AceptadorConexiones::reconectar(int broken_socket) {
-    struct sockaddr_in client_addr;
-    int client_addrlen = sizeof client_addr;
-
-    close(broken_socket);
-
-    // Accept incoming connection from estadosEnemigos client
-    // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-    // sockfd -> socket that has been created with socket(), bound to estadosEnemigos local address with bind(), and is listening for connections after estadosEnemigos listen()
-    // addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
-    // addrlen -> size of sockaddr structure for the CLIENT.
-    int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
-    if (client_socket < 0) {
-        l->error("Accept fallo: " + std::string(strerror(errno)));
-    }
-    return new ConexionServidor(client_socket);
-}
-
 void AceptadorConexiones::dejarDeEscuchar() {
 	close(this->server_socket);
+}
+
+void AceptadorConexiones::xxx() {
+	shutdown(this->server_socket, SHUT_RDWR);
 }

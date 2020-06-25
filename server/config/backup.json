@@ -1,10 +1,10 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error",
+         "nivel": "info",
          "std_out": true
       },
-      "cantidadJugadores": 1,
+      "cantidadJugadores": 2,
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",
@@ -15,6 +15,26 @@
             },
             "velocidad": 2,
             "largo": 600
+         },
+         {
+            "archivoFondos": "fondos/fondos2.json",
+            "fin": "cleared_con_nave2.png",
+            "enemigos": {
+               "clase1": 5,
+               "clase2": 2
+            },
+            "velocidad": 3,
+            "largo": 200
+         },
+         {
+            "archivoFondos": "fondos/fondos3.json",
+            "fin": "cleared_con_nave3.png",
+            "enemigos": {
+               "clase1": 4,
+               "clase2": 1
+            },
+            "velocidad": 2.5,
+            "largo": 200
          }
       ]
    }

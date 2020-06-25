@@ -2,24 +2,24 @@
 #include "../../commons/utils/Log.h"
 #include "../../commons/connections/ControladorDeSesiones.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username, AceptadorConexiones* aceptador) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
 	this->username = username;
 	this->activo = true;
-	this->aceptadorConexiones = aceptador;
+	this->continuarLoopeando = true;
 }
 
-
 void HiloConexionServidor::run() {
-	l->info("Comenzando a correr HiloConexionServidor");
+	l->info("Comenzando a correr HiloConexionServidor.");
 
 	try{
+		// !!!! Sirve repetir esto?
         nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
         l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
         colaReceptora->push(mensajeRecibido);
 
-        while (true) {
+        while (continuarLoopeando) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
             colaReceptora->push(mensajeRecibido);
@@ -39,9 +39,12 @@ void HiloConexionServidor::run() {
                 conexionServidor->enviarMensaje(mensajeAEnviar);
             }
         }
-    } catch (...) {
+    } catch (...) { // !!!!! catcheo y logueo
+		l->error("Error en el loop de HiloConexionServidor.");
 	    cicloReconectar();
 	}
+
+	l->info("Se termino el HiloConexionServidor.");
 }
 
 void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
@@ -86,29 +89,43 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 
 	colaEnviadora->push(mensajeJson);
 
-    HiloConexionServidor::informacionNivel = informacionNivel;
+    HiloConexionServidor::informacionNivelActual = informacionNivel;
 }
 
 void HiloConexionServidor::cicloReconectar() {
     this->activo = false;
     this->conexionServidor->cerrar();
     this->conexionServidor->setClientSocket(-1);
-    l->info("Cliente " + this->username + " perdio la conexion");
+    l->error("Cliente " + this->username + " perdio la conexion.");
 
     while (this->conexionServidor->getClientSocket() < 0) {
+    	if (!continuarLoopeando) {
+			return;
+    	}
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
 
-    l->info("Cliente " + this->username + " reconectado");
+    l->info("Cliente " + this->username + " reconectado.");
 
     this->activo = true;
-    while (this->colaEnviadora->size() != 0) this->colaEnviadora->pop();
+    while (this->colaEnviadora->size() != 0) {
+    	this->colaEnviadora->pop();
+    }
+
     try {
-        this->enviarInformacionNivel(this->informacionNivel);
+		if (!continuarLoopeando) {
+			return;
+		}
+
+		this->enviarInformacionNivel(this->informacionNivelActual);
     } catch (...) {
         cicloReconectar();
         return;
     }
 
     run();
+}
+
+void HiloConexionServidor::terminar() {
+	continuarLoopeando = false;
 }

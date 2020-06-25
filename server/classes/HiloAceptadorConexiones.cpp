@@ -3,6 +3,7 @@
 //
 
 #include "HiloAceptadorConexiones.h"
+#include "../../commons/connections/AceptarConexionExcepcion.h"
 
 HiloAceptadorConexiones::HiloAceptadorConexiones(int puerto, Configuracion* config) {
 	this->config = config;
@@ -37,13 +38,13 @@ void HiloAceptadorConexiones::run() {
 
     this->hilosConexionesServidores = crearHilosConexionesServidores(conexionesServidores);
 
-    HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, hilosConexionesServidores);
+    HiloOrquestadorPartida* hiloOrquestadorPartida = new HiloOrquestadorPartida(config, hilosConexionesServidores, aceptadorConexiones);
 
     hiloOrquestadorPartida->start();
 
     // Aceptar reconexiones
     try {
-        atenderPosiblesReconexiones(conexionesServidores);
+        atenderPosiblesReconexiones(conexionesServidores, hiloOrquestadorPartida);
     }
     catch (const std::exception &e) {
         l->error("Ocurrio un error al atender las reconexiones. No se aceptaran mas reconexiones");
@@ -54,13 +55,28 @@ void HiloAceptadorConexiones::run() {
 	for (auto* conexionServidor : *conexionesServidores) {
 		conexionServidor->cerrar();
 	}
+
 	aceptadorConexiones->dejarDeEscuchar();
 }
 
-void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServidor *> *conexionesServidores){
+void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServidor *> *conexionesServidores, HiloOrquestadorPartida* hiloOrquestadorPartida){
 
     while (true) {
-        auto *conexionServidor = aceptadorConexiones->aceptarConexion();
+		ConexionServidor* conexionServidor;
+    	try {
+			conexionServidor = aceptadorConexiones->aceptarConexion();
+		} catch (const AceptarConexionExcepcion &ace) {
+    		// Esto se necesita porque cuando termina la partida, la solucion para que deje de aceptar es que
+    		// se cierre violentamente el socket aceptador.
+    		if (hiloOrquestadorPartida->termino()) {
+				l->info("Ya no se escuchan mas reconexiones.");
+				return;
+			} else {
+    			throw ace;
+    		}
+		}
+
+    	l->info("Se acepto una potencial reconexion.");
         ControladorDeSesiones *controladorDeSesiones = new ControladorDeSesiones(
 				conexionServidor,
 				conexionesServidores,
@@ -147,7 +163,7 @@ std::list<HiloConexionServidor*>* HiloAceptadorConexiones::crearHilosConexionesS
 
     int i = 0;
     for (auto* conexionServidor : *(conexionesServidores)) {
-        auto* hiloConexionServidor = new HiloConexionServidor(conexionServidor, conexionServidor->getNroJugador(), conexionServidor->getUsuario(), aceptadorConexiones);
+        auto* hiloConexionServidor = new HiloConexionServidor(conexionServidor, conexionServidor->getNroJugador(), conexionServidor->getUsuario());
         hiloConexionServidor->start();
         nuevoHilosConexionesServidores->push_back(hiloConexionServidor);
         i++;

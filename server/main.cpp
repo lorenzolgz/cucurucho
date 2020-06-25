@@ -15,8 +15,6 @@ Log* l;
 int esperarConexiones(int puerto, Configuracion* config);
 Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out);
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
-std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
-                                                                 AceptadorConexiones* aceptadorConexiones);
 
 
 int main(int argc , char *argv[]) {
