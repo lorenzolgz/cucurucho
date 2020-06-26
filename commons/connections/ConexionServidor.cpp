@@ -20,7 +20,8 @@ void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 
     json["tipoMensaje"] = ESTADO_LOGIN;
 	json["estadoLogin"] = estadoLogin.estadoLogin;
-	json["nroJugador"] = estadoLogin.nroJugador;
+    json["nroJugador"] = estadoLogin.nroJugador;
+    json["cantidadJugadores"] = estadoLogin.cantidadJugadores;
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 	    json["jugadores"][i] = std::string(estadoLogin.jugadores[i]);
 	}
@@ -32,7 +33,9 @@ void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 void ConexionServidor::enviarEstadoLoginSimple(int estadoLogin, int nroJugador) {
     struct EstadoLogin estado{};
     estado.estadoLogin = estadoLogin;
+    if (nroJugador == -1) nroJugador = estadoLogin;
     estado.nroJugador = nroJugador;
+    estado.cantidadJugadores = 0;
     for (auto & jugador : estado.jugadores) {
         jugador[0] = '\0';
     }

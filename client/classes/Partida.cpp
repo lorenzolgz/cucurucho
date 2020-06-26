@@ -214,6 +214,7 @@ void Partida::setEstadoLogin(nlohmann::json mensaje) {
 
     estadoLogin.nroJugador = mensaje["nroJugador"];
     estadoLogin.estadoLogin = mensaje["estadoLogin"];
+    estadoLogin.cantidadJugadores = mensaje["cantidadJugadores"];
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
         strcpy(estadoLogin.jugadores[i], std::string(mensaje["jugadores"][i]).c_str());

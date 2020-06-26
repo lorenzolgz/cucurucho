@@ -125,6 +125,7 @@ void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor
 			struct EstadoLogin estadoLogin;
 			estadoLogin.estadoLogin = tipoEstadoLogin;
 			estadoLogin.nroJugador = i + 1;
+			estadoLogin.cantidadJugadores = config->getCantidadJugadores();
 			for (int j = 0; j < MAX_JUGADORES; j++) {
 			    strcpy(estadoLogin.jugadores[j], arregloJugadores[j].c_str());
 			}

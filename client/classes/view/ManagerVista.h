@@ -39,7 +39,7 @@ private:
 
     void renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin);
 
-    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto);
+    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores);
 
     void renderEspera(struct EstadoLogin estadoLogin);
 };

@@ -17,6 +17,7 @@ public:
     friend Vector operator+(const Vector& lhs, const Vector& rhs);
     friend Vector operator-(const Vector& lhs, const Vector& rhs);
     friend Vector operator*(const Vector& lhs, const double& rhs);
+    friend Vector operator/(const Vector& lhs, const double& rhs);
 
     double getX() const;
 

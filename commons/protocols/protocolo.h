@@ -5,7 +5,7 @@
 #define MAX_ENEMIGOS 25
 #define MAX_FONDOS 25
 #define LARGO_PATH 255
-#define MAX_JUGADORES 4
+#define MAX_JUGADORES 5
 #define LARGO_USERNAME 16
 #define LARGO_PASSWORD 16
 
@@ -101,6 +101,7 @@ struct InformacionNivel {
 struct EstadoLogin {
     int nroJugador;
     int estadoLogin;
+    int cantidadJugadores;
     char jugadores[MAX_JUGADORES][LARGO_USERNAME];
 };
 

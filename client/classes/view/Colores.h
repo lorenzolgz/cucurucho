@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 #include <tuple>
+#include "../../../commons/protocols/protocolo.h"
 
 class ColoresJugador {
 public:
@@ -88,25 +89,25 @@ static const ColoresJugador COLORES_ROSA = ColoresJugador(
 
 
 static const ColoresJugador COLORES_VERDE = ColoresJugador(
-        {{33, 210, 30},
-         {90, 150, 190},
-         {33, 210, 30}},
-        {{196, 239, 160},
-         {187, 245, 130},
-         {182, 245, 119},
-         {169, 226, 112},
-         {135, 216, 57},
-         {110, 190, 24},
-         {101, 158, 41},
-         {71, 108, 32},
+        {{33, 150, 30},
+         {90, 230, 210},
+         {33, 150, 30}},
+        {{156, 230, 120},
+         {147, 225, 90},
+         {142, 205, 79},
+         {129, 186, 72},
+         {95, 176, 57},
+         {80, 150, 24},
+         {71, 138, 21},
+         {51, 78, 32},
          {41, 86, 0},
-         {71, 108, 32},
-         {101, 158, 41},
-         {110, 190, 24},
-         {135, 216, 57},
-         {169, 226, 112},
-         {182, 245, 119},
-         {187, 245, 130}});
+         {51, 78, 32},
+         {71, 138, 21},
+         {80, 150, 24},
+         {95, 176, 57},
+         {129, 186, 72},
+         {142, 205, 79},
+         {147, 225, 90}});
 
 static const ColoresJugador COLORES_TURQUESA = ColoresJugador(
         {{120, 120, 120},
@@ -137,5 +138,8 @@ static const ColoresJugador COLORES_GRIS = ColoresJugador(
          {80, 80, 80},
          {80, 80, 80},
          {80, 80, 80}});
+
+static const ColoresJugador COLORES_JUGADOR_ARR[MAX_JUGADORES] = {COLORES_AZUL, COLORES_ROJO, COLORES_ROSA, COLORES_TURQUESA, COLORES_VERDE};
+
 
 #endif //CUCURUCHO_COLORES_H

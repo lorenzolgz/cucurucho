@@ -18,10 +18,9 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     enemigo2Vista = Enemigo2Vista();
     primerNivel = true;
 
-    jugadores.push_back(new JugadorVista(COLORES_AZUL));
-    jugadores.push_back(new JugadorVista(COLORES_ROJO));
-    jugadores.push_back(new JugadorVista(COLORES_ROSA));
-    jugadores.push_back(new JugadorVista(COLORES_TURQUESA));
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        jugadores.push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
+    }
 
 }
 
@@ -139,10 +138,10 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
 }
 
 
-void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto) {
+void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores) {
     Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
     Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-    Vector distancia_y = Vector(0, alto / 7);
+    Vector distancia_y = Vector(0, alto * 7 / 12) / cantJugadores;
     struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + (distancia_y * indice));
 
     if (strlen(nombre) > 0) {
@@ -156,8 +155,8 @@ void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int 
 
 
 void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
-    for (int i = 0; i < MAX_JUGADORES; i++) {
-        renderEsperaJugador(jugadores[i], estadoLogin.jugadores[i], i, i + 2);
+    for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
+        renderEsperaJugador(jugadores[i], estadoLogin.jugadores[i], i, i + 1, estadoLogin.cantidadJugadores);
     }
 
     if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
