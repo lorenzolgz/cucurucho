@@ -6,13 +6,17 @@
 #include <list>
 
 Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
-		std::list<NivelConfiguracion*> niveles, int cantidadJugadores){
+                             std::list<NivelConfiguracion *> niveles, int cantidadJugadores, bool std_out,
+                             int maxColaEmisora, int maxColaReceptora) {
     this->altoPantalla = altoPantalla;
     this->anchoPantalla = anchoPantalla;
     this->escalaPantalla = escalaPantalla;
     this->nivelLog = nivelLog;
     this->niveles = niveles;
     this->cantidadJugadores = cantidadJugadores;
+    this->maxColaEmisora = maxColaEmisora;
+    this->maxColaReceptora = maxColaReceptora;
+    this->std_out = std_out;
 }
 
 int Configuracion::getAltoPantalla(){
@@ -37,4 +41,16 @@ int Configuracion::getCantidadJugadores() {
 
 const std::list<NivelConfiguracion *> &Configuracion::getNiveles() const {
 	return niveles;
+}
+
+bool Configuracion::isStdOut() const {
+    return std_out;
+}
+
+int Configuracion::getMaxColaEmisora() const {
+    return maxColaEmisora;
+}
+
+int Configuracion::getMaxColaReceptora() const {
+    return maxColaReceptora;
 }

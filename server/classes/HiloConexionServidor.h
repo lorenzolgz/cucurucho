@@ -7,6 +7,7 @@
 #include "../../commons/connections/ConexionServidor.h"
 #include "../../commons/ColaBloqueante.h"
 #include "../../commons/connections/AceptadorConexiones.h"
+#include "config/Configuracion.h"
 
 class HiloConexionServidor : public Thread {
 public:
@@ -15,7 +16,8 @@ public:
 	std::string username;
 	ConexionServidor* conexionServidor;
 
-	HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username);
+	HiloConexionServidor(ConexionServidor *conexionServidor, int jugador, std::string username,
+                         Configuracion *pConfiguracion);
 
 	void run() override;
 	void enviarEstadoTick(struct EstadoTick* estadoTick);
@@ -26,6 +28,7 @@ public:
 
 private:
 	InformacionNivel *informacionNivelActual;
+    Configuracion *config;
 	bool continuarLoopeando;
 
 	void cicloReconectar();

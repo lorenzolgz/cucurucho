@@ -149,7 +149,8 @@ std::list<HiloConexionServidor*>* HiloAceptadorConexiones::crearHilosConexionesS
 
     int i = 0;
     for (auto* conexionServidor : *(conexionesServidores)) {
-        auto* hiloConexionServidor = new HiloConexionServidor(conexionServidor, conexionServidor->getNroJugador(), conexionServidor->getUsuario());
+        auto* hiloConexionServidor = new HiloConexionServidor(conexionServidor, conexionServidor->getNroJugador(),
+                                                              conexionServidor->getUsuario(), config);
         hiloConexionServidor->start();
         nuevoHilosConexionesServidores->push_back(hiloConexionServidor);
         i++;

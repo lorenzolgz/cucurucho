@@ -6,6 +6,7 @@
 #include <jsoncpp/json/value.h>
 #include "NivelConfiguracion.h"
 #include "../../../commons/utils/Log.h"
+#include "../../../commons/protocols/protocolo.h"
 
 
 std::list<FondoConfiguracion*> ConfiguracionParser::parsearArchivoFondos(std::string rutaRelativa, int nivel) {
@@ -89,6 +90,20 @@ std::string parsearNivelLog(Json::Value root) {
 }
 
 
+// Estos parametros son opcionales. Si no existen en el JSON o son invalidos no deberian romper la configuracion
+void parsearParametrosConexion(Json::Value root, int& maxCola) {
+    maxCola = MAX_COLA_CLIENTE;
+    try {
+        if (root["conexion"]["maxCola"].asInt() >= 1) {
+            maxCola = root["conexion"]["maxCola"].asInt();
+        }
+    }
+    catch(const std::exception& exc) {
+        l->debug("Ocurrio un error al obtener la cantidad maxima de elementos para la cola. Usando valor de defecto.");
+    }
+}
+
+
 Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonConfig){
     Json::Value jsonConfig;
     std::ifstream archivo(rutaJsonConfig);
@@ -117,9 +132,12 @@ Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCo
 
     nivelLog = parsearNivelLog(configuracionJson);
 
-    this->std_out = configuracionJson["log"]["std_out"].asBool();
+    bool std_out = configuracionJson["log"]["std_out"].asBool();
 
-    return new Configuracion(nivelLog);
+    int maxCola;
+    parsearParametrosConexion(configuracionJson, maxCola);
+
+    return new Configuracion(nivelLog, std_out, maxCola);
 }
 
 

@@ -25,7 +25,7 @@ void configurar(std::string nivelLog) {
     l->info("Nivel de Log: " + nivelLog);
 }
 
-Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
+Configuracion* parsearConfiguracion(std::string archivoConfig) {
     ConfiguracionParser configuracionParser;
     Configuracion* config;
 
@@ -43,8 +43,6 @@ Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
             throw exc;
         }
     }
-
-    std_out = configuracionParser.std_out;
 
     return config;
 }
@@ -115,10 +113,9 @@ int main(int argc, char *argv[]) {
 	}
 
     l = new Log("client");
-    bool std_out;
-    Configuracion* config = parsearConfiguracion(archivoConfig, std_out);
+    Configuracion* config = parsearConfiguracion(archivoConfig);
     if (nivelLog == "") nivelLog = config->getNivelLog();
-    l->set_stdout(std_out);
+    l->set_stdout(config->isStdOut());
     configurar(nivelLog);
 
 
@@ -126,7 +123,7 @@ int main(int argc, char *argv[]) {
 	if (!gestorSDL->init(PANTALLA_ANCHO, PANTALLA_ALTO)) return 1;
 
 	// Comienza el juego con la configuracion
-	partida->play(dir_ip.c_str(), port);
+	partida->play(config, dir_ip.c_str(), port);
 
     gestorSDL->close();
 	return 0;

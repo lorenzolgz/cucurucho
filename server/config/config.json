@@ -4,6 +4,10 @@
          "nivel": "info",
          "std_out": true
       },
+      "conexion": {
+         "maxColaEmisora": 4,
+         "maxColaReceptora": 3
+      },
       "cantidadJugadores": 4,
       "niveles": [
          {

@@ -7,7 +7,7 @@
 
 Partida::Partida() {}
 
-void Partida::play(const char* ip_address, int port) {
+void Partida::play(Configuracion* configuracion, const char* ip_address, int port) {
     bool quit = false;
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO);
@@ -35,7 +35,7 @@ void Partida::play(const char* ip_address, int port) {
             quit = quit || eventLoop(&inputText);
 
             if (!colaMensajes->empty()) {
-                while (colaMensajes->size() > MAX_COLA_CLIENTE){
+                while (colaMensajes->size() > configuracion->getMaxCola()){
                     nlohmann::json json = colaMensajes->pop();
                     // Solo se deberian matar los mensajes de ESTADO_TICK
                     if (json["tipoMensaje"] != ESTADO_TICK) {
@@ -68,7 +68,7 @@ void Partida::play(const char* ip_address, int port) {
         l->error("Se interrumpio el juego: " + std::string(exc.what()));
         l->error("Reiniciando...");
         reiniciarInstanciaHilo();
-        play(ip_address, port);
+        play(configuracion, ip_address, port);
     }
 
     hiloConexionCliente->cerrarConexion();

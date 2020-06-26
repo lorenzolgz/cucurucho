@@ -20,6 +20,7 @@ private:
     std::list<HiloConexionServidor*>* hilosConexionesServidores;
 	AceptadorConexiones* aceptadorConexiones;
 	bool quit;
+    Configuracion *config;
 };
 
 

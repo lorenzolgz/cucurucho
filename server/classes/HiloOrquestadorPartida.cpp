@@ -9,13 +9,15 @@ int esperarConexiones(int puerto, Configuracion* config);
 
 HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<HiloConexionServidor*>* hilosConexionesServidores, AceptadorConexiones* aceptadorConexiones) {
 	this->partida = new Partida(config);
+	this->config = config;
 	this->hilosConexionesServidores = hilosConexionesServidores;
 	this->aceptadorConexiones = aceptadorConexiones;
 	this->quit = false;
 }
 
 
-void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
+void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, Comando *comandos,
+                 Configuracion *config) {
     hilosConexionesServidores->reverse();
 
     std::string usuarioPerdido;
@@ -28,7 +30,7 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
                 auto* colaReceptora = hiloConexionServidor->colaReceptora;
                 nlohmann::json mensajeJson;
 
-                while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
+                while (colaReceptora->size() > config->getMaxColaReceptora()) {
                     mensajeJson = colaReceptora->pop();
                 }
 
@@ -99,7 +101,7 @@ void HiloOrquestadorPartida::run() {
 				comandos[i] = {0, 0, 0, 0, 0};
 			}
 			// Receive data (command)
-			receiveData(hilosConexionesServidores, comandos);
+            receiveData(hilosConexionesServidores, comandos, config);
             //--------------------
 			// Process model
             quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);

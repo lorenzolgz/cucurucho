@@ -1,11 +1,13 @@
 #include "HiloConexionServidor.h"
 #include "../../commons/connections/ControladorDeSesiones.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor *conexionServidor, int jugador, std::string username,
+                                           Configuracion *config) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
 	this->username = username;
 	this->activo = true;
+	this->config = config;
 	this->continuarLoopeando = true;
 }
 
@@ -18,7 +20,7 @@ void HiloConexionServidor::run() {
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
             colaReceptora->push(mensajeRecibido);
 
-            while (colaEnviadora->size() > MAX_COLA_EMISORA_SERVIDOR) {
+            while (colaEnviadora->size() > config->getMaxColaEmisora()) {
                 nlohmann::json json = colaEnviadora->pop();
                 // Solo se deberian matar los mensajes de ESTADO_TICK
                 if (json["tipoMensaje"] != ESTADO_TICK) {
