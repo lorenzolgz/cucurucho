@@ -101,10 +101,7 @@ struct InformacionNivel {
 struct EstadoLogin {
     int nroJugador;
     int estadoLogin;
-    char jugador1[LARGO_USERNAME];
-    char jugador2[LARGO_USERNAME];
-    char jugador3[LARGO_USERNAME];
-    char jugador4[LARGO_USERNAME];
+    char jugadores[MAX_JUGADORES][LARGO_USERNAME];
 };
 
 

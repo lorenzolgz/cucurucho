@@ -156,10 +156,9 @@ void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int 
 
 
 void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
-    renderEsperaJugador(jugadores[0], estadoLogin.jugador1, 0, TEXTO_COLOR_AZUL);
-    renderEsperaJugador(jugadores[1], estadoLogin.jugador2, 1, TEXTO_COLOR_ROJO);
-    renderEsperaJugador(jugadores[2], estadoLogin.jugador3, 2, TEXTO_COLOR_ROSA);
-    renderEsperaJugador(jugadores[3], estadoLogin.jugador4, 3, TEXTO_COLOR_TURQUESA);
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        renderEsperaJugador(jugadores[i], estadoLogin.jugadores[i], i, i + 2);
+    }
 
     if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
         TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);

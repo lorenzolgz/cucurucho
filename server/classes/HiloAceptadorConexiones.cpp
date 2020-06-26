@@ -112,25 +112,28 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
 
 void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor*>* conexionesServidores, int tipoEstadoLogin) {
     std::string arregloJugadores[MAX_JUGADORES];
-    for (int i = 0; i < MAX_JUGADORES; i++) {
-    	arregloJugadores[i] = "\0";
+    for (auto & jugador : arregloJugadores) {
+        jugador = "";
     }
 
-    int i = 1;
+    int i = 0;
     for (ConexionServidor* & c : *conexionesServidores) {
         arregloJugadores[i] = c->getUsuario();
         i++;
     }
 
-    i = 1;
+    i = 0;
     auto iteradorConexionServidor = conexionesServidores->begin();
     while (iteradorConexionServidor != conexionesServidores->end()) {
         try {
 			struct EstadoLogin estadoLogin;
 			estadoLogin.estadoLogin = tipoEstadoLogin;
-			estadoLogin.nroJugador = i;
+			estadoLogin.nroJugador = i + 1;
+			for (int j = 0; j < MAX_JUGADORES; j++) {
+			    strcpy(estadoLogin.jugadores[j], arregloJugadores[j].c_str());
+			}
 
-			(*iteradorConexionServidor)->enviarEstadoLogin(estadoLogin, arregloJugadores);
+			(*iteradorConexionServidor)->enviarEstadoLogin(estadoLogin);
 			iteradorConexionServidor++;
             i++;
         } catch (const ConexionExcepcion& e) {

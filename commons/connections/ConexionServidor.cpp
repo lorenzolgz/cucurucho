@@ -15,18 +15,29 @@ void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
 	return enviarData2(client_socket, mensaje);
 }
 
-void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin, std::string arregloJugadores[]) {
+void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 	nlohmann::json json;
 
     json["tipoMensaje"] = ESTADO_LOGIN;
 	json["estadoLogin"] = estadoLogin.estadoLogin;
 	json["nroJugador"] = estadoLogin.nroJugador;
-    json["jugador1"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[0];
-    json["jugador2"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[1];
-    json["jugador3"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[2];
-    json["jugador4"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[3];
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+	    json["jugadores"][i] = std::string(estadoLogin.jugadores[i]);
+	}
 
     enviarMensaje(json);
+}
+
+// Para enviar el EstadoLogin sin el arreglo de jugadores
+void ConexionServidor::enviarEstadoLoginSimple(int estadoLogin, int nroJugador) {
+    struct EstadoLogin estado{};
+    estado.estadoLogin = estadoLogin;
+    estado.nroJugador = nroJugador;
+    for (auto & jugador : estado.jugadores) {
+        jugador[0] = '\0';
+    }
+
+    enviarEstadoLogin(estado);
 }
 
 void ConexionServidor::cerrar() {
