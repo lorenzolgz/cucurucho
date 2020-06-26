@@ -1,20 +1,17 @@
 #include "HiloOrquestadorPartida.h"
-#include "../../commons/utils/Log.h"
 #include "HiloConexionServidor.h"
-#include "../../commons/ColaBloqueante.h"
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *pList);
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion();
 
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config,
-        std::list<HiloConexionServidor*>* hilosConexionesServidores) {
-	this->config = config;
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<HiloConexionServidor*>* hilosConexionesServidores, AceptadorConexiones* aceptadorConexiones) {
 	this->partida = new Partida(config);
 	this->hilosConexionesServidores = hilosConexionesServidores;
+	this->aceptadorConexiones = aceptadorConexiones;
+	this->quit = false;
 }
 
 
@@ -48,20 +45,11 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
             }
         }
     }
-    catch(...) {
+    catch(const std::exception &e) {
         // TODO: Algo mas para hacer tras eliminar al jugador de la lista y marcarlo como no presente?
-        //l->info("Ocurrio un error al recibir los movimientos de los jugadores");
-        //l->info(excepcion.what());
+        l->error("Ocurrio un error al recibir los movimientos de los jugadores");
+        l->error(e.what());
     }
-
-
-    // !!!! Dejo esta linea aca porque es muy buena
-	/*
-		struct Comando comando = comandos[i];
-		if (comando.arriba || comando.abajo || comando.izquierda || comando.derecha) {
-			huboMovimientos = true;
-			l->error("!!!!! " + std::to_string(comando.nroJugador) + " | " + std::to_string(comando.arriba) + " - " + std::to_string(comando.abajo) + " - " + std::to_string(comando.izquierda) + " - " + std::to_string(comando.derecha));
-			*/
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
@@ -83,7 +71,7 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 
 void HiloOrquestadorPartida::run() {
 	l->info("Comenzando a correr HiloOrquestadorPartida con " + std::to_string(hilosConexionesServidores->size()) + " jugadores.");
-	bool quit = false;
+	quit = false;
 	struct Comando comandos[hilosConexionesServidores->size()];
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
@@ -114,7 +102,10 @@ void HiloOrquestadorPartida::run() {
 			receiveData(hilosConexionesServidores, comandos);
             //--------------------
 			// Process model
-            processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+            quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+            if (quit) {
+				break;
+            }
             //--------------------
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
@@ -123,23 +114,41 @@ void HiloOrquestadorPartida::run() {
 			t1 = clock();
 		}
 	}
-	catch (...) {
+	catch (const std::exception &e) {
         // TODO stoppear hilosConexionesServidores
         // Si se llegó aca, quiere decir que no se pudo catchear la desconexion dentro de receiveData
-        l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
+        l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop.");
+        l->error(e.what());
+	}
+
+	l->info("Esperando que terminen los hilosConexionesServidores.");
+	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
+		hiloConexionServidor->terminar();
 	}
 
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		hiloConexionServidor->join();
 	}
+	l->info("Terminaron todos los hilosConexionesServidores.");
 
-	l->info("Terminando de correr HiloOrquestadorPartida");
+	aceptadorConexiones->xxx();
+
+	l->info("Terminando de correr HiloOrquestadorPartida.");
 }
 
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool HiloOrquestadorPartida::termino() {
+	return quit;
+}
+
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones) {
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	partida->tick(comandos);
+
+	if (partida->termino()) {
+		l->info("La partida finalizo");
+		return true;
+	}
 
 	// Seteando estadoTick
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
@@ -165,6 +174,8 @@ void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	for (; i < MAX_ENEMIGOS; i++) {
 		estadoTick->estadosEnemigos[i].clase = 0;
 	}
+
+	return false;
 }
 
 

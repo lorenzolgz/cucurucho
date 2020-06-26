@@ -97,7 +97,7 @@ int ConfiguracionParser::parsearCantidadJugadores(Json::Value cantidadJson) {
         validarJsonNoNulo(cantidadJson, "Cantidad de jugadores");
         validarJsonGenerico(!cantidadJson.isNumeric(), "La cantidad de jugadores no es numerica");
         validarJsonGenerico(cantidadJson.asInt() < 1, "La cantidad de jugadores es menor a 1");
-        validarJsonGenerico(cantidadJson.asInt() > 4, "La cantidad de jugadores es mayor a 4");
+        validarJsonGenerico(cantidadJson.asInt() > MAX_JUGADORES, "La cantidad de jugadores es mayor a " + std::to_string(MAX_JUGADORES));
         return cantidadJson.asInt();
     } catch(const std::exception& exc) {
         l->error("Ocurrio un error al cargar la cantidad de jugadores");

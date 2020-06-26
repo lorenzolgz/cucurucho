@@ -16,7 +16,6 @@ Partida::Partida(Configuracion* config) {
 	}
 
 	Partida::managerNiveles = new ManagerNiveles(config, jugadores);
-
 }
 
 void Partida::tick(struct Comando comandos[]) {
@@ -44,4 +43,8 @@ EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {
 	}
 
 	return estadoInternoNivel;
+}
+
+bool Partida::termino() {
+	return managerNiveles->noHayMasNiveles();
 }

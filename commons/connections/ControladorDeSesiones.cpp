@@ -47,7 +47,7 @@ bool ControladorDeSesiones::iniciarSesion() {
             this->conexionServidor->cerrar();
             ok = false;
         } else {
-            this->conexionServidor->enviarEstadoLogin({nroJugador, LOGIN_ESPERAR});
+            this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ESPERAR, nroJugador);
             this->usuarioConectado = std::string(usuario);
             conexionServidor->setUsuario(std::string(usuario));
             conexionServidor->setNroJugador(nroJugador);
@@ -64,13 +64,13 @@ bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasen
 	// Chequeo si el usuario está registrado
 	if (this->contrasenias[usuario].empty()) {
 		l->info("Usuario " + std::string(usuario) + " no esta registrado");
-        this->conexionServidor->enviarEstadoLogin({LOGIN_ERROR_USUARIO_INEXISTENTE});
+        this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_USUARIO_INEXISTENTE);
 		return false;
 	}
 	// Chequeo si la contrasenia es correcta
 	if (strcmp(this->contrasenias[usuario].asCString(), contrasenia) != 0) {
 		l->info("Password del usuario " + std::string(usuario) + " no coincide");
-        this->conexionServidor->enviarEstadoLogin({LOGIN_ERROR_PASS_INVALIDA});
+        this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_PASS_INVALIDA);
 		return false;
 	}
 
@@ -107,7 +107,7 @@ bool ControladorDeSesiones::controlarConUsuariosEnJuego(std::string usuario) {
             json["tipoMensaje"] = MENSAJE_PING;
             (*j)->enviarMensaje(json);
             l->info("Usuario " + std::string(usuario) + " ya se encuentra conectado");
-            this->conexionServidor->enviarEstadoLogin({LOGIN_ERROR_USUARIO_EN_JUEGO});
+            this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_USUARIO_EN_JUEGO);
             return false; // Si se recibe el ping, ese usuario ya se encuentra en el juego
         } catch (const ConexionExcepcion& e) {
             (*j)->cerrar();
@@ -123,7 +123,7 @@ bool ControladorDeSesiones::controlarConUsuariosEnJuego(std::string usuario) {
 
     // Si `usuarioEnJuego` es false, significa que se pueden aceptar usuarios fuera de la lista original de jugadores
     if (usuarioEnJuego) {
-        this->conexionServidor->enviarEstadoLogin({LOGIN_ERROR_EN_PARTIDA});
+        this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_EN_PARTIDA);
         return false;
     }
 

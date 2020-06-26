@@ -157,9 +157,8 @@ add_executable(servidor
         server/classes/HiloConexionServidor.cpp server/classes/HiloConexionServidor.h
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
-        libraries/json/json.hpp server/classes/PaqueteUsuario.cpp
-        server/classes/PaqueteUsuario.h
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h)
+        libraries/json/json.hpp
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

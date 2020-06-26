@@ -28,7 +28,7 @@ void Partida::play(const char* ip_address, int port) {
             const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
             if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
-                l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log?
+                l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
                 hiloConexionCliente->cerrarConexion();
             }
 
@@ -215,14 +215,11 @@ void Partida::setEstadoLogin(nlohmann::json mensaje) {
 
     estadoLogin.nroJugador = mensaje["nroJugador"];
     estadoLogin.estadoLogin = mensaje["estadoLogin"];
-    std::string jugador1 = mensaje["jugador1"];
-    strcpy(estadoLogin.jugador1, jugador1.c_str());
-    std::string jugador2 = mensaje["jugador2"];
-    strcpy(estadoLogin.jugador2, jugador2.c_str());
-    std::string jugador3 = mensaje["jugador3"];
-    strcpy(estadoLogin.jugador3, jugador3.c_str());
-    std::string jugador4 = mensaje["jugador4"];
-    strcpy(estadoLogin.jugador4, jugador4.c_str());
+    estadoLogin.cantidadJugadores = mensaje["cantidadJugadores"];
+
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        strcpy(estadoLogin.jugadores[i], std::string(mensaje["jugadores"][i]).c_str());
+    }
 
     manager->setEstadoLogin(estadoLogin);
 

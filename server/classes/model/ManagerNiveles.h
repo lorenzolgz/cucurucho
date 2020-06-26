@@ -24,15 +24,17 @@ public:
 	bool terminoNivelActual();
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
     Nivel *configurarNuevoNivel();
+    bool noHayMasNiveles();
 
 private:
-    std::list<NivelConfiguracion *> listNiveles;
+    std::list<NivelConfiguracion *> nivelesConfiguracion;
     Nivel* nivelActual;
     int alto;
     int ancho;
     std::map<int, Jugador*> jugadores;
     int nuevoNivel;
-
+    int cantidadNivelesTerminados;
+    int totalNiveles;
 };
 
 
