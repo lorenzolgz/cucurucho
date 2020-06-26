@@ -44,7 +44,7 @@ void HiloAceptadorConexiones::run() {
 
     // Aceptar reconexiones
     try {
-        atenderPosiblesReconexiones(conexionesServidores, hiloOrquestadorPartida);
+        atenderPosiblesReconexiones(hiloOrquestadorPartida);
     }
     catch (const std::exception &e) {
         l->error("Ocurrio un error al atender las reconexiones. No se aceptaran mas reconexiones");
@@ -59,7 +59,7 @@ void HiloAceptadorConexiones::run() {
 	aceptadorConexiones->dejarDeEscuchar();
 }
 
-void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServidor *> *conexionesServidores, HiloOrquestadorPartida* hiloOrquestadorPartida){
+void HiloAceptadorConexiones::atenderPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida){
 
     while (true) {
 		ConexionServidor* conexionServidor;
@@ -77,6 +77,9 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServ
 		}
 
     	l->info("Se acepto una potencial reconexion.");
+
+		std::list<ConexionServidor*>* conexionesServidores = extraerConexionesDeHilosConexionesServidores();
+
         ControladorDeSesiones *controladorDeSesiones = new ControladorDeSesiones(
 				conexionServidor,
 				conexionesServidores,
@@ -86,13 +89,12 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServ
             continue;
         }
 
-        conexionesServidores->push_back(conexionServidor);
-        for (HiloConexionServidor *c : *hilosConexionesServidores) {
-            if (c->username == conexionServidor->getUsuario()) {
+        for (HiloConexionServidor *h : *hilosConexionesServidores) {
+            if (h->username == conexionServidor->getUsuario()) {
                 nlohmann::json json;
                 json["tipoMensaje"] = ESTADO_LOGIN;
                 json["estadoLogin"] = LOGIN_FIN;
-                json["nroJugador"] = c->conexionServidor->getNroJugador();
+                json["nroJugador"] = h->conexionServidor->getNroJugador();
                 json["jugador1"] = "";
                 json["jugador2"] = "";
                 json["jugador3"] = "";
@@ -101,25 +103,17 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(std::list<ConexionServ
                 try {
                     conexionServidor->enviarMensaje(json);
                 } catch (const std::exception &e) {
-                    l->error("HiloAceptador, rechazando a cliente reconectado: " + std::string(e.what()));
+                    l->error("HiloAceptadorConexiones. rechazando a cliente reconectado: " + std::string(e.what()));
                     conexionServidor->cerrar();
-                    conexionesServidores->pop_back();
                     break;
                 }
 
-                c->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
+                l->debug("Reemplazando socket " + std::to_string(h->conexionServidor->getClientSocket()) +
+                	" por el socket " + std::to_string(conexionServidor->getClientSocket()) +
+                	" del usuario " + h->username);
+                h->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
             }
         }
-        reinstanciarListaConexiones(conexionesServidores);
-    }
-}
-
-void HiloAceptadorConexiones::reinstanciarListaConexiones(std::list<ConexionServidor*>* conexionesServidores) {
-    while (!conexionesServidores->empty()) {
-        conexionesServidores->pop_back();
-    }
-    for (HiloConexionServidor* c : *hilosConexionesServidores) {
-        conexionesServidores->push_back(c->conexionServidor);
     }
 }
 
@@ -169,4 +163,14 @@ std::list<HiloConexionServidor*>* HiloAceptadorConexiones::crearHilosConexionesS
         i++;
     }
     return nuevoHilosConexionesServidores;
+}
+
+std::list<ConexionServidor*>* HiloAceptadorConexiones::extraerConexionesDeHilosConexionesServidores() {
+	std::list<ConexionServidor*>* conexionesServidores = new std::list<ConexionServidor*>();
+
+	for (auto* h : *hilosConexionesServidores) {
+		conexionesServidores->push_back(h->conexionServidor);
+	}
+
+	return conexionesServidores;
 }

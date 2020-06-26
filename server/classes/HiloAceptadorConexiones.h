@@ -28,8 +28,8 @@ private:
 
     void notificarEstadoConexion(list<ConexionServidor *> *conexionesServidores, int estadoLogin);
     std::list<HiloConexionServidor*>* crearHilosConexionesServidores(list<ConexionServidor*>* conexionesServidores);
-	void reinstanciarListaConexiones(std::list<ConexionServidor*>* conexionesServidores);
-	void atenderPosiblesReconexiones(std::list<ConexionServidor*> *conexionesServidores, HiloOrquestadorPartida* hiloOrquestadorPartida);
+	void atenderPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida);
+	std::list<ConexionServidor*>* extraerConexionesDeHilosConexionesServidores();
 };
 
 

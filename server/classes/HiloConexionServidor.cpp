@@ -1,5 +1,4 @@
 #include "HiloConexionServidor.h"
-#include "../../commons/utils/Log.h"
 #include "../../commons/connections/ControladorDeSesiones.h"
 
 HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username) {
@@ -14,11 +13,6 @@ void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor.");
 
 	try{
-		// !!!! Sirve repetir esto?
-        nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-        l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-        colaReceptora->push(mensajeRecibido);
-
         while (continuarLoopeando) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
