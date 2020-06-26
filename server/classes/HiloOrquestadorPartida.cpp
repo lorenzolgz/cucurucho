@@ -147,13 +147,14 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	partida->tick(comandos);
 
+    // Seteando estadoTick
+    estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+
 	if (partida->termino()) {
+        estadoTick->nuevoNivel = -1;
 		l->info("La partida finalizo");
 		return true;
 	}
-
-	// Seteando estadoTick
-	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->posX = estadoCampoMovil.posX;

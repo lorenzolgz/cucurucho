@@ -212,7 +212,7 @@ void Partida::setEstadoTick(nlohmann::json mensaje) {
 
 void Partida::setInformacionNivel(nlohmann::json mensaje) {
     struct InformacionNivel info;
-
+    
     info.numeroNivel = mensaje["numeroNivel"];
     info.velocidad = mensaje["velocidad"];
     strcpy(info.informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());

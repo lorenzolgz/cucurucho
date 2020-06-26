@@ -22,7 +22,7 @@ void ManagerJuego::render(){
 // !!!!
 // TODO: che no da
 bool ManagerJuego::terminoJuego() {
-    return informacionNivel.numeroNivel > 3;
+    return informacionNivel.numeroNivel == FIN_DE_JUEGO;
 }
 
 // TODO: che tampoco da

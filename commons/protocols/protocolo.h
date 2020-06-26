@@ -5,7 +5,7 @@
 #define MAX_ENEMIGOS 25
 #define MAX_FONDOS 25
 #define LARGO_PATH 255
-#define MAX_JUGADORES 5
+#define MAX_JUGADORES 4
 #define LARGO_USERNAME 16
 #define LARGO_PASSWORD 16
 
@@ -32,6 +32,9 @@
 
 // Tiempo de pasaje entre niveles
 #define TIMEOUT_PROXIMO_NIVEL 1
+
+//Fin de Juego
+#define FIN_DE_JUEGO -1
 
 // Tipos de mensajes
 enum {
