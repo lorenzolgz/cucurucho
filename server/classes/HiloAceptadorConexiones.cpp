@@ -42,12 +42,11 @@ void HiloAceptadorConexiones::run() {
 
     hiloOrquestadorPartida->start();
 
-    // Aceptar reconexiones
     try {
-        atenderPosiblesReconexiones(hiloOrquestadorPartida);
+		aceptarPosiblesReconexiones(hiloOrquestadorPartida);
     }
     catch (const std::exception &e) {
-        l->error("Ocurrio un error al atender las reconexiones. No se aceptaran mas reconexiones");
+        l->error("Ocurrio un error al aceptar las reconexiones. No se aceptaran mas reconexiones");
 		l->error(e.what());
     }
 
@@ -59,7 +58,8 @@ void HiloAceptadorConexiones::run() {
 	aceptadorConexiones->dejarDeEscuchar();
 }
 
-void HiloAceptadorConexiones::atenderPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida){
+void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida){
+	std::list<ConexionServidor*>* conexionesServidores = extraerConexionesDeHilosConexionesServidores();
 
     while (true) {
 		ConexionServidor* conexionServidor;
@@ -78,8 +78,6 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(HiloOrquestadorPartida
 
     	l->info("Se acepto una potencial reconexion.");
 
-		std::list<ConexionServidor*>* conexionesServidores = extraerConexionesDeHilosConexionesServidores();
-
         ControladorDeSesiones *controladorDeSesiones = new ControladorDeSesiones(
 				conexionServidor,
 				conexionesServidores,
@@ -91,17 +89,12 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(HiloOrquestadorPartida
 
         for (HiloConexionServidor *h : *hilosConexionesServidores) {
             if (h->username == conexionServidor->getUsuario()) {
-                nlohmann::json json;
-                json["tipoMensaje"] = ESTADO_LOGIN;
-                json["estadoLogin"] = LOGIN_FIN;
-                json["nroJugador"] = h->conexionServidor->getNroJugador();
-                json["jugador1"] = "";
-                json["jugador2"] = "";
-                json["jugador3"] = "";
-                json["jugador4"] = "";
-
                 try {
-                    conexionServidor->enviarMensaje(json);
+					struct EstadoLogin estadoLogin;
+					estadoLogin.estadoLogin = LOGIN_FIN;
+					estadoLogin.nroJugador = h->conexionServidor->getNroJugador();
+
+					conexionServidor->enviarEstadoLogin(estadoLogin);
                 } catch (const std::exception &e) {
                     l->error("HiloAceptadorConexiones. rechazando a cliente reconectado: " + std::string(e.what()));
                     conexionServidor->cerrar();
@@ -117,19 +110,15 @@ void HiloAceptadorConexiones::atenderPosiblesReconexiones(HiloOrquestadorPartida
     }
 }
 
-void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor*>* conexionesServidores, int estadoLogin) {
-	// !!!!! abstraerr
-    nlohmann::json json;
-    json["tipoMensaje"] = ESTADO_LOGIN;
-    json["estadoLogin"] = estadoLogin;
-    json["jugador1"] = "\0";
-    json["jugador2"] = "\0";
-    json["jugador3"] = "\0";
-    json["jugador4"] = "\0";
+void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor*>* conexionesServidores, int tipoEstadoLogin) {
+    std::string arregloJugadores[MAX_JUGADORES];
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+    	arregloJugadores[i] = "\0";
+    }
 
     int i = 1;
     for (ConexionServidor* & c : *conexionesServidores) {
-        json["jugador" + std::to_string(i)] = c->getUsuario();
+        arregloJugadores[i] = c->getUsuario();
         i++;
     }
 
@@ -137,16 +126,19 @@ void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor
     auto iteradorConexionServidor = conexionesServidores->begin();
     while (iteradorConexionServidor != conexionesServidores->end()) {
         try {
-            json["nroJugador"] = i;
-            (*iteradorConexionServidor)->enviarMensaje(json);
-            iteradorConexionServidor++;
+			struct EstadoLogin estadoLogin;
+			estadoLogin.estadoLogin = tipoEstadoLogin;
+			estadoLogin.nroJugador = i;
+
+			(*iteradorConexionServidor)->enviarEstadoLogin(estadoLogin, arregloJugadores);
+			iteradorConexionServidor++;
             i++;
         } catch (const ConexionExcepcion& e) {
         	l->error("Un usuario se desconecto antes de que empiece la partida");
             // Si el usuario se desconecta antes de comenzar la partida puede conectarse otro (evaluar?)
             conexionesServidores->erase(iteradorConexionServidor);
             // Volver a enviar mensajes con lista actualizada
-            notificarEstadoConexion(conexionesServidores, estadoLogin);
+            notificarEstadoConexion(conexionesServidores, tipoEstadoLogin);
             return;
         }
     }

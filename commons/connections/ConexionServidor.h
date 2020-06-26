@@ -15,7 +15,7 @@ public:
 
 	nlohmann::json recibirMensaje();
 	void enviarMensaje(nlohmann::json mensaje);
-	void enviarEstadoLogin(struct EstadoLogin estadoLogin);
+	void enviarEstadoLogin(struct EstadoLogin estadoLogin, std::string arregloJugadores[] = nullptr);
 	void cerrar();
 
     const std::string &getUsuario() const;

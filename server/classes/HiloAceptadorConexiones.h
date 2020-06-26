@@ -26,9 +26,9 @@ private:
 	std::list<HiloConexionServidor*>* hilosConexionesServidores;
 	AceptadorConexiones* aceptadorConexiones;
 
-    void notificarEstadoConexion(list<ConexionServidor *> *conexionesServidores, int estadoLogin);
+    void notificarEstadoConexion(list<ConexionServidor *> *conexionesServidores, int tipoEstadoLogin);
     std::list<HiloConexionServidor*>* crearHilosConexionesServidores(list<ConexionServidor*>* conexionesServidores);
-	void atenderPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida);
+	void aceptarPosiblesReconexiones(HiloOrquestadorPartida* hiloOrquestadorPartida);
 	std::list<ConexionServidor*>* extraerConexionesDeHilosConexionesServidores();
 };
 

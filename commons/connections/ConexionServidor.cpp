@@ -15,17 +15,17 @@ void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
 	return enviarData2(client_socket, mensaje);
 }
 
-void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
+void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin, std::string arregloJugadores[]) {
 	nlohmann::json json;
 
-	// TODO: unificarlo con el enviar estado del main
     json["tipoMensaje"] = ESTADO_LOGIN;
-    json["nroJugador"] = estadoLogin.nroJugador;
-    json["estadoLogin"] = estadoLogin.estadoLogin;
-    json["jugador1"] = "\0";
-    json["jugador2"] = "\0";
-    json["jugador3"] = "\0";
-    json["jugador4"] = "\0";
+	json["estadoLogin"] = estadoLogin.estadoLogin;
+	json["nroJugador"] = estadoLogin.nroJugador;
+    json["jugador1"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[0];
+    json["jugador2"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[1];
+    json["jugador3"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[2];
+    json["jugador4"] = arregloJugadores == nullptr ? "\0" : arregloJugadores[3];
+
     enviarMensaje(json);
 }
 
