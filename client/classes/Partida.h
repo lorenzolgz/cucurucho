@@ -49,6 +49,8 @@ private:
 
     void reiniciarInstanciaHilo();
 
+    void hacks(const Uint8 *currentKeyStates);
+
     void setEstadoTick(nlohmann::json mensaje);
 
     void setInformacionNivel(nlohmann::json mensaje);

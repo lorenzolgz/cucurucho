@@ -37,9 +37,6 @@ void Titulo::leerInput(std::string input, bool *validarLogin) {
                 if (!seleccionadoUsuario && c == 11) *validarLogin = true;
                 seleccionadoUsuario = !seleccionadoUsuario;
             }
-        } else if (c == 12) {   // Ctrl + D: Autoautenticar!
-            *validarLogin = true;
-            autoCompletar = true;
         }
     }
     if (autoCompletar) {
@@ -74,4 +71,12 @@ void Titulo::getCredenciales(struct Login* credenciales) {
         strcpy(credenciales->contrasenia, autoCredenciales[autoCompletarIndice % 5].contrasenia);
         autoCompletarIndice++;
     }
+}
+
+void Titulo::setAutoCompletar() {
+    autoCompletar = true;
+}
+
+void Titulo::reiniciarPassword() {
+    password = "";
 }

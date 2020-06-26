@@ -33,7 +33,6 @@ void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 void ConexionServidor::enviarEstadoLoginSimple(int estadoLogin, int nroJugador) {
     struct EstadoLogin estado{};
     estado.estadoLogin = estadoLogin;
-    if (nroJugador == -1) nroJugador = estadoLogin;
     estado.nroJugador = nroJugador;
     estado.cantidadJugadores = 0;
     for (auto & jugador : estado.jugadores) {

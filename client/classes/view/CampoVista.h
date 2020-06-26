@@ -17,6 +17,7 @@ private:
 	SDL_Renderer* gRenderer;
 	float velocidadNivel;
 	float posX;
+	int ultimoTick;
 	std::list<FondoVista*> fondos;
 
 };

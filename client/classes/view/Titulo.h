@@ -35,6 +35,10 @@ public:
 
     void getCredenciales(struct Login* login);
 
+    void setAutoCompletar();
+
+    void reiniciarPassword();
+
 private:
     TituloVista* tituloVista;
     int contador;

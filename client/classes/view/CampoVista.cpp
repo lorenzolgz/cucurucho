@@ -8,6 +8,7 @@ CampoVista::CampoVista(float velocidadMovilX) {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();
     CampoVista::velocidadNivel = velocidadMovilX;
     posX = 0;
+    ultimoTick = 0;
 	l->info("La vista del Campo fue creada correctamente.");
 }
 
@@ -23,15 +24,21 @@ FondoVista * CampoVista::nuevoFondo(const std::string &fileName, float xOffset, 
  */
 void CampoVista::render(EstadoTick estadoTick) {
 
-    // Parche feo para que no se muestre un salto de fondo feo
+    // Para evitar un salto feo apenas se conecta el cliente al nuevo nivel
     if (estadoTick.posX == 0) return;
 
+    // Para el caso donde se desencole un mensaje "muy viejo"
+    if (estadoTick.posX >= ultimoTick) {
+        ultimoTick = estadoTick.posX;
+    }
+
     if (posX == 0) {
-        posX = (float) estadoTick.posX;
+        posX = (float) ultimoTick;
     }
 
     posX += velocidadNivel;
-    posX += ((float) estadoTick.posX - posX) / 120;
+
+    posX += ((float) ultimoTick - posX) / 120;
 
 	// Renderizar todos los fondos
 	for (FondoVista* fondo : fondos) {

@@ -27,10 +27,7 @@ void Partida::play(const char* ip_address, int port) {
 
             const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-            if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
-                l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
-                hiloConexionCliente->cerrarConexion();
-            }
+            hacks(currentKeyStates);
 
             SDL_RenderClear(GraphicRenderer::getInstance());
 
@@ -55,7 +52,7 @@ void Partida::play(const char* ip_address, int port) {
                 else if (instruccion["tipoMensaje"] == ESTADO_LOGIN) setEstadoLogin(instruccion);
             }
 
-            if (estadoLogin.nroJugador <= 0 && validarLogin) {
+            if (estadoLogin.estadoLogin <= 0 && validarLogin) {
                 autenticarServidor();
             }
 
@@ -82,15 +79,15 @@ void Partida::play(const char* ip_address, int port) {
 void Partida::autenticarServidor() {
     Login credenciales;
 
-    if (estadoLogin.nroJugador != LOGIN_ESPERANDO_RESPUESTA && !hiloConexionCliente->isActivo()) {
+    if (estadoLogin.estadoLogin != LOGIN_ESPERANDO_RESPUESTA && !hiloConexionCliente->isActivo()) {
         comenzarHilo();
-        estadoLogin.nroJugador = LOGIN_ESPERANDO_RESPUESTA;
+        estadoLogin.estadoLogin = LOGIN_ESPERANDO_RESPUESTA;
         return;
     }
 
     if (hiloConexionCliente->conexionCliente == nullptr) {
         if (!hiloConexionCliente->isActivo()) {
-            estadoLogin.nroJugador = LOGIN_SIN_CONEXION;
+            estadoLogin.estadoLogin = LOGIN_SIN_CONEXION;
             reiniciarInstanciaHilo();
             validarLogin = false;
         }
@@ -102,7 +99,7 @@ void Partida::autenticarServidor() {
         hiloConexionCliente->conexionCliente->enviarDatosDeLogin(&credenciales);
         manager->setUsername(std::string(credenciales.usuario));
     } catch (std::exception& exc) {
-        estadoLogin.nroJugador = LOGIN_SIN_CONEXION;
+        estadoLogin.estadoLogin = LOGIN_SIN_CONEXION;
     }
 
     validarLogin = false;
@@ -129,7 +126,7 @@ void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
         return;
     }
 
-    pantallaPrincipal->tick(inputText, estadoLogin.nroJugador, &validarLogin);
+    pantallaPrincipal->tick(inputText, estadoLogin.estadoLogin, &validarLogin);
 	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
@@ -169,6 +166,22 @@ void Partida::comenzarHilo() {
 void Partida::reiniciarInstanciaHilo() {
     hiloConexionCliente->cerrarConexion();
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
+}
+
+
+void Partida::hacks(const Uint8 *currentKeyStates) {
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
+        l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
+        hiloConexionCliente->cerrarConexion();
+    }
+
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]){
+        SDL_Delay(1000);
+    }
+
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]){
+        pantallaPrincipal->setAutoCompletar();
+    }
 }
 
 
@@ -225,6 +238,7 @@ void Partida::setEstadoLogin(nlohmann::json mensaje) {
 
     if (estadoLogin.estadoLogin <= 0) {
         reiniciarInstanciaHilo();
+        pantallaPrincipal->reiniciarPassword();
     } else {
         validarLogin = false;
     }
