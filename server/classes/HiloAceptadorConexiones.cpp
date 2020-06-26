@@ -90,11 +90,7 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
         for (HiloConexionServidor *h : *hilosConexionesServidores) {
             if (h->username == conexionServidor->getUsuario()) {
                 try {
-					struct EstadoLogin estadoLogin;
-					estadoLogin.estadoLogin = LOGIN_FIN;
-					estadoLogin.nroJugador = h->conexionServidor->getNroJugador();
-
-					conexionServidor->enviarEstadoLogin(estadoLogin);
+					conexionServidor->enviarEstadoLoginSimple(LOGIN_FIN, h->conexionServidor->getNroJugador());
                 } catch (const std::exception &e) {
                     l->error("HiloAceptadorConexiones. rechazando a cliente reconectado: " + std::string(e.what()));
                     conexionServidor->cerrar();
