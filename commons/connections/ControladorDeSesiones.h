@@ -5,9 +5,9 @@
 #ifndef CUCURUCHO_CONTROLADORDESESIONES_H
 #define CUCURUCHO_CONTROLADORDESESIONES_H
 
-#define JSON_USUARIOS "../server/usuarios.json"
 #include "ConexionServidor.h"
 #include "../protocols/protocolo.h"
+#include "../../server/classes/config/UsuariosConfiguracion.h"
 #include <iostream>
 #include <jsoncpp/json/json.h>
 #include <fstream>
@@ -16,7 +16,8 @@ using namespace std;
 
 class ControladorDeSesiones {
 public:
-    ControladorDeSesiones(ConexionServidor *conexionServidor, list<ConexionServidor *> *conexiones, int nroJugador, bool usuarioEnJuego);
+    ControladorDeSesiones(ConexionServidor *conexionServidor, list<ConexionServidor *> *conexiones,
+                          UsuariosConfiguracion* usuarios, int nroJugador, bool usuarioEnJuego);
     bool iniciarSesion();
     void setServidor(ConexionServidor *servidor);
     string getUsuarioConectado();
@@ -27,7 +28,7 @@ public:
 private:
 
     ConexionServidor* conexionServidor;
-    Json::Value jsonUsuarios, contrasenias;
+    UsuariosConfiguracion* usuarios;
     std::list<ConexionServidor*>* conexiones;
     int nroJugador;
     string usuarioConectado;

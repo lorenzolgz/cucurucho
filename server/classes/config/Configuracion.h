@@ -5,11 +5,13 @@
 #include <queue>
 #include <jsoncpp/json/json.h>
 #include "NivelConfiguracion.h"
+#include "UsuariosConfiguracion.h"
 
 class Configuracion {
 public:
     Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
-                  std::list<NivelConfiguracion *> niveles, int cantidadJugadores, bool std_out, int i, int i1);
+                  std::list<NivelConfiguracion *> niveles, int cantidadJugadores, bool std_out,
+                  int maxColaEmisora, int maxColaReceptora, UsuariosConfiguracion *usuariosConfiguracion);
 
     int getAltoPantalla();
     int getAnchoPantalla();
@@ -23,6 +25,8 @@ public:
 
     int getMaxColaReceptora() const;
 
+    UsuariosConfiguracion *getUsuarios() const;
+
 private:
     int altoPantalla;
     int anchoPantalla;
@@ -33,6 +37,7 @@ private:
 	std::list<NivelConfiguracion*> niveles;
     int maxColaEmisora;
     int maxColaReceptora;
+    UsuariosConfiguracion* usuarios;
 };
 
 

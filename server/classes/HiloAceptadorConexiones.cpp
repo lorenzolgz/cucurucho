@@ -20,6 +20,7 @@ void HiloAceptadorConexiones::run() {
         l->info("Esperando usuario(s)");
         auto* conexionServidor = aceptadorConexiones->aceptarConexion();
         ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexionesServidores,
+																				 config->getUsuarios(),
 																				 conexionesServidores->size() + 1,
 																				 false);
         if (!controladorDeSesiones->iniciarSesion()) { // Si entró un usuario no registrado
@@ -81,6 +82,7 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
         ControladorDeSesiones *controladorDeSesiones = new ControladorDeSesiones(
 				conexionServidor,
 				conexionesServidores,
+				config->getUsuarios(),
 				conexionesServidores->size() + 1,
 				true);
         if (!controladorDeSesiones->iniciarSesion()) { // Si entró un usuario no registrado

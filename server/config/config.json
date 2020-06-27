@@ -40,6 +40,13 @@
             "velocidad": 3.5,
             "largo": 43000
          }
-      ]
+      ],
+      "usuarios": {
+         "cami": "dvorkin",
+         "ailu": "garcia",
+         "lolo": "gimenez",
+         "rodri": "souto",
+         "javi": "di santo"
+      }
    }
 }

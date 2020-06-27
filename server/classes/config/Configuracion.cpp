@@ -3,11 +3,12 @@
 //
 
 #include "Configuracion.h"
+#include "UsuariosConfiguracion.h"
 #include <list>
 
 Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPantalla, std::string nivelLog,
                              std::list<NivelConfiguracion *> niveles, int cantidadJugadores, bool std_out,
-                             int maxColaEmisora, int maxColaReceptora) {
+                             int maxColaEmisora, int maxColaReceptora, UsuariosConfiguracion *usuariosConfiguracion) {
     this->altoPantalla = altoPantalla;
     this->anchoPantalla = anchoPantalla;
     this->escalaPantalla = escalaPantalla;
@@ -17,6 +18,7 @@ Configuracion::Configuracion(int altoPantalla, int anchoPantalla, int escalaPant
     this->maxColaEmisora = maxColaEmisora;
     this->maxColaReceptora = maxColaReceptora;
     this->std_out = std_out;
+    this->usuarios = usuariosConfiguracion;
 }
 
 int Configuracion::getAltoPantalla(){
@@ -53,4 +55,8 @@ int Configuracion::getMaxColaEmisora() const {
 
 int Configuracion::getMaxColaReceptora() const {
     return maxColaReceptora;
+}
+
+UsuariosConfiguracion *Configuracion::getUsuarios() const {
+    return usuarios;
 }
