@@ -68,16 +68,15 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
 		informacionNivel->numeroNivel++;
 		NivelConfiguracion *nivelConfig = nivelesConfiguracion.front();
 		if (nivelConfig == nullptr) return nivelActual->state();
-		int i = 0;
+
+        std::list<InformacionFondo> listaFondo;
 		for (FondoConfiguracion *f : nivelConfig->getFondos()) {
-			informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
-			f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
-			i++;
+			InformacionFondo info;
+		    info.pVelocidad = f->getVelocidad();
+		    f->setArchivo(info.pFondo);
+		    listaFondo.push_back(info);
 		}
-		for (i; i < MAX_FONDOS; i++) {
-			informacionNivel->informacionFondo[i].pVelocidad = 0;
-			strcpy(&informacionNivel->informacionFondo[i].pFondo[0], "\0");
-		}
+        informacionNivel->informacionFondo = listaFondo;
         informacionNivel->velocidad = nivelConfig->getVelocidad();
 		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
 		pasajeDeNivel();

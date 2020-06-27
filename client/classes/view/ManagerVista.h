@@ -35,7 +35,7 @@ private:
     int ancho;
     float velocidadNivel;
 
-    void renderEnemigos(EstadoEnemigo pEnemigo[15]);
+    void renderEnemigos(std::list<EstadoEnemigo> pEnemigo);
 
     void renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin);
 

@@ -1,9 +1,7 @@
 #ifndef CUCURUCHO_PROTOCOLO_H
 #define CUCURUCHO_PROTOCOLO_H
 
-
-#define MAX_ENEMIGOS 25
-#define MAX_FONDOS 25
+#include <list>
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
 #define LARGO_USERNAME 16
@@ -87,7 +85,7 @@ struct EstadoTick {
     EstadoTick(): posX(0) {}
 	int nuevoNivel;
 	int posX;
-	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
+	std::list<EstadoEnemigo> estadosEnemigos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 
@@ -100,7 +98,7 @@ struct InformacionNivel {
 	int numeroNivel;
     float velocidad;
     char informacionFinNivel[LARGO_PATH];
-	InformacionFondo informacionFondo[MAX_FONDOS];
+	std::list<InformacionFondo> informacionFondo;
 };
 
 struct EstadoLogin {

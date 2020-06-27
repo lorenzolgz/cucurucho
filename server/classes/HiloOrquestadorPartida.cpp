@@ -168,16 +168,7 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
 	}
 
-	i = 0;
-	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {
-		estadoTick->estadosEnemigos[i] = estadoEnemigo;
-		i++;
-	}
-	// !!!! hardcodeadisimo
-	for (; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
-	}
-
+	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
 	return false;
 }
 
@@ -191,9 +182,5 @@ void initializeData(struct EstadoTick* estadoTick) {
 		estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
-	}
-
-	for (int i = 0; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
 	}
 }

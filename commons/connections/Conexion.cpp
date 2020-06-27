@@ -3,7 +3,6 @@
 #include "ConexionExcepcion.h"
 
 void Conexion::enviarData2(int client_socket, nlohmann::json dataJson) {
-
     std::string mensajeStr = dataJson.dump();
 	uint32_t tamanioMensaje = mensajeStr.size();
 

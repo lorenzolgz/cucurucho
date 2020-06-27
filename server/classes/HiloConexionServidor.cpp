@@ -50,7 +50,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
 	mensajeJson["posX"] = estadoTick->posX;
 	int i = 0, j = 0;
-	// TODO enviar solo los enemigos necesarios. Ya no tiene que ser un struct con un array de largo fijo, porque el JSON es dinamico.
+
 	for (; i< MAX_JUGADORES; i++) {
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionX"] = estadoTick->estadosJugadores[i].helper1.posicionX;
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionY"] = estadoTick->estadosJugadores[i].helper1.posicionY;
@@ -62,12 +62,15 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
         mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
     }
-	for (; j< MAX_ENEMIGOS; j++) {
-		mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;
-		mensajeJson["estadosEnemigos"][j]["posicionY"] = estadoTick->estadosEnemigos[j].posicionY;
-		mensajeJson["estadosEnemigos"][j]["clase"] = estadoTick->estadosEnemigos[j].clase;
-	}
+	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
+        nlohmann::json mensajeFondo= {
+                {"posicionX", estadoEnemigo.posicionX},
+                {"posicionY", estadoEnemigo.posicionY},
+                {"clase", estadoEnemigo.clase}
+        };
+        mensajeJson["estadosEnemigos"].push_back(mensajeFondo);
 
+	}
 	colaEnviadora->push(mensajeJson);
 }
 
@@ -79,14 +82,16 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 			{"velocidad", informacionNivel->velocidad},
 			{"informacionFinNivel",   informacionNivel->informacionFinNivel}
 	};
-	for ( int i = 0 ; i < MAX_FONDOS ; i++ ){
-		mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo[i].pVelocidad;
-		mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo[i].pFondo;
+	for (InformacionFondo informacionFondo: informacionNivel->informacionFondo){
+        nlohmann::json mensajeFondo= {
+                {"velocidad", informacionFondo.pVelocidad},
+                {"fondo", informacionFondo.pFondo}
+        };
+	    mensajeJson["informacionFondo"].push_back(mensajeFondo);
 	}
-
 	colaEnviadora->push(mensajeJson);
 
-    HiloConexionServidor::informacionNivelActual = informacionNivel;
+	HiloConexionServidor::informacionNivelActual = informacionNivel;
 }
 
 void HiloConexionServidor::cicloReconectar() {
