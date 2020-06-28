@@ -25,16 +25,6 @@
             },
             "velocidad": 3,
             "largo": 200
-         },
-         {
-            "archivoFondos": "fondos/fondos3.json",
-            "fin": "cleared_con_nave3.png",
-            "enemigos": {
-               "clase1": 4,
-               "clase2": 1
-            },
-            "velocidad": 2.5,
-            "largo": 200
          }
       ],
       "usuarios": {

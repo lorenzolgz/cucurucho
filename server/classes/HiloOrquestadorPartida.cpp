@@ -55,7 +55,7 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
-	if (*nuevoNivel) {
+    if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
 	if (*nuevoNivel) {
@@ -105,14 +105,14 @@ void HiloOrquestadorPartida::run() {
             //--------------------
 			// Process model
             quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
-            if (quit) {
-				break;
-            }
+
             //--------------------
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
-
+            if (quit) {
+                break;
+            }
 			t1 = clock();
 		}
 	}
@@ -147,13 +147,15 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	partida->tick(comandos);
 
+    // Seteando estadoTick
+    estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+    estadoTick->numeroNivel = estadoInternoNivel.nivel;
+
 	if (partida->termino()) {
+        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
 		l->info("La partida finalizo");
 		return true;
 	}
-
-	// Seteando estadoTick
-	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->posX = estadoCampoMovil.posX;
@@ -167,16 +169,7 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
 	}
 
-	i = 0;
-	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {
-		estadoTick->estadosEnemigos[i] = estadoEnemigo;
-		i++;
-	}
-	// !!!! hardcodeadisimo
-	for (; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
-	}
-
+	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
 	return false;
 }
 
@@ -190,9 +183,5 @@ void initializeData(struct EstadoTick* estadoTick) {
 		estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
-	}
-
-	for (int i = 0; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
 	}
 }

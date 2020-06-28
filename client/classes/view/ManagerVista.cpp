@@ -64,7 +64,7 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     velocidadNivel = informacionNivel.velocidad;
     campoVista = new CampoVista(velocidadNivel);
 
-    for (InformacionFondo & f : informacionNivel.informacionFondo) {
+    for (InformacionFondo f : informacionNivel.informacionFondo) {
     	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)
         if (f.pFondo[0] == '\0') {
         	continue;
@@ -79,18 +79,17 @@ void ManagerVista::renderNivelIntermedio() {
 }
 
 
-void ManagerVista::renderEnemigos(EstadoEnemigo *estadosEnemigos) {
+void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
     int n = 0;
-    // TODO: Sacar limite enemigos
-    while (n < MAX_ENEMIGOS && estadosEnemigos[++n].clase != 0);
 
-    for (int i = 0; i < n; i++) {
-        switch (estadosEnemigos[i].clase) {
+
+    for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
+        switch (estadoEnemigo.clase) {
             case 1:
-                enemigo1Vista.render(estadosEnemigos[i]);
+                enemigo1Vista.render(estadoEnemigo);
                 break;
             case 2:
-                enemigo2Vista.render(estadosEnemigos[i]);
+                enemigo2Vista.render(estadoEnemigo);
         }
     }
 }

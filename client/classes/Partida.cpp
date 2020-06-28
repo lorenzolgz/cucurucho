@@ -64,7 +64,15 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
 
             quit = quit || manager->terminoJuego();
         }
+
     } catch (std::exception& exc) {
+        while(!colaMensajes->empty()) {
+            nlohmann::json instruccion = colaMensajes->pop();
+            if (instruccion["nivel"] == FIN_DE_JUEGO ) {
+                l->info("Finalizo el juego.");
+                exit(1);
+            }
+        }
         l->error("Se interrumpio el juego: " + std::string(exc.what()));
         l->error("Reiniciando...");
         reiniciarInstanciaHilo();
@@ -189,6 +197,8 @@ void Partida::setEstadoTick(nlohmann::json mensaje) {
     struct EstadoTick estado;
     estado.nuevoNivel = mensaje["numeroNivel"];
     estado.posX = mensaje["posX"];
+    estado.numeroNivel = mensaje["nivel"];
+
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
         estado.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
@@ -201,24 +211,28 @@ void Partida::setEstadoTick(nlohmann::json mensaje) {
         estado.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
         estado.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
     }
-    int j = 0;
-    for (; j < MAX_ENEMIGOS; j++ ){
-        estado.estadosEnemigos[j].posicionX = mensaje["estadosEnemigos"][j]["posicionX"];
-        estado.estadosEnemigos[j].posicionY = mensaje["estadosEnemigos"][j]["posicionY"];
-        estado.estadosEnemigos[j].clase = mensaje["estadosEnemigos"][j]["clase"];
+    for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){
+        EstadoEnemigo estadoEnemigo;
+        estadoEnemigo.posicionX = informacionJson["posicionX"];
+        estadoEnemigo.posicionY = informacionJson["posicionY"];
+        estadoEnemigo.clase = informacionJson["clase"];
+        estado.estadosEnemigos.push_back(estadoEnemigo);
     }
     manager->setEstadoTick(estado);
 }
 
 void Partida::setInformacionNivel(nlohmann::json mensaje) {
     struct InformacionNivel info;
-
+    
     info.numeroNivel = mensaje["numeroNivel"];
+
     info.velocidad = mensaje["velocidad"];
     strcpy(info.informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
-    for (int i = 0; i < MAX_FONDOS ; i++){
-        info.informacionFondo[i].pVelocidad = mensaje["informacionFondo"][i]["velocidad"];
-        strcpy(info.informacionFondo[i].pFondo, std::string(mensaje["informacionFondo"][i]["fondo"]).c_str());
+    for (nlohmann::json informacionJson : mensaje["informacionFondo"]) {
+        InformacionFondo informacionFondoJson;
+        informacionFondoJson.pVelocidad = informacionJson["velocidad"];
+        strcpy(informacionFondoJson.pFondo, std::string(informacionJson["fondo"]).c_str());
+        info.informacionFondo.push_back(informacionFondoJson);
     }
     manager->setInformacionNivel(info);
 }
