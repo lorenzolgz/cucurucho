@@ -15,7 +15,7 @@ void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor.");
 
 	try{
-        while (continuarLoopeando) {
+        while (continuarLoopeando || !colaEnviadora->empty()) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
             colaReceptora->push(mensajeRecibido);
@@ -48,6 +48,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	nlohmann::json mensajeJson;
 	mensajeJson["tipoMensaje"] = ESTADO_TICK;
 	mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
+	mensajeJson["nivel"] = estadoTick->numeroNivel;
 	mensajeJson["posX"] = estadoTick->posX;
 	int i = 0, j = 0;
 

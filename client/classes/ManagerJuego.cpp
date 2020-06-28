@@ -20,7 +20,7 @@ void ManagerJuego::render(){
 }
 
 bool ManagerJuego::terminoJuego() {
-    return informacionNivel.numeroNivel == FIN_DE_JUEGO;
+    return estadoTick.nuevoNivel == FIN_DE_JUEGO;
 }
 
 // TODO: che tampoco da

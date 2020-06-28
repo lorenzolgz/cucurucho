@@ -55,7 +55,7 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
-	if (*nuevoNivel) {
+    if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
 	if (*nuevoNivel) {
@@ -105,14 +105,14 @@ void HiloOrquestadorPartida::run() {
             //--------------------
 			// Process model
             quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
-            if (quit) {
-				break;
-            }
+
             //--------------------
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
-
+            if (quit) {
+                break;
+            }
 			t1 = clock();
 		}
 	}
@@ -149,9 +149,10 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 
     // Seteando estadoTick
     estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+    estadoTick->numeroNivel = estadoInternoNivel.nivel;
 
 	if (partida->termino()) {
-        estadoTick->nuevoNivel = -1;
+        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
 		l->info("La partida finalizo");
 		return true;
 	}

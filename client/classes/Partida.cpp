@@ -65,6 +65,11 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
             quit = quit || manager->terminoJuego();
         }
     } catch (std::exception& exc) {
+        while(!colaMensajes->empty()) {
+            nlohmann::json instruccion = colaMensajes->pop();
+            if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
+            if (manager->terminoJuego()) exit(1);
+        }
         l->error("Se interrumpio el juego: " + std::string(exc.what()));
         l->error("Reiniciando...");
         reiniciarInstanciaHilo();
@@ -189,6 +194,8 @@ void Partida::setEstadoTick(nlohmann::json mensaje) {
     struct EstadoTick estado;
     estado.nuevoNivel = mensaje["numeroNivel"];
     estado.posX = mensaje["posX"];
+    estado.numeroNivel = mensaje["nivel"];
+
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
         estado.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
@@ -215,6 +222,7 @@ void Partida::setInformacionNivel(nlohmann::json mensaje) {
     struct InformacionNivel info;
     
     info.numeroNivel = mensaje["numeroNivel"];
+
     info.velocidad = mensaje["velocidad"];
     strcpy(info.informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
     for (nlohmann::json informacionJson : mensaje["informacionFondo"]) {

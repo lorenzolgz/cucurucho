@@ -83,6 +83,7 @@ struct EstadoEnemigo {
 
 struct EstadoTick {
     EstadoTick(): posX(0) {}
+    int numeroNivel;
 	int nuevoNivel;
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
