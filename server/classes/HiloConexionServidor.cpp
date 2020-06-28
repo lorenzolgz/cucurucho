@@ -47,8 +47,8 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 
 	nlohmann::json mensajeJson;
 	mensajeJson["tipoMensaje"] = ESTADO_TICK;
-	mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
-	mensajeJson["nivel"] = estadoTick->numeroNivel;
+	mensajeJson["nuevoNivel"] = estadoTick->nuevoNivel;
+	mensajeJson["numeroNivel"] = estadoTick->numeroNivel;
 	mensajeJson["posX"] = estadoTick->posX;
 	int i = 0, j = 0;
 

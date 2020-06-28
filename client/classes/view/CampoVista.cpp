@@ -4,9 +4,10 @@
 #include "../../../commons/utils/Log.h"
 #include "../../../commons/protocols/protocolo.h"
 
-CampoVista::CampoVista(float velocidadMovilX) {
+CampoVista::CampoVista(float velocidadMovilX, int numeroNivel) {
 	CampoVista::gRenderer = GraphicRenderer::getInstance();
     CampoVista::velocidadNivel = velocidadMovilX;
+    CampoVista::numeroNivel = numeroNivel;
     posX = 0;
     ultimoTick = 0;
 	l->info("La vista del Campo fue creada correctamente.");
@@ -25,7 +26,7 @@ FondoVista * CampoVista::nuevoFondo(const std::string &fileName, float xOffset, 
 void CampoVista::render(EstadoTick estadoTick) {
 
     // Para evitar un salto feo apenas se conecta el cliente al nuevo nivel
-    if (estadoTick.posX == 0) return;
+    if (estadoTick.posX == 0 || estadoTick.numeroNivel != numeroNivel) return;
 
     // Para el caso donde se desencole un mensaje "muy viejo"
     if (estadoTick.posX >= ultimoTick) {

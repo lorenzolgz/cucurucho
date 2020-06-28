@@ -90,7 +90,7 @@ Configuracion* parsearConfiguracion(std::string archivoConfig) {
         catch (const std::exception& exc) {
             l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
             // Throw exception corta por completo la ejecucion del codigo
-            throw exc;
+            exit(1);
         }
     }
 

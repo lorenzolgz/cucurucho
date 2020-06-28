@@ -33,6 +33,8 @@ Log::Log(std::string basePath) {
 
     archivo.open(homePath + RELATIVE_PATHLOG , std::fstream::out);
     archivo.close();
+
+    nivel = "error";
 }
 
 
