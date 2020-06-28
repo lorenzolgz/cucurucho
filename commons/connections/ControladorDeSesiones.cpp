@@ -7,12 +7,11 @@
 
 
 ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor, list<ConexionServidor *> *conexiones,
+                                             UsuariosConfiguracion* usuarios,
                                              int nroJugador, bool usuarioEnJuego) {
     this->conexionServidor = conexionServidor;
     this->conexiones = conexiones;
-    ifstream archivo(JSON_USUARIOS, ifstream::binary);
-    archivo >> this->jsonUsuarios;
-    this->contrasenias = jsonUsuarios["usuariosRegistrados"];
+    this->usuarios = usuarios;
 	this->nroJugador = nroJugador;
 	this->usuarioEnJuego = usuarioEnJuego;
 }
@@ -62,13 +61,14 @@ bool ControladorDeSesiones::iniciarSesion() {
 
 bool ControladorDeSesiones::usuarioEstaRegistrado(char* usuario, char* contrasenia) {
 	// Chequeo si el usuario está registrado
-	if (this->contrasenias[usuario].empty()) {
+	if (!this->usuarios->usuarioExiste(usuario)) {
 		l->info("Usuario " + std::string(usuario) + " no esta registrado");
         this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_USUARIO_INEXISTENTE);
 		return false;
 	}
+
 	// Chequeo si la contrasenia es correcta
-	if (strcmp(this->contrasenias[usuario].asCString(), contrasenia) != 0) {
+	if (!this->usuarios->credencialesValidas(usuario, contrasenia)) {
 		l->info("Password del usuario " + std::string(usuario) + " no coincide");
         this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_PASS_INVALIDA);
 		return false;

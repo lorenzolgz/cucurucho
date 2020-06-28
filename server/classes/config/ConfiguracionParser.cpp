@@ -226,6 +226,21 @@ std::list<NivelConfiguracion*> ConfiguracionParser::parsearNiveles(Json::Value n
 	}
 }
 
+UsuariosConfiguracion *ConfiguracionParser::parsearUsuarios(Json::Value root) {
+    UsuariosConfiguracion* usuariosConfiguracion = new UsuariosConfiguracion();
+    try {
+        for (Json::Value::const_iterator itr = root["usuarios"].begin() ; itr != root["usuarios"].end() ; itr++) {
+            usuariosConfiguracion->nuevoUsuario(itr.key().asString(), root["usuarios"][itr.key().asString()].asString());
+        }
+    }
+    catch(const std::exception& exc) {
+        l->error("Error al parsear los usuarios");
+        throw exc;
+    }
+    return usuariosConfiguracion;
+}
+
+
 // Estos parametros son opcionales. Si no existen en el JSON o son invalidos no deberian romper la configuracion
 void parsearParametrosConexion(Json::Value root, int& maxColaEmisora, int& maxColaReceptora) {
     maxColaEmisora = MAX_COLA_EMISORA_SERVIDOR;
@@ -286,9 +301,11 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 
     bool std_out = configuracionJson["log"]["std_out"].asBool();
 
+    UsuariosConfiguracion* usuariosConfiguracion = parsearUsuarios(configuracionJson);
+
     int maxColaEmisora, maxColaReceptora;
     parsearParametrosConexion(configuracionJson, maxColaEmisora, maxColaReceptora);
 
 	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles, cantidadJugadores, std_out,
-                             maxColaEmisora, maxColaReceptora);
+                             maxColaEmisora, maxColaReceptora, usuariosConfiguracion);
 }

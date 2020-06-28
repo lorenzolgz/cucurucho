@@ -26,6 +26,13 @@
             "velocidad": 3,
             "largo": 200
          }
-      ]
+      ],
+      "usuarios": {
+         "cami": "12",
+         "ailu": "12",
+         "lolo": "12",
+         "rodri": "12",
+         "javi": "12"
+      }
    }
 }

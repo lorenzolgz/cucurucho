@@ -3,6 +3,8 @@
 
 #include <string>
 #include "Configuracion.h"
+#include "UsuariosConfiguracion.h"
+
 #define FIN_ARCH '\0'
 
 class ConfiguracionParser {
@@ -20,6 +22,7 @@ private:
     float parsearVelocidadNivel(Json::Value nivelJSON, int i);
     float parsearLargoNivel(Json::Value nivelJSON, int nivel);
     NivelConfiguracion* parsearNivel(Json::Value nivelJson, int nivel);
+    UsuariosConfiguracion* parsearUsuarios(Json::Value json);
     int parsearCantidadJugadores(Json::Value cantidadJson);
 
     std::list<NivelConfiguracion*> parsearNiveles(Json::Value nivelesJson);
