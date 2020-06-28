@@ -229,8 +229,12 @@ std::list<NivelConfiguracion*> ConfiguracionParser::parsearNiveles(Json::Value n
 UsuariosConfiguracion *ConfiguracionParser::parsearUsuarios(Json::Value root) {
     UsuariosConfiguracion* usuariosConfiguracion = new UsuariosConfiguracion();
     try {
+        if (root["usuarios"].isNull()) {
+            l->error("No se encontraron usuarios");
+            throw std::exception();
+        }
         for (Json::Value::const_iterator itr = root["usuarios"].begin() ; itr != root["usuarios"].end() ; itr++) {
-            usuariosConfiguracion->nuevoUsuario(itr.key().asString(), root["usuarios"][itr.key().asString()].asString());
+            usuariosConfiguracion->nuevoUsuario(itr.key().asString(), itr->asString());
         }
     }
     catch(const std::exception& exc) {
@@ -260,10 +264,14 @@ void parsearParametrosConexion(Json::Value root, int& maxColaEmisora, int& maxCo
 
 
 Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonConfig){
+    if (rutaJsonConfig.empty()) {
+        throw std::exception();
+    }
+
 	Json::Value jsonConfig;
 	std::ifstream archivo(rutaJsonConfig);
 	if (archivo.fail()){
-		l->error(rutaJsonConfig +=  " no direcciona estadosEnemigos un archivo JSON de configuracion");
+		l->error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
 		throw std::exception();
 	}
 

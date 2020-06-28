@@ -62,7 +62,7 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
     ManagerVista::informacionNivel = informacionNivel;
 
     velocidadNivel = informacionNivel.velocidad;
-    campoVista = new CampoVista(velocidadNivel);
+    campoVista = new CampoVista(velocidadNivel, informacionNivel.numeroNivel);
 
     for (InformacionFondo f : informacionNivel.informacionFondo) {
     	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)

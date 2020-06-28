@@ -108,7 +108,7 @@ Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCo
     Json::Value jsonConfig;
     std::ifstream archivo(rutaJsonConfig);
     if (archivo.fail()){
-        std::cout<<rutaJsonConfig<<" no direcciona estadosEnemigos un archivo JSON de configuracion"<<std::endl;
+        std::cout<<rutaJsonConfig<<" no direcciona a un archivo JSON de configuracion"<<std::endl;
         throw std::exception();
     }
 

@@ -68,7 +68,9 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     } catch (std::exception& exc) {
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
-            if (instruccion["nivel"] == FIN_DE_JUEGO ) {
+            if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
+
+            if (manager->terminoJuego()) {
                 l->info("Finalizo el juego.");
                 exit(1);
             }
@@ -195,9 +197,9 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
 
 void Partida::setEstadoTick(nlohmann::json mensaje) {
     struct EstadoTick estado;
-    estado.nuevoNivel = mensaje["numeroNivel"];
+    estado.nuevoNivel = mensaje["nuevoNivel"];
     estado.posX = mensaje["posX"];
-    estado.numeroNivel = mensaje["nivel"];
+    estado.numeroNivel = mensaje["numeroNivel"];
 
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
