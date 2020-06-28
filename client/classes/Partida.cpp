@@ -64,11 +64,14 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
 
             quit = quit || manager->terminoJuego();
         }
+
     } catch (std::exception& exc) {
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
-            if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
-            if (manager->terminoJuego()) exit(1);
+            if (instruccion["nivel"] == FIN_DE_JUEGO ) {
+                l->info("Finalizo el juego.");
+                exit(1);
+            }
         }
         l->error("Se interrumpio el juego: " + std::string(exc.what()));
         l->error("Reiniciando...");
