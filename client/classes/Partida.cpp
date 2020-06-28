@@ -69,16 +69,16 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
             if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
-
-            if (manager->terminoJuego()) {
-                l->info("Finalizo el juego.");
-                exit(1);
-            }
         }
-        l->error("Se interrumpio el juego: " + std::string(exc.what()));
-        l->error("Reiniciando...");
-        reiniciarInstanciaHilo();
-        play(configuracion, ip_address, port);
+        if (manager->terminoJuego()) {
+            l->info("Finalizo el juego.");
+        } else {
+            l->error("Se interrumpio el juego: " + std::string(exc.what()));
+            l->error("Reiniciando...");
+            reiniciarInstanciaHilo();
+            play(configuracion, ip_address, port);
+            return;
+        }
     }
 
     hiloConexionCliente->cerrarConexion();
