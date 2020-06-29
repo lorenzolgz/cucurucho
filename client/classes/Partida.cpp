@@ -66,6 +66,14 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
         }
 
     } catch (std::exception& exc) {
+
+        // TODO: Parche para cuando no se cierra el cliente cuando termina el juego
+        // Contempla los casos donde el cliente pierde la conexion al enviar un comando
+        if (hiloConexionCliente->isActivo()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+            hiloConexionCliente->cerrarConexion();
+        }
+
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
             if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);

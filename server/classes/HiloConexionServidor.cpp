@@ -32,8 +32,8 @@ void HiloConexionServidor::run() {
 
             if (!colaEnviadora->empty()) {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
                 conexionServidor->enviarMensaje(mensajeAEnviar);
+                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
             }
         }
     } catch (...) { // !!!!! catcheo y logueo
