@@ -19,11 +19,13 @@ class TituloVista {
     int ancho;
     int contador;
     int contadorActivada;
+    bool conexionPerdida;
     SDL_Renderer* gRenderer;
     std::set<TituloParticula*> particulas;
 public:
-    TituloVista(int ancho, int alto);
-    void render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario);
+    TituloVista(int ancho, int alto, bool conexionPerdida);
+    void
+    render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario);
 
     void nuevaParticula();
 
@@ -31,7 +33,7 @@ public:
 
     void renderTitulo();
 
-    void renderTextos(bool b);
+    void renderTextos(bool activa);
 
     void renderFadeout(bool activada);
 

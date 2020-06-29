@@ -7,10 +7,10 @@
 
 Partida::Partida() {}
 
-void Partida::play(Configuracion* configuracion, const char* ip_address, int port) {
+void Partida::play(Configuracion* configuracion, const char* ip_address, int port, bool conexionPerdida) {
     bool quit = false;
 
-    pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO);
+    pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
@@ -76,7 +76,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
             l->error("Se interrumpio el juego: " + std::string(exc.what()));
             l->error("Reiniciando...");
             reiniciarInstanciaHilo();
-            play(configuracion, ip_address, port);
+            play(configuracion, ip_address, port, true);
             return;
         }
     }
