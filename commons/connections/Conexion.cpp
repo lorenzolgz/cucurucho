@@ -8,11 +8,11 @@ void Conexion::enviarData2(int client_socket, nlohmann::json dataJson) {
 
     if (_enviarData(&client_socket, &tamanioMensaje, sizeof(tamanioMensaje)) < 0) {
 		l->error("Error al enviar size del mensaje: " + std::string(strerror(errno)));
-throw ConexionExcepcion();
+        throw ConexionExcepcion();
 	}
 	if (_enviarData(&client_socket, &mensajeStr[0], tamanioMensaje) < 0) {
         l->error("Error al enviar mensaje JSON: " + std::string(strerror(errno)));
-throw ConexionExcepcion();
+        throw ConexionExcepcion();
 	}
 }
 

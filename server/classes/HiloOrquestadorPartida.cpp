@@ -38,8 +38,9 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
                     mensajeJson = colaReceptora->pop();
 
                     if (mensajeJson["_t"] == COMANDO) {
-                        struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-                        comandos[comando.nroJugador-1] = comando;
+                        int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
+                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        comandos[nroJugador - 1] = comando;
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
                     }
@@ -87,6 +88,10 @@ void HiloOrquestadorPartida::run() {
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
 
+    for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+        comandos[i] = {0, 0, 0, 0, 0};
+    }
+
 	//keep communicating with client
 	try {
 		while (!quit) {
@@ -95,10 +100,6 @@ void HiloOrquestadorPartida::run() {
 			if ((t2 - t1) > 1000 * 1000 / 60) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
 			} else {
 				continue;
-			}
-
-			for (int i = 0; i < hilosConexionesServidores->size(); i++) {
-				comandos[i] = {0, 0, 0, 0, 0};
 			}
 			// Receive data (command)
             receiveData(hilosConexionesServidores, comandos, config);

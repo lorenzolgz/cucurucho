@@ -128,11 +128,13 @@ void HiloAceptadorConexiones::notificarEstadoConexion(std::list<ConexionServidor
 			estadoLogin.estadoLogin = tipoEstadoLogin;
 			estadoLogin.nroJugador = i + 1;
 			estadoLogin.cantidadJugadores = config->getCantidadJugadores();
+
 			for (int j = 0; j < MAX_JUGADORES; j++) {
 			    strcpy(estadoLogin.jugadores[j], arregloJugadores[j].c_str());
 			}
 
 			(*iteradorConexionServidor)->enviarEstadoLogin(estadoLogin);
+			(*iteradorConexionServidor)->setNroJugador(estadoLogin.nroJugador);
 			iteradorConexionServidor++;
             i++;
         } catch (const ConexionExcepcion& e) {
