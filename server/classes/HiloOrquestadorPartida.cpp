@@ -80,6 +80,7 @@ void HiloOrquestadorPartida::run() {
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
 	clock_t t2, t1 = clock();
+	clock_t entreNiveles = clock();
 
 	int commands_count = 0;
 	initializeData(&estadoTick);
@@ -101,8 +102,14 @@ void HiloOrquestadorPartida::run() {
 			} else {
 				continue;
 			}
+
 			// Receive data (command)
             receiveData(hilosConexionesServidores, comandos, config);
+            if (clock() < entreNiveles) { // Si los clientes estan viendo la pantalla intermedia, no procesar comandos.
+                for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+                    comandos[i] = {0, 0, 0, 0, 0};
+                }
+            }
             //--------------------
 			// Process model
             quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
@@ -114,6 +121,11 @@ void HiloOrquestadorPartida::run() {
             if (quit) {
                 break;
             }
+
+            if (nuevoNivel) {
+                entreNiveles = clock() + TIMEOUT_PROXIMO_NIVEL * CLOCKS_PER_SEC;
+            }
+
 			t1 = clock();
 		}
 	}
