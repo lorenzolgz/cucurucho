@@ -129,7 +129,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
 
     TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
-    
+
     if (conexionPerdida) {
         TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
     }

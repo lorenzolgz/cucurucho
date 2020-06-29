@@ -13,6 +13,7 @@ HiloConexionServidor::HiloConexionServidor(ConexionServidor *conexionServidor, i
 
 void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor.");
+	this->conexionServidor->enableTimeout();
 
 	try{
         while (continuarLoopeando || !colaEnviadora->empty()) {
