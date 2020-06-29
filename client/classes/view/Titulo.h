@@ -27,7 +27,7 @@ enum {
 
 class Titulo {
 public:
-    Titulo(int ancho, int alto);
+    Titulo(int ancho, int alto, bool conexionPerdida);
 
     void tick(std::string input, int estado, bool *validarLogin);
 

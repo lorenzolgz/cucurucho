@@ -7,14 +7,14 @@
 #include <string.h>
 #include "../../../commons/utils/Log.h"
 
-Titulo::Titulo(int ancho, int alto) {
-    activada = false;
+Titulo::Titulo(int ancho, int alto, bool conexionPerdida) {
+    activada = conexionPerdida;
     contador = 0;
-    Titulo::tituloVista = new TituloVista(ancho, alto);
+    Titulo::tituloVista = new TituloVista(ancho, alto, conexionPerdida);
     username = "";
     password = "";
     seleccionadoUsuario = true;
-    estado = TITULO_VACIO;
+    estado = conexionPerdida ? TITULO_INGRESAR : TITULO_VACIO;
     autoCompletar = false;
     autoCompletarIndice = 0;
     l->info("La pantalla incial fue creada correctamente.");

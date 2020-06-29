@@ -38,8 +38,9 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
                     mensajeJson = colaReceptora->pop();
 
                     if (mensajeJson["_t"] == COMANDO) {
-                        struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-                        comandos[comando.nroJugador-1] = comando;
+                        int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
+                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        comandos[nroJugador - 1] = comando;
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
                     }
@@ -79,6 +80,7 @@ void HiloOrquestadorPartida::run() {
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
 	clock_t t2, t1 = clock();
+	clock_t entreNiveles = clock();
 
 	int commands_count = 0;
 	initializeData(&estadoTick);
@@ -86,6 +88,10 @@ void HiloOrquestadorPartida::run() {
 	informacionNivel.numeroNivel = 0;
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
+
+    for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+        comandos[i] = {0, 0, 0, 0, 0};
+    }
 
 	//keep communicating with client
 	try {
@@ -97,11 +103,13 @@ void HiloOrquestadorPartida::run() {
 				continue;
 			}
 
-			for (int i = 0; i < hilosConexionesServidores->size(); i++) {
-				comandos[i] = {0, 0, 0, 0, 0};
-			}
 			// Receive data (command)
             receiveData(hilosConexionesServidores, comandos, config);
+            if (clock() < entreNiveles) { // Si los clientes estan viendo la pantalla intermedia, no procesar comandos.
+                for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+                    comandos[i] = {0, 0, 0, 0, 0};
+                }
+            }
             //--------------------
 			// Process model
             quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
@@ -113,6 +121,11 @@ void HiloOrquestadorPartida::run() {
             if (quit) {
                 break;
             }
+
+            if (nuevoNivel) {
+                entreNiveles = clock() + TIMEOUT_PROXIMO_NIVEL * CLOCKS_PER_SEC;
+            }
+
 			t1 = clock();
 		}
 	}

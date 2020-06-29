@@ -24,7 +24,7 @@ void AceptadorConexiones::escuchar() {
 	// This means the port will be immediately available after the server closes,
 	// regardless of remaining open connections.
 	int yes = 1;
-    assert(setsockopt(this->server_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) >= 0);
+	assert(setsockopt(this->server_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) >= 0);
 	//------------------------
 
 	// Prepare the sockaddr_in structure

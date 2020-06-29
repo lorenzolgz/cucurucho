@@ -7,10 +7,10 @@
 
 Partida::Partida() {}
 
-void Partida::play(Configuracion* configuracion, const char* ip_address, int port) {
+void Partida::play(Configuracion* configuracion, const char* ip_address, int port, bool conexionPerdida) {
     bool quit = false;
 
-    pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO);
+    pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
@@ -66,19 +66,27 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
         }
 
     } catch (std::exception& exc) {
+
+        // TODO: Parche para cuando no se cierra el cliente cuando termina el juego
+        // Contempla los casos donde el cliente pierde la conexion al enviar un comando
+        if (hiloConexionCliente->isActivo()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+            hiloConexionCliente->cerrarConexion();
+        }
+
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
             if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
-
-            if (manager->terminoJuego()) {
-                l->info("Finalizo el juego.");
-                exit(1);
-            }
         }
-        l->error("Se interrumpio el juego: " + std::string(exc.what()));
-        l->error("Reiniciando...");
-        reiniciarInstanciaHilo();
-        play(configuracion, ip_address, port);
+        if (manager->terminoJuego()) {
+            l->info("Finalizo el juego.");
+        } else {
+            l->error("Se interrumpio el juego: " + std::string(exc.what()));
+            l->error("Reiniciando...");
+            reiniciarInstanciaHilo();
+            play(configuracion, ip_address, port, true);
+            return;
+        }
     }
 
     hiloConexionCliente->cerrarConexion();
