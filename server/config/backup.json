@@ -1,10 +1,10 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error",
-         "std_out": true
+         "nivel": "info",
+         "std_out": false
       },
-      "cantidadJugadores": 2,
+      "cantidadJugadores": 4,
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",
@@ -24,7 +24,7 @@
                "clase2": 2
             },
             "velocidad": 3,
-            "largo": 200
+            "largo": 500
          },
          {
             "archivoFondos": "fondos/fondos3.json",
@@ -34,7 +34,7 @@
                "clase2": 2
             },
             "velocidad": 3,
-            "largo": 200
+            "largo": 500
          }
       ],
       "usuarios": {

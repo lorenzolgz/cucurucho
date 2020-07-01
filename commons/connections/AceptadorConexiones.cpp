@@ -50,7 +50,7 @@ void AceptadorConexiones::escuchar() {
 	// addrlen -> size of the sockaddr_in structure
 	// bind() assigns the address specified by addr to the socket referred to by the file descriptor sockfd.
 	if (bind(this->server_socket, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		l->error("Bind del puerto fallo: " + std::string(strerror(errno)));
+		l->error("Bind del puerto fallo: " + (errno != 0 ? std::string(strerror(errno)) : ""));
 		exit(1);
 	}
 	l->info("Bind finalizado");
@@ -62,7 +62,7 @@ void AceptadorConexiones::escuchar() {
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
 	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
 	if (listen(this->server_socket, 100) < 0) {
-		l->error("Listen fallo: " + std::string(strerror(errno)));
+		l->error("Listen fallo: " + (errno != 0 ? std::string(strerror(errno)) : ""));
 		exit(1);
 	}
 	l->info("Escuchando puerto: " + std::to_string(port) + " Esperando conexiones...");
@@ -80,8 +80,8 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// addrlen -> size of sockaddr structure for the CLIENT.
 	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
-		l->info("Accept fallo (" + std::to_string(client_socket) + "): " + std::string(strerror(errno)));
-		throw AceptarConexionExcepcion();
+		l->debug("Accept fallo (" + std::to_string(client_socket) + "): " + (errno != 0 ? std::string(strerror(errno)) : ""));
+		return nullptr;
 	}
 
 	return new ConexionServidor(client_socket);
@@ -91,6 +91,28 @@ void AceptadorConexiones::dejarDeEscuchar() {
 	close(this->server_socket);
 }
 
-void AceptadorConexiones::xxx() {
-	shutdown(this->server_socket, SHUT_RDWR);
+void AceptadorConexiones::shutdownSocket() {
+    shutdown(this->server_socket, SHUT_RDWR);
+}
+
+void AceptadorConexiones::desbloquearAccept() {
+	int opts = fcntl(this->server_socket, F_GETFL);
+	if (opts < 0) {
+		l->error("Error al obtener opciones del socket: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+	}
+	opts |= O_NONBLOCK;
+	if (fcntl(this->server_socket, F_SETFL, opts) < 0) {
+        l->error("Error al desbloquear accept: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+	}
+}
+
+void AceptadorConexiones::bloquearAccept() {
+    int opts = fcntl(this->server_socket, F_GETFL);
+    if (opts < 0) {
+        l->error("Error al obtener opciones del socket: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+    }
+    opts &= (~O_NONBLOCK);
+    if (fcntl(this->server_socket, F_SETFL, opts) < 0) {
+        l->error("Error al bloquear accept: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+    }
 }

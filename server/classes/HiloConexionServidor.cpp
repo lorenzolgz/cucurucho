@@ -13,6 +13,7 @@ HiloConexionServidor::HiloConexionServidor(ConexionServidor *conexionServidor, i
 
 void HiloConexionServidor::run() {
 	l->info("Comenzando a correr HiloConexionServidor.");
+	this->conexionServidor->enableTimeout();
 
 	try{
         while (continuarLoopeando || !colaEnviadora->empty()) {
@@ -22,17 +23,19 @@ void HiloConexionServidor::run() {
 
             while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
                 nlohmann::json json = colaEnviadora->pop();
-                // Solo se deberian matar los mensajes de ESTADO_TICK
-                if (json["tipoMensaje"] != ESTADO_TICK) {
+                // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
+                // TODO: quiero llorar
+                if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
                     colaEnviadora->push_back(json);
                     break;
                 }
+                l->debug("desencolandoMensaje " + json.dump());
             }
 
             if (!colaEnviadora->empty()) {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
                 conexionServidor->enviarMensaje(mensajeAEnviar);
+                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
             }
         }
     } catch (...) { // !!!!! catcheo y logueo

@@ -67,7 +67,6 @@ void TituloVista::nuevaParticula() {
     Vector velocidad = Vector(velocidadEscalar * cos(angulo), velocidadEscalar * sin(angulo));
     auto* particula = new TituloParticula(Vector(ancho / 2, alto / 2), velocidad);
     particulas.insert(particula);
-    l->debug("Insertando nueva particula con velocidad " + velocidad.getVector());
 }
 
 void TituloVista::renderParticulas() {
@@ -76,7 +75,6 @@ void TituloVista::renderParticulas() {
     for (auto it = particulas.begin(); it != particulas.end(); ) {
         (*it)->render(gRenderer, texturaParticulas);
         if ((*it)->fueraDePantalla(ancho, alto)) {
-            l->debug("Eliminando particula en posicion " + (*it)->getPosicion().getVector());
             it = particulas.erase(it);
         } else {
             ++it;
@@ -129,7 +127,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
 
     TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
-    
+
     if (conexionPerdida) {
         TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
     }
@@ -158,6 +156,8 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
 
 void
 TituloVista::render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario) {
+    SDL_Rect posCampo = { 0, 0, ancho, alto };
+    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
     renderParticulas();
     renderTitulo();
     renderInfo(estado, estadoLogin);

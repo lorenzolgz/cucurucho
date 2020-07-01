@@ -28,7 +28,7 @@ void Nivel::tick() {
 bool Nivel::termino() {
 	bool verificacionPosicion = campo->verificarPosicionNivel();
 	if (verificacionPosicion) {
-		l->debug("Termina el nivel? Evidentemente si.");
+		l->debug("Fin de nivel.");
 	}
 
 	return verificacionPosicion;

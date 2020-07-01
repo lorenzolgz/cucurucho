@@ -69,3 +69,11 @@ int ConexionServidor::getClientSocket() const {
 void ConexionServidor::setClientSocket(int clientSocket) {
     client_socket = clientSocket;
 }
+
+void ConexionServidor::enableTimeout() {
+    struct timeval tv;
+    tv.tv_sec = TIMEOUT_MENSAJES;
+    tv.tv_usec = 0;
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv) >= 0);
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof tv) >= 0);
+}

@@ -13,28 +13,39 @@ HiloAceptadorConexiones::HiloAceptadorConexiones(int puerto, Configuracion* conf
 void HiloAceptadorConexiones::run() {
 
     aceptadorConexiones->escuchar();
+    aceptadorConexiones->desbloquearAccept();
 
     std::list<ConexionServidor*>* conexionesServidores = new std::list<ConexionServidor*>();
 
+    l->info("Esperando usuario(s)");
     while (conexionesServidores->size() < config->getCantidadJugadores()) { // Usuario != usuarioPerdido
-        l->info("Esperando usuario(s)");
         auto* conexionServidor = aceptadorConexiones->aceptarConexion();
         ControladorDeSesiones* controladorDeSesiones = new ControladorDeSesiones(conexionServidor, conexionesServidores,
 																				 config->getUsuarios(),
 																				 conexionesServidores->size() + 1,
 																				 false);
         if (!controladorDeSesiones->iniciarSesion()) { // Si entró un usuario no registrado
-            continue;
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        } else {
+            conexionesServidores->push_back(conexionServidor);
+            l->info("Usuario " + std::to_string(conexionesServidores->size()) + " conectado");
         }
-        conexionesServidores->push_back(conexionServidor);
         notificarEstadoConexion(conexionesServidores, LOGIN_ESPERAR);
-        l->info("Usuario " + std::to_string(conexionesServidores->size()) + " conectado");
-    }
-    l->info("Todos los usuarios fueron aceptados");
-    notificarEstadoConexion(conexionesServidores, LOGIN_COMENZAR);
 
-    // TODO: Pre-procesamiento?
-    std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
+        if (conexionesServidores->size() == config->getCantidadJugadores()) {
+            l->info("Todos los usuarios fueron aceptados");
+            notificarEstadoConexion(conexionesServidores, LOGIN_COMENZAR);
+
+            std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_LOGIN_FIN));
+            notificarEstadoConexion(conexionesServidores, LOGIN_COMENZAR);
+            if (conexionesServidores->size() == config->getCantidadJugadores()) {
+                break;
+            } else {
+                notificarEstadoConexion(conexionesServidores, LOGIN_ESPERAR);
+            }
+        }
+    }
+
     notificarEstadoConexion(conexionesServidores, LOGIN_FIN);
 
     this->hilosConexionesServidores = crearHilosConexionesServidores(conexionesServidores);
@@ -44,6 +55,7 @@ void HiloAceptadorConexiones::run() {
     hiloOrquestadorPartida->start();
 
     try {
+        aceptadorConexiones->bloquearAccept();
 		aceptarPosiblesReconexiones(hiloOrquestadorPartida);
     }
     catch (const std::exception &e) {
@@ -66,6 +78,7 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
 		ConexionServidor* conexionServidor;
     	try {
 			conexionServidor = aceptadorConexiones->aceptarConexion();
+			if (conexionServidor == nullptr) throw ConexionExcepcion(); // TODO: si perdon
 		} catch (const AceptarConexionExcepcion &ace) {
     		// Esto se necesita porque cuando termina la partida, la solucion para que deje de aceptar es que
     		// se cierre violentamente el socket aceptador.

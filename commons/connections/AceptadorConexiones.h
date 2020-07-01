@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <iostream>
 #include "ConexionServidor.h"
+#include <fcntl.h>
 
 
 class AceptadorConexiones {
@@ -16,11 +17,14 @@ public:
 	void escuchar();
 	ConexionServidor* aceptarConexion();
 	void dejarDeEscuchar();
-	void xxx();
+	void shutdownSocket();
+	void desbloquearAccept();
+	void bloquearAccept();
 
 private:
 	int port;
 	int server_socket;
+
 };
 
 

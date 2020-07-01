@@ -37,8 +37,9 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
             if (!colaMensajes->empty()) {
                 while (colaMensajes->size() > configuracion->getMaxCola()){
                     nlohmann::json json = colaMensajes->pop();
-                    // Solo se deberian matar los mensajes de ESTADO_TICK
-                    if (json["tipoMensaje"] != ESTADO_TICK) {
+                    // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
+                    // TODO: quiero llorar
+                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
                         colaMensajes->push_back(json);
                         break;
                     }
@@ -66,11 +67,22 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
         }
 
     } catch (std::exception& exc) {
+
+        // TODO: Parche para cuando no se cierra el cliente cuando termina el juego
+        // Contempla los casos donde el cliente pierde la conexion al enviar un comando
+        if (hiloConexionCliente->isActivo()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+            hiloConexionCliente->cerrarConexion();
+        }
+
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
+            l->debug("ERROR DE CONEXION: desencolando " + instruccion.dump());
             if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
         }
+
         if (manager->terminoJuego()) {
+            renderLoop();
             l->info("Finalizo el juego.");
         } else {
             l->error("Se interrumpio el juego: " + std::string(exc.what()));
@@ -142,6 +154,10 @@ void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
 void Partida::conexionLoop(const Uint8 *currentKeyStates) {
+
+    if (estadoLogin.nroJugador > 0 && !hiloConexionCliente->isActivo()) {
+        throw ConexionExcepcion();
+    }
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 

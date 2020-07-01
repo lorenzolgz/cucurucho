@@ -31,6 +31,8 @@ public:
 
     void setClientSocket(int clientSocket);
 
+    void enableTimeout();
+
 private:
 	int client_socket;
 	std::string usuario;
