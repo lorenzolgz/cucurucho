@@ -12,16 +12,15 @@
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
         : informacionNivel(infoNivel), nivelActual(nivelActual), alto(alto), ancho(ancho) {
     hud = HudVista();
-    posX = 0;
+    velocidadNivel = 0;
     campoVista = nullptr;
     enemigo1Vista = Enemigo1Vista();
     enemigo2Vista = Enemigo2Vista();
     primerNivel = true;
 
-    jugadores.push_back(new JugadorVista(COLORES_AZUL));
-    jugadores.push_back(new JugadorVista(COLORES_ROJO));
-    jugadores.push_back(new JugadorVista(COLORES_ROSA));
-    jugadores.push_back(new JugadorVista(COLORES_TURQUESA));
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+        jugadores.push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
+    }
 
 }
 
@@ -36,7 +35,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	    }
         return;
 	} // TODO patch para race conditions
-	campoVista->render();
+    campoVista->render(estadoTick);
 
     renderEnemigos(estadoTick.estadosEnemigos);
 
@@ -47,8 +46,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 }
 
 
-void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
-    if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel) {
+void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, EstadoTick tick) {
+    if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel && tick.numeroNivel >= 0) {
         return;
     }
 
@@ -62,16 +61,16 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
 
     ManagerVista::informacionNivel = informacionNivel;
 
-    campoVista = new CampoVista();
-    for (InformacionFondo & f : informacionNivel.informacionFondo) {
+    velocidadNivel = informacionNivel.velocidad;
+    campoVista = new CampoVista(velocidadNivel, informacionNivel.numeroNivel);
+
+    for (InformacionFondo f : informacionNivel.informacionFondo) {
     	// Continuar si se cuenta con menos fondos que MAX_FONDOS(constante fija para pasar mensaje)
         if (f.pFondo[0] == '\0') {
         	continue;
         }
-        campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad, &posX);
+        campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
-
-    posX = informacionNivel.velocidad;
 }
 
 
@@ -80,18 +79,17 @@ void ManagerVista::renderNivelIntermedio() {
 }
 
 
-void ManagerVista::renderEnemigos(EstadoEnemigo *estadosEnemigos) {
+void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
     int n = 0;
-    // TODO: Sacar limite enemigos
-    while (n < MAX_ENEMIGOS && estadosEnemigos[++n].clase != 0);
 
-    for (int i = 0; i < n; i++) {
-        switch (estadosEnemigos[i].clase) {
+
+    for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
+        switch (estadoEnemigo.clase) {
             case 1:
-                enemigo1Vista.render(estadosEnemigos[i]);
+                enemigo1Vista.render(estadoEnemigo);
                 break;
             case 2:
-                enemigo2Vista.render(estadosEnemigos[i]);
+                enemigo2Vista.render(estadoEnemigo);
         }
     }
 }
@@ -139,10 +137,10 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
 }
 
 
-void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto) {
+void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores) {
     Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
     Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-    Vector distancia_y = Vector(0, alto / 7);
+    Vector distancia_y = Vector(0, alto * 7 / 12) / cantJugadores;
     struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + (distancia_y * indice));
 
     if (strlen(nombre) > 0) {
@@ -156,10 +154,9 @@ void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int 
 
 
 void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
-    renderEsperaJugador(jugadores[0], estadoLogin.jugador1, 0, TEXTO_COLOR_AZUL);
-    renderEsperaJugador(jugadores[1], estadoLogin.jugador2, 1, TEXTO_COLOR_ROJO);
-    renderEsperaJugador(jugadores[2], estadoLogin.jugador3, 2, TEXTO_COLOR_ROSA);
-    renderEsperaJugador(jugadores[3], estadoLogin.jugador4, 3, TEXTO_COLOR_TURQUESA);
+    for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
+        renderEsperaJugador(jugadores[i], estadoLogin.jugadores[i], i, i + 1, estadoLogin.cantidadJugadores);
+    }
 
     if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
         TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);

@@ -9,11 +9,13 @@ public:
 	Partida(Configuracion* config);
 	void tick(struct Comando comandos[]);
     EstadoInternoNivel state(struct InformacionNivel* informacionNivel);
+    bool termino();
 
 private:
 	int nuevoNivel;
 	std::map<int, Jugador*> jugadores;
 	ManagerNiveles* managerNiveles;
+    int nivel;
 };
 
 

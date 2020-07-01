@@ -54,42 +54,6 @@ void parsearResolucion(const Json::Value &root, int &anchoPantalla, int &altoPan
 	altoPantalla = PANTALLA_ALTO;
 	escala = PANTALLA_ESCALA;
 	return;
-
-	try {
-		Json::Value resolucionJson = root["resolucion"];
-		altoPantalla = resolucionJson["alto"].asInt64();
-		anchoPantalla = resolucionJson["ancho"].asInt64();
-		escala = resolucionJson["escala"].asInt64();
-
-		if (!altoPantalla) {
-			l->error("No se halló un alto de pantalla");
-			throw std::exception();
-		}
-		if (altoPantalla < 100) {
-			l->error("Se intento setear un tamaño de pantalla muy pequeño");
-			throw std::exception();
-		}
-		if (!anchoPantalla){
-			l->error("No se halló un ancho de pantalla");
-			throw std::exception();
-		}
-		if (anchoPantalla < 100){
-			l->error("Intento setearse un ancho de pantalla muy pequeño");
-			throw std::exception();
-		}
-		if (!escala){
-			l->error("No se halló una escala de pantalla");
-			throw std::exception();
-		}
-		if (escala < 0){
-			l->error("Intento setearse una escala de pantalla negativa");
-			throw std::exception();
-		}
-	}
-	catch(const std::exception& exc) {
-		l->error("Ocurrio un error al cargar la resolucion de pantalla");
-		throw exc;
-	}
 }
 
 int ConfiguracionParser::parsearCantidadJugadores(Json::Value cantidadJson) {
@@ -97,7 +61,7 @@ int ConfiguracionParser::parsearCantidadJugadores(Json::Value cantidadJson) {
         validarJsonNoNulo(cantidadJson, "Cantidad de jugadores");
         validarJsonGenerico(!cantidadJson.isNumeric(), "La cantidad de jugadores no es numerica");
         validarJsonGenerico(cantidadJson.asInt() < 1, "La cantidad de jugadores es menor a 1");
-        validarJsonGenerico(cantidadJson.asInt() > 4, "La cantidad de jugadores es mayor a 4");
+        validarJsonGenerico(cantidadJson.asInt() > MAX_JUGADORES, "La cantidad de jugadores es mayor a " + std::to_string(MAX_JUGADORES));
         return cantidadJson.asInt();
     } catch(const std::exception& exc) {
         l->error("Ocurrio un error al cargar la cantidad de jugadores");
@@ -262,11 +226,52 @@ std::list<NivelConfiguracion*> ConfiguracionParser::parsearNiveles(Json::Value n
 	}
 }
 
+UsuariosConfiguracion *ConfiguracionParser::parsearUsuarios(Json::Value root) {
+    UsuariosConfiguracion* usuariosConfiguracion = new UsuariosConfiguracion();
+    try {
+        if (root["usuarios"].isNull()) {
+            l->error("No se encontraron usuarios");
+            throw std::exception();
+        }
+        for (Json::Value::const_iterator itr = root["usuarios"].begin() ; itr != root["usuarios"].end() ; itr++) {
+            usuariosConfiguracion->nuevoUsuario(itr.key().asString(), itr->asString());
+        }
+    }
+    catch(const std::exception& exc) {
+        l->error("Error al parsear los usuarios");
+        throw exc;
+    }
+    return usuariosConfiguracion;
+}
+
+
+// Estos parametros son opcionales. Si no existen en el JSON o son invalidos no deberian romper la configuracion
+void parsearParametrosConexion(Json::Value root, int& maxColaEmisora, int& maxColaReceptora) {
+    maxColaEmisora = MAX_COLA_EMISORA_SERVIDOR;
+    maxColaReceptora = MAX_COLA_RECEPTORA_SERVIDOR;
+    try {
+        if (root["conexion"]["maxColaEmisora"].asInt() >= 1) {
+            maxColaEmisora = root["conexion"]["maxColaEmisora"].asInt();
+        }
+        if (root["conexion"]["maxColaEmisora"].asInt() >= 1) {
+            maxColaReceptora = root["conexion"]["maxColaReceptora"].asInt();
+        }
+    }
+    catch(const std::exception& exc) {
+        l->debug("Ocurrio un error al obtener la cantidad maxima de elementos para la cola. Usando valor de defecto.");
+    }
+}
+
+
 Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonConfig){
+    if (rutaJsonConfig.empty()) {
+        throw std::exception();
+    }
+
 	Json::Value jsonConfig;
 	std::ifstream archivo(rutaJsonConfig);
 	if (archivo.fail()){
-		l->error(rutaJsonConfig +=  " no direcciona estadosEnemigos un archivo JSON de configuracion");
+		l->error(rutaJsonConfig +=  " no direcciona a un archivo JSON de configuracion");
 		throw std::exception();
 	}
 
@@ -302,7 +307,13 @@ Configuracion* ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCon
 	nivelLog = parsearNivelLog(configuracionJson);
 	niveles = parsearNiveles(configuracionJson["niveles"]);
 
-    this->std_out = configuracionJson["log"]["std_out"].asBool();
+    bool std_out = configuracionJson["log"]["std_out"].asBool();
 
-	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles, cantidadJugadores);
+    UsuariosConfiguracion* usuariosConfiguracion = parsearUsuarios(configuracionJson);
+
+    int maxColaEmisora, maxColaReceptora;
+    parsearParametrosConexion(configuracionJson, maxColaEmisora, maxColaReceptora);
+
+	return new Configuracion(altoPantalla, anchoPantalla, escala, nivelLog, niveles, cantidadJugadores, std_out,
+                             maxColaEmisora, maxColaReceptora, usuariosConfiguracion);
 }

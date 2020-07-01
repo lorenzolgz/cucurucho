@@ -18,5 +18,5 @@ FondoVista* NivelIntermedioVista::nuevoFondo(const std::string &fileName) {
 }
 
 void NivelIntermedioVista::render() {
-    fondo->render();
+    fondo->render(0);
 }

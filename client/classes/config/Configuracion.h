@@ -10,12 +10,19 @@
 
 class Configuracion {
 public:
-    Configuracion(std::string nivelLog);
+    Configuracion(std::string nivelLog, bool b, int i);
 
     std::string getNivelLog();
 
+    bool isStdOut() const;
+
+    int getMaxCola() const;
+
+
 private:
     std::string nivelLog;
+    bool std_out;
+    int maxCola;
 };
 
 

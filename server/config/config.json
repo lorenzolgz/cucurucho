@@ -2,7 +2,11 @@
    "configuracion": {
       "log": {
          "nivel": "info",
-         "std_out": true
+         "std_out": false
+      },
+      "conexion": {
+         "maxColaEmisora": 4,
+         "maxColaReceptora": 3
       },
       "cantidadJugadores": 4,
       "niveles": [
@@ -14,7 +18,7 @@
                "clase2": 75
             },
             "velocidad": 2,
-            "largo": 30000
+            "largo": 20000
          },
          {
             "archivoFondos": "fondos/fondos2.json",
@@ -24,7 +28,7 @@
                "clase2": 45
             },
             "velocidad": 3,
-            "largo": 48000
+            "largo": 25000
          },
          {
             "archivoFondos": "fondos/fondos4.json",
@@ -34,8 +38,15 @@
                "clase2": 90
             },
             "velocidad": 3.5,
-            "largo": 43000
+            "largo": 25000
          }
-      ]
+      ],
+      "usuarios": {
+         "cami": "dvorkin",
+         "ailu": "garcia",
+         "lolo": "gimenez",
+         "rodri": "souto",
+         "javi": "di santo"
+      }
    }
 }

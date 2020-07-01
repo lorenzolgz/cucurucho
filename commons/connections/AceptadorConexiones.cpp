@@ -1,5 +1,6 @@
 #include "AceptadorConexiones.h"
 #include "../utils/Log.h"
+#include "AceptarConexionExcepcion.h"
 
 AceptadorConexiones::AceptadorConexiones(int port) {
 	AceptadorConexiones::port = port;
@@ -18,6 +19,12 @@ void AceptadorConexiones::escuchar() {
 	    l->error("Error al crear socket");
 		exit(1);
 	}
+
+	// Set SO_REUSEADDR
+	// This means the port will be immediately available after the server closes,
+	// regardless of remaining open connections.
+	int yes = 1;
+	assert(setsockopt(this->server_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) >= 0);
 	//------------------------
 
 	// Prepare the sockaddr_in structure
@@ -43,7 +50,7 @@ void AceptadorConexiones::escuchar() {
 	// addrlen -> size of the sockaddr_in structure
 	// bind() assigns the address specified by addr to the socket referred to by the file descriptor sockfd.
 	if (bind(this->server_socket, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		l->error("Bind del puerto fallo: " + std::string(strerror(errno)));
+		l->error("Bind del puerto fallo: " + (errno != 0 ? std::string(strerror(errno)) : ""));
 		exit(1);
 	}
 	l->info("Bind finalizado");
@@ -55,7 +62,7 @@ void AceptadorConexiones::escuchar() {
 	// backlog-> The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
 	// listen() marks the socket referred to by sockfd as estadosEnemigos passive socket, that is, as estadosEnemigos socket that will be used to accept incoming connection requests using accept();
 	if (listen(this->server_socket, 100) < 0) {
-		l->error("Listen fallo: " + std::string(strerror(errno)));
+		l->error("Listen fallo: " + (errno != 0 ? std::string(strerror(errno)) : ""));
 		exit(1);
 	}
 	l->info("Escuchando puerto: " + std::to_string(port) + " Esperando conexiones...");
@@ -73,31 +80,39 @@ ConexionServidor *AceptadorConexiones::aceptarConexion() {
 	// addrlen -> size of sockaddr structure for the CLIENT.
 	int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
 	if (client_socket < 0) {
-		l->error("Accept fallo (" + std::to_string(client_socket) + "): " + std::string(strerror(errno)));
+		l->debug("Accept fallo (" + std::to_string(client_socket) + "): " + (errno != 0 ? std::string(strerror(errno)) : ""));
 		return nullptr;
 	}
 
 	return new ConexionServidor(client_socket);
 }
 
-ConexionServidor *AceptadorConexiones::reconectar(int broken_socket) {
-    struct sockaddr_in client_addr;
-    int client_addrlen = sizeof client_addr;
-
-    close(broken_socket);
-
-    // Accept incoming connection from estadosEnemigos client
-    // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-    // sockfd -> socket that has been created with socket(), bound to estadosEnemigos local address with bind(), and is listening for connections after estadosEnemigos listen()
-    // addr -> pointer to estadosEnemigos sockaddr structure for the CLIENT.
-    // addrlen -> size of sockaddr structure for the CLIENT.
-    int client_socket = accept(this->server_socket, (struct sockaddr *) &client_addr, (socklen_t *) &client_addrlen);
-    if (client_socket < 0) {
-        l->error("Accept fallo: " + std::string(strerror(errno)));
-    }
-    return new ConexionServidor(client_socket);
-}
-
 void AceptadorConexiones::dejarDeEscuchar() {
 	close(this->server_socket);
+}
+
+void AceptadorConexiones::shutdownSocket() {
+    shutdown(this->server_socket, SHUT_RDWR);
+}
+
+void AceptadorConexiones::desbloquearAccept() {
+	int opts = fcntl(this->server_socket, F_GETFL);
+	if (opts < 0) {
+		l->error("Error al obtener opciones del socket: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+	}
+	opts |= O_NONBLOCK;
+	if (fcntl(this->server_socket, F_SETFL, opts) < 0) {
+        l->error("Error al desbloquear accept: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+	}
+}
+
+void AceptadorConexiones::bloquearAccept() {
+    int opts = fcntl(this->server_socket, F_GETFL);
+    if (opts < 0) {
+        l->error("Error al obtener opciones del socket: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+    }
+    opts &= (~O_NONBLOCK);
+    if (fcntl(this->server_socket, F_SETFL, opts) < 0) {
+        l->error("Error al bloquear accept: " + (errno != 0 ? std::string(strerror(errno)) : ""));
+    }
 }

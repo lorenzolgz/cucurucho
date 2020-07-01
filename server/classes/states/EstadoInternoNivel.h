@@ -8,6 +8,7 @@ class EstadoInternoNivel {
 public:
 	int nuevoNivel;
 	EstadoInternoCampoMovil estadoCampoMovil;
+    int nivel;
 };
 
 

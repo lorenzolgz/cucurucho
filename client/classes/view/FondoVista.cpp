@@ -11,7 +11,7 @@
 #include "../../../commons/utils/Constantes.h"
 
 
-FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad, float* velocidadNivelX) {
+FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) {
 	FondoVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	textura = generadorDeTexturas->generarTextura(fileName);
@@ -26,23 +26,13 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
 	FondoVista::x1 = PANTALLA_ANCHO / 2 - (float) width / 2;
 	FondoVista::x2 = x1 + width;
 	FondoVista::modVelocidad = modVelocidad;
-	FondoVista::velocidadNivelX = velocidadNivelX;
 }
 
-FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) :
-    FondoVista(fileName, xOffset, y, modVelocidad, nullptr){
-}
-
-
-void FondoVista::render() {
+void FondoVista::render(float posX) {
     float velocidad;
-    if (velocidadNivelX) {
-        velocidad = modVelocidad * (*velocidadNivelX);
-    } else {
-        velocidad = 0;
-    }
-    SDL_Rect dstrect1 = calcularCoords(&x1, y, width, height, velocidad, xOffset);
-    SDL_Rect dstrect2 = calcularCoords(&x2, y, width, height, velocidad, xOffset);
+    velocidad = (int) (modVelocidad * posX) % width;
+    SDL_Rect dstrect1 = calcularCoords(x1, y, width, height, velocidad, xOffset);
+    SDL_Rect dstrect2 = calcularCoords(x2, y, width, height, velocidad, xOffset);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect1);
     SDL_RenderCopy(gRenderer, textura, nullptr, &dstrect2);
 }
@@ -63,15 +53,15 @@ int FondoVista::getHeight() const {
  * Calcula las nuevas coordenadas del fondo. Si llegó al borde de la pantalla,
  * la envia nuevamente al otro lado.
  */
-SDL_Rect FondoVista::calcularCoords(float* x, int y, int width, int height, float speed, float xOffset) {
-	*x -= speed;
-	if (*x + (float) width < xOffset) {
-		*x += (float) width * 2;
+SDL_Rect FondoVista::calcularCoords(float x, int y, int width, int height, float speed, float xOffset) {
+	x -= speed;
+	if (x + (float) width < xOffset) {
+		x += (float) width * 2;
 	}
 
-	if (*x - (float) width > xOffset) {
-		*x -= (float) width * 2;
+	if (x - (float) width > xOffset) {
+		x -= (float) width * 2;
 	}
 
-	return { (int) *x - (int) xOffset, y, width, height };
+	return { (int) x - (int) xOffset, y, width, height };
 }

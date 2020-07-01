@@ -17,6 +17,9 @@ void HiloConexionCliente::run() {
     activo = true;
 	l->info("Comenzando a correr HiloConexionCliente");
     conexionCliente = iniciadorComunicacion->conectar();
+    if (conexionCliente != nullptr) {
+        conexionCliente->enableTimeout();
+    }
 
     try {
         while (activo && conexionCliente != nullptr) {

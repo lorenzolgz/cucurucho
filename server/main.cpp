@@ -13,10 +13,8 @@
 Log* l;
 
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out);
+Configuracion* parsearConfiguracion(std::string archivoConfig);
 bool validarParametroSimple(int argc, char *argv[], std::string parametro, int posArg);
-std::list<HiloConexionServidor*>* crearHilosConexionesServidores(std::list<ConexionServidor*>* conexiones,
-                                                                 AceptadorConexiones* aceptadorConexiones);
 
 
 int main(int argc , char *argv[]) {
@@ -66,18 +64,16 @@ int main(int argc , char *argv[]) {
 
     l = new Log("server");
 
-    bool std_out;
-
-    Configuracion* config = parsearConfiguracion(archivoConfig, std_out);
+    Configuracion* config = parsearConfiguracion(archivoConfig);
     if (nivelLog == "") nivelLog = config->getNivelLog();
-    l->set_stdout(std_out);
+    l->set_stdout(config->isStdOut());
     l->setConf(nivelLog);
     l->info("Iniciando el conexionServidor.");
 
     return esperarConexiones(port, config);
 }
 
-Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
+Configuracion* parsearConfiguracion(std::string archivoConfig) {
     ConfiguracionParser configuracionParser;
     Configuracion* config;
 
@@ -94,11 +90,10 @@ Configuracion* parsearConfiguracion(std::string archivoConfig, bool &std_out) {
         catch (const std::exception& exc) {
             l->error("Ocurrio un error al leer el archivo de configuración de backup, no puede configurarse el juego");
             // Throw exception corta por completo la ejecucion del codigo
-            throw exc;
+            exit(1);
         }
     }
 
-    std_out = configuracionParser.std_out;
     return config;
 }
 

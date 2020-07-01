@@ -13,13 +13,15 @@ ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> ju
     alto = config->getAltoPantalla();
     ManagerNiveles::jugadores = jugadores;
 
-    ManagerNiveles::listNiveles = config->getNiveles();
+    ManagerNiveles::nivelesConfiguracion = config->getNiveles();
     ManagerNiveles::nivelActual = configurarNuevoNivel();
-    ManagerNiveles::nuevoNivel = 1;
+	ManagerNiveles::nuevoNivel = 1;
+	ManagerNiveles::cantidadNivelesTerminados = 0;
+	ManagerNiveles::totalNiveles = nivelesConfiguracion.size();
 }
 
 Nivel* ManagerNiveles::configurarNuevoNivel() {
-	NivelConfiguracion *nivelConfActual = listNiveles.front();
+	NivelConfiguracion *nivelConfActual = nivelesConfiguracion.front();
 
     std::map<int, Jugador*>::iterator it;
     int pos = 1;
@@ -42,39 +44,47 @@ void ManagerNiveles::tick() {
 
 bool ManagerNiveles::terminoNivelActual() {
     nuevoNivel = nivelActual->termino();
+
+    if (nuevoNivel) {
+    	cantidadNivelesTerminados = cantidadNivelesTerminados +	 1;
+    }
+
     return nuevoNivel;
 }
 
 void ManagerNiveles::pasajeDeNivel(){
-    NivelConfiguracion* nivel = listNiveles.front();
+    NivelConfiguracion* nivel = nivelesConfiguracion.front();
 
     NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
     nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
     nivelActual = configurarNuevoNivel();
-    listNiveles.pop_front();
+    nivelesConfiguracion.pop_front();
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {
 	if (nuevoNivel) {
 		informacionNivel->numeroNivel++;
-		NivelConfiguracion *nivelConfig = listNiveles.front();
+		NivelConfiguracion *nivelConfig = nivelesConfiguracion.front();
 		if (nivelConfig == nullptr) return nivelActual->state();
-		int i = 0;
+
+        std::list<InformacionFondo> listaFondo;
 		for (FondoConfiguracion *f : nivelConfig->getFondos()) {
-			informacionNivel->informacionFondo[i].pVelocidad = f->getVelocidad();
-			f->setArchivo(informacionNivel->informacionFondo[i].pFondo);
-			i++;
+			InformacionFondo info;
+		    info.pVelocidad = f->getVelocidad();
+		    f->setArchivo(info.pFondo);
+		    listaFondo.push_back(info);
 		}
-		for (i; i < MAX_FONDOS; i++) {
-			informacionNivel->informacionFondo[i].pVelocidad = 0;
-			strcpy(&informacionNivel->informacionFondo[i].pFondo[0], "\0");
-		}
+        informacionNivel->informacionFondo = listaFondo;
         informacionNivel->velocidad = nivelConfig->getVelocidad();
 		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
 		pasajeDeNivel();
 	}
     return nivelActual->state();
+}
+
+bool ManagerNiveles::noHayMasNiveles() {
+	return cantidadNivelesTerminados == totalNiveles;
 }
 

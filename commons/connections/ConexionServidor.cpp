@@ -18,15 +18,28 @@ void ConexionServidor::enviarMensaje(nlohmann::json mensaje) {
 void ConexionServidor::enviarEstadoLogin(struct EstadoLogin estadoLogin) {
 	nlohmann::json json;
 
-	// TODO: unificarlo con el enviar estado del main
     json["tipoMensaje"] = ESTADO_LOGIN;
+	json["estadoLogin"] = estadoLogin.estadoLogin;
     json["nroJugador"] = estadoLogin.nroJugador;
-    json["estadoLogin"] = estadoLogin.estadoLogin;
-    json["jugador1"] = "\0";
-    json["jugador2"] = "\0";
-    json["jugador3"] = "\0";
-    json["jugador4"] = "\0";
+    json["cantidadJugadores"] = estadoLogin.cantidadJugadores;
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+	    json["jugadores"][i] = std::string(estadoLogin.jugadores[i]);
+	}
+
     enviarMensaje(json);
+}
+
+// Para enviar el EstadoLogin sin el arreglo de jugadores
+void ConexionServidor::enviarEstadoLoginSimple(int estadoLogin, int nroJugador) {
+    struct EstadoLogin estado{};
+    estado.estadoLogin = estadoLogin;
+    estado.nroJugador = nroJugador;
+    estado.cantidadJugadores = 0;
+    for (auto & jugador : estado.jugadores) {
+        jugador[0] = '\0';
+    }
+
+    enviarEstadoLogin(estado);
 }
 
 void ConexionServidor::cerrar() {
@@ -55,4 +68,12 @@ int ConexionServidor::getClientSocket() const {
 
 void ConexionServidor::setClientSocket(int clientSocket) {
     client_socket = clientSocket;
+}
+
+void ConexionServidor::enableTimeout() {
+    struct timeval tv;
+    tv.tv_sec = TIMEOUT_MENSAJES;
+    tv.tv_usec = 0;
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv) >= 0);
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof tv) >= 0);
 }

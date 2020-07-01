@@ -19,12 +19,13 @@
 #include "view/Titulo.h"
 #include "view/ManagerVista.h"
 #include "ManagerJuego.h"
+#include "config/Configuracion.h"
 
 class Partida {
 public:
     Partida();
 
-    void play(const char *ip_address, int port);
+    void play(Configuracion* configuracion, const char *ip_address, int port, bool conexionPerdida = false);
 
 private:
     Titulo* pantallaPrincipal;
@@ -48,6 +49,8 @@ private:
     void comenzarHilo();
 
     void reiniciarInstanciaHilo();
+
+    void hacks(const Uint8 *currentKeyStates);
 
     void setEstadoTick(nlohmann::json mensaje);
 

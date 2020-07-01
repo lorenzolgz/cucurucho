@@ -27,13 +27,17 @@ enum {
 
 class Titulo {
 public:
-    Titulo(int ancho, int alto);
+    Titulo(int ancho, int alto, bool conexionPerdida);
 
     void tick(std::string input, int estado, bool *validarLogin);
 
     void estaActivada(bool enter);
 
     void getCredenciales(struct Login* login);
+
+    void setAutoCompletar();
+
+    void reiniciarPassword();
 
 private:
     TituloVista* tituloVista;

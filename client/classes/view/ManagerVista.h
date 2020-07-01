@@ -20,7 +20,7 @@ public:
 
     void renderNivelIntermedio();
 
-    void setInformacionNivel(InformacionNivel informacionNivel);
+    void setInformacionNivel(InformacionNivel informacionNivel, EstadoTick tick);
 
 private:
     struct InformacionNivel informacionNivel;
@@ -33,13 +33,13 @@ private:
     bool primerNivel;
     int alto;
     int ancho;
-    float posX;
+    float velocidadNivel;
 
-    void renderEnemigos(EstadoEnemigo pEnemigo[15]);
+    void renderEnemigos(std::list<EstadoEnemigo> pEnemigo);
 
     void renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin);
 
-    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto);
+    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores);
 
     void renderEspera(struct EstadoLogin estadoLogin);
 };

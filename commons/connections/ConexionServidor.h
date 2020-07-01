@@ -16,6 +16,7 @@ public:
 	nlohmann::json recibirMensaje();
 	void enviarMensaje(nlohmann::json mensaje);
 	void enviarEstadoLogin(struct EstadoLogin estadoLogin);
+    void enviarEstadoLoginSimple(int estadoLogin, int nroJugador = -1);
 	void cerrar();
 
     const std::string &getUsuario() const;
@@ -29,6 +30,8 @@ public:
     int getClientSocket() const;
 
     void setClientSocket(int clientSocket);
+
+    void enableTimeout();
 
 private:
 	int client_socket;

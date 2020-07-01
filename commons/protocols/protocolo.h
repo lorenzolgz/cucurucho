@@ -1,18 +1,17 @@
 #ifndef CUCURUCHO_PROTOCOLO_H
 #define CUCURUCHO_PROTOCOLO_H
 
-
-#define MAX_ENEMIGOS 25
-#define MAX_FONDOS 25
+#include <list>
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
 #define LARGO_USERNAME 16
 #define LARGO_PASSWORD 16
+#define TIMEOUT_MENSAJES 4
 
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor
 #define MAX_COLA_CLIENTE 2
-#define MAX_COLA_RECEPTORA_SERVIDOR 2
+#define MAX_COLA_RECEPTORA_SERVIDOR 1
 #define MAX_COLA_EMISORA_SERVIDOR 2
 
 // Codigos Estado Login
@@ -28,10 +27,13 @@
 #define LOGIN_FIN 3
 
 // Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
-#define TIMEOUT_LOGIN_FIN 0
+#define TIMEOUT_LOGIN_FIN 2
 
 // Tiempo de pasaje entre niveles
 #define TIMEOUT_PROXIMO_NIVEL 1
+
+//Fin de Juego
+#define FIN_DE_JUEGO -1
 
 // Tipos de mensajes
 enum {
@@ -81,8 +83,11 @@ struct EstadoEnemigo {
 };
 
 struct EstadoTick {
+    EstadoTick(): posX(0) {}
+    int numeroNivel;
 	int nuevoNivel;
-	EstadoEnemigo estadosEnemigos[MAX_ENEMIGOS];
+	int posX;
+	std::list<EstadoEnemigo> estadosEnemigos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 
@@ -95,16 +100,14 @@ struct InformacionNivel {
 	int numeroNivel;
     float velocidad;
     char informacionFinNivel[LARGO_PATH];
-	InformacionFondo informacionFondo[MAX_FONDOS];
+	std::list<InformacionFondo> informacionFondo;
 };
 
 struct EstadoLogin {
     int nroJugador;
     int estadoLogin;
-    char jugador1[LARGO_USERNAME];
-    char jugador2[LARGO_USERNAME];
-    char jugador3[LARGO_USERNAME];
-    char jugador4[LARGO_USERNAME];
+    int cantidadJugadores;
+    char jugadores[MAX_JUGADORES][LARGO_USERNAME];
 };
 
 

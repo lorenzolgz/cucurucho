@@ -50,11 +50,12 @@ public:
     }
 };
 
-TituloVista::TituloVista(int ancho, int alto) {
+TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::texturaTitulo = GeneradorDeTexturas::getInstance()->generarTextura("title.png");
     TituloVista::texturaParticulas = GeneradorDeTexturas::getInstance()->generarTextura("title_bg.png");
     TituloVista::alto = alto;
     TituloVista::ancho = ancho;
+    TituloVista::conexionPerdida = conexionPerdida;
     TituloVista::contador = 0;
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
@@ -66,7 +67,6 @@ void TituloVista::nuevaParticula() {
     Vector velocidad = Vector(velocidadEscalar * cos(angulo), velocidadEscalar * sin(angulo));
     auto* particula = new TituloParticula(Vector(ancho / 2, alto / 2), velocidad);
     particulas.insert(particula);
-    l->debug("Insertando nueva particula con velocidad " + velocidad.getVector());
 }
 
 void TituloVista::renderParticulas() {
@@ -75,7 +75,6 @@ void TituloVista::renderParticulas() {
     for (auto it = particulas.begin(); it != particulas.end(); ) {
         (*it)->render(gRenderer, texturaParticulas);
         if ((*it)->fueraDePantalla(ancho, alto)) {
-            l->debug("Eliminando particula en posicion " + (*it)->getPosicion().getVector());
             it = particulas.erase(it);
         } else {
             ++it;
@@ -85,8 +84,8 @@ void TituloVista::renderParticulas() {
     contador++;
 }
 
-void TituloVista::renderTextos(bool activada) {
-    if (contador % (120 - (activada * 100)) < 60 - (activada * 50)) {
+void TituloVista::renderTextos(bool activa) {
+    if (contador % (120 - (activa * 100)) < 60 - (activa * 50)) {
         TextoVista::eRender(std::string("PRESS ENTER"), Vector(ancho / 2, alto * 2 / 3), TEXTO_COLOR_AZUL, ALINEACION_CENTRO);
     }
 
@@ -128,6 +127,10 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
 
     TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
+
+    if (conexionPerdida) {
+        TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
+    }
 }
 
 void TituloVista::renderInfo(int estado, int estadoLogin) {
@@ -151,7 +154,10 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
     TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
 }
 
-void TituloVista::render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario) {
+void
+TituloVista::render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario) {
+    SDL_Rect posCampo = { 0, 0, ancho, alto };
+    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
     renderParticulas();
     renderTitulo();
     renderInfo(estado, estadoLogin);

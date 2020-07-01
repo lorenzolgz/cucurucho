@@ -7,23 +7,31 @@
 #include "../../commons/connections/ConexionServidor.h"
 #include "../../commons/ColaBloqueante.h"
 #include "../../commons/connections/AceptadorConexiones.h"
+#include "config/Configuracion.h"
 
 class HiloConexionServidor : public Thread {
 public:
-	HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username, AceptadorConexiones* aceptador);
 	int jugador;
 	bool activo;
 	std::string username;
+	ConexionServidor* conexionServidor;
+
+	HiloConexionServidor(ConexionServidor *conexionServidor, int jugador, std::string username,
+                         Configuracion *pConfiguracion);
+
 	void run() override;
 	void enviarEstadoTick(struct EstadoTick* estadoTick);
 	void enviarInformacionNivel(struct InformacionNivel* header);
-	void cicloReconectar();
-	ConexionServidor* conexionServidor;
+	void terminar();
 	ColaBloqueante<nlohmann::json>* colaReceptora = new ColaBloqueante<nlohmann::json>();
 	ColaBloqueante<nlohmann::json>* colaEnviadora = new ColaBloqueante<nlohmann::json>();
-	// TODO inyectar puerto apropiamente
-	AceptadorConexiones* aceptadorConexiones;
-	InformacionNivel *informacionNivel;
+
+private:
+	InformacionNivel *informacionNivelActual;
+    Configuracion *config;
+	bool continuarLoopeando;
+
+	void cicloReconectar();
 };
 
 

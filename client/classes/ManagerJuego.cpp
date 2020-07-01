@@ -11,17 +11,18 @@ ManagerJuego::ManagerJuego() {
     ManagerJuego::informacionNivel = {0}; // TODO patch para race conditions
     ManagerJuego::managerVista = new ManagerVista({}, 0, PANTALLA_ANCHO, PANTALLA_ALTO);
     ManagerJuego::estadoLogin = {LOGIN_PENDIENTE};
+    ManagerJuego::estadoTick.numeroNivel = 0;
+    ManagerJuego::estadoTick.nuevoNivel = 0;
 }
 
 void ManagerJuego::render(){
-    managerVista->setInformacionNivel(informacionNivel);
+    managerVista->setInformacionNivel(informacionNivel, estadoTick);
     //Render texture to screen
     managerVista->render(estadoTick, estadoLogin, username);
 }
 
-// TODO: che no da
 bool ManagerJuego::terminoJuego() {
-    return informacionNivel.numeroNivel > 3;
+    return estadoTick.nuevoNivel == FIN_DE_JUEGO || estadoTick.numeroNivel == FIN_DE_JUEGO;
 }
 
 // TODO: che tampoco da
@@ -38,6 +39,7 @@ void ManagerJuego::setUsername(const std::string &username) {
 }
 
 void ManagerJuego::setEstadoTick(const EstadoTick &estadoTick) {
+    if (ManagerJuego::estadoTick.numeroNivel == FIN_DE_JUEGO) return;
     ManagerJuego::estadoTick = estadoTick;
 }
 

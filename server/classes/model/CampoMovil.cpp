@@ -71,6 +71,7 @@ EstadoInternoCampoMovil CampoMovil::state() {
 	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
+	estadoCampoMovil.posX = (int) posicion.getX();
 
 	return estadoCampoMovil;
 }

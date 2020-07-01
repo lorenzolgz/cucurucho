@@ -2,7 +2,10 @@
    "configuracion": {
       "log": {
          "nivel": "info",
-         "std_out": false
+         "std_out": true
+      },
+      "conexion": {
+         "maxCola": 4
       }
    }
 }

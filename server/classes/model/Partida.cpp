@@ -9,6 +9,7 @@ Partida::Partida(Configuracion* config) {
 	int anchoPantalla = config->getAnchoPantalla();
 	int altoPantalla = config->getAltoPantalla();
 	Partida::nuevoNivel = 1;
+	Partida::nivel = 1;
 
     //"jugadores" posee los jugadores que estarán en juego
 	for (int i = 0; i < config->getCantidadJugadores(); i++) {
@@ -16,7 +17,6 @@ Partida::Partida(Configuracion* config) {
 	}
 
 	Partida::managerNiveles = new ManagerNiveles(config, jugadores);
-
 }
 
 void Partida::tick(struct Comando comandos[]) {
@@ -32,11 +32,13 @@ void Partida::tick(struct Comando comandos[]) {
     //Render texture to screen
     managerNiveles->tick();
     nuevoNivel = managerNiveles->terminoNivelActual();
+    if (nuevoNivel) nivel++;
 }
 
 EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {
 	EstadoInternoNivel estadoInternoNivel;
 	estadoInternoNivel.nuevoNivel = nuevoNivel;
+	estadoInternoNivel.nivel = nivel;
     estadoInternoNivel.estadoCampoMovil = managerNiveles->state(informacionNivel);
 
 	if (estadoInternoNivel.nuevoNivel) {
@@ -44,4 +46,8 @@ EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {
 	}
 
 	return estadoInternoNivel;
+}
+
+bool Partida::termino() {
+	return managerNiveles->noHayMasNiveles();
 }

@@ -28,6 +28,10 @@ Vector operator*(const Vector &lhs, const double &rhs) {
     return {lhs.x * rhs, lhs.y * rhs};
 }
 
+Vector operator/(const Vector &lhs, const double &rhs) {
+    return {lhs.x / rhs, lhs.y / rhs};
+}
+
 
 double Vector::getX() const {
     return x;

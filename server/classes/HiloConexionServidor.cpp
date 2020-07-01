@@ -1,56 +1,60 @@
 #include "HiloConexionServidor.h"
-#include "../../commons/utils/Log.h"
 #include "../../commons/connections/ControladorDeSesiones.h"
 
-HiloConexionServidor::HiloConexionServidor(ConexionServidor* conexionServidor, int jugador, std::string username, AceptadorConexiones* aceptador) {
+HiloConexionServidor::HiloConexionServidor(ConexionServidor *conexionServidor, int jugador, std::string username,
+                                           Configuracion *config) {
 	this->conexionServidor = conexionServidor;
 	this->jugador = jugador;
 	this->username = username;
 	this->activo = true;
-	this->aceptadorConexiones = aceptador;
+	this->config = config;
+	this->continuarLoopeando = true;
 }
 
-
 void HiloConexionServidor::run() {
-	l->info("Comenzando a correr HiloConexionServidor");
+	l->info("Comenzando a correr HiloConexionServidor.");
+	this->conexionServidor->enableTimeout();
 
 	try{
-        nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-        l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-        colaReceptora->push(mensajeRecibido);
-
-        while (true) {
+        while (continuarLoopeando || !colaEnviadora->empty()) {
             nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
             l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
             colaReceptora->push(mensajeRecibido);
 
-            while (colaEnviadora->size() > MAX_COLA_EMISORA_SERVIDOR) {
+            while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
                 nlohmann::json json = colaEnviadora->pop();
-                // Solo se deberian matar los mensajes de ESTADO_TICK
-                if (json["tipoMensaje"] != ESTADO_TICK) {
+                // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
+                // TODO: quiero llorar
+                if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
                     colaEnviadora->push_back(json);
                     break;
                 }
+                l->debug("desencolandoMensaje " + json.dump());
             }
 
             if (!colaEnviadora->empty()) {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
-                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
                 conexionServidor->enviarMensaje(mensajeAEnviar);
+                l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
             }
         }
-    } catch (...) {
+    } catch (...) { // !!!!! catcheo y logueo
+		l->error("Error en el loop de HiloConexionServidor.");
 	    cicloReconectar();
 	}
+
+	l->info("Se termino el HiloConexionServidor.");
 }
 
 void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 
 	nlohmann::json mensajeJson;
 	mensajeJson["tipoMensaje"] = ESTADO_TICK;
-	mensajeJson["numeroNivel"] = estadoTick->nuevoNivel;
+	mensajeJson["nuevoNivel"] = estadoTick->nuevoNivel;
+	mensajeJson["numeroNivel"] = estadoTick->numeroNivel;
+	mensajeJson["posX"] = estadoTick->posX;
 	int i = 0, j = 0;
-	// TODO enviar solo los enemigos necesarios. Ya no tiene que ser un struct con un array de largo fijo, porque el JSON es dinamico.
+
 	for (; i< MAX_JUGADORES; i++) {
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionX"] = estadoTick->estadosJugadores[i].helper1.posicionX;
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionY"] = estadoTick->estadosJugadores[i].helper1.posicionY;
@@ -62,12 +66,15 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
         mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
     }
-	for (; j< MAX_ENEMIGOS; j++) {
-		mensajeJson["estadosEnemigos"][j]["posicionX"] = estadoTick->estadosEnemigos[j].posicionX;
-		mensajeJson["estadosEnemigos"][j]["posicionY"] = estadoTick->estadosEnemigos[j].posicionY;
-		mensajeJson["estadosEnemigos"][j]["clase"] = estadoTick->estadosEnemigos[j].clase;
-	}
+	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
+        nlohmann::json mensajeFondo= {
+                {"posicionX", estadoEnemigo.posicionX},
+                {"posicionY", estadoEnemigo.posicionY},
+                {"clase", estadoEnemigo.clase}
+        };
+        mensajeJson["estadosEnemigos"].push_back(mensajeFondo);
 
+	}
 	colaEnviadora->push(mensajeJson);
 }
 
@@ -79,36 +86,52 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 			{"velocidad", informacionNivel->velocidad},
 			{"informacionFinNivel",   informacionNivel->informacionFinNivel}
 	};
-	for ( int i = 0 ; i < MAX_FONDOS ; i++ ){
-		mensajeJson["informacionFondo"][i]["velocidad"] = informacionNivel->informacionFondo[i].pVelocidad;
-		mensajeJson["informacionFondo"][i]["fondo"] = informacionNivel->informacionFondo[i].pFondo;
+	for (InformacionFondo informacionFondo: informacionNivel->informacionFondo){
+        nlohmann::json mensajeFondo= {
+                {"velocidad", informacionFondo.pVelocidad},
+                {"fondo", informacionFondo.pFondo}
+        };
+	    mensajeJson["informacionFondo"].push_back(mensajeFondo);
 	}
-
 	colaEnviadora->push(mensajeJson);
 
-    HiloConexionServidor::informacionNivel = informacionNivel;
+	HiloConexionServidor::informacionNivelActual = informacionNivel;
 }
 
 void HiloConexionServidor::cicloReconectar() {
     this->activo = false;
     this->conexionServidor->cerrar();
     this->conexionServidor->setClientSocket(-1);
-    l->info("Cliente " + this->username + " perdio la conexion");
+    l->error("Cliente " + this->username + " perdio la conexion.");
 
     while (this->conexionServidor->getClientSocket() < 0) {
+    	if (!continuarLoopeando) {
+			return;
+    	}
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
 
-    l->info("Cliente " + this->username + " reconectado");
+    l->info("Cliente " + this->username + " reconectado.");
 
     this->activo = true;
-    while (this->colaEnviadora->size() != 0) this->colaEnviadora->pop();
+    while (this->colaEnviadora->size() != 0) {
+    	this->colaEnviadora->pop();
+    }
+
     try {
-        this->enviarInformacionNivel(this->informacionNivel);
+		if (!continuarLoopeando) {
+			return;
+		}
+
+		this->enviarInformacionNivel(this->informacionNivelActual);
     } catch (...) {
         cicloReconectar();
         return;
     }
 
     run();
+}
+
+void HiloConexionServidor::terminar() {
+	continuarLoopeando = false;
 }

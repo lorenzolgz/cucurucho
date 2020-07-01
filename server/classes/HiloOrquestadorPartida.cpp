@@ -1,24 +1,23 @@
 #include "HiloOrquestadorPartida.h"
-#include "../../commons/utils/Log.h"
 #include "HiloConexionServidor.h"
-#include "../../commons/ColaBloqueante.h"
 
 void initializeData(struct EstadoTick* estadoTick);
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *pList);
 int esperarConexiones(int puerto, Configuracion* config);
-Configuracion* parsearConfiguracion();
 
 
-HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config,
-        std::list<HiloConexionServidor*>* hilosConexionesServidores) {
-	this->config = config;
+HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<HiloConexionServidor*>* hilosConexionesServidores, AceptadorConexiones* aceptadorConexiones) {
 	this->partida = new Partida(config);
+	this->config = config;
 	this->hilosConexionesServidores = hilosConexionesServidores;
+	this->aceptadorConexiones = aceptadorConexiones;
+	this->quit = false;
 }
 
 
-void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct Comando *comandos) {
+void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, Comando *comandos,
+                 Configuracion *config) {
     hilosConexionesServidores->reverse();
 
     std::string usuarioPerdido;
@@ -31,7 +30,7 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
                 auto* colaReceptora = hiloConexionServidor->colaReceptora;
                 nlohmann::json mensajeJson;
 
-                while (colaReceptora->size() > MAX_COLA_RECEPTORA_SERVIDOR) {
+                while (colaReceptora->size() > config->getMaxColaReceptora()) {
                     mensajeJson = colaReceptora->pop();
                 }
 
@@ -39,8 +38,9 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
                     mensajeJson = colaReceptora->pop();
 
                     if (mensajeJson["_t"] == COMANDO) {
-                        struct Comando comando = {mensajeJson["nroJugador"], mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
-                        comandos[comando.nroJugador-1] = comando;
+                        int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
+                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        comandos[nroJugador - 1] = comando;
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
                     }
@@ -48,27 +48,18 @@ void receiveData(std::list<HiloConexionServidor*>* hilosConexionesServidores, st
             }
         }
     }
-    catch(...) {
+    catch(const std::exception &e) {
         // TODO: Algo mas para hacer tras eliminar al jugador de la lista y marcarlo como no presente?
-        //l->info("Ocurrio un error al recibir los movimientos de los jugadores");
-        //l->info(excepcion.what());
+        l->error("Ocurrio un error al recibir los movimientos de los jugadores");
+        l->error(e.what());
     }
-
-
-    // !!!! Dejo esta linea aca porque es muy buena
-	/*
-		struct Comando comando = comandos[i];
-		if (comando.arriba || comando.abajo || comando.izquierda || comando.derecha) {
-			huboMovimientos = true;
-			l->error("!!!!! " + std::to_string(comando.nroJugador) + " | " + std::to_string(comando.arriba) + " - " + std::to_string(comando.abajo) + " - " + std::to_string(comando.izquierda) + " - " + std::to_string(comando.derecha));
-			*/
 }
 
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
-	if (*nuevoNivel) {
+    if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
-	if (*nuevoNivel) {
+	if (*nuevoNivel && estadoTick->numeroNivel != FIN_DE_JUEGO) {
 		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
 			hiloConexionServidor->enviarInformacionNivel(informacionNivel);
 		}
@@ -83,12 +74,13 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
 
 void HiloOrquestadorPartida::run() {
 	l->info("Comenzando a correr HiloOrquestadorPartida con " + std::to_string(hilosConexionesServidores->size()) + " jugadores.");
-	bool quit = false;
+	quit = false;
 	struct Comando comandos[hilosConexionesServidores->size()];
 	struct InformacionNivel informacionNivel;
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
 	clock_t t2, t1 = clock();
+	clock_t entreNiveles = clock();
 
 	int commands_count = 0;
 	initializeData(&estadoTick);
@@ -96,6 +88,10 @@ void HiloOrquestadorPartida::run() {
 	informacionNivel.numeroNivel = 0;
 	// Comunicacion inicial.
 	int nuevoNivel = 1;
+
+    for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+        comandos[i] = {0, 0, 0, 0, 0};
+    }
 
 	//keep communicating with client
 	try {
@@ -107,43 +103,77 @@ void HiloOrquestadorPartida::run() {
 				continue;
 			}
 
-			for (int i = 0; i < hilosConexionesServidores->size(); i++) {
-				comandos[i] = {0, 0, 0, 0, 0};
-			}
 			// Receive data (command)
-			receiveData(hilosConexionesServidores, comandos);
+            receiveData(hilosConexionesServidores, comandos, config);
+            if (clock() < entreNiveles) { // Si los clientes estan viendo la pantalla intermedia, no procesar comandos.
+                for (int i = 0; i < hilosConexionesServidores->size(); i++) {
+                    comandos[i] = {0, 0, 0, 0, 0};
+                }
+            }
             //--------------------
 			// Process model
-            processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+            quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
+
             //--------------------
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
 			//--------------------
+            if (quit) {
+                break;
+            }
+
+            if (nuevoNivel) {
+                entreNiveles = clock() + TIMEOUT_PROXIMO_NIVEL * CLOCKS_PER_SEC;
+            }
 
 			t1 = clock();
 		}
 	}
-	catch (...) {
-        // TODO stoppear hilosConexionesServidores
-        // Si se llegó aca, quiere decir que no se pudo catchear la desconexion dentro de receiveData
-        l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop");
+	catch (const std::exception &e) {
+        l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop.");
+        l->error(e.what());
+	}
+
+	l->info("Esperando que terminen los hilosConexionesServidores.");
+	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
+	    // TODO: Por que doble enviarEstadoTick? Para evitar race conditions donde se cierre el hilo antes de enviarse
+	    // Habria que cambiarse por un sistema mas elegante
+		hiloConexionServidor->enviarEstadoTick(&estadoTick);
+		hiloConexionServidor->enviarEstadoTick(&estadoTick);
+		hiloConexionServidor->terminar();
 	}
 
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
 		hiloConexionServidor->join();
 	}
+	l->info("Terminaron todos los hilosConexionesServidores.");
 
-	l->info("Terminando de correr HiloOrquestadorPartida");
+    aceptadorConexiones->shutdownSocket();
+
+	l->info("Terminando de correr HiloOrquestadorPartida.");
 }
 
-void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool HiloOrquestadorPartida::termino() {
+	return quit;
+}
+
+bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones) {
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	partida->tick(comandos);
 
-	// Seteando estadoTick
-	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+    // Seteando estadoTick
+    estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+    estadoTick->numeroNivel = estadoInternoNivel.nivel;
+
+	if (partida->termino()) {
+        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
+		l->info("La partida finalizo");
+		return true;
+	}
+
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
+	estadoTick->posX = estadoCampoMovil.posX;
 	int i = 0;
 	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
 		estadoTick->estadosJugadores[i] = estadoJugador;
@@ -154,15 +184,8 @@ void processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
 	}
 
-	i = 0;
-	for (EstadoEnemigo estadoEnemigo : estadoCampoMovil.estadosEnemigos) {
-		estadoTick->estadosEnemigos[i] = estadoEnemigo;
-		i++;
-	}
-	// !!!! hardcodeadisimo
-	for (; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
-	}
+	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
+	return false;
 }
 
 
@@ -175,9 +198,5 @@ void initializeData(struct EstadoTick* estadoTick) {
 		estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
 		estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
-	}
-
-	for (int i = 0; i < MAX_ENEMIGOS; i++) {
-		estadoTick->estadosEnemigos[i].clase = 0;
 	}
 }
