@@ -161,13 +161,14 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
-    struct Comando client_command = {false, false, false, false};
+    struct Comando client_command = {false, false, false, false, false, false};
 
 	client_command.nroJugador = estadoLogin.nroJugador;
 	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
     client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
     client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
     client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+    client_command.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
 
     // Send data (command)
     if (!hiloConexionCliente->isActivo()) {
