@@ -94,7 +94,9 @@ add_executable(cliente
         client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
         commons/connections/ConexionExcepcion.h
         client/classes/config/Configuracion.cpp
-        client/classes/config/Configuracion.h)
+        client/classes/config/Configuracion.h
+        client/classes/view/DisparoJugadorVista.cpp
+        client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h)
 
 add_executable(servidor
         server/main.cpp
