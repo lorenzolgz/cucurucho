@@ -11,6 +11,7 @@
 #include "SemillaEntidad.h"
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
+#include "Disparo.h"
 
 class Nivel : public Ticker {
 public:
@@ -21,6 +22,8 @@ public:
     void crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos);
 	bool termino();
 	EstadoInternoCampoMovil state();
+
+    bool nuevoDisparo(Disparo *pDisparo);
 
 private:
 	float ancho;

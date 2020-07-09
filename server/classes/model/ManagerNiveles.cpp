@@ -88,3 +88,7 @@ bool ManagerNiveles::noHayMasNiveles() {
 	return cantidadNivelesTerminados == totalNiveles;
 }
 
+bool ManagerNiveles::nuevoDisparo(Disparo *disparo) {
+    return this->nivelActual->nuevoDisparo(disparo);
+}
+

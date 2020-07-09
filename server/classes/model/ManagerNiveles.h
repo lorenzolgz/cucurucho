@@ -11,6 +11,7 @@
 #include "NivelIntermedio.h"
 #include "../states/EstadoInternoNivel.h"
 #include "../../../commons/utils/Constantes.h"
+#include "Disparo.h"
 
 #define VELOCIDAD_INICIAL 2
 #define AUMENTO_VELOCIDAD_POR_NIVEL 1.1
@@ -25,6 +26,7 @@ public:
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
     Nivel *configurarNuevoNivel();
     bool noHayMasNiveles();
+    bool nuevoDisparo(Disparo* disparo);
 
 private:
     std::list<NivelConfiguracion *> nivelesConfiguracion;

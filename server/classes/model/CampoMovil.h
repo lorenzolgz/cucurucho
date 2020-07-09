@@ -9,6 +9,7 @@
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
+#include "Disparo.h"
 
 const int CAMPO_OFFSET = 300;
 
@@ -32,6 +33,8 @@ public:
 	EstadoInternoCampoMovil state();
 
 
+    bool nuevoDisparo(Disparo *pDisparo);
+
 private:
 	int ancho;
 	int alto;
@@ -40,6 +43,7 @@ private:
     float largoNivel;
     std::map<int, Jugador *> jugadores;
 	std::list<EntidadEnemigo*> entidadesEnemigos;
+	std::list<Disparo*> disparos;
 
     bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
     void procesarColisiones();

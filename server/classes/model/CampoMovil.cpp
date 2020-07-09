@@ -29,6 +29,9 @@ void CampoMovil::tick() {
 
     procesarColisiones();
 	removerEntidadesEnemigosMuertas();
+		for (Disparo* d : disparos) {
+		    d->tick();
+		}
 }
 
 int CampoMovil::getAncho() {
@@ -115,3 +118,10 @@ void CampoMovil::procesarColisiones() {
 	}
 }
 
+bool CampoMovil::nuevoDisparo(Disparo *pDisparo) {
+	try {
+		disparos.push_back(pDisparo);
+	} catch(...) {
+		return false;
+	}
+}

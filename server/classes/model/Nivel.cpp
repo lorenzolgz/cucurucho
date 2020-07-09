@@ -108,3 +108,7 @@ void Nivel::plantarSemillasEnCampo() {
 EstadoInternoCampoMovil Nivel::state() {
 	return campo->state();
 }
+
+bool Nivel::nuevoDisparo(Disparo *pDisparo) {
+    return this->campo->nuevoDisparo(pDisparo);
+}
