@@ -4,6 +4,9 @@
 #include "../../../commons/utils/Log.h"
 #include "../config/FondoConfiguracion.h"
 
+#define ANCHO_DISPARO 10
+#define ALTO_DISPARO 10
+#define VELOCIDAD_DISPARO 7
 
 Partida::Partida(Configuracion* config) {
 	int anchoPantalla = config->getAnchoPantalla();
@@ -31,11 +34,18 @@ void Partida::tick(struct Comando comandos[]) {
 												 comando.derecha);
         if(comandos[i].disparo){
             if(jugadorActual->puedeDisparar() && jugadorActual->disparar()){
-                // TODO procesar el disparo
-                std::cout << "\nEl jugador " + std::to_string(i) + " disparó";
+                l->debug("El jugador " + std::to_string(i) + " disparó");
+								Disparo* disparo = new Disparo(
+									jugadorActual->getPosicion().getX() + JUGADOR_ANCHO,
+									jugadorActual->getPosicion().getY() + JUGADOR_ALTO / 3,
+									i,
+									ANCHO_DISPARO,
+									ALTO_DISPARO,
+									VELOCIDAD_DISPARO
+								);
+								managerNiveles->nuevoDisparo(disparo);
             } else if(!jugadorActual->puedeDisparar()){
-                // TODO eliminar couts
-                std::cout << "\nEl jugador " + std::to_string(i) + " no disparó porque está en cooldown";
+                l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
             }
         }
 	}

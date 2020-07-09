@@ -27,8 +27,19 @@ void CampoMovil::tick() {
         it->second->tick();
     }
 
-    procesarColisiones();
-	removerEntidadesEnemigosMuertas();
+		procesarColisiones();
+		removerEntidadesEnemigosMuertas();
+		std::list<Disparo*>::iterator itd = disparos.begin();
+
+		while (itd != disparos.end()) {
+			(*itd)->tick();
+			if (!verificarPosicionDisparo(*itd)) {
+					itd = disparos.erase(itd);
+					l->debug("Elimine un disparo porque salio de pantalla");
+			} else {
+					itd++;
+			}
+		}
 }
 
 int CampoMovil::getAncho() {
@@ -63,6 +74,7 @@ bool CampoMovil::verificarPosicionNivel() {
 EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
     std::list<EstadoJugador> estadosJugadores;
+	std::list<EstadoDisparo> estadosDisparos;
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
         if (verificarPosicionEnemigo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
 	}
@@ -72,10 +84,15 @@ EstadoInternoCampoMovil CampoMovil::state() {
         estadosJugadores.push_back(it->second->state());
     }
 
+	for (Disparo* disparo : disparos) {
+		estadosDisparos.push_back(disparo->state());
+	}
+
 	// EstadoInternoCampoMovil* estadoCampoMovil ;= new EstadoInternoCampoMovil(jugador->state(), estadosEnemigos)
 	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
+	estadoCampoMovil.estadosDisparos = estadosDisparos;
 	estadoCampoMovil.posX = (int) posicion.getX();
 
 	return estadoCampoMovil;
@@ -114,4 +131,17 @@ void CampoMovil::procesarColisiones() {
 		}
 	}
 }
+bool CampoMovil::verificarPosicionDisparo(Disparo *pDisparo) {
+    int posX = pDisparo->getX();
+    int posY = pDisparo->getY();
+    return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 
+}
+
+bool CampoMovil::nuevoDisparo(Disparo *pDisparo) {
+	try {
+		disparos.push_back(pDisparo);
+	} catch(...) {
+		return false;
+	}
+}

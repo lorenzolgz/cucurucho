@@ -164,7 +164,8 @@ add_executable(servidor
         server/classes/model/entities/Forma.cpp server/classes/model/entities/Forma.h
         server/classes/model/life/VidaEnemigo1.cpp server/classes/model/life/VidaEnemigo1.h
         server/classes/model/life/VidaEnemigo2.cpp server/classes/model/life/VidaEnemigo2.h
-        server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h)
+        server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/Disparo.cpp server/classes/model/Disparo.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)
