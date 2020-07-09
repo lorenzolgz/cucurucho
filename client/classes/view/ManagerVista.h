@@ -29,8 +29,8 @@ private:
     CampoVista* campoVista;
 	Enemigo1Vista* enemigo1Vista;
     Enemigo2Vista* enemigo2Vista;
+    DisparoJugadorVista disparoJugadorVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
-    std::vector<JugadorVista*> jugadores;
 
     int nivelActual;
     bool primerNivel;
