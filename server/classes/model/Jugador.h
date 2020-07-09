@@ -15,7 +15,7 @@ class Entidad;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
-
+const int TICKS_COOLDOWN_DISPARO = 100;
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador : public Entidad {
@@ -35,6 +35,8 @@ public:
     const Vector getVelocidad() const;
     void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
+    bool puedeDisparar();
+    bool disparar();
 
     void resetState();
 
@@ -42,6 +44,7 @@ private:
     Vector posicion;
     Vector velocidad;
     double velocidadEscalar;
+    int ticksHastaDisparo;
 
 	CampoMovil* campo;
 	Helper* helperAbove;

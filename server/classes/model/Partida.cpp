@@ -23,11 +23,21 @@ void Partida::tick(struct Comando comandos[]) {
 
 	for (int i = 0; i < jugadores.size(); i++) {
 		struct Comando comando = comandos[i];
+		Jugador* jugadorActual = jugadores.at(i);
 
-		jugadores.at(i)->calcularVectorVelocidad(comando.arriba,
+        jugadorActual->calcularVectorVelocidad(comando.arriba,
 												 comando.abajo,
 												 comando.izquierda,
 												 comando.derecha);
+        if(comandos[i].disparo){
+            if(jugadorActual->puedeDisparar() && jugadorActual->disparar()){
+                // TODO procesar el disparo
+                std::cout << "\nEl jugador " + std::to_string(i) + " disparó";
+            } else if(!jugadorActual->puedeDisparar()){
+                // TODO eliminar couts
+                std::cout << "\nEl jugador " + std::to_string(i) + " no disparó porque está en cooldown";
+            }
+        }
 	}
     //Render texture to screen
     managerNiveles->tick();

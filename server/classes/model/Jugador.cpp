@@ -3,11 +3,11 @@
 #include "../../../commons/utils/Log.h"
 #include "CampoMovil.h"
 
-
 Jugador::Jugador(int x, int y) {
 	Jugador::velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
 	Jugador::posicion = Vector(x, y);
 	Jugador::velocidad = Vector(0, 0);
+	Jugador::ticksHastaDisparo = 0;
 
 	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
@@ -49,11 +49,24 @@ Vector Jugador::actualizarPosicion(Vector posicionNueva) {
 	return posicion;
 }
 
+bool Jugador::puedeDisparar(){
+    return ticksHastaDisparo <= 0;
+}
+
+bool Jugador::disparar(){
+    if(this->puedeDisparar()){
+        ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
+        return true;
+    }
+    return false;
+}
+
 void Jugador::tick() {
 	actualizarPosicion(posicion + Vector(velocidad.getX(), 0));
 	actualizarPosicion(posicion + Vector(0, velocidad.getY()));
 	helperAbove->tick();
 	helperBelow->tick();
+	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
     l->debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
