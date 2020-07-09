@@ -4,6 +4,7 @@
 #include <list>
 #include "Ticker.h"
 #include "entities/Forma.h"
+#include "life/VidaEntidad.h"
 
 class Ticker;
 
@@ -21,6 +22,7 @@ public:
 	virtual Vector getPosicion() = 0;
 	virtual int getTipoEntidad() = 0;
 	virtual std::list<Forma> getFormas() = 0;
+	virtual VidaEntidad* getVidaEntidad() = 0;
 };
 
 

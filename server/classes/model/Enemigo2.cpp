@@ -7,6 +7,7 @@ const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
 #include "../../../commons/utils/Constantes.h"
+#include "life/VidaEnemigo2.h"
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX) {
     if (random() % 2 == 0) {
@@ -16,7 +17,8 @@ Enemigo2::Enemigo2(float x,float y, float velocidadX) {
 	Enemigo2::velocidadEscalar = 1;
 	Enemigo2::posicion = Vector(x, y);
 	Enemigo2::velocidadX = velocidadX;
-    l->info("Se creo correctamente el Enemigo 02.");
+	this->vida = new VidaEnemigo2();
+	l->info("Se creo correctamente el Enemigo 02.");
 }
 
 int Enemigo2::getAncho() {
@@ -66,4 +68,8 @@ std::list<Forma> Enemigo2::getFormas() {
 	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho()-20, getAlto());
 	formas.emplace_back(formaSimple);
 	return formas;
+}
+
+VidaEntidad *Enemigo2::getVidaEntidad() {
+	return vida;
 }

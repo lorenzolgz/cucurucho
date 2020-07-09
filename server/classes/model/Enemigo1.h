@@ -22,10 +22,12 @@ public:
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
+	VidaEntidad* getVidaEntidad() override;
 
 private:
     Vector posicion;
 	float velocidadX;
+	VidaEntidad* vida;
 };
 
 

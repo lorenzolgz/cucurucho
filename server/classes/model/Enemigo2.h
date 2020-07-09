@@ -25,8 +25,10 @@ private:
     Vector posicion;
     float velocidadEscalar;
     float velocidadX;
+	VidaEntidad* vida;
+	VidaEntidad* getVidaEntidad() override;
 
-    void recalcularPosicion();
+	void recalcularPosicion();
 };
 
 

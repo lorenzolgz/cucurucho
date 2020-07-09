@@ -12,7 +12,7 @@ Jugador::Jugador(int x, int y) {
 	this->helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
-	this->vidaJugador = new VidaJugador();
+	this->vida = new VidaJugadorMortal();
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -66,7 +66,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.posicionY = posicion.getY();
 	estadoJugador.helper1 = helperAbove->state();
 	estadoJugador.helper2 = helperBelow->state();
-	estadoJugador.energia = vidaJugador->getEnergia();
+	estadoJugador.energia = vida->getEnergia();
 	return estadoJugador;
 }
 
@@ -113,4 +113,8 @@ std::list<Forma> Jugador::getFormas() {
 	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
 	formas.emplace_back(formaSimple);
 	return formas;
+}
+
+VidaEntidad* Jugador::getVidaEntidad() {
+	return vida;
 }

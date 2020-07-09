@@ -7,7 +7,7 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "Entidad.h"
-#include "life/VidaJugador.h"
+#include "life/VidaJugadorMortal.h"
 
 class CampoMovil;
 class Helper;
@@ -36,9 +36,7 @@ public:
     void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
     void resetState();
-
-	VidaEntidad* vidaJugador;
-
+	VidaEntidad* getVidaEntidad();
 
 private:
     Vector posicion;
@@ -48,6 +46,7 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
+	VidaEntidad* vida;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 };

@@ -134,7 +134,7 @@ void CampoMovil::procesarColisiones() {
 		for (auto* entidadEnemigo : entidadesEnemigos) {
 			if (colisionanEntidades(jugador, entidadEnemigo)) {
 				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
-				jugador->vidaJugador->procesarColision(entidadEnemigo->getTipoEntidad());
+				jugador->getVidaEntidad()->procesarColision(entidadEnemigo->getTipoEntidad());
 			}
 		}
 	}
