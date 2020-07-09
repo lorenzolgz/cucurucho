@@ -46,7 +46,8 @@ private:
 	std::list<Disparo*> disparos;
 
     bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
-    void procesarColisiones();
+	bool verificarPosicionDisparo(Disparo *pDisparo);
+	void procesarColisiones();
 	void removerEntidadesEnemigosMuertas();
 };
 

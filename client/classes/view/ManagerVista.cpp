@@ -119,6 +119,7 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 
 void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
     for (EstadoDisparo estadoDisparo: estadosDisparos) {
+      // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
       if (estadoDisparo.id < 0) continue;
 
       disparoJugadorVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY), estadoDisparo.id);

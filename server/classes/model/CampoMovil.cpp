@@ -27,10 +27,18 @@ void CampoMovil::tick() {
         it->second->tick();
     }
 
-    procesarColisiones();
-	removerEntidadesEnemigosMuertas();
-		for (Disparo* d : disparos) {
-		    d->tick();
+		procesarColisiones();
+		removerEntidadesEnemigosMuertas();
+		std::list<Disparo*>::iterator itd = disparos.begin();
+
+		while (itd != disparos.end()) {
+			(*itd)->tick();
+			if (!verificarPosicionDisparo(*itd)) {
+					itd = disparos.erase(itd);
+					l->debug("Elimine un disparo porque salio de pantalla");
+			} else {
+					itd++;
+			}
 		}
 }
 
@@ -122,6 +130,12 @@ void CampoMovil::procesarColisiones() {
 			}
 		}
 	}
+}
+bool CampoMovil::verificarPosicionDisparo(Disparo *pDisparo) {
+    int posX = pDisparo->getX();
+    int posY = pDisparo->getY();
+    return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
+
 }
 
 bool CampoMovil::nuevoDisparo(Disparo *pDisparo) {
