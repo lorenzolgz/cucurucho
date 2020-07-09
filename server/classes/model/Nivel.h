@@ -11,7 +11,7 @@
 #include "SemillaEntidad.h"
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
-#include "Disparo.h"
+#include "entities/projectiles/Disparo.h"
 
 class Nivel : public Ticker {
 public:

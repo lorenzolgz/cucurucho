@@ -15,9 +15,9 @@ class Enemigo1 : public EntidadEnemigo {
 public:
 	Enemigo1(float x, float y, float velocidadX);
 
+	Vector getPosicion() override;
 	int getAncho() override;
 	int getAlto() override;
-	Vector getPosicion() override;
 	void tick() override;
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;

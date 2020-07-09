@@ -8,6 +8,7 @@
 #include "Helper.h"
 #include "entities/Entidad.h"
 #include "life/VidaJugadorMortal.h"
+#include "entities/projectiles/Disparo.h"
 
 class CampoMovil;
 class Helper;
@@ -15,7 +16,7 @@ class Entidad;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
-const int TICKS_COOLDOWN_DISPARO = 100;
+const int TICKS_COOLDOWN_DISPARO = 30;
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador : public Entidad {
@@ -35,8 +36,8 @@ public:
     const Vector getVelocidad() const;
     void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
-    bool puedeDisparar();
-    bool disparar();
+    // Todo: cada jugador tendria que saber su nroJugador de antemano!!!!
+    Disparo* disparar(int nroJugador);
     void resetState();
 	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
@@ -54,6 +55,7 @@ private:
 	bool invencible;
 
 	Vector actualizarPosicion(Vector posicionNueva);
+	bool puedeDisparar();
 };
 
 

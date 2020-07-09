@@ -12,14 +12,15 @@ class Ticker;
 enum {
 	ENTIDAD_JUGADOR,
 	ENTIDAD_ENEMIGO1,
-	ENTIDAD_ENEMIGO2
+	ENTIDAD_ENEMIGO2,
+	ENTIDAD_DISPARO_JUGADOR
 };
 
 class Entidad : public Ticker {
 public:
+	virtual Vector getPosicion() = 0;
 	virtual int getAncho() = 0;
 	virtual int getAlto() = 0;
-	virtual Vector getPosicion() = 0;
 	virtual int getTipoEntidad() = 0;
 	virtual std::list<Forma> getFormas() = 0;
 	virtual VidaEntidad* getVidaEntidad() = 0;

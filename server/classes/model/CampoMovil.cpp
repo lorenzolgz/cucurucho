@@ -132,8 +132,8 @@ void CampoMovil::procesarColisiones() {
 	}
 }
 bool CampoMovil::verificarPosicionDisparo(Disparo *pDisparo) {
-    int posX = pDisparo->getX();
-    int posY = pDisparo->getY();
+    int posX = pDisparo->getPosicion().getX();
+    int posY = pDisparo->getPosicion().getY();
     return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 
 }

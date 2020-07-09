@@ -54,17 +54,17 @@ Vector Jugador::actualizarPosicion(Vector posicionNueva) {
 	return posicion;
 }
 
-// !!!!! Probar hacerlo privado
 bool Jugador::puedeDisparar() {
 	return ticksHastaDisparo <= 0;
 }
 
-bool Jugador::disparar() {
-	if (this->puedeDisparar()) {
-		ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
-		return true;
+Disparo* Jugador::disparar(int nroJugador) {
+	if (!this->puedeDisparar()) {
+		return nullptr;
 	}
-	return false;
+
+	ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
+	return new Disparo(getPosicion().getX(), getPosicion().getY(), nroJugador);
 }
 
 void Jugador::tick() {

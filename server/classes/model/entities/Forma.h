@@ -9,14 +9,14 @@ public:
 	bool colisiona(Forma otraForma);
 	float getPosX();
 	float getPosY();
-	float getAncho();
-	float getAlto();
+	int getAncho();
+	int getAlto();
 
 private:
 	float posX;
 	float posY;
-	float ancho;
-	float alto;
+	int ancho;
+	int alto;
 };
 
 

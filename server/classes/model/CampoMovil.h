@@ -8,7 +8,7 @@
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
-#include "Disparo.h"
+#include "entities/projectiles/Disparo.h"
 
 const int CAMPO_OFFSET = 300;
 
