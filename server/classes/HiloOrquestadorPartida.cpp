@@ -39,7 +39,7 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
 
                     if (mensajeJson["_t"] == COMANDO) {
                         int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
-                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"], mensajeJson["disparo"]};
                         comandos[nroJugador - 1] = comando;
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
