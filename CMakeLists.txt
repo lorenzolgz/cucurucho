@@ -160,7 +160,14 @@ add_executable(servidor
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
         libraries/json/json.hpp
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/life/VidaJugador.cpp server/classes/model/life/VidaJugador.h server/classes/model/life/VidaEntidad.cpp server/classes/model/life/VidaEntidad.h server/classes/model/life/VidaJugadorInvencible.cpp server/classes/model/life/VidaJugadorInvencible.h)
+        commons/connections/ConexionExcepcion.h
+        server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h
+        commons/connections/AceptarConexionExcepcion.h
+        server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h
+        server/classes/model/life/VidaJugador.cpp server/classes/model/life/VidaJugador.h
+        server/classes/model/life/VidaEntidad.cpp server/classes/model/life/VidaEntidad.h
+        server/classes/model/life/VidaJugadorInvencible.cpp server/classes/model/life/VidaJugadorInvencible.h
+        server/classes/model/entities/Forma.cpp server/classes/model/entities/Forma.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

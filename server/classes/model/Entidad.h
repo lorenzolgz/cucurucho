@@ -1,8 +1,10 @@
 #ifndef CUCURUCHO_ENTIDAD_H
 #define CUCURUCHO_ENTIDAD_H
 
-
+#include <list>
 #include "Ticker.h"
+#include "entities/Forma.h"
+
 class Ticker;
 
 // !!!!! Pasar a commons y reemplazar donde se usa 1 o 2 en los switchs
@@ -18,6 +20,7 @@ public:
 	virtual int getAlto() = 0;
 	virtual Vector getPosicion() = 0;
 	virtual int getTipoEntidad() = 0;
+	virtual std::list<Forma> getFormas() = 0;
 };
 
 

@@ -60,3 +60,10 @@ struct EstadoEnemigo Enemigo2::state() {
 int Enemigo2::getTipoEntidad() {
 	return ENTIDAD_ENEMIGO2;
 }
+
+std::list<Forma> Enemigo2::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho()-20, getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}

@@ -29,6 +29,7 @@ public:
 	int getAncho() override;
 	int getAlto() override;
 	int getTipoEntidad() override;
+	std::list<Forma> getFormas() override;
 
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;

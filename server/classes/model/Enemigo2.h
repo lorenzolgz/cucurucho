@@ -19,6 +19,7 @@ public:
 	void tick() override;
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;
+	std::list<Forma> getFormas() override;
 
 private:
     Vector posicion;

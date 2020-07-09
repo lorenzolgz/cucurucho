@@ -107,3 +107,10 @@ void Jugador::resetState() {
 int Jugador::getTipoEntidad() {
 	return ENTIDAD_JUGADOR;
 }
+
+std::list<Forma> Jugador::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
