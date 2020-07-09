@@ -25,7 +25,7 @@ public:
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
     Nivel *configurarNuevoNivel();
     bool noHayMasNiveles();
-    bool nuevoDisparo(Disparo* disparo);
+    void nuevoDisparo(Disparo* disparo);
 
 private:
     std::list<NivelConfiguracion *> nivelesConfiguracion;

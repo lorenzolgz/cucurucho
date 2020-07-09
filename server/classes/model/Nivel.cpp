@@ -107,6 +107,6 @@ EstadoInternoCampoMovil Nivel::state() {
 	return campo->state();
 }
 
-bool Nivel::nuevoDisparo(Disparo *pDisparo) {
-    return this->campo->nuevoDisparo(pDisparo);
+void Nivel::nuevoDisparo(Disparo *pDisparo) {
+    this->campo->nuevoDisparo(pDisparo);
 }

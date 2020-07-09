@@ -5,6 +5,7 @@
 #include "Disparo.h"
 #include "../../../../../commons/utils/Log.h"
 #include "../../life/VidaProyectil.h"
+#include "../../Jugador.h"
 #include <iostream>
 
 #define ANCHO_DISPARO 10
@@ -12,7 +13,7 @@
 #define VELOCIDAD_DISPARO 7
 
 Disparo::Disparo(float x, float y, int nroJugador) {
-	this->posicion = Vector(x, y);
+	this->posicion = Vector(x + JUGADOR_ANCHO, y + JUGADOR_ALTO / 3);
     this->velocidad = VELOCIDAD_DISPARO;
     this->nroJugador = nroJugador;
     this->vida = new VidaProyectil();

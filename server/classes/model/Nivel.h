@@ -23,7 +23,7 @@ public:
 	bool termino();
 	EstadoInternoCampoMovil state();
 
-    bool nuevoDisparo(Disparo *pDisparo);
+    void nuevoDisparo(Disparo *pDisparo);
 
 private:
 	float ancho;
