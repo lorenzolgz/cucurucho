@@ -17,7 +17,8 @@ public:
 	int getAlto() override;
 	Vector getPosicion() override;
 	void tick() override;
-	struct EstadoEnemigo state() override ;
+	struct EstadoEnemigo state() override;
+	int getTipoEntidad() override;
 
 private:
     Vector posicion;

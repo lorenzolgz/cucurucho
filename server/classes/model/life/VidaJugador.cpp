@@ -1,11 +1,20 @@
 #include "VidaJugador.h"
 
-#define PUNTAJE_VIDA_INICIAL 1000
+#define JUGADOR_PUNTAJE_VIDA_INICIAL 100
 
 VidaJugador::VidaJugador() {
-	this->puntajeVida = PUNTAJE_VIDA_INICIAL;
+	vivir();
+	this->energia = JUGADOR_PUNTAJE_VIDA_INICIAL;
 }
 
-int VidaJugador::getPuntajeVida() {
-	return puntajeVida;
+int VidaJugador::getEnergiaInicial() {
+	return JUGADOR_PUNTAJE_VIDA_INICIAL;
+}
+
+int VidaJugador::danioColisionEnemigo1() {
+	return 15;
+}
+
+int VidaJugador::danioColisionEnemigo2() {
+	return 25;
 }

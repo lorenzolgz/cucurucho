@@ -41,7 +41,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 		l->error("!!!! no tendria que pasar: " + std::to_string(i));
 		exit(3);
 	}
-	hud.setPuntajeVida(estadoJugadorPropio.puntajeVida);
+	hud.setEnergia(estadoJugadorPropio.energia);
     hud.render(estadoLogin, username);
 
     // Render Campo

@@ -25,18 +25,19 @@ public:
 	void tick();
 	struct EstadoJugador state();
 
-	int getAncho() override;
-
-	int getAlto() override;
-
 	Vector getPosicion() override;
+	int getAncho() override;
+	int getAlto() override;
+	int getTipoEntidad() override;
 
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
     void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
-
     void resetState();
+
+	VidaJugador* vidaJugador;
+
 
 private:
     Vector posicion;
@@ -46,7 +47,6 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
-	VidaJugador* vidaJugador;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 };

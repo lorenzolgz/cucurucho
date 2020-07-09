@@ -64,7 +64,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
 		mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
-		mensajeJson["estadosJugadores"][i]["puntajeVida"] = estadoTick->estadosJugadores[i].puntajeVida;
+		mensajeJson["estadosJugadores"][i]["energia"] = estadoTick->estadosJugadores[i].energia;
 		mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
     }
 	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {

@@ -32,8 +32,8 @@ void CampoMovil::tick() {
 		Jugador* jugador = it->second;
 		for (auto* entidadEnemigo : entidadesEnemigos) {
 			if (colisionan(jugador, entidadEnemigo)) {
-				l->error("!!!! colisionan");
 				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
+				jugador->vidaJugador->procesarColision(entidadEnemigo->getTipoEntidad());
 			}
 		}
 	}

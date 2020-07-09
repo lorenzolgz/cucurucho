@@ -10,11 +10,11 @@ HudVista::HudVista() {
 	this->gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     this->textura = generadorDeTexturas->generarTextura("hud.png");
-	this->puntajeVida = new std::string;
-    *this->puntajeVida = std::to_string(999); // !!!!
+	this->energia = new std::string;
+    *this->energia = std::to_string(999); // !!!!
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
-    this->nuevoTexto(puntajeVida, Vector(240, 24), TEXTO_COLOR_ROJO, false);
+    this->nuevoTexto(energia, Vector(240, 24), TEXTO_COLOR_ROJO, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -50,6 +50,6 @@ void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool a
 	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
 }
 
-void HudVista::setPuntajeVida(int puntajeVida) {
-	*this->puntajeVida = std::to_string(puntajeVida);
+void HudVista::setEnergia(int energia) {
+	*this->energia = std::to_string(energia);
 }

@@ -65,7 +65,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.posicionY = posicion.getY();
 	estadoJugador.helper1 = helperAbove->state();
 	estadoJugador.helper2 = helperBelow->state();
-	estadoJugador.puntajeVida = vidaJugador->getPuntajeVida();
+	estadoJugador.energia = vidaJugador->getEnergia();
 	return estadoJugador;
 }
 
@@ -101,4 +101,8 @@ Vector Jugador::getPosicion() {
 void Jugador::resetState() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
+}
+
+int Jugador::getTipoEntidad() {
+	return ENTIDAD_JUGADOR;
 }

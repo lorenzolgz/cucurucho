@@ -56,3 +56,7 @@ struct EstadoEnemigo Enemigo2::state() {
 	estado.clase = 2;
 	return estado;
 }
+
+int Enemigo2::getTipoEntidad() {
+	return ENTIDAD_ENEMIGO2;
+}

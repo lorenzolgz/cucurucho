@@ -2,14 +2,17 @@
 #define CUCURUCHO_VIDAJUGADOR_H
 
 
-class VidaJugador {
+#include "VidaEntidad.h"
+
+class VidaJugador : public VidaEntidad {
 public:
 	VidaJugador();
-	int getPuntajeVida();
-	// void procesarColisio
 
-private:
-	int puntajeVida;
+	int getEnergiaInicial() override;
+
+	// Overriden methods for template method.
+	int danioColisionEnemigo1() override;
+	int danioColisionEnemigo2() override;
 };
 
 
