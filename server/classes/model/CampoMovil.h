@@ -42,6 +42,8 @@ private:
 	std::list<EntidadEnemigo*> entidadesEnemigos;
 
     bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
+    void procesarColisiones();
+	void removerEntidadesEnemigosMuertas();
 };
 
 

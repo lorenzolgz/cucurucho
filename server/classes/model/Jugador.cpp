@@ -2,15 +2,19 @@
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "CampoMovil.h"
+#include "life/VidaJugadorInvencible.h"
 
 Jugador::Jugador(int x, int y) {
-	Jugador::velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
-	Jugador::posicion = Vector(x, y);
-	Jugador::velocidad = Vector(0, 0);
-	Jugador::ticksHastaDisparo = 0;
+	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
+	this->posicion = Vector(x, y);
+	this->velocidad = Vector(0, 0);
+	this->ticksHastaDisparo = 0;
 
-	Jugador::helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
-	Jugador::helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+	this->helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
+	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
+
+	this->vida = new VidaJugadorMortal();
+
     l->info("Se creo correctamente el Jugador.");
 }
 
@@ -71,12 +75,13 @@ void Jugador::tick() {
 }
 
 struct EstadoJugador Jugador::state() {
-	struct EstadoJugador view;
-	view.posicionX = posicion.getX();
-	view.posicionY = posicion.getY();
-	view.helper1 = helperAbove->state();
-	view.helper2 = helperBelow->state();
-	return view;
+	struct EstadoJugador estadoJugador;
+	estadoJugador.posicionX = posicion.getX();
+	estadoJugador.posicionY = posicion.getY();
+	estadoJugador.helper1 = helperAbove->state();
+	estadoJugador.helper2 = helperBelow->state();
+	estadoJugador.energia = vida->getEnergia();
+	return estadoJugador;
 }
 
 
@@ -111,4 +116,19 @@ Vector Jugador::getPosicion() {
 void Jugador::resetState() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
+}
+
+int Jugador::getTipoEntidad() {
+	return ENTIDAD_JUGADOR;
+}
+
+std::list<Forma> Jugador::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
+
+VidaEntidad* Jugador::getVidaEntidad() {
+	return vida;
 }

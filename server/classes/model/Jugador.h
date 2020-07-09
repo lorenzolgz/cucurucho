@@ -6,11 +6,11 @@
 #include "../../../commons/utils/Vector.h"
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
-#include "Entidad.h"
+#include "entities/Entidad.h"
+#include "life/VidaJugadorMortal.h"
 
 class CampoMovil;
 class Helper;
-class HelperVista;
 class Entidad;
 
 const int JUGADOR_ANCHO = 96;
@@ -25,11 +25,11 @@ public:
 	void tick();
 	struct EstadoJugador state();
 
-	int getAncho() override;
-
-	int getAlto() override;
-
 	Vector getPosicion() override;
+	int getAncho() override;
+	int getAlto() override;
+	int getTipoEntidad() override;
+	std::list<Forma> getFormas() override;
 
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
@@ -37,8 +37,8 @@ public:
     void setCampo(CampoMovil* campo);
     bool puedeDisparar();
     bool disparar();
-
     void resetState();
+	VidaEntidad* getVidaEntidad();
 
 private:
     Vector posicion;
@@ -49,6 +49,7 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
+	VidaEntidad* vida;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 };

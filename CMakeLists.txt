@@ -93,10 +93,8 @@ add_executable(cliente
         client/classes/Partida.cpp client/classes/Partida.h
         client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
         commons/connections/ConexionExcepcion.h
-        client/classes/config/Configuracion.cpp
-        client/classes/config/Configuracion.h
-        client/classes/view/DisparoJugadorVista.cpp
-        client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h)
+        client/classes/config/Configuracion.cpp client/classes/config/Configuracion.h
+        client/classes/view/DisparoJugadorVista.cpp client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h)
 
 add_executable(servidor
         server/main.cpp
@@ -160,7 +158,17 @@ add_executable(servidor
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
         libraries/json/json.hpp
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h)
+        commons/connections/ConexionExcepcion.h
+        server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h
+        commons/connections/AceptarConexionExcepcion.h
+        server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h
+        server/classes/model/life/VidaJugadorMortal.cpp server/classes/model/life/VidaJugadorMortal.h
+        server/classes/model/life/VidaEntidad.cpp server/classes/model/life/VidaEntidad.h
+        server/classes/model/life/VidaJugadorInvencible.cpp server/classes/model/life/VidaJugadorInvencible.h
+        server/classes/model/entities/Forma.cpp server/classes/model/entities/Forma.h
+        server/classes/model/life/VidaEnemigo1.cpp server/classes/model/life/VidaEnemigo1.h
+        server/classes/model/life/VidaEnemigo2.cpp server/classes/model/life/VidaEnemigo2.h
+        server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

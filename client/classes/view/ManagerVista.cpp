@@ -11,22 +11,40 @@
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
         : informacionNivel(infoNivel), nivelActual(nivelActual), alto(alto), ancho(ancho) {
-    hud = HudVista();
+    hud = new HudVista();
     velocidadNivel = 0;
     campoVista = nullptr;
-    enemigo1Vista = Enemigo1Vista();
-    enemigo2Vista = Enemigo2Vista();
+    enemigo1Vista = new Enemigo1Vista();
+    enemigo2Vista = new Enemigo2Vista();
     primerNivel = true;
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
-        jugadores.push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
+        jugadores->push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
     }
 
 }
 
 void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
-    hud.render(estadoLogin, username);
+	// Render Hud
+	struct EstadoJugador estadoJugadorPropio;
+	int i;
+	for (i = 0; i < MAX_JUGADORES; i++) {
+		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
+		// validar presente? !!!! probablemente no se de nunca que no este presente
+		if (i == estadoLogin.nroJugador - 1) {
+			estadoJugadorPropio = estadoJugador;
+			break;
+		}
+	}
+	// !!!!
+	if (i > MAX_JUGADORES) {
+		l->error("!!!! no tendria que pasar: " + std::to_string(i));
+		exit(3);
+	}
+	hud->setEnergia(estadoJugadorPropio.energia);
+    hud->render(estadoLogin, username);
 
+    // Render Campo
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 	if (campoVista == nullptr) {
@@ -37,6 +55,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	} // TODO patch para race conditions
     campoVista->render(estadoTick);
 
+	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
 
     renderJugadores(estadoTick, estadoLogin);
@@ -86,10 +105,10 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
     for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
         switch (estadoEnemigo.clase) {
             case 1:
-                enemigo1Vista.render(estadoEnemigo);
+                enemigo1Vista->render(estadoEnemigo);
                 break;
             case 2:
-                enemigo2Vista.render(estadoEnemigo);
+                enemigo2Vista->render(estadoEnemigo);
         }
     }
 }
@@ -100,19 +119,19 @@ void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogi
     // Primero se renderizan los jugadores desconectados
     for (int i = 0; i < MAX_JUGADORES; i++) {
         if (!estadoTick.estadosJugadores[i].presente) {
-            jugadores[i]->render(estadoTick.estadosJugadores[i]);
+			(*jugadores)[i]->render(estadoTick.estadosJugadores[i]);
         }
     }
 
     // Luego se renderizan los jugadores presentes que no sea el propio del usuario/cliente
     for (int i = 0; i < MAX_JUGADORES; i++) {
         if (estadoTick.estadosJugadores[i].presente && (estadoLogin.nroJugador-1) != i) {
-            jugadores[i]->render(estadoTick.estadosJugadores[i]);
+			(*jugadores)[i]->render(estadoTick.estadosJugadores[i]);
         }
     }
 
     // Finalmente, se renderiza el jugador del propio usuario/cliente
-    jugadores[estadoLogin.nroJugador-1]->render(estadoTick.estadosJugadores[estadoLogin.nroJugador-1]);
+	(*jugadores)[estadoLogin.nroJugador-1]->render(estadoTick.estadosJugadores[estadoLogin.nroJugador-1]);
 }
 
 
@@ -155,7 +174,7 @@ void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int 
 
 void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
     for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
-        renderEsperaJugador(jugadores[i], estadoLogin.jugadores[i], i, i + 1, estadoLogin.cantidadJugadores);
+        renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], i, i + 1, estadoLogin.cantidadJugadores);
     }
 
     if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
