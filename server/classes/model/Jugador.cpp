@@ -2,6 +2,7 @@
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "CampoMovil.h"
+#include "life/VidaJugadorInvencible.h"
 
 Jugador::Jugador(int x, int y) {
 	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;

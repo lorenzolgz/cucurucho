@@ -8,12 +8,14 @@ class VidaEntidad {
 public:
 	virtual int getEnergiaInicial() = 0;
 
-	void vivir();
 	int getEnergia();
 	virtual void procesarColision(const int tipoEntidad);
 
 protected:
-	// Template method
+	// Debe ser llamado por todos los que lo heredan en el constructor.
+	void vivir();
+
+	// Metodos que se llaman en el template method
 	virtual int danioColisionJugador();
 	virtual int danioColisionEnemigo1();
 	virtual int danioColisionEnemigo2();

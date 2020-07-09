@@ -36,7 +36,7 @@ public:
     void setCampo(CampoMovil* campo);
     void resetState();
 
-	VidaJugador* vidaJugador;
+	VidaEntidad* vidaJugador;
 
 
 private:

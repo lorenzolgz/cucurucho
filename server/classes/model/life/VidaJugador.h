@@ -9,8 +9,6 @@ public:
 	VidaJugador();
 
 	int getEnergiaInicial() override;
-
-	// Overriden methods for template method.
 	int danioColisionEnemigo1() override;
 	int danioColisionEnemigo2() override;
 };
