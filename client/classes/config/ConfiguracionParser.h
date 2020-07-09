@@ -14,7 +14,6 @@ public:
 private:
 	int parsearParametrosConexion(Json::Value root);
 	std::string parsearNivelLog(Json::Value root);
-	bool parsearInvencible(Json::Value root);
 
 	void validarJsonGenerico(bool hayError, std::string mensaje);
 	void validarJsonNoNulo(Json::Value value, std::string campo);

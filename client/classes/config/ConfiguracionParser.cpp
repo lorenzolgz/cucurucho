@@ -37,9 +37,8 @@ Configuracion * ConfiguracionParser::parsearConfiguracion(std::string rutaJsonCo
 
 	bool std_out = configuracionJson["log"]["std_out"].asBool();
 	int maxCola = parsearParametrosConexion(configuracionJson);
-	bool invencible = parsearInvencible(configuracionJson);
 
-	return new Configuracion(nivelLog, std_out, maxCola, invencible);
+	return new Configuracion(nivelLog, std_out, maxCola);
 }
 
 std::string ConfiguracionParser::parsearNivelLog(Json::Value root) {
@@ -71,17 +70,6 @@ int ConfiguracionParser::parsearParametrosConexion(Json::Value root) {
 	}
 	catch (const std::exception &exc) {
 		l->debug("Ocurrio un error al obtener la cantidad maxima de elementos para la cola. Usando valor de defecto.");
-	}
-
-	return maxCola;
-}
-
-bool ConfiguracionParser::parsearInvencible(Json::Value root) {
-	int maxCola = false;
-	try {
-		maxCola = root["invencible"].asBool();
-	} catch(const std::exception& exc) {
-		l->info("No se aporto el valor \"invencible\" en la configuracion. Usando valor de defecto (false).");
 	}
 
 	return maxCola;

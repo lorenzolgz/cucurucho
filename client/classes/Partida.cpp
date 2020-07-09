@@ -94,9 +94,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     }
 
     hiloConexionCliente->cerrarConexion();
-
 }
-
 
 void Partida::autenticarServidor() {
     Login credenciales;
@@ -161,20 +159,22 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
-    struct Comando client_command = {false, false, false, false, false, false};
+    struct Comando comando = {false, false, false, false, false, false};
 
-	client_command.nroJugador = estadoLogin.nroJugador;
-	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
-    client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
-    client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
-    client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
-    client_command.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
+	comando.nroJugador = estadoLogin.nroJugador;
+	comando.arriba = currentKeyStates[SDL_SCANCODE_UP];
+	comando.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
+	comando.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
+	comando.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+	comando.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
+	// !!!!!
+	// comando.invencible = invencible;
 
     // Send data (command)
     if (!hiloConexionCliente->isActivo()) {
         throw ConexionExcepcion();
     }
-    hiloConexionCliente->conexionCliente->enviarComando(&client_command);
+    hiloConexionCliente->conexionCliente->enviarComando(&comando);
 }
 
 void Partida::renderLoop() {

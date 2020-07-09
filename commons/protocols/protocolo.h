@@ -52,6 +52,7 @@ struct Comando {
 	int izquierda;
 	int derecha;
 	int disparo;
+	int invencible;
 };
 
 //para el logueo
