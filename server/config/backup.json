@@ -4,7 +4,7 @@
          "nivel": "info",
          "std_out": false
       },
-      "cantidadJugadores": 2,
+      "cantidadJugadores": 1,
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",

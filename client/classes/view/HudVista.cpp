@@ -10,10 +10,11 @@ HudVista::HudVista() {
 	this->gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     this->textura = generadorDeTexturas->generarTextura("hud.png");
-    this->puntajeVida = 999; // !!!!
+	this->puntajeVida = new std::string;
+    *this->puntajeVida = std::to_string(999); // !!!!
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
-    this->nuevoTexto(new std::string("100000"), Vector(240, 24), TEXTO_COLOR_ROJO, false);
+    this->nuevoTexto(puntajeVida, Vector(240, 24), TEXTO_COLOR_ROJO, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -26,7 +27,7 @@ HudVista::HudVista() {
 
 }
 
-void HudVista::render(struct EstadoJugador estadoJugador, EstadoLogin estadoLogin, std::string username) {
+void HudVista::render(EstadoLogin estadoLogin, std::string username) {
     SDL_Rect hudrect = {(PANTALLA_ANCHO - HUD_SRC_ANCHO) / 2, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderSetViewport(gRenderer, &hudrect);
 
@@ -34,7 +35,7 @@ void HudVista::render(struct EstadoJugador estadoJugador, EstadoLogin estadoLogi
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
-    for (TextoVista* c : textos){
+    for (TextoVista* c : textos) {
         c->render();
     }
 
@@ -47,4 +48,8 @@ void HudVista::render(struct EstadoJugador estadoJugador, EstadoLogin estadoLogi
 
 void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq) {
 	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
+}
+
+void HudVista::setPuntajeVida(int puntajeVida) {
+	*this->puntajeVida = std::to_string(puntajeVida);
 }
