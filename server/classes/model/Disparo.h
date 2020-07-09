@@ -9,7 +9,6 @@
 #include "../../../commons/protocols/protocolo.h"
 
 class Disparo {
-
 public:
     Disparo(float x, float y, int id, int ancho, int alto, float velocidad);
     float getX();

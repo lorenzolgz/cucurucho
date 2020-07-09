@@ -14,6 +14,7 @@ Jugador::Jugador(int x, int y) {
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
 	this->vida = new VidaJugadorMortal();
+	this->invencible = false;
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -53,16 +54,17 @@ Vector Jugador::actualizarPosicion(Vector posicionNueva) {
 	return posicion;
 }
 
-bool Jugador::puedeDisparar(){
-    return ticksHastaDisparo <= 0;
+// !!!!! Probar hacerlo privado
+bool Jugador::puedeDisparar() {
+	return ticksHastaDisparo <= 0;
 }
 
-bool Jugador::disparar(){
-    if(this->puedeDisparar()){
-        ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
-        return true;
-    }
-    return false;
+bool Jugador::disparar() {
+	if (this->puedeDisparar()) {
+		ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
+		return true;
+	}
+	return false;
 }
 
 void Jugador::tick() {
@@ -131,4 +133,18 @@ std::list<Forma> Jugador::getFormas() {
 
 VidaEntidad* Jugador::getVidaEntidad() {
 	return vida;
+}
+
+void Jugador::cambiarInvencible(bool invencible) {
+	if (this->invencible == invencible) {
+		return;
+	}
+
+	if (invencible) {
+		vida = new VidaJugadorInvencible();
+	} else {
+		vida = new VidaJugadorMortal();
+	}
+
+	this->invencible = invencible;
 }

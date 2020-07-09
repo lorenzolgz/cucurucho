@@ -2,11 +2,8 @@
 // Created by camix on 2/5/20.
 //
 
-#include <cstring>
 #include "ManagerNiveles.h"
-#include "Hud.h"
 #include "../../../commons/utils/Log.h"
-#include "../config/NivelConfiguracion.h"
 
 ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores) {
     ancho = config->getAnchoPantalla();
@@ -27,7 +24,9 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
     int pos = 1;
     for (it = jugadores.begin(); it != jugadores.end(); it++) {
         it->second->resetState();
-        it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
+        // TODO sacar esto y que el server sea agnostico al HUD
+		const int HUD_ALTO = 96;
+		it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
         pos++;
     }
 	Nivel *nivel = new Nivel(nivelConfActual, jugadores);
@@ -53,10 +52,6 @@ bool ManagerNiveles::terminoNivelActual() {
 }
 
 void ManagerNiveles::pasajeDeNivel(){
-    NivelConfiguracion* nivel = nivelesConfiguracion.front();
-
-    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
-    nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
     nivelActual = configurarNuevoNivel();

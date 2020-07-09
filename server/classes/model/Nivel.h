@@ -28,7 +28,6 @@ public:
 private:
 	float ancho;
 	int alto;
-	Hud* hud;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;
     int numeroDeNivel;

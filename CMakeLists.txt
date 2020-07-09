@@ -105,8 +105,6 @@ add_executable(servidor
         commons/connections/ConexionCliente.h
         server/classes/model/Jugador.cpp
         server/classes/model/Jugador.h
-        server/classes/model/Hud.cpp
-        server/classes/model/Hud.h
         server/classes/model/Helper.cpp
         server/classes/model/Helper.h
         server/classes/model/Enemigo2.cpp
@@ -123,8 +121,6 @@ add_executable(servidor
         server/classes/model/CampoMovil.h
         server/classes/model/ManagerNiveles.cpp
         server/classes/model/ManagerNiveles.h
-        server/classes/model/NivelIntermedio.cpp
-        server/classes/model/NivelIntermedio.h
         server/classes/config/Configuracion.h
         server/classes/config/Configuracion.cpp
         server/classes/config/NivelConfiguracion.cpp

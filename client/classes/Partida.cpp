@@ -14,6 +14,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     manager = new ManagerJuego();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
+	invencible = false;
 
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
@@ -159,7 +160,15 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
-    struct Comando comando = {false, false, false, false, false, false};
+    // Manejar la invencibilidad dependiendo de las teclas apretadas.
+    if (currentKeyStates[SDL_SCANCODE_Y]) {
+		invencible = false;
+    }
+	if (currentKeyStates[SDL_SCANCODE_T]) {
+		invencible = true;
+	}
+
+    struct Comando comando = {false, false, false, false, false, false, false};
 
 	comando.nroJugador = estadoLogin.nroJugador;
 	comando.arriba = currentKeyStates[SDL_SCANCODE_UP];
@@ -167,8 +176,7 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 	comando.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
 	comando.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
 	comando.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
-	// !!!!!
-	// comando.invencible = invencible;
+	comando.invencible = invencible;
 
     // Send data (command)
     if (!hiloConexionCliente->isActivo()) {

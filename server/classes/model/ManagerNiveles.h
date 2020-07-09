@@ -8,7 +8,6 @@
 #include "../config/Configuracion.h"
 #include "CampoMovil.h"
 #include "Nivel.h"
-#include "NivelIntermedio.h"
 #include "../states/EstadoInternoNivel.h"
 #include "../../../commons/utils/Constantes.h"
 #include "Disparo.h"

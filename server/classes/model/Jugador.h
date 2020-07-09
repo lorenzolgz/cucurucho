@@ -39,6 +39,7 @@ public:
     bool disparar();
     void resetState();
 	VidaEntidad* getVidaEntidad();
+	void cambiarInvencible(bool invencible);
 
 private:
     Vector posicion;
@@ -50,6 +51,7 @@ private:
 	Helper* helperAbove;
 	Helper* helperBelow;
 	VidaEntidad* vida;
+	bool invencible;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 };

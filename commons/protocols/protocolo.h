@@ -44,7 +44,6 @@ enum {
     MENSAJE_PING
 };
 
-
 struct Comando {
 	int nroJugador;
 	int arriba;

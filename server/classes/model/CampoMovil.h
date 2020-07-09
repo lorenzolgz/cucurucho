@@ -4,7 +4,6 @@
 
 #include <list>
 #include <map>
-#include "Hud.h"
 #include "Jugador.h"
 #include "Ticker.h"
 #include "EntidadEnemigo.h"

@@ -35,6 +35,7 @@ private:
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
+    bool invencible;
 
     void conexionLoop(const Uint8 *currentKeyStates);
 
