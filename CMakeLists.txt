@@ -67,10 +67,6 @@ add_executable(cliente
         client/classes/view/Colores.h
         client/classes/view/ManagerVista.cpp
         client/classes/view/ManagerVista.h
-        client/classes/config/FondoConfiguracion.cpp
-        client/classes/config/FondoConfiguracion.h
-        client/classes/config/NivelConfiguracion.cpp
-        client/classes/config/NivelConfiguracion.h
         client/classes/config/ConfiguracionParser.cpp
         client/classes/config/ConfiguracionParser.h
         commons/connections/ConexionCliente.cpp
