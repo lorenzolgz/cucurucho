@@ -12,6 +12,7 @@
 #include "CampoVista.h"
 #include "Enemigo1Vista.h"
 #include "Enemigo2Vista.h"
+#include "DisparoJugadorVista.h"
 
 class ManagerVista {
 public:
@@ -29,6 +30,8 @@ private:
 	Enemigo1Vista* enemigo1Vista;
     Enemigo2Vista* enemigo2Vista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
+    std::vector<JugadorVista*> jugadores;
+
     int nivelActual;
     bool primerNivel;
     int alto;
@@ -42,6 +45,8 @@ private:
     void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores);
 
     void renderEspera(struct EstadoLogin estadoLogin);
+
+    void renderDisparos(std::list<EstadoDisparo> estadosDisparos);
 };
 
 

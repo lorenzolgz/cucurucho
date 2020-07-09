@@ -60,6 +60,13 @@ struct Login {
     char contrasenia[LARGO_PASSWORD];
 };
 
+struct EstadoDisparo {
+  EstadoDisparo(): posicionX(-200), posicionY(-200), id(0) {}
+  int posicionX;
+  int posicionY;
+  int id;
+};
+
 struct EstadoHelper {
     EstadoHelper(): posicionX(-200), posicionY(-200), angulo(0) {}
 	int posicionX;
@@ -90,6 +97,7 @@ struct EstadoTick {
 	int nuevoNivel;
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
+	std::list<EstadoDisparo> estadosDisparos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 

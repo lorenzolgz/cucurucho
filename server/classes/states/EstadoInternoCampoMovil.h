@@ -9,7 +9,8 @@ class EstadoInternoCampoMovil {
 public:
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
-    std::list<EstadoJugador> estadosJugadores;
+	std::list<EstadoJugador> estadosJugadores;
+	std::list<EstadoDisparo> estadosDisparos;
 };
 
 

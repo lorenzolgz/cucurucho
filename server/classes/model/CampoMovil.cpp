@@ -66,6 +66,7 @@ bool CampoMovil::verificarPosicionNivel() {
 EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
     std::list<EstadoJugador> estadosJugadores;
+	std::list<EstadoDisparo> estadosDisparos;
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
         if (verificarPosicionEnemigo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
 	}
@@ -75,10 +76,15 @@ EstadoInternoCampoMovil CampoMovil::state() {
         estadosJugadores.push_back(it->second->state());
     }
 
+	for (Disparo* disparo : disparos) {
+		estadosDisparos.push_back(disparo->state());
+	}
+
 	// EstadoInternoCampoMovil* estadoCampoMovil ;= new EstadoInternoCampoMovil(jugador->state(), estadosEnemigos)
 	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
+	estadoCampoMovil.estadosDisparos = estadosDisparos;
 	estadoCampoMovil.posX = (int) posicion.getX();
 
 	return estadoCampoMovil;

@@ -34,7 +34,7 @@ void Partida::tick(struct Comando comandos[]) {
 												 comando.derecha);
         if(comandos[i].disparo){
             if(jugadorActual->puedeDisparar() && jugadorActual->disparar()){
-                l->debug("\nEl jugador " + std::to_string(i) + " disparó");
+                l->debug("El jugador " + std::to_string(i) + " disparó");
 								Disparo* disparo = new Disparo(
 									jugadorActual->getPosicion().getX() + JUGADOR_ANCHO,
 									jugadorActual->getPosicion().getY() + JUGADOR_ALTO / 3,
@@ -45,7 +45,7 @@ void Partida::tick(struct Comando comandos[]) {
 								);
 								managerNiveles->nuevoDisparo(disparo);
             } else if(!jugadorActual->puedeDisparar()){
-                l->debug("\nEl jugador " + std::to_string(i) + " no disparó porque está en cooldown");
+                l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
             }
         }
 	}

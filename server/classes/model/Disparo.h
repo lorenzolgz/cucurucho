@@ -6,6 +6,8 @@
 #define CUCURUCHO_DISPARO_H
 
 
+#include "../../../commons/protocols/protocolo.h"
+
 class Disparo {
 
 public:
@@ -17,6 +19,7 @@ public:
     int getAlto();
     int getId();
     void tick();
+    EstadoDisparo state();
 
 private:
     float x;

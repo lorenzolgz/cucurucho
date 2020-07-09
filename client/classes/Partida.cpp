@@ -238,12 +238,19 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
         estadoEnemigo.clase = informacionJson["clase"];
         estadoTick.estadosEnemigos.push_back(estadoEnemigo);
     }
-    manager->setEstadoTick(estadoTick);
+    for (nlohmann::json informacionJson : mensaje["estadosDisparos"]){
+        EstadoDisparo estadoDisparo;
+        estadoDisparo.posicionX = informacionJson["posicionX"];
+        estadoDisparo.posicionY = informacionJson["posicionY"];
+        estadoDisparo.id = informacionJson["id"];
+        estado.estadosDisparos.push_back(estadoDisparo);
+    }
+    manager->setEstadoTick(estado);
 }
 
 void Partida::procesarInformacionNivel(nlohmann::json mensaje) {
     struct InformacionNivel info;
-    
+
     info.numeroNivel = mensaje["numeroNivel"];
 
     info.velocidad = mensaje["velocidad"];

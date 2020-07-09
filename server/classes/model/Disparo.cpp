@@ -44,3 +44,12 @@ int Disparo::getAlto() {
 float Disparo::getVelocidad() {
     return this->velocidad;
 }
+
+// Estado que se le envia al cliente (unicamente con la info que necesita)
+EstadoDisparo Disparo::state() {
+    EstadoDisparo disparo;
+    disparo.posicionX = x;
+    disparo.posicionY = y;
+    disparo.id = id;
+    return disparo;
+}

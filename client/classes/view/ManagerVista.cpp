@@ -16,6 +16,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     campoVista = nullptr;
     enemigo1Vista = new Enemigo1Vista();
     enemigo2Vista = new Enemigo2Vista();
+    disparoJugadorVista = DisparoJugadorVista();
     primerNivel = true;
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -57,6 +58,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
 	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
+
+    renderDisparos(estadoTick.estadosDisparos);
 
     renderJugadores(estadoTick, estadoLogin);
 
@@ -111,6 +114,16 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
                 enemigo2Vista->render(estadoEnemigo);
         }
     }
+}
+
+
+void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
+    for (EstadoDisparo estadoDisparo: estadosDisparos) {
+      if (estadoDisparo.id < 0) continue;
+
+      disparoJugadorVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY), estadoDisparo.id);
+    }
+
 }
 
 
