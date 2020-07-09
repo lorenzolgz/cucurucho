@@ -9,7 +9,6 @@ public:
 	VidaEnemigo1();
 
 	int getEnergiaInicial() override;
-	int danioColisionJugador() override;
 };
 
 

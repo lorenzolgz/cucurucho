@@ -15,5 +15,5 @@ int VidaJugadorMortal::danioColisionEnemigo1() {
 }
 
 int VidaJugadorMortal::danioColisionEnemigo2() {
-	return 25;
+	return 0;
 }

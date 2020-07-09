@@ -11,8 +11,8 @@ Enemigo1::Enemigo1(float x, float y, float velocidadX) {
         x = -x + PANTALLA_ANCHO - ENEMIGO1_ANCHO;
         velocidadX *= -1;
     }
-	Enemigo1::posicion = Vector(x, y);
-	Enemigo1::velocidadX = velocidadX; // Posición 2 de sprite
+	this->posicion = Vector(x, y);
+	this->velocidadX = velocidadX; // Posición 2 de sprite
 	this->vida = new VidaEnemigo1();
 	l->info("Se creo correctamente el Enemigo 01.");
 }

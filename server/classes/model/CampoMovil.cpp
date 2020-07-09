@@ -28,6 +28,7 @@ void CampoMovil::tick() {
     }
 
     procesarColisiones();
+	removerEntidadesEnemigosMuertas();
 }
 
 int CampoMovil::getAncho() {
@@ -113,15 +114,15 @@ bool CampoMovil::colisionanEntidades(Entidad* e1, Entidad* e2) {
 	return false;
 }
 
-void CampoMovil::removerEntidadEnemigo(EntidadEnemigo* entidadEnemigo) {
+void CampoMovil::removerEntidadesEnemigosMuertas() {
 	auto it = entidadesEnemigos.begin();
 	while (it != entidadesEnemigos.end()) {
-		EntidadEnemigo* e = *it;
-		if (e == entidadEnemigo) {
+		EntidadEnemigo* entidadEnemigo = *it;
+		if (entidadEnemigo->getVidaEntidad()->getEnergia() <= 0) {
 			it = entidadesEnemigos.erase(it);
-			break;
+		} else {
+			++it;
 		}
-		++it;
 	}
 }
 
@@ -135,12 +136,9 @@ void CampoMovil::procesarColisiones() {
 			if (colisionanEntidades(jugador, entidadEnemigo)) {
 				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
 				jugador->getVidaEntidad()->procesarColision(entidadEnemigo->getTipoEntidad());
+				entidadEnemigo->getVidaEntidad()->procesarColision(jugador->getTipoEntidad());
 			}
 		}
-	}
-
-	for (auto* entidadEnemigo : *entidadesEnemigasColisionadas) {
-		removerEntidadEnemigo(entidadEnemigo);
 	}
 }
 

@@ -14,9 +14,9 @@ Enemigo2::Enemigo2(float x,float y, float velocidadX) {
         x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
-	Enemigo2::velocidadEscalar = 1;
-	Enemigo2::posicion = Vector(x, y);
-	Enemigo2::velocidadX = velocidadX;
+	this->velocidadEscalar = 1;
+	this->posicion = Vector(x, y);
+	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
 	l->info("Se creo correctamente el Enemigo 02.");
 }
@@ -70,6 +70,6 @@ std::list<Forma> Enemigo2::getFormas() {
 	return formas;
 }
 
-VidaEntidad *Enemigo2::getVidaEntidad() {
+VidaEntidad* Enemigo2::getVidaEntidad() {
 	return vida;
 }
