@@ -4,7 +4,7 @@
 #include <utility>
 #include <iostream>
 #include <string.h>
-
+// !!!!! revertir
 
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"

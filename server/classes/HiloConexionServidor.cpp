@@ -38,7 +38,7 @@ void HiloConexionServidor::run() {
                 l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
             }
         }
-    } catch (...) { // !!!!! catcheo y logueo
+    } catch (...) { // !!!! catcheo y logueo
 		l->error("Error en el loop de HiloConexionServidor.");
 	    cicloReconectar();
 	}

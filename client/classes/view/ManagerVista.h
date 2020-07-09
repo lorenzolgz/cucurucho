@@ -24,13 +24,11 @@ public:
 
 private:
     struct InformacionNivel informacionNivel;
-    // !!!!! pasar a puntero
-    HudVista hud;
+    HudVista* hud;
     CampoVista* campoVista;
-	// !!!!! pasar a puntero el resto
-	Enemigo1Vista enemigo1Vista;
-    Enemigo2Vista enemigo2Vista;
-    std::vector<JugadorVista*> jugadores;
+	Enemigo1Vista* enemigo1Vista;
+    Enemigo2Vista* enemigo2Vista;
+    std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
     int nivelActual;
     bool primerNivel;
     int alto;

@@ -27,20 +27,7 @@ void CampoMovil::tick() {
         it->second->tick();
     }
 
-    std::list<EntidadEnemigo*>* entidadesEnemigasColisionadas = new std::list<EntidadEnemigo*>();
-	for (it = jugadores.begin(); it != jugadores.end(); it++) {
-		Jugador* jugador = it->second;
-		for (auto* entidadEnemigo : entidadesEnemigos) {
-			if (colisionan(jugador, entidadEnemigo)) {
-				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
-				jugador->vidaJugador->procesarColision(entidadEnemigo->getTipoEntidad());
-			}
-		}
-	}
-
-	for (auto* entidadEnemigo : *entidadesEnemigasColisionadas) {
-		removerEntidadEnemigo(entidadEnemigo);
-	}
+    procesarColisiones();
 }
 
 int CampoMovil::getAncho() {
@@ -115,6 +102,25 @@ void CampoMovil::removerEntidadEnemigo(EntidadEnemigo* entidadEnemigo) {
 			break;
 		}
 		++it;
+	}
+}
+
+void CampoMovil::procesarColisiones() {
+	std::list<EntidadEnemigo*>* entidadesEnemigasColisionadas = new std::list<EntidadEnemigo*>();
+
+	std::map<int, Jugador*>::iterator it;
+	for (it = jugadores.begin(); it != jugadores.end(); it++) {
+		Jugador* jugador = it->second;
+		for (auto* entidadEnemigo : entidadesEnemigos) {
+			if (colisionan(jugador, entidadEnemigo)) {
+				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
+				jugador->vidaJugador->procesarColision(entidadEnemigo->getTipoEntidad());
+			}
+		}
+	}
+
+	for (auto* entidadEnemigo : *entidadesEnemigasColisionadas) {
+		removerEntidadEnemigo(entidadEnemigo);
 	}
 }
 

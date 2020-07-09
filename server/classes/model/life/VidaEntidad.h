@@ -10,18 +10,18 @@ public:
 
 	void vivir();
 	int getEnergia();
-	void procesarColision(const int tipoEntidad);
+	virtual void procesarColision(const int tipoEntidad);
 
-	// !!!!! actually add protected
-	// protected methods
+protected:
+	// Template method
 	virtual int danioColisionJugador();
 	virtual int danioColisionEnemigo1();
 	virtual int danioColisionEnemigo2();
 
-	// protected atributes
+private:
 	int energia;
 
-private:
+	// Template method.
 	int calcularDanioPorColision(const int tipoEntidad);
 };
 

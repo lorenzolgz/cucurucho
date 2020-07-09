@@ -4,7 +4,6 @@
 
 VidaJugador::VidaJugador() {
 	vivir();
-	this->energia = JUGADOR_PUNTAJE_VIDA_INICIAL;
 }
 
 int VidaJugador::getEnergiaInicial() {

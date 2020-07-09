@@ -23,7 +23,6 @@ void VidaEntidad::procesarColision(const int tipoEntidad) {
 }
 
 int VidaEntidad::calcularDanioPorColision(const int tipoEntidad) {
-	// !!!!! pasar a template method
 	switch (tipoEntidad) {
 		case ENTIDAD_JUGADOR:
 			return danioColisionJugador();
