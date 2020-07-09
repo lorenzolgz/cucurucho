@@ -5,6 +5,12 @@
 #include "Ticker.h"
 class Ticker;
 
+enum {
+	JUGADOR,
+	ENEMIGO1,
+	ENEMIGO2
+};
+
 class Entidad : public Ticker {
 public:
 	virtual int getAncho() = 0;

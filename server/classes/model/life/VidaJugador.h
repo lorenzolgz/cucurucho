@@ -6,6 +6,7 @@ class VidaJugador {
 public:
 	VidaJugador();
 	int getPuntajeVida();
+	// void procesarColisio
 
 private:
 	int puntajeVida;

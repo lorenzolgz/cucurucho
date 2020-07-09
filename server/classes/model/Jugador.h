@@ -7,11 +7,10 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "Entidad.h"
-#include "VidaJugador.h"
+#include "life/VidaJugador.h"
 
 class CampoMovil;
 class Helper;
-class HelperVista;
 class Entidad;
 
 const int JUGADOR_ANCHO = 96;
