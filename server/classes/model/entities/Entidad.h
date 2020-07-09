@@ -2,13 +2,13 @@
 #define CUCURUCHO_ENTIDAD_H
 
 #include <list>
-#include "Ticker.h"
-#include "entities/Forma.h"
-#include "life/VidaEntidad.h"
+#include "../Ticker.h"
+#include "Forma.h"
+#include "../life/VidaEntidad.h"
 
 class Ticker;
 
-// !!!!! Pasar a commons y reemplazar donde se usa 1 o 2 en los switchs
+// Todo: Pasar a commons y reemplazar donde se usa 1 o 2 en los switchs !!!!
 enum {
 	ENTIDAD_JUGADOR,
 	ENTIDAD_ENEMIGO1,
@@ -23,6 +23,7 @@ public:
 	virtual int getTipoEntidad() = 0;
 	virtual std::list<Forma> getFormas() = 0;
 	virtual VidaEntidad* getVidaEntidad() = 0;
+	bool colisiona(Entidad* otraEntidad);
 };
 
 

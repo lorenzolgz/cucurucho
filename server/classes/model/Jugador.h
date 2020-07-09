@@ -6,7 +6,7 @@
 #include "../../../commons/utils/Vector.h"
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
-#include "Entidad.h"
+#include "entities/Entidad.h"
 #include "life/VidaJugadorMortal.h"
 
 class CampoMovil;

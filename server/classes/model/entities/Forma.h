@@ -6,6 +6,7 @@ class Forma {
 public:
 	Forma(float posX, float posY, float ancho, float alto);
 
+	bool colisiona(Forma otraForma);
 	float getPosX();
 	float getPosY();
 	float getAncho();

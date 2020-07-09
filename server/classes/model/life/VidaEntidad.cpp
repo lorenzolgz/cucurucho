@@ -1,5 +1,5 @@
 #include "VidaEntidad.h"
-#include "../Entidad.h"
+#include "../entities/Entidad.h"
 
 void VidaEntidad::vivir() {
 	energia = getEnergiaInicial();

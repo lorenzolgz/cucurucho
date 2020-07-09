@@ -43,7 +43,6 @@ private:
 
     bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
     void procesarColisiones();
-	bool colisionanEntidades(Entidad* e1, Entidad* e2);
 	void removerEntidadesEnemigosMuertas();
 };
 

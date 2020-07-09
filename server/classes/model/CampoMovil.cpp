@@ -87,33 +87,6 @@ bool CampoMovil::verificarPosicionEnemigo(EntidadEnemigo *pEnemigo) {
     return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 }
 
-// !!!!! pasar a formas
-bool colisionanFormas(Forma f1, Forma f2) {
-	return f1.getPosX() < f2.getPosX() + f2.getAncho() &&
-		   f1.getPosX() + f1.getAncho() > f2.getPosX() &&
-		   f1.getPosY() < f2.getPosY() + f2.getAlto() &&
-		   f1.getPosY() + f1.getAlto() > f2.getPosY();
-}
-
-// !!!!! pasar a entidades
-bool CampoMovil::colisionanEntidades(Entidad* e1, Entidad* e2) {
-	std::list<Forma> formas1 = e1->getFormas();
-	std::list<Forma> formas2 = e2->getFormas();
-	// !!!!!
-	// std::list<Forma>::iterator it1;
-	// std::list<Forma>::iterator it2;
-
-	for (auto it1 = formas1.begin(); it1 != formas1.end(); it1++) {
-		for (auto it2 = formas2.begin(); it2 != formas2.end(); it2++) {
-			if (colisionanFormas(*it1, *it2)) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
 void CampoMovil::removerEntidadesEnemigosMuertas() {
 	auto it = entidadesEnemigos.begin();
 	while (it != entidadesEnemigos.end()) {
@@ -133,7 +106,7 @@ void CampoMovil::procesarColisiones() {
 	for (it = jugadores.begin(); it != jugadores.end(); it++) {
 		Jugador* jugador = it->second;
 		for (auto* entidadEnemigo : entidadesEnemigos) {
-			if (colisionanEntidades(jugador, entidadEnemigo)) {
+			if (jugador->colisiona(entidadEnemigo)) {
 				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
 				jugador->getVidaEntidad()->procesarColision(entidadEnemigo->getTipoEntidad());
 				entidadEnemigo->getVidaEntidad()->procesarColision(jugador->getTipoEntidad());
