@@ -14,13 +14,14 @@ const int HUD_SRC_ALTO = 96;
 class HudVista {
 public:
 	HudVista();
-	void render(struct EstadoLogin estadoLogin, std::string username);
+	void render(struct EstadoJugador estadoJugador, struct EstadoLogin estadoLogin, std::string username);
 	void nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
 	std::vector<TextoVista*> textos;
+	int puntajeVida;
 };
 
 extern ToastVista* toast;

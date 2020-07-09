@@ -25,8 +25,25 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 }
 
 void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
-    hud.render(estadoLogin, username);
+	// Render Hud
+	struct EstadoJugador estadoJugadorPropio;
+	int i;
+	for (i = 0; i < MAX_JUGADORES; i++) {
+		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
+		// validar presente? !!!! probablemente no se de nunca que no este presente
+		if (i == estadoLogin.nroJugador - 1) {
+			estadoJugadorPropio = estadoJugador;
+			break;
+		}
+	}
+	// !!!!
+	if (i > MAX_JUGADORES) {
+		l->error("!!!! no tendria que pasar: " + std::to_string(i));
+		exit(3);
+	}
+    hud.render(estadoJugadorPropio, estadoLogin, username);
 
+    // Render Campo
     SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 	if (campoVista == nullptr) {
@@ -37,6 +54,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	} // TODO patch para race conditions
     campoVista->render(estadoTick);
 
+	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
 
     renderJugadores(estadoTick, estadoLogin);

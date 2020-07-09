@@ -7,6 +7,7 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "Entidad.h"
+#include "VidaJugador.h"
 
 class CampoMovil;
 class Helper;
@@ -46,6 +47,7 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
+	VidaJugador* vidaJugador;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 };
