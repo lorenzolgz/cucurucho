@@ -16,7 +16,7 @@
 Instalar las siguientes dependencias:
 
 ```sh
-sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev g++ nlohmann-json-dev
+sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev g++ nlohmann-json-dev libsdl2-mixer-dev
 sudo python3 -m pip install cpplint
 ```
 

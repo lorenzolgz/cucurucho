@@ -61,7 +61,7 @@ int VidaJugador::getCantidadVidas() {
 void VidaJugador::tick() {
 	if (ticksPostNacer == TICKS_COOLDOWN_INVENCIBILIDAD_POR_NACER) {
 		if (!invencible) {
-			vidaInterna = new VidaJugadorMortal(JUGADOR_ENERGIA_INICIAL);
+			vidaInterna = new VidaJugadorMortal(getEnergia());
 		}
 	}
 
