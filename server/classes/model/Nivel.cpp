@@ -10,6 +10,9 @@
 #include <list>
 #include "../../../commons/utils/Constantes.h"
 
+#define CAMPO_ANCHO 960
+#define CAMPO_ALTO 576
+
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
 	Nivel::velocidad = nivelConfig->getVelocidad();
 	Nivel::ancho = nivelConfig->getLargo();
@@ -72,10 +75,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 }
 
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña!!!!
-	const int HUD_ALTO = 96;
-	int inicioCampoEnEjeY = HUD_ALTO;
-	auto* campo = new CampoMovil(jugadores, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
+	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, ancho);
 
 	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;
