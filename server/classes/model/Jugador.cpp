@@ -13,7 +13,7 @@ Jugador::Jugador(int x, int y) {
 	this->helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
-	this->vida = new VidaJugadorMortal();
+	this->vida = new VidaJugadorMortal(1000);
 	this->invencible = false;
 
     l->info("Se creo correctamente el Jugador.");
@@ -141,9 +141,9 @@ void Jugador::cambiarInvencible(bool invencible) {
 	}
 
 	if (invencible) {
-		vida = new VidaJugadorInvencible();
+		vida = new VidaJugadorInvencible(vida->getEnergia());
 	} else {
-		vida = new VidaJugadorMortal();
+		vida = new VidaJugadorMortal(vida->getEnergia());
 	}
 
 	this->invencible = invencible;

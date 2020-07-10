@@ -7,8 +7,6 @@
 class VidaProyectil : public VidaEntidad {
 public:
 	VidaProyectil();
-
-	int getEnergiaInicial() override;
 };
 
 

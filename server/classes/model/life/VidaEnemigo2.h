@@ -8,7 +8,6 @@ class VidaEnemigo2 : public VidaEntidad {
 public:
 	VidaEnemigo2();
 
-	int getEnergiaInicial() override;
 	int danioColisionDisparoJugador() override;
 };
 

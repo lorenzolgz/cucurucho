@@ -1,11 +1,8 @@
 #include "VidaJugadorMortal.h"
 
-#define JUGADOR_ENERGIA_INICIAL 100
-
-VidaJugadorMortal::VidaJugadorMortal() {
-	vivir();
+VidaJugadorMortal::VidaJugadorMortal(int energia) : VidaEntidad(energia) {
 }
 
-int VidaJugadorMortal::getEnergiaInicial() {
-	return JUGADOR_ENERGIA_INICIAL;
+int VidaJugadorMortal::danioColisionEnemigo1() {
+	return 10;
 }

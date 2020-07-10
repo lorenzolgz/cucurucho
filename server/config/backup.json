@@ -10,8 +10,8 @@
             "archivoFondos": "fondos/fondos1.json",
             "fin": "cleared_con_nave1.png",
             "enemigos": {
-               "clase1": 5,
-               "clase2": 1
+               "clase1": 15,
+               "clase2": 5
             },
             "velocidad": 2,
             "largo": 1000

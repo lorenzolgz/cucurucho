@@ -6,9 +6,10 @@
 
 class VidaJugadorMortal : public VidaEntidad {
 public:
-	VidaJugadorMortal();
+	VidaJugadorMortal(int energia);
 
-	int getEnergiaInicial() override;
+protected:
+	int danioColisionEnemigo1() override;
 };
 
 

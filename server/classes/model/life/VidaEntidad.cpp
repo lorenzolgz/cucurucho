@@ -1,8 +1,8 @@
 #include "VidaEntidad.h"
 #include "../entities/Entidad.h"
 
-void VidaEntidad::vivir() {
-	energia = getEnergiaInicial();
+VidaEntidad::VidaEntidad(int energia) {
+	this->energia = energia;
 }
 
 int VidaEntidad::getEnergia() {

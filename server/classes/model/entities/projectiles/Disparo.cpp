@@ -8,8 +8,8 @@
 #include "../../Jugador.h"
 #include <iostream>
 
-#define ANCHO_DISPARO 10
-#define ALTO_DISPARO 10
+#define ANCHO_DISPARO 96
+#define ALTO_DISPARO 24
 #define VELOCIDAD_DISPARO 7
 
 Disparo::Disparo(float x, float y, int nroJugador) {
