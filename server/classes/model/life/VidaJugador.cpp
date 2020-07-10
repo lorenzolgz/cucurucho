@@ -22,13 +22,16 @@ void VidaJugador::procesarColision(const int tipoEntidad) {
 	if (getEnergia() == 0) {
 		if (cantidadVidas == 0) {
 			return;
-		}
-		acabaDePerderUnaVida = true;
-		cantidadVidas = cantidadVidas - 1;
-		ticksPostNacer = 0;
+		} else {
+			acabaDePerderUnaVida = true;
+			cantidadVidas = cantidadVidas - 1;
+			ticksPostNacer = 0;
 
-		if (cantidadVidas > 0) {
-			vidaInterna = new VidaJugadorInvencible(JUGADOR_ENERGIA_INICIAL);
+			if (cantidadVidas == 0) {
+				l->info("Murio un jugador.");
+			} else {
+				vidaInterna = new VidaJugadorInvencible(JUGADOR_ENERGIA_INICIAL);
+			}
 		}
 	}
 }

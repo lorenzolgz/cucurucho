@@ -31,6 +31,9 @@ void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
 
 //void JugadorVista::render(Vector nuevaPosicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2) {
 void JugadorVista::render(struct EstadoJugador estadoJugador) {
+	if (estadoJugador.estaMuerto) {
+		return;
+	}
     if (estadoJugador.presente) {
         coloresRender = colores;
         JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player.png");

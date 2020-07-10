@@ -65,6 +65,9 @@ bool Jugador::puedeDisparar() {
 }
 
 Disparo* Jugador::disparar() {
+	if (estaMuerto()) {
+		return nullptr;
+	}
 	if (!this->puedeDisparar()) {
 		return nullptr;
 	}
@@ -82,6 +85,7 @@ void Jugador::tick() {
 	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
 
 	if (vida->isAcabaDePerderUnaVida()) {
+		l->info("El jugador " + std::to_string(nroJugador) + " perdio una vida.");
 		reiniciarPosicion();
 	}
 	vida->tick();
@@ -97,6 +101,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.energia = vida->getEnergia();
 	estadoJugador.cantidadVidas = vida->getCantidadVidas();
 	estadoJugador.esInvencible = vida->esInvencible();
+	estadoJugador.estaMuerto = estaMuerto();
 	return estadoJugador;
 }
 
