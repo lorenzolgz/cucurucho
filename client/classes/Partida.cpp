@@ -16,7 +16,8 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
     GestorSDL* gestorSDL;
-	invencible = false;
+    vieneDeTocarTeclaInvencible = false;
+	enviarInvencible = false;
 
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
@@ -165,13 +166,7 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
-    // Manejar la invencibilidad dependiendo de las teclas apretadas.
-    if (currentKeyStates[SDL_SCANCODE_Y]) {
-		invencible = false;
-    }
-	if (currentKeyStates[SDL_SCANCODE_T]) {
-		invencible = true;
-	}
+	procesarInvencible(currentKeyStates[SDL_SCANCODE_T]);
 
     struct Comando comando = {false, false, false, false, false, false, false};
 
@@ -181,7 +176,7 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 	comando.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
 	comando.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
 	comando.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
-	comando.invencible = invencible;
+	comando.invencible = enviarInvencible;
 
     // Send data (command)
     if (!hiloConexionCliente->isActivo()) {
@@ -307,4 +302,15 @@ void Partida::procesarEstadoLogin(nlohmann::json mensaje) {
         validarLogin = false;
     }
     Partida::estadoLogin = estadoLogin;
+}
+
+void Partida::procesarInvencible(bool apretoTeclaInvencible) {
+	if (apretoTeclaInvencible) {
+		if (!vieneDeTocarTeclaInvencible) {
+			enviarInvencible = !enviarInvencible;
+		}
+		vieneDeTocarTeclaInvencible = true;
+	} else {
+		vieneDeTocarTeclaInvencible = false;
+	}
 }

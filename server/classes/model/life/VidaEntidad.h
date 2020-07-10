@@ -9,6 +9,7 @@ public:
 	VidaEntidad(int energia);
 	virtual int getEnergia();
 	virtual void procesarColision(const int tipoEntidad);
+	virtual bool estaMuerto();
 
 protected:
 	// Metodos que se llaman en el template method

@@ -161,5 +161,5 @@ Vector Jugador::calcularPosicionInicial() {
 }
 
 bool Jugador::estaMuerto() {
-	return vida->noTieneMasVidas();
+	return vida->estaMuerto();
 }

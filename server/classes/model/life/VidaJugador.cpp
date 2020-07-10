@@ -89,6 +89,6 @@ void VidaJugador::nacer() {
 	ticksPostNacer = 0;
 }
 
-bool VidaJugador::noTieneMasVidas() {
+bool VidaJugador::estaMuerto() {
 	return cantidadVidas == 0;
 }

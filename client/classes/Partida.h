@@ -38,29 +38,21 @@ private:
     struct EstadoLogin estadoLogin;
     bool validarLogin;
     GestorSDL* gestorSDL;
-    bool invencible;
+    bool vieneDeTocarTeclaInvencible;
+    bool enviarInvencible;
 
     void conexionLoop(const Uint8 *currentKeyStates);
-
     void pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
-
     bool eventLoop(std::string *inputText);
-
     void renderLoop();
-
     void autenticarServidor();
-
     void comenzarHilo();
-
     void reiniciarInstanciaHilo();
-
     void hacks(const Uint8 *currentKeyStates);
-
     void procesarEstadoTick(nlohmann::json mensaje);
-
     void procesarInformacionNivel(nlohmann::json mensaje);
-
     void procesarEstadoLogin(nlohmann::json mensaje);
+    void procesarInvencible(bool apretoTeclaInvencible);
 };
 
 

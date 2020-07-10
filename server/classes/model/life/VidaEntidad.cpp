@@ -52,3 +52,7 @@ int VidaEntidad::danioColisionEnemigo2() {
 int VidaEntidad::danioColisionDisparoJugador() {
 	return DANIO_TOTAL;
 }
+
+bool VidaEntidad::estaMuerto() {
+	return energia == 0;
+}

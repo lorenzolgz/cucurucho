@@ -100,7 +100,7 @@ void CampoMovil::removerEntidadesEnemigosMuertas() {
 	auto it = entidadesEnemigos.begin();
 	while (it != entidadesEnemigos.end()) {
 		EntidadEnemigo* entidadEnemigo = *it;
-		if (entidadEnemigo->getVidaEntidad()->getEnergia() <= 0) {
+		if (entidadEnemigo->getVidaEntidad()->estaMuerto()) {
 			it = entidadesEnemigos.erase(it);
 		} else {
 			++it;
@@ -112,7 +112,7 @@ void CampoMovil::removerDisparosMuertos() {
 	auto it = disparos.begin();
 	while (it != disparos.end()) {
 		Disparo* disparo = *it;
-		if (disparo->getVidaEntidad()->getEnergia() <= 0) {
+		if (disparo->getVidaEntidad()->estaMuerto()) {
 			it = disparos.erase(it);
 		} else {
 			++it;

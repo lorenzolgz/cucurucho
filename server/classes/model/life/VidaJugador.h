@@ -10,6 +10,7 @@ public:
 
 	int getEnergia() override;
 	void procesarColision(const int tipoEntidad) override;
+	bool estaMuerto() override;
 	void cambiarInvencible(bool invencible);
 	int getCantidadVidas();
 	void tick();
@@ -17,8 +18,6 @@ public:
 	bool esInvencible();
 	bool estaEnCooldownInmovilPostNacer();
 	void nacer();
-
-	bool noTieneMasVidas();
 
 private:
 	VidaEntidad* vidaInterna;
