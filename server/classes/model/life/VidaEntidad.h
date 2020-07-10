@@ -7,7 +7,7 @@
 class VidaEntidad {
 public:
 	VidaEntidad(int energia);
-	int getEnergia();
+	virtual int getEnergia();
 	virtual void procesarColision(const int tipoEntidad);
 
 protected:

@@ -7,7 +7,7 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "entities/Entidad.h"
-#include "life/VidaJugadorMortal.h"
+#include "life/VidaJugador.h"
 #include "entities/projectiles/Disparo.h"
 
 class CampoMovil;
@@ -51,8 +51,7 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
-	VidaEntidad* vida;
-	bool invencible;
+	VidaJugador* vida;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 	bool puedeDisparar();

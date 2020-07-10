@@ -7,6 +7,16 @@
 class VidaJugador : public VidaEntidad {
 public:
 	VidaJugador();
+
+	int getEnergia() override;
+	void procesarColision(const int tipoEntidad) override;
+	void cambiarInvencible(bool invencible);
+	int getCantidadVidas();
+
+private:
+	VidaEntidad* vidaInterna;
+	bool invencible;
+	int cantidadVidas;
 };
 
 

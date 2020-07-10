@@ -13,8 +13,7 @@ Jugador::Jugador(int x, int y) {
 	this->helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
-	this->vida = new VidaJugadorMortal(1000);
-	this->invencible = false;
+	this->vida = new VidaJugador();
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -83,6 +82,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.helper1 = helperAbove->state();
 	estadoJugador.helper2 = helperBelow->state();
 	estadoJugador.energia = vida->getEnergia();
+	estadoJugador.cantidadVidas = vida->getCantidadVidas();
 	return estadoJugador;
 }
 
@@ -136,15 +136,5 @@ VidaEntidad* Jugador::getVidaEntidad() {
 }
 
 void Jugador::cambiarInvencible(bool invencible) {
-	if (this->invencible == invencible) {
-		return;
-	}
-
-	if (invencible) {
-		vida = new VidaJugadorInvencible(vida->getEnergia());
-	} else {
-		vida = new VidaJugadorMortal(vida->getEnergia());
-	}
-
-	this->invencible = invencible;
+	vida->cambiarInvencible(invencible);
 }
