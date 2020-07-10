@@ -19,6 +19,7 @@ protected:
 	virtual int danioColisionJugador();
 	virtual int danioColisionEnemigo1();
 	virtual int danioColisionEnemigo2();
+	virtual int danioColisionDisparoJugador();
 
 private:
 	int energia;

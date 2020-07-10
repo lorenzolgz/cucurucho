@@ -9,8 +9,6 @@ public:
 	VidaJugadorMortal();
 
 	int getEnergiaInicial() override;
-	int danioColisionEnemigo1() override;
-	int danioColisionEnemigo2() override;
 };
 
 

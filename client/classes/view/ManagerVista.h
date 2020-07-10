@@ -7,7 +7,6 @@
 
 #include <list>
 #include "JugadorVista.h"
-#include "../config/NivelConfiguracion.h"
 #include "HudVista.h"
 #include "CampoVista.h"
 #include "Enemigo1Vista.h"

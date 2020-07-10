@@ -44,7 +44,6 @@ enum {
     MENSAJE_PING
 };
 
-
 struct Comando {
 	int nroJugador;
 	int arriba;
@@ -52,6 +51,7 @@ struct Comando {
 	int izquierda;
 	int derecha;
 	int disparo;
+	int invencible;
 };
 
 //para el logueo

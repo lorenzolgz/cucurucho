@@ -23,7 +23,8 @@ void ConexionCliente::enviarComando(struct Comando* comando) {
 			{"abajo",      comando->abajo},
 			{"izquierda",  comando->izquierda},
 			{"derecha",    comando->derecha},
-			{"disparo",    comando->disparo}
+			{"disparo",    comando->disparo},
+			{"invencible", comando->invencible}
     };
 
 	l->debug("enviarComando " + mensajeJson.dump());

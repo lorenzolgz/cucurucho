@@ -4,12 +4,11 @@
 
 #include <list>
 #include <map>
-#include "Hud.h"
 #include "Jugador.h"
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
-#include "Disparo.h"
+#include "entities/projectiles/Disparo.h"
 
 const int CAMPO_OFFSET = 300;
 
@@ -31,9 +30,7 @@ public:
 
 	bool verificarPosicionNivel();
 	EstadoInternoCampoMovil state();
-
-
-    bool nuevoDisparo(Disparo *pDisparo);
+    void nuevoDisparo(Disparo *pDisparo);
 
 private:
 	int ancho;
@@ -41,14 +38,16 @@ private:
 	Vector posicion;
     float velocidadX;
     float largoNivel;
-    std::map<int, Jugador *> jugadores;
+    std::map<int, Jugador*> jugadores;
 	std::list<EntidadEnemigo*> entidadesEnemigos;
 	std::list<Disparo*> disparos;
 
-    bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
-	bool verificarPosicionDisparo(Disparo *pDisparo);
-	void procesarColisiones();
+    bool verificarEntidadEstaDentroDelCampo(Entidad* entidad);
+	void procesarTodasLasColisiones();
+	void procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2);
 	void removerEntidadesEnemigosMuertas();
+	void removerDisparosMuertos();
+	void removerDisparosFueraDePantalla();
 };
 
 

@@ -11,7 +11,6 @@
 #include "../../../commons/utils/Constantes.h"
 
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	Nivel::hud = new Hud();
 	Nivel::velocidad = nivelConfig->getVelocidad();
 	Nivel::ancho = nivelConfig->getLargo();
     Nivel::campo = crearCampo(nivelConfig, jugadores);
@@ -20,8 +19,6 @@ Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores
 
 void Nivel::tick() {
     campo->tick();
-	hud->actualizarHI(campo->getPosicion().getX());
-	hud->tick();
 	plantarSemillasEnCampo();
 }
 
@@ -76,6 +73,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
 	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
+	const int HUD_ALTO = 96;
 	int inicioCampoEnEjeY = HUD_ALTO;
 	auto* campo = new CampoMovil(jugadores, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
 
@@ -109,6 +107,6 @@ EstadoInternoCampoMovil Nivel::state() {
 	return campo->state();
 }
 
-bool Nivel::nuevoDisparo(Disparo *pDisparo) {
-    return this->campo->nuevoDisparo(pDisparo);
+void Nivel::nuevoDisparo(Disparo *pDisparo) {
+    this->campo->nuevoDisparo(pDisparo);
 }

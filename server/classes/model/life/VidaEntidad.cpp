@@ -30,6 +30,8 @@ int VidaEntidad::calcularDanioPorColision(const int tipoEntidad) {
 			return danioColisionEnemigo1();
 		case ENTIDAD_ENEMIGO2:
 			return danioColisionEnemigo2();
+		case ENTIDAD_DISPARO_JUGADOR:
+			return danioColisionDisparoJugador();
 		default:
 			return DANIO_TOTAL;
 	}
@@ -44,5 +46,9 @@ int VidaEntidad::danioColisionEnemigo1() {
 }
 
 int VidaEntidad::danioColisionEnemigo2() {
+	return DANIO_TOTAL;
+}
+
+int VidaEntidad::danioColisionDisparoJugador() {
 	return DANIO_TOTAL;
 }

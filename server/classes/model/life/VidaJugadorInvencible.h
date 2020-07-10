@@ -4,6 +4,7 @@
 
 #include "VidaEntidad.h"
 
+// Todo: En realidad tiene que perder vida pero no morir cuando queda en 0 !!!!
 class VidaJugadorInvencible : public VidaEntidad {
 public:
 	VidaJugadorInvencible();

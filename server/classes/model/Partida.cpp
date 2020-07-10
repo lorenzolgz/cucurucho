@@ -26,33 +26,29 @@ void Partida::tick(struct Comando comandos[]) {
 
 	for (int i = 0; i < jugadores.size(); i++) {
 		struct Comando comando = comandos[i];
-		Jugador* jugadorActual = jugadores.at(i);
+		Jugador *jugadorActual = jugadores.at(i);
 
-        jugadorActual->calcularVectorVelocidad(comando.arriba,
-												 comando.abajo,
-												 comando.izquierda,
-												 comando.derecha);
-        if(comandos[i].disparo){
-            if(jugadorActual->puedeDisparar() && jugadorActual->disparar()){
-                l->debug("El jugador " + std::to_string(i) + " disparó");
-								Disparo* disparo = new Disparo(
-									jugadorActual->getPosicion().getX() + JUGADOR_ANCHO,
-									jugadorActual->getPosicion().getY() + JUGADOR_ALTO / 3,
-									i,
-									ANCHO_DISPARO,
-									ALTO_DISPARO,
-									VELOCIDAD_DISPARO
-								);
-								managerNiveles->nuevoDisparo(disparo);
-            } else if(!jugadorActual->puedeDisparar()){
-                l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
-            }
-        }
+		jugadorActual->calcularVectorVelocidad(comando.arriba,
+											   comando.abajo,
+											   comando.izquierda,
+											   comando.derecha);
+
+		if (comandos[i].disparo) {
+			Disparo* disparo = jugadorActual->disparar(i);
+			if (disparo == nullptr) {
+				l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
+			} else {
+				l->debug("El jugador " + std::to_string(i) + " disparó");
+				managerNiveles->nuevoDisparo(disparo);
+			}
+		}
+
+		jugadorActual->cambiarInvencible(comando.invencible);
 	}
-    //Render texture to screen
-    managerNiveles->tick();
-    nuevoNivel = managerNiveles->terminoNivelActual();
-    if (nuevoNivel) nivel++;
+	//Render texture to screen
+	managerNiveles->tick();
+	nuevoNivel = managerNiveles->terminoNivelActual();
+	if (nuevoNivel) nivel++;
 }
 
 EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {

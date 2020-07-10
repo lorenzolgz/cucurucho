@@ -18,28 +18,19 @@ CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, 
 }
 
 void CampoMovil::tick() {
-    posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
-    for (auto* entidadEnemigo : entidadesEnemigos) {
-    	entidadEnemigo->tick();
-    }
-    std::map<int, Jugador*>::iterator it;
-    for (it = jugadores.begin(); it != jugadores.end(); it++) {
-        it->second->tick();
-    }
+	posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
+	for (auto *entidadEnemigo : entidadesEnemigos) {
+		entidadEnemigo->tick();
+	}
+	std::map<int, Jugador *>::iterator it;
+	for (it = jugadores.begin(); it != jugadores.end(); it++) {
+		it->second->tick();
+	}
 
-		procesarColisiones();
-		removerEntidadesEnemigosMuertas();
-		std::list<Disparo*>::iterator itd = disparos.begin();
-
-		while (itd != disparos.end()) {
-			(*itd)->tick();
-			if (!verificarPosicionDisparo(*itd)) {
-					itd = disparos.erase(itd);
-					l->debug("Elimine un disparo porque salio de pantalla");
-			} else {
-					itd++;
-			}
-		}
+	procesarTodasLasColisiones();
+	removerEntidadesEnemigosMuertas();
+	removerDisparosMuertos();
+	removerDisparosFueraDePantalla();
 }
 
 int CampoMovil::getAncho() {
@@ -76,7 +67,8 @@ EstadoInternoCampoMovil CampoMovil::state() {
     std::list<EstadoJugador> estadosJugadores;
 	std::list<EstadoDisparo> estadosDisparos;
 	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
-        if (verificarPosicionEnemigo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
+		// En vez de eliminar a los enemigos que estan fuera del campo, simplemente no los enviamos a los clientes.
+        if (verificarEntidadEstaDentroDelCampo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
 	}
 
     std::map<int, Jugador*>::iterator it;
@@ -98,9 +90,9 @@ EstadoInternoCampoMovil CampoMovil::state() {
 	return estadoCampoMovil;
 }
 
-bool CampoMovil::verificarPosicionEnemigo(EntidadEnemigo *pEnemigo) {
-    int posX = pEnemigo->getPosicion().getX();
-    int posY = pEnemigo->getPosicion().getY();
+bool CampoMovil::verificarEntidadEstaDentroDelCampo(Entidad* entidad) {
+    int posX = entidad->getPosicion().getX();
+    int posY = entidad->getPosicion().getY();
     return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 }
 
@@ -116,32 +108,55 @@ void CampoMovil::removerEntidadesEnemigosMuertas() {
 	}
 }
 
-void CampoMovil::procesarColisiones() {
-	std::list<EntidadEnemigo*>* entidadesEnemigasColisionadas = new std::list<EntidadEnemigo*>();
-
-	std::map<int, Jugador*>::iterator it;
-	for (it = jugadores.begin(); it != jugadores.end(); it++) {
-		Jugador* jugador = it->second;
-		for (auto* entidadEnemigo : entidadesEnemigos) {
-			if (jugador->colisiona(entidadEnemigo)) {
-				entidadesEnemigasColisionadas->emplace_back(entidadEnemigo);
-				jugador->getVidaEntidad()->procesarColision(entidadEnemigo->getTipoEntidad());
-				entidadEnemigo->getVidaEntidad()->procesarColision(jugador->getTipoEntidad());
-			}
+void CampoMovil::removerDisparosMuertos() {
+	auto it = disparos.begin();
+	while (it != disparos.end()) {
+		Disparo* disparo = *it;
+		if (disparo->getVidaEntidad()->getEnergia() <= 0) {
+			it = disparos.erase(it);
+		} else {
+			++it;
 		}
 	}
 }
-bool CampoMovil::verificarPosicionDisparo(Disparo *pDisparo) {
-    int posX = pDisparo->getX();
-    int posY = pDisparo->getY();
-    return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
 
+void CampoMovil::procesarTodasLasColisiones() {
+	for (auto it = jugadores.begin(); it != jugadores.end(); it++) {
+		Jugador* jugador = it->second;
+		for (auto* entidadEnemigo : entidadesEnemigos) {
+			procesarColisionEntreDosEntidades(jugador, entidadEnemigo);
+		}
+	}
+
+	for (auto it = disparos.begin(); it != disparos.end(); it++) {
+		Disparo* disparo = *it;
+		for (auto* entidadEnemigo : entidadesEnemigos) {
+			procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
+		}
+	}
 }
 
-bool CampoMovil::nuevoDisparo(Disparo *pDisparo) {
-	try {
-		disparos.push_back(pDisparo);
-	} catch(...) {
-		return false;
+void CampoMovil::procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2) {
+	if (e1->colisiona(e2)) {
+		e1->getVidaEntidad()->procesarColision(e2->getTipoEntidad());
+		e2->getVidaEntidad()->procesarColision(e1->getTipoEntidad());
+	}
+}
+
+void CampoMovil::nuevoDisparo(Disparo *pDisparo) {
+	disparos.push_back(pDisparo);
+}
+
+void CampoMovil::removerDisparosFueraDePantalla() {
+	std::list<Disparo *>::iterator itd = disparos.begin();
+
+	while (itd != disparos.end()) {
+		(*itd)->tick();
+		if (!entidadEstaDentroDelCampo(*itd)) {
+			itd = disparos.erase(itd);
+			l->debug("Disparo eliminado por salir de pantalla.");
+		} else {
+			itd++;
+		}
 	}
 }

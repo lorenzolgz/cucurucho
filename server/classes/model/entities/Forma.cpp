@@ -25,10 +25,10 @@ float Forma::getPosY() {
 	return posY;
 }
 
-float Forma::getAncho() {
+int Forma::getAncho() {
 	return ancho;
 }
 
-float Forma::getAlto() {
+int Forma::getAlto() {
 	return alto;
 }

@@ -11,7 +11,7 @@
 #include "SemillaEntidad.h"
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
-#include "Disparo.h"
+#include "entities/projectiles/Disparo.h"
 
 class Nivel : public Ticker {
 public:
@@ -23,12 +23,11 @@ public:
 	bool termino();
 	EstadoInternoCampoMovil state();
 
-    bool nuevoDisparo(Disparo *pDisparo);
+    void nuevoDisparo(Disparo *pDisparo);
 
 private:
 	float ancho;
 	int alto;
-	Hud* hud;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;
     int numeroDeNivel;

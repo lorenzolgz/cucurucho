@@ -67,10 +67,6 @@ add_executable(cliente
         client/classes/view/Colores.h
         client/classes/view/ManagerVista.cpp
         client/classes/view/ManagerVista.h
-        client/classes/config/FondoConfiguracion.cpp
-        client/classes/config/FondoConfiguracion.h
-        client/classes/config/NivelConfiguracion.cpp
-        client/classes/config/NivelConfiguracion.h
         client/classes/config/ConfiguracionParser.cpp
         client/classes/config/ConfiguracionParser.h
         commons/connections/ConexionCliente.cpp
@@ -109,8 +105,6 @@ add_executable(servidor
         commons/connections/ConexionCliente.h
         server/classes/model/Jugador.cpp
         server/classes/model/Jugador.h
-        server/classes/model/Hud.cpp
-        server/classes/model/Hud.h
         server/classes/model/Helper.cpp
         server/classes/model/Helper.h
         server/classes/model/Enemigo2.cpp
@@ -127,8 +121,6 @@ add_executable(servidor
         server/classes/model/CampoMovil.h
         server/classes/model/ManagerNiveles.cpp
         server/classes/model/ManagerNiveles.h
-        server/classes/model/NivelIntermedio.cpp
-        server/classes/model/NivelIntermedio.h
         server/classes/config/Configuracion.h
         server/classes/config/Configuracion.cpp
         server/classes/config/NivelConfiguracion.cpp
@@ -169,7 +161,7 @@ add_executable(servidor
         server/classes/model/life/VidaEnemigo1.cpp server/classes/model/life/VidaEnemigo1.h
         server/classes/model/life/VidaEnemigo2.cpp server/classes/model/life/VidaEnemigo2.h
         server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/Disparo.cpp server/classes/model/Disparo.h)
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/entities/projectiles/Disparo.cpp server/classes/model/entities/projectiles/Disparo.h server/classes/model/life/VidaProyectil.cpp server/classes/model/life/VidaProyectil.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image)

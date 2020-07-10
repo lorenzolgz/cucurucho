@@ -12,7 +12,6 @@ HiloConexionCliente::HiloConexionCliente(ColaBloqueante<nlohmann::json> *colaMen
     HiloConexionCliente::activo = false;
 }
 
-
 void HiloConexionCliente::run() {
     activo = true;
 	l->info("Comenzando a correr HiloConexionCliente");
