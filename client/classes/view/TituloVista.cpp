@@ -61,7 +61,7 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::gRenderer = GraphicRenderer::getInstance();
 
     Audio *audio1 = Audio::getInstante();
-    TituloVista::audioErrorConexion = audio1->generarAudio("audioNivel6.mp3");
+    TituloVista::audioErrorConexion = audio1->generarAudio("audioPantallaInicio.mp3");
 }
 
 void TituloVista::nuevaParticula() {
