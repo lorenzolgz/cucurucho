@@ -55,8 +55,11 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     colorShip(srcrect, dstrect);
 
-    helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador.presente);
-    helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador.presente);
+    // TODO sacar esto, es temporal para visibilizar facilmente cuando es invencible!!!!
+    if (!estadoJugador.esInvencible) {
+		helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador.presente);
+		helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador.presente);
+	}
 
     colorGlow();
 

@@ -14,7 +14,7 @@
                "clase2": 2
             },
             "velocidad": 2,
-            "largo": 1000
+            "largo": 600
          },
          {
             "archivoFondos": "fondos/fondos2.json",

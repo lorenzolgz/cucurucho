@@ -21,13 +21,8 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = nivelesConfiguracion.front();
 
     std::map<int, Jugador*>::iterator it;
-    int pos = 1;
     for (it = jugadores.begin(); it != jugadores.end(); it++) {
         it->second->resetState();
-        // TODO sacar esto y que el server sea agnostico al HUD
-		const int HUD_ALTO = 96;
-		it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
-        pos++;
     }
 	Nivel *nivel = new Nivel(nivelConfActual, jugadores);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),

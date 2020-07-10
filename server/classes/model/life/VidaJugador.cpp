@@ -1,9 +1,10 @@
 #include "VidaJugador.h"
 #include "VidaJugadorMortal.h"
 #include "VidaJugadorInvencible.h"
+#include "../../../../commons/utils/Log.h"
 
 #define JUGADOR_ENERGIA_INICIAL 100
-#define TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR 200
+#define TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR 100
 
 VidaJugador::VidaJugador() : VidaEntidad(JUGADOR_ENERGIA_INICIAL) {
 	this->vidaInterna = new VidaJugadorMortal(JUGADOR_ENERGIA_INICIAL);
@@ -24,7 +25,10 @@ void VidaJugador::procesarColision(const int tipoEntidad) {
 		acabaDeMorir = true;
 		cantidadVidas = cantidadVidas - 1;
 		ticksPostMorir = 0;
-		vidaInterna = new VidaJugadorInvencible(JUGADOR_ENERGIA_INICIAL);
+
+		if (cantidadVidas > 0) {
+			vidaInterna = new VidaJugadorInvencible(JUGADOR_ENERGIA_INICIAL);
+		}
 	}
 }
 

@@ -72,7 +72,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 }
 
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
+	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña!!!!
 	const int HUD_ALTO = 96;
 	int inicioCampoEnEjeY = HUD_ALTO;
 	auto* campo = new CampoMovil(jugadores, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);

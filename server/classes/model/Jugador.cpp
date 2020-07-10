@@ -104,10 +104,6 @@ const Vector Jugador::getVelocidad() const {
     return velocidad;
 }
 
-void Jugador::setPosicion(int x, int y) {
-    Jugador::posicion = Vector(x, y);
-}
-
 void Jugador::setCampo(CampoMovil *campo) {
 	this->campo = campo;
 }
@@ -127,6 +123,7 @@ Vector Jugador::getPosicion() {
 void Jugador::resetState() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
+    posicion = calcularPosicionInicial();
 }
 
 int Jugador::getTipoEntidad() {
