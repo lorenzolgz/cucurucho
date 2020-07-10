@@ -12,11 +12,18 @@ public:
 	void procesarColision(const int tipoEntidad) override;
 	void cambiarInvencible(bool invencible);
 	int getCantidadVidas();
+	void tick();
+	bool isAcabaDeMorir() const;
+	bool esInvencible();
 
 private:
 	VidaEntidad* vidaInterna;
 	bool invencible;
 	int cantidadVidas;
+	bool acabaDeMorir;
+	int ticksPostMorir;
+
+	bool estaEnCooldownPostMorir();
 };
 
 

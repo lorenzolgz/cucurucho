@@ -11,7 +11,7 @@ HudVista::HudVista() {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     this->textura = generadorDeTexturas->generarTextura("hud.png");
 	this->cantidadVidasYEnergia = new std::string;
-    *this->cantidadVidasYEnergia = std::to_string(999); // !!!!
+    *this->cantidadVidasYEnergia = std::to_string(0);
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
     this->nuevoTexto(cantidadVidasYEnergia, Vector(240, 24), TEXTO_COLOR_ROJO, false);

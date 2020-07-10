@@ -4,9 +4,11 @@
 #include "CampoMovil.h"
 #include "life/VidaJugadorInvencible.h"
 
-Jugador::Jugador(int x, int y) {
+Jugador::Jugador(Configuracion* config, int nroJugador) {
+	this->config = config;
+	this->nroJugador = nroJugador;
 	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
-	this->posicion = Vector(x, y);
+	this->posicion = calcularPosicionInicial();
 	this->velocidad = Vector(0, 0);
 	this->ticksHastaDisparo = 0;
 
@@ -57,7 +59,7 @@ bool Jugador::puedeDisparar() {
 	return ticksHastaDisparo <= 0;
 }
 
-Disparo* Jugador::disparar(int nroJugador) {
+Disparo* Jugador::disparar() {
 	if (!this->puedeDisparar()) {
 		return nullptr;
 	}
@@ -71,7 +73,13 @@ void Jugador::tick() {
 	actualizarPosicion(posicion + Vector(0, velocidad.getY()));
 	helperAbove->tick();
 	helperBelow->tick();
+
 	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+
+	if (vida->isAcabaDeMorir()) {
+		posicion = calcularPosicionInicial();
+	}
+	vida->tick();
     l->debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
@@ -83,6 +91,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.helper2 = helperBelow->state();
 	estadoJugador.energia = vida->getEnergia();
 	estadoJugador.cantidadVidas = vida->getCantidadVidas();
+	estadoJugador.esInvencible = vida->esInvencible();
 	return estadoJugador;
 }
 
@@ -137,4 +146,8 @@ VidaEntidad* Jugador::getVidaEntidad() {
 
 void Jugador::cambiarInvencible(bool invencible) {
 	vida->cambiarInvencible(invencible);
+}
+
+Vector Jugador::calcularPosicionInicial() {
+	return Vector(config->getAnchoPantalla() / 8 * (nroJugador + 1), config->getAltoPantalla() / 2);
 }

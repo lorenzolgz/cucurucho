@@ -236,8 +236,9 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
 		estadoTick.estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
 		estadoTick.estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
 		estadoTick.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
-		estadoTick.estadosJugadores[i].energia = mensaje["estadosJugadores"][i]["cantidadVidasYEnergia"];
+		estadoTick.estadosJugadores[i].energia = mensaje["estadosJugadores"][i]["energia"];
 		estadoTick.estadosJugadores[i].cantidadVidas = mensaje["estadosJugadores"][i]["cantidadVidas"];
+		estadoTick.estadosJugadores[i].esInvencible = mensaje["estadosJugadores"][i]["esInvencible"];
 		estadoTick.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
     }
     for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){

@@ -9,14 +9,12 @@
 #define VELOCIDAD_DISPARO 7
 
 Partida::Partida(Configuracion* config) {
-	int anchoPantalla = config->getAnchoPantalla();
-	int altoPantalla = config->getAltoPantalla();
 	Partida::nuevoNivel = 1;
 	Partida::nivel = 1;
 
     //"jugadores" posee los jugadores que estarán en juego
 	for (int i = 0; i < config->getCantidadJugadores(); i++) {
-		Partida::jugadores.insert({i, new Jugador(anchoPantalla / 8 * (i + 1), altoPantalla / 2)});
+		Partida::jugadores.insert({i, new Jugador(config, i)});
 	}
 
 	Partida::managerNiveles = new ManagerNiveles(config, jugadores);
@@ -34,7 +32,7 @@ void Partida::tick(struct Comando comandos[]) {
 											   comando.derecha);
 
 		if (comandos[i].disparo) {
-			Disparo* disparo = jugadorActual->disparar(i);
+			Disparo* disparo = jugadorActual->disparar();
 			if (disparo == nullptr) {
 				l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
 			} else {
