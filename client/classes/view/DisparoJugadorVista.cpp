@@ -12,10 +12,11 @@ DisparoJugadorVista::DisparoJugadorVista() {
     DisparoJugadorVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     DisparoJugadorVista::textura = generadorDeTexturas->generarTextura("fx.png");
-    DisparoJugadorVista::audioDisparo1 = Audio::getInstante();
-    audioDisparo1->generarSoundEffect("sfx-01.wav");
-    DisparoJugadorVista::audioDisparo2 = Audio::getInstante();
-    audioDisparo2->generarSoundEffect("sfx-02.wav");
+
+    Audio *audio1 = Audio::getInstante();
+    Audio *audio2 = Audio::getInstante();
+    audioDisparo1 = audio1->generarSoundEffect("sfx-01.wav");
+    audioDisparo2 = audio2->generarSoundEffect("sfx-01.wav");
 
     l->info("La vista del disparo del jugador fue creada correctamente.");
 }

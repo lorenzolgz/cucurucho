@@ -98,7 +98,7 @@ add_executable(cliente
         client/classes/config/Configuracion.h
         client/classes/view/DisparoJugadorVista.cpp
         client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h
-        client/classes/Audio.cpp client/classes/Audio.h)
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h)
 
 add_executable(servidor
         server/main.cpp

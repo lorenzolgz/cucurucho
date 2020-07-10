@@ -23,7 +23,7 @@ public:
 private:
     SDL_Renderer* gRenderer;
     SDL_Texture* textura;
-    Audio* audioDisparo;
+    EfectoSonido *audioDisparo;
 };
 
 

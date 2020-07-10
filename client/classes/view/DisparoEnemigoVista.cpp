@@ -11,8 +11,9 @@ DisparoEnemigoVista::DisparoEnemigoVista() {
     DisparoEnemigoVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     DisparoEnemigoVista::textura = generadorDeTexturas->generarTextura("fx.png");
-    DisparoEnemigoVista::audioDisparo = Audio::getInstante();
-    audioDisparo->generarSoundEffect("sfx-10.wav");
+
+    Audio *audio1 = Audio::getInstante();
+    DisparoEnemigoVista::audioDisparo = audio1->generarSoundEffect("sfx-10.wav");
 
     l->info("La vista del disparo fue creada correctamente.");
 }
@@ -24,6 +25,6 @@ void DisparoEnemigoVista::render(Vector posicion) {
     int contador = (int) posicion.getX();
     srcrect.x += DISPARO_ENEMIGO_SRC_ANCHO * (contador % 4);
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-    audioDisparo->playSoundEffect(300);
+//    audioDisparo->playSoundEffect(300);
     l->debug("Vista del disparo del enemigo: "+ posicion.getVector());
 }

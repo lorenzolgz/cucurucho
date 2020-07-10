@@ -25,8 +25,8 @@ private:
     SDL_Renderer* gRenderer;
     SDL_Texture* textura;
 
-    Audio *audioDisparo1;
-    Audio *audioDisparo2;
+    EfectoSonido *audioDisparo1;
+    EfectoSonido *audioDisparo2;
 
 };
 

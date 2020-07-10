@@ -60,13 +60,8 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
 
-    TituloVista::audioInicio = Audio::getInstante();
-    audioInicio->generarSoundEffect("sfx-26.wav");
-    TituloVista::audioError = Audio::getInstante();
-    audioError->generarSoundEffect("sfx-30.wav");
-    TituloVista::audioErrorConexion = Audio::getInstante();
-    audioError->generarAudio("audioNivel6.mp3");
-
+    Audio *audio1 = Audio::getInstante();
+    TituloVista::audioErrorConexion = audio1->generarAudio("audioNivel6.mp3");
 }
 
 void TituloVista::nuevaParticula() {
@@ -137,6 +132,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
 
     if (conexionPerdida) {
+        audioErrorConexion->play(50);
         TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
     }
 }
@@ -153,12 +149,10 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
     } else if (estadoLogin == LOGIN_ERROR_EN_PARTIDA) {
         texto = "PARTIDA EN CURSO";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
-        audioError->playMusic(50);
         texto = "PROBLEMA DE CONEXION";
     } else if (estadoLogin == LOGIN_ESPERANDO_RESPUESTA) {
         texto = "ESPERANDO RESPUESTA...";
     } else if (estadoLogin > 0) {
-        audioInicio->playSoundEffect(70);
         texto = "INICIANDO JUEGO";
     }
     TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);

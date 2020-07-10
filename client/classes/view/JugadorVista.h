@@ -39,8 +39,8 @@ private:
 
     int contadorVelocidadY;
 
-    Audio* audioPerder;
-    Audio* audioRevivir;
+    EfectoSonido *audioPerder;
+    EfectoSonido *audioRevivir;
 };
 
 

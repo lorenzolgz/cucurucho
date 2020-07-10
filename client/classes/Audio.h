@@ -8,6 +8,8 @@
 #include <string>
 #include <iostream>
 #include "../../commons/utils/Log.h"
+#include "Musica.h"
+#include "EfectoSonido.h"
 #include <SDL_mixer.h>
 
 class Audio {
@@ -15,21 +17,15 @@ public:
 
     static Audio *getInstante();
 
-    void generarAudio(std::string audio);
+    Musica *generarAudio(std::string audio);
 
-    void generarSoundEffect(std::string stringSoundEffect);
+    EfectoSonido *generarSoundEffect(std::string stringSoundEffect);
 
-    void playMusic(int volumen);
-
-    void playSoundEffect(int volumen);
-
-    void mutear();
 
 private:
     static Audio *instance;
     Mix_Music *mixAudio;
     Mix_Chunk *mixSoundEffect;
-    bool mute = false;
 
 };
 
