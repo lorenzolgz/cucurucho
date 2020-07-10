@@ -4,15 +4,16 @@
 #include "../../../../commons/utils/Log.h"
 
 #define JUGADOR_ENERGIA_INICIAL 100
-#define TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR 100
+#define TICKS_COOLDOWN_INVENCIBILIDAD_POR_NACER 100
+#define TICKS_COOLDOWN_INMOVIL_POST_NACER 30
 
 VidaJugador::VidaJugador() : VidaEntidad(JUGADOR_ENERGIA_INICIAL) {
 	this->vidaInterna = new VidaJugadorMortal(JUGADOR_ENERGIA_INICIAL);
 	this->invencible = false;
 	this->cantidadVidas = 3;
-	this->acabaDeMorir = false;
+	this->acabaDePerderUnaVida = false;
 	// Esto es para que no le de invencibilidad cuando recien se crea el jugador.
-	this->ticksPostMorir = TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR + 1;
+	this->ticksPostNacer = 0;
 }
 
 void VidaJugador::procesarColision(const int tipoEntidad) {
@@ -22,9 +23,9 @@ void VidaJugador::procesarColision(const int tipoEntidad) {
 		if (cantidadVidas == 0) {
 			return;
 		}
-		acabaDeMorir = true;
+		acabaDePerderUnaVida = true;
 		cantidadVidas = cantidadVidas - 1;
-		ticksPostMorir = 0;
+		ticksPostNacer = 0;
 
 		if (cantidadVidas > 0) {
 			vidaInterna = new VidaJugadorInvencible(JUGADOR_ENERGIA_INICIAL);
@@ -55,24 +56,32 @@ int VidaJugador::getCantidadVidas() {
 }
 
 void VidaJugador::tick() {
-	if (ticksPostMorir == TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR) {
+	if (ticksPostNacer == TICKS_COOLDOWN_INVENCIBILIDAD_POR_NACER) {
 		if (!invencible) {
 			vidaInterna = new VidaJugadorMortal(JUGADOR_ENERGIA_INICIAL);
 		}
 	}
 
-	ticksPostMorir = ticksPostMorir + 1;
-	acabaDeMorir = false;
+	ticksPostNacer = ticksPostNacer + 1;
+	acabaDePerderUnaVida = false;
 }
 
-bool VidaJugador::isAcabaDeMorir() const {
-	return acabaDeMorir;
+bool VidaJugador::isAcabaDePerderUnaVida() const {
+	return acabaDePerderUnaVida;
 }
 
 bool VidaJugador::esInvencible() {
-	return invencible || estaEnCooldownPostMorir();
+	return invencible || estaEnCooldownInvenciblePostNacer();
 }
 
-bool VidaJugador::estaEnCooldownPostMorir() {
-	return ticksPostMorir < TICKS_COOLDOWN_INVENCIBILIDAD_POR_REVIVIR;
+bool VidaJugador::estaEnCooldownInvenciblePostNacer() {
+	return ticksPostNacer < TICKS_COOLDOWN_INVENCIBILIDAD_POR_NACER;
+}
+
+bool VidaJugador::estaEnCooldownInmovilPostNacer() {
+	return ticksPostNacer < TICKS_COOLDOWN_INMOVIL_POST_NACER;
+}
+
+void VidaJugador::nacer() {
+	ticksPostNacer = 0;
 }

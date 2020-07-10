@@ -13,17 +13,19 @@ public:
 	void cambiarInvencible(bool invencible);
 	int getCantidadVidas();
 	void tick();
-	bool isAcabaDeMorir() const;
+	bool isAcabaDePerderUnaVida() const;
 	bool esInvencible();
+	bool estaEnCooldownInmovilPostNacer();
+	void nacer();
 
 private:
 	VidaEntidad* vidaInterna;
 	bool invencible;
 	int cantidadVidas;
-	bool acabaDeMorir;
-	int ticksPostMorir;
+	bool acabaDePerderUnaVida;
+	int ticksPostNacer;
 
-	bool estaEnCooldownPostMorir();
+	bool estaEnCooldownInvenciblePostNacer();
 };
 
 
