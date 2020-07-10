@@ -13,7 +13,6 @@ class Node;
 bool GestorSDL::init(int anchoPantalla, int altoPantalla) {
 	int escalaPantalla = PANTALLA_ESCALA;
 	toast = new ToastVista();
-	audio = new Audio;
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -112,15 +111,16 @@ bool GestorSDL::reproducirMusica(std::string stringAudio) {
     Audio* mixAudio = Audio::getInstante();
 
     l->error("Reproduciendo audio " + stringAudio);
-    Musica *audio = mixAudio->generarAudio(stringAudio);
-    audio->play(200);
+    Musica * musica = mixAudio->generarAudio(stringAudio);
+    musica->play(200);
 
 }
 
 void GestorSDL::mutear() {
 
-    Audio* mixAudio = Audio::getInstante();
-//    mixAudio->mutear();
+//    TODO: Desmutear y muteo para todo el programa, no por nivel
+    Musica *audio = new Musica(NULL);
+    audio->mutear();
 
 }
 
