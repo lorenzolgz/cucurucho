@@ -123,6 +123,9 @@ void CampoMovil::removerDisparosMuertos() {
 void CampoMovil::procesarTodasLasColisiones() {
 	for (auto it = jugadores.begin(); it != jugadores.end(); it++) {
 		Jugador* jugador = it->second;
+		if (jugador->estaMuerto()) {
+			continue;
+		}
 		for (auto* entidadEnemigo : entidadesEnemigos) {
 			procesarColisionEntreDosEntidades(jugador, entidadEnemigo);
 		}

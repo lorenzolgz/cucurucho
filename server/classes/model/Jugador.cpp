@@ -21,28 +21,33 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 }
 
 void Jugador::calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha) {
-    double vParcial = 0;
+	if (vida->estaEnCooldownInmovilPostNacer()) {
+		velocidad = Vector(0, 0);
+		return;
+	}
+
+    double velocidadParcial = 0;
 
     if ((arriba || abajo) && (izquierda || derecha)) {
-        vParcial = velocidadEscalar / sqrt(2);
+		velocidadParcial = velocidadEscalar / sqrt(2);
     } else if (arriba || abajo || izquierda || derecha) {
-        vParcial = velocidadEscalar;
+		velocidadParcial = velocidadEscalar;
     }
 
-    double vx = 0, vy = 0;
+    double velocidadX = 0, velocidadY = 0;
     if (arriba) {
-        vy = -vParcial;
+		velocidadY = -velocidadParcial;
     } else if (abajo) {
-        vy = vParcial;
+		velocidadY = velocidadParcial;
     }
 
     if (izquierda) {
-        vx = -vParcial;
+		velocidadX = -velocidadParcial;
     } else if (derecha) {
-        vx = vParcial;
+		velocidadX = velocidadParcial;
     }
 
-    velocidad = Vector(vx, vy);
+    velocidad = Vector(velocidadX, velocidadY);
 }
 
 Vector Jugador::actualizarPosicion(Vector posicionNueva) {
@@ -60,6 +65,9 @@ bool Jugador::puedeDisparar() {
 }
 
 Disparo* Jugador::disparar() {
+	if (estaMuerto()) {
+		return nullptr;
+	}
 	if (!this->puedeDisparar()) {
 		return nullptr;
 	}
@@ -76,8 +84,9 @@ void Jugador::tick() {
 
 	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
 
-	if (vida->isAcabaDeMorir()) {
-		posicion = calcularPosicionInicial();
+	if (vida->isAcabaDePerderUnaVida()) {
+		l->info("El jugador " + std::to_string(nroJugador) + " perdio una vida.");
+		reiniciarPosicion();
 	}
 	vida->tick();
     l->debug("Posicion del Jugador: "+ posicion.getVector());
@@ -92,6 +101,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.energia = vida->getEnergia();
 	estadoJugador.cantidadVidas = vida->getCantidadVidas();
 	estadoJugador.esInvencible = vida->esInvencible();
+	estadoJugador.estaMuerto = estaMuerto();
 	return estadoJugador;
 }
 
@@ -120,10 +130,11 @@ Vector Jugador::getPosicion() {
 	return posicion;
 }
 
-void Jugador::resetState() {
+void Jugador::reiniciarPosicion() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
     posicion = calcularPosicionInicial();
+    vida->nacer();
 }
 
 int Jugador::getTipoEntidad() {
@@ -147,4 +158,8 @@ void Jugador::cambiarInvencible(bool invencible) {
 
 Vector Jugador::calcularPosicionInicial() {
 	return Vector(config->getAnchoPantalla() / 8 * (nroJugador + 1), config->getAltoPantalla() / 2);
+}
+
+bool Jugador::estaMuerto() {
+	return vida->noTieneMasVidas();
 }

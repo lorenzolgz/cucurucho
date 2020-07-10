@@ -83,6 +83,7 @@ struct EstadoJugador {
 	int energia;
 	int cantidadVidas;
 	int esInvencible;
+	int estaMuerto;
     int presente;
 };
 

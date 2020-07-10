@@ -38,9 +38,10 @@ public:
     void setCampo(CampoMovil* campo);
     // Todo: cada jugador tendria que saber su nroJugador de antemano!!!!
     Disparo* disparar();
-    void resetState();
+    void reiniciarPosicion();
 	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
+	bool estaMuerto();
 
 private:
 	Configuracion* config;

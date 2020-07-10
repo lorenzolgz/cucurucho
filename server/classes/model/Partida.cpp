@@ -34,7 +34,7 @@ void Partida::tick(struct Comando comandos[]) {
 		if (comandos[i].disparo) {
 			Disparo* disparo = jugadorActual->disparar();
 			if (disparo == nullptr) {
-				l->debug("El jugador " + std::to_string(i) + " no disparó porque está en cooldown");
+				l->debug("El jugador " + std::to_string(i) + " no disparó. Puede que este en cooldown o este muerto.");
 			} else {
 				l->debug("El jugador " + std::to_string(i) + " disparó");
 				managerNiveles->nuevoDisparo(disparo);

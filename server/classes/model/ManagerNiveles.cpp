@@ -22,7 +22,7 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
 
     std::map<int, Jugador*>::iterator it;
     for (it = jugadores.begin(); it != jugadores.end(); it++) {
-        it->second->resetState();
+		it->second->reiniciarPosicion();
     }
 	Nivel *nivel = new Nivel(nivelConfActual, jugadores);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
