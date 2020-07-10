@@ -3,6 +3,7 @@
 #include "../../../commons/utils/Log.h"
 #include "Nivel.h"
 #include "../../../commons/utils/Constantes.h"
+#include "life/VidaEnemigo1.h"
 
 
 Enemigo1::Enemigo1(float x, float y, float velocidadX) {
@@ -10,9 +11,10 @@ Enemigo1::Enemigo1(float x, float y, float velocidadX) {
         x = -x + PANTALLA_ANCHO - ENEMIGO1_ANCHO;
         velocidadX *= -1;
     }
-	Enemigo1::posicion = Vector(x, y);
-	Enemigo1::velocidadX = velocidadX; // Posición 2 de sprite
-    l->info("Se creo correctamente el Enemigo 01.");
+	this->posicion = Vector(x, y);
+	this->velocidadX = velocidadX; // Posición 2 de sprite
+	this->vida = new VidaEnemigo1();
+	l->info("Se creo correctamente el Enemigo 01.");
 }
 
 int Enemigo1::getAncho() {
@@ -38,4 +40,19 @@ struct EstadoEnemigo Enemigo1::state() {
 	estado.posicionY = posicion.getY();
 	estado.clase = 1;
 	return estado;
+}
+
+int Enemigo1::getTipoEntidad() {
+	return ENTIDAD_ENEMIGO1;
+}
+
+std::list<Forma> Enemigo1::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
+
+VidaEntidad *Enemigo1::getVidaEntidad() {
+	return vida;
 }

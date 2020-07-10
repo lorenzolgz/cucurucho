@@ -7,16 +7,18 @@ const int OFFSET_A = 600;
 const int OFFSET_B = 1500;
 
 #include "../../../commons/utils/Constantes.h"
+#include "life/VidaEnemigo2.h"
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX) {
     if (random() % 2 == 0) {
         x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
-	Enemigo2::velocidadEscalar = 1;
-	Enemigo2::posicion = Vector(x, y);
-	Enemigo2::velocidadX = velocidadX;
-    l->info("Se creo correctamente el Enemigo 02.");
+	this->velocidadEscalar = 1;
+	this->posicion = Vector(x, y);
+	this->velocidadX = velocidadX;
+	this->vida = new VidaEnemigo2();
+	l->info("Se creo correctamente el Enemigo 02.");
 }
 
 int Enemigo2::getAncho() {
@@ -55,4 +57,19 @@ struct EstadoEnemigo Enemigo2::state() {
 	estado.posicionY = posicion.getY();
 	estado.clase = 2;
 	return estado;
+}
+
+int Enemigo2::getTipoEntidad() {
+	return ENTIDAD_ENEMIGO2;
+}
+
+std::list<Forma> Enemigo2::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho()-20, getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
+
+VidaEntidad* Enemigo2::getVidaEntidad() {
+	return vida;
 }

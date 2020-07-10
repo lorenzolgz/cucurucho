@@ -2,7 +2,7 @@
 #define CUCURUCHO_ENTIDADENEMIGO_H
 
 
-#include "Entidad.h"
+#include "entities/Entidad.h"
 
 class EntidadEnemigo : public Entidad {
 public:

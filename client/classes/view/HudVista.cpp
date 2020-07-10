@@ -7,12 +7,14 @@
 
 
 HudVista::HudVista() {
-	HudVista::gRenderer = GraphicRenderer::getInstance();
+	this->gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
-    HudVista::textura = generadorDeTexturas->generarTextura("hud.png");
+    this->textura = generadorDeTexturas->generarTextura("hud.png");
+	this->cantidadVidasYEnergia = new std::string;
+    *this->cantidadVidasYEnergia = std::to_string(0);
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
-    this->nuevoTexto(new std::string("100000"), Vector(240, 24), TEXTO_COLOR_ROJO, false);
+    this->nuevoTexto(cantidadVidasYEnergia, Vector(240, 24), TEXTO_COLOR_ROJO, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -33,7 +35,7 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
-    for (TextoVista* c : textos){
+    for (TextoVista* c : textos) {
         c->render();
     }
 
@@ -46,4 +48,8 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
 
 void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq) {
 	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
+}
+
+void HudVista::setCantidadVidasYEnergia(int cantidadVidas, int energia) {
+	*this->cantidadVidasYEnergia = std::to_string(cantidadVidas) + " - " + std::to_string(energia);
 }

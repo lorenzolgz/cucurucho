@@ -16,6 +16,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
     GestorSDL* gestorSDL;
+	invencible = false;
 
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
@@ -52,11 +53,11 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
                     l->info("Se desencola debido a la alta cantidad de mensajes en la cola");
                 }
 
-                nlohmann::json instruccion = colaMensajes->pop();
+                nlohmann::json mensajeJson = colaMensajes->pop();
 
-                if (instruccion["tipoMensaje"] == INFORMACION_NIVEL) setInformacionNivel(instruccion);
-                else if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
-                else if (instruccion["tipoMensaje"] == ESTADO_LOGIN) setEstadoLogin(instruccion);
+                if (mensajeJson["tipoMensaje"] == INFORMACION_NIVEL) procesarInformacionNivel(mensajeJson);
+                else if (mensajeJson["tipoMensaje"] == ESTADO_TICK) procesarEstadoTick(mensajeJson);
+                else if (mensajeJson["tipoMensaje"] == ESTADO_LOGIN) procesarEstadoLogin(mensajeJson);
             }
 
             if (estadoLogin.estadoLogin <= 0 && validarLogin) {
@@ -84,7 +85,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
             l->debug("ERROR DE CONEXION: desencolando " + instruccion.dump());
-            if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
+            if (instruccion["tipoMensaje"] == ESTADO_TICK) procesarEstadoTick(instruccion);
         }
 
         if (manager->terminoJuego()) {
@@ -100,9 +101,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     }
 
     hiloConexionCliente->cerrarConexion();
-
 }
-
 
 void Partida::autenticarServidor() {
     Login credenciales;
@@ -166,19 +165,29 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
-    struct Comando client_command = {false, false, false, false};
+    // Manejar la invencibilidad dependiendo de las teclas apretadas.
+    if (currentKeyStates[SDL_SCANCODE_Y]) {
+		invencible = false;
+    }
+	if (currentKeyStates[SDL_SCANCODE_T]) {
+		invencible = true;
+	}
 
-	client_command.nroJugador = estadoLogin.nroJugador;
-	client_command.arriba = currentKeyStates[SDL_SCANCODE_UP];
-    client_command.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
-    client_command.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
-    client_command.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+    struct Comando comando = {false, false, false, false, false, false, false};
+
+	comando.nroJugador = estadoLogin.nroJugador;
+	comando.arriba = currentKeyStates[SDL_SCANCODE_UP];
+	comando.abajo = currentKeyStates[SDL_SCANCODE_DOWN];
+	comando.izquierda = currentKeyStates[SDL_SCANCODE_LEFT];
+	comando.derecha = currentKeyStates[SDL_SCANCODE_RIGHT];
+	comando.disparo = currentKeyStates[SDL_SCANCODE_SPACE];
+	comando.invencible = invencible;
 
     // Send data (command)
     if (!hiloConexionCliente->isActivo()) {
         throw ConexionExcepcion();
     }
-    hiloConexionCliente->conexionCliente->enviarComando(&client_command);
+    hiloConexionCliente->conexionCliente->enviarComando(&comando);
 }
 
 void Partida::renderLoop() {
@@ -221,37 +230,47 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
 }
 
 
-void Partida::setEstadoTick(nlohmann::json mensaje) {
-    struct EstadoTick estado;
-    estado.nuevoNivel = mensaje["nuevoNivel"];
-    estado.posX = mensaje["posX"];
-    estado.numeroNivel = mensaje["numeroNivel"];
+void Partida::procesarEstadoTick(nlohmann::json mensaje) {
+    struct EstadoTick estadoTick;
+	estadoTick.nuevoNivel = mensaje["nuevoNivel"];
+	estadoTick.posX = mensaje["posX"];
+	estadoTick.numeroNivel = mensaje["numeroNivel"];
 
     int i = 0;
     for (; i < MAX_JUGADORES; i++ ) {
-        estado.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
-        estado.estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
-        estado.estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
-        estado.estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
-        estado.estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
-        estado.estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
-        estado.estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
-        estado.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
-        estado.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
+		estadoTick.estadosJugadores[i].helper1.posicionX = mensaje["estadosJugadores"][i]["helper1"]["posicionX"];
+		estadoTick.estadosJugadores[i].helper1.posicionY = mensaje["estadosJugadores"][i]["helper1"]["posicionY"];
+		estadoTick.estadosJugadores[i].helper1.angulo = mensaje["estadosJugadores"][i]["helper1"]["angulo"];
+		estadoTick.estadosJugadores[i].helper2.posicionX = mensaje["estadosJugadores"][i]["helper2"]["posicionX"];
+		estadoTick.estadosJugadores[i].helper2.posicionY = mensaje["estadosJugadores"][i]["helper2"]["posicionY"];
+		estadoTick.estadosJugadores[i].helper2.angulo = mensaje["estadosJugadores"][i]["helper2"]["angulo"];
+		estadoTick.estadosJugadores[i].posicionX = mensaje["estadosJugadores"][i]["posicionX"];
+		estadoTick.estadosJugadores[i].posicionY = mensaje["estadosJugadores"][i]["posicionY"];
+		estadoTick.estadosJugadores[i].energia = mensaje["estadosJugadores"][i]["energia"];
+		estadoTick.estadosJugadores[i].cantidadVidas = mensaje["estadosJugadores"][i]["cantidadVidas"];
+		estadoTick.estadosJugadores[i].esInvencible = mensaje["estadosJugadores"][i]["esInvencible"];
+		estadoTick.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
     }
     for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){
         EstadoEnemigo estadoEnemigo;
         estadoEnemigo.posicionX = informacionJson["posicionX"];
         estadoEnemigo.posicionY = informacionJson["posicionY"];
         estadoEnemigo.clase = informacionJson["clase"];
-        estado.estadosEnemigos.push_back(estadoEnemigo);
+        estadoTick.estadosEnemigos.push_back(estadoEnemigo);
     }
-    manager->setEstadoTick(estado);
+    for (nlohmann::json informacionJson : mensaje["estadosDisparos"]){
+        EstadoDisparo estadoDisparo;
+        estadoDisparo.posicionX = informacionJson["posicionX"];
+        estadoDisparo.posicionY = informacionJson["posicionY"];
+        estadoDisparo.id = informacionJson["id"];
+        estadoTick.estadosDisparos.push_back(estadoDisparo);
+    }
+    manager->setEstadoTick(estadoTick);
 }
 
-void Partida::setInformacionNivel(nlohmann::json mensaje) {
+void Partida::procesarInformacionNivel(nlohmann::json mensaje) {
     struct InformacionNivel info;
-    
+
     info.numeroNivel = mensaje["numeroNivel"];
 
     info.velocidad = mensaje["velocidad"];
@@ -267,7 +286,7 @@ void Partida::setInformacionNivel(nlohmann::json mensaje) {
     gestorSDL->reproducirMusica(info.audioNivel);
 }
 
-void Partida::setEstadoLogin(nlohmann::json mensaje) {
+void Partida::procesarEstadoLogin(nlohmann::json mensaje) {
     struct EstadoLogin estadoLogin;
 
     estadoLogin.nroJugador = mensaje["nroJugador"];

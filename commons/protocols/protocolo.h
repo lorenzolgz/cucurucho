@@ -44,19 +44,27 @@ enum {
     MENSAJE_PING
 };
 
-
 struct Comando {
 	int nroJugador;
 	int arriba;
 	int abajo;
 	int izquierda;
 	int derecha;
+	int disparo;
+	int invencible;
 };
 
 //para el logueo
 struct Login {
     char usuario[LARGO_USERNAME];
     char contrasenia[LARGO_PASSWORD];
+};
+
+struct EstadoDisparo {
+  EstadoDisparo(): posicionX(-200), posicionY(-200), id(0) {}
+  int posicionX;
+  int posicionY;
+  int id;
 };
 
 struct EstadoHelper {
@@ -72,6 +80,9 @@ struct EstadoJugador {
 	int posicionY;
 	EstadoHelper helper1;
 	EstadoHelper helper2;
+	int energia;
+	int cantidadVidas;
+	int esInvencible;
     int presente;
 };
 
@@ -88,6 +99,7 @@ struct EstadoTick {
 	int nuevoNivel;
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
+	std::list<EstadoDisparo> estadosDisparos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 

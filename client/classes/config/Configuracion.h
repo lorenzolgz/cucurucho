@@ -1,5 +1,3 @@
-#include <string>
-
 //
 // Created by camix on 17/6/20.
 //
@@ -8,16 +6,15 @@
 #define CUCURUCHO_CONFIGURACION_H
 
 
+#include <string>
+
 class Configuracion {
 public:
     Configuracion(std::string nivelLog, bool b, int i);
 
     std::string getNivelLog();
-
     bool isStdOut() const;
-
     int getMaxCola() const;
-
 
 private:
     std::string nivelLog;
