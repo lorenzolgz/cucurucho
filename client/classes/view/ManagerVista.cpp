@@ -166,6 +166,14 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
     estadoJugador.helper2.posicionX = posicionHelper2.getX();
     estadoJugador.helper2.posicionY = posicionHelper2.getY();
 
+    // Estos son valores dummies que no se usan
+    estadoJugador.energia = 100;
+    estadoJugador.cantidadVidas = 3;
+    estadoJugador.esInvencible = false;
+
+    // Sin esto no se renderiza el jugador.
+    estadoJugador.estaMuerto = false;
+
     return estadoJugador;
 }
 

@@ -4,7 +4,7 @@
 #include <utility>
 #include <iostream>
 #include <string.h>
-// !!!!! revertir
+
 
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"
@@ -41,7 +41,7 @@ Log::Log(std::string basePath) {
 void Log::output(const std::string& estado_log, const std::string& mensaje) {
 	std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     cargar_log(logEntrada, timenow, estado_log, mensaje);
-    // !!!! cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
+    cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
 }
 
 void Log::error(const std::string& string) {
@@ -69,8 +69,7 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo.open(log , std::fstream::app);
     char horario[30];
     std::strftime(horario, 100, "%x %X" , std::localtime(&timestamp));
-	// archivo << horario << estado << msj << std::endl;
-	std::cout << horario << estado << msj << std::endl;
+    archivo << horario << estado << msj << std::endl;
     archivo.flush();
     archivo.close();
 
