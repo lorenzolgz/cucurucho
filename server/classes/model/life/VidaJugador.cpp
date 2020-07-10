@@ -85,3 +85,7 @@ bool VidaJugador::estaEnCooldownInmovilPostNacer() {
 void VidaJugador::nacer() {
 	ticksPostNacer = 0;
 }
+
+bool VidaJugador::noTieneMasVidas() {
+	return cantidadVidas == 0;
+}

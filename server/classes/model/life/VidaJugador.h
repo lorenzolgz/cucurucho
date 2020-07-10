@@ -18,6 +18,8 @@ public:
 	bool estaEnCooldownInmovilPostNacer();
 	void nacer();
 
+	bool noTieneMasVidas();
+
 private:
 	VidaEntidad* vidaInterna;
 	bool invencible;

@@ -41,6 +41,7 @@ public:
     void reiniciarPosicion();
 	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
+	bool estaMuerto();
 
 private:
 	Configuracion* config;

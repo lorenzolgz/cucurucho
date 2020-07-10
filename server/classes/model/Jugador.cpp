@@ -154,3 +154,7 @@ void Jugador::cambiarInvencible(bool invencible) {
 Vector Jugador::calcularPosicionInicial() {
 	return Vector(config->getAnchoPantalla() / 8 * (nroJugador + 1), config->getAltoPantalla() / 2);
 }
+
+bool Jugador::estaMuerto() {
+	return vida->noTieneMasVidas();
+}
