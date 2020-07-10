@@ -81,6 +81,8 @@ struct EstadoJugador {
 	EstadoHelper helper1;
 	EstadoHelper helper2;
 	int energia;
+	int cantidadVidas;
+	int esInvencible;
     int presente;
 };
 

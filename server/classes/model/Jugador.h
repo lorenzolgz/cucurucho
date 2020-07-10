@@ -7,8 +7,9 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
 #include "entities/Entidad.h"
-#include "life/VidaJugadorMortal.h"
+#include "life/VidaJugador.h"
 #include "entities/projectiles/Disparo.h"
+#include "../config/Configuracion.h"
 
 class CampoMovil;
 class Helper;
@@ -21,7 +22,7 @@ const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador : public Entidad {
 public:
-    Jugador(int x, int y);
+    Jugador(Configuracion* config, int nroJugador);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 	struct EstadoJugador state();
@@ -34,15 +35,16 @@ public:
 
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
-    void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
     // Todo: cada jugador tendria que saber su nroJugador de antemano!!!!
-    Disparo* disparar(int nroJugador);
+    Disparo* disparar();
     void resetState();
 	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
 
 private:
+	Configuracion* config;
+	int nroJugador;
     Vector posicion;
     Vector velocidad;
     double velocidadEscalar;
@@ -51,11 +53,11 @@ private:
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
-	VidaEntidad* vida;
-	bool invencible;
+	VidaJugador* vida;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 	bool puedeDisparar();
+	Vector calcularPosicionInicial();
 };
 
 

@@ -42,7 +42,7 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 		l->error("!!!! no tendria que pasar: " + std::to_string(i));
 		exit(3);
 	}
-	hud->setEnergia(estadoJugadorPropio.energia);
+	hud->setCantidadVidasYEnergia(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia);
     hud->render(estadoLogin, username);
 
     // Render Campo

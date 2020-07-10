@@ -4,17 +4,18 @@
 #include "CampoMovil.h"
 #include "life/VidaJugadorInvencible.h"
 
-Jugador::Jugador(int x, int y) {
+Jugador::Jugador(Configuracion* config, int nroJugador) {
+	this->config = config;
+	this->nroJugador = nroJugador;
 	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
-	this->posicion = Vector(x, y);
+	this->posicion = calcularPosicionInicial();
 	this->velocidad = Vector(0, 0);
 	this->ticksHastaDisparo = 0;
 
 	this->helperAbove = new Helper(this, Vector(JUGADOR_ANCHO / 2, -JUGADOR_ALTO));
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
-	this->vida = new VidaJugadorMortal();
-	this->invencible = false;
+	this->vida = new VidaJugador();
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -58,7 +59,7 @@ bool Jugador::puedeDisparar() {
 	return ticksHastaDisparo <= 0;
 }
 
-Disparo* Jugador::disparar(int nroJugador) {
+Disparo* Jugador::disparar() {
 	if (!this->puedeDisparar()) {
 		return nullptr;
 	}
@@ -72,7 +73,13 @@ void Jugador::tick() {
 	actualizarPosicion(posicion + Vector(0, velocidad.getY()));
 	helperAbove->tick();
 	helperBelow->tick();
+
 	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+
+	if (vida->isAcabaDeMorir()) {
+		posicion = calcularPosicionInicial();
+	}
+	vida->tick();
     l->debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
@@ -83,6 +90,8 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.helper1 = helperAbove->state();
 	estadoJugador.helper2 = helperBelow->state();
 	estadoJugador.energia = vida->getEnergia();
+	estadoJugador.cantidadVidas = vida->getCantidadVidas();
+	estadoJugador.esInvencible = vida->esInvencible();
 	return estadoJugador;
 }
 
@@ -93,10 +102,6 @@ const Vector &Jugador::getPosicion() const {
 
 const Vector Jugador::getVelocidad() const {
     return velocidad;
-}
-
-void Jugador::setPosicion(int x, int y) {
-    Jugador::posicion = Vector(x, y);
 }
 
 void Jugador::setCampo(CampoMovil *campo) {
@@ -118,6 +123,7 @@ Vector Jugador::getPosicion() {
 void Jugador::resetState() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
+    posicion = calcularPosicionInicial();
 }
 
 int Jugador::getTipoEntidad() {
@@ -136,15 +142,9 @@ VidaEntidad* Jugador::getVidaEntidad() {
 }
 
 void Jugador::cambiarInvencible(bool invencible) {
-	if (this->invencible == invencible) {
-		return;
-	}
+	vida->cambiarInvencible(invencible);
+}
 
-	if (invencible) {
-		vida = new VidaJugadorInvencible();
-	} else {
-		vida = new VidaJugadorMortal();
-	}
-
-	this->invencible = invencible;
+Vector Jugador::calcularPosicionInicial() {
+	return Vector(config->getAnchoPantalla() / 8 * (nroJugador + 1), config->getAltoPantalla() / 2);
 }

@@ -18,7 +18,7 @@ class Jugador;
 
 class CampoMovil : public Ticker {
 public:
-	CampoMovil(std::map<int, Jugador *> jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel);
+	CampoMovil(std::map<int, Jugador *> jugador, int ancho, int alto, float velocidadNivel, float largoNivel);
 
 	int getAncho();
 	int getAlto();

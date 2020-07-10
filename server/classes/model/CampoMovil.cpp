@@ -3,7 +3,7 @@
 #include <string>
 #include "../../../commons/utils/Log.h"
 
-CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel) {
+CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);
 	CampoMovil::velocidadX = velocidadNivel;
 	CampoMovil::largoNivel = largoNivel;
