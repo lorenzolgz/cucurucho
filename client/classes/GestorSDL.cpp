@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL_mixer.h>
 #include <SDL_render.h>
 #include "GestorSDL.h"
 #include "GraphicRenderer.h"
@@ -7,9 +8,12 @@
 #include "view/HudVista.h"
 #include "../../commons/utils/Constantes.h"
 
+class Node;
+
 bool GestorSDL::init(int anchoPantalla, int altoPantalla) {
 	int escalaPantalla = PANTALLA_ESCALA;
 	toast = new ToastVista();
+	audio = new Audio;
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -29,7 +33,14 @@ bool GestorSDL::init(int anchoPantalla, int altoPantalla) {
 		return false;
 	}
 
-	gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    //Initialize SDL_mixer
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+    {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    }
+
+
+    gWindow = SDL_CreateWindow("Gley Lancer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 							   anchoPantalla * escalaPantalla, altoPantalla * escalaPantalla, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
 		l->error(std::string("La Ventana no creo correctamente! SDL_Error: ") + SDL_GetError());
@@ -95,3 +106,19 @@ bool GestorSDL::event(std::string* inputText) {
 
     return quit;
 }
+
+bool GestorSDL::reproducirMusica(std::string stringAudio) {
+
+    Audio* mixAudio = Audio::getInstante();
+    mixAudio->generarAudio(stringAudio);
+    mixAudio->playMusic(100);
+
+}
+
+void GestorSDL::mutear() {
+
+    Audio* mixAudio = Audio::getInstante();
+    mixAudio->mutear();
+
+}
+

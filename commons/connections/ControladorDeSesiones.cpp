@@ -14,6 +14,8 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor,
     this->usuarios = usuarios;
 	this->nroJugador = nroJugador;
 	this->usuarioEnJuego = usuarioEnJuego;
+
+
 }
 
 
@@ -24,6 +26,11 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor,
 bool ControladorDeSesiones::iniciarSesion() {
 
 	bool ok = true;
+
+	if (conexionServidor == nullptr) {
+	    l->debug("Rechazando conexion invalida");
+	    return false;
+	}
 
 	//pedirle un usuario y contraseña al cliente
 	struct Login login;
@@ -44,8 +51,10 @@ bool ControladorDeSesiones::iniciarSesion() {
         if (!usuarioEstaRegistrado(usuario, contrasenia)
                 || !controlarConUsuariosEnJuego(usuario)) {
             this->conexionServidor->cerrar();
+            l->info("Usuario " + std::string(usuario) + " rechazado");
             ok = false;
         } else {
+            l->info("Aceptando al usuario " + std::string(usuario));
             this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ESPERAR, nroJugador);
             this->usuarioConectado = std::string(usuario);
             conexionServidor->setUsuario(std::string(usuario));
@@ -124,6 +133,7 @@ bool ControladorDeSesiones::controlarConUsuariosEnJuego(std::string usuario) {
     // Si `usuarioEnJuego` es false, significa que se pueden aceptar usuarios fuera de la lista original de jugadores
     if (usuarioEnJuego) {
         this->conexionServidor->enviarEstadoLoginSimple(LOGIN_ERROR_EN_PARTIDA);
+        l->info("Usuario " + std::string(usuario) + " no es uno de los usuarios conectados");
         return false;
     }
 

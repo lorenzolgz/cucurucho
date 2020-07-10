@@ -59,7 +59,7 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
     if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 	}
-	if (*nuevoNivel) {
+	if (*nuevoNivel && estadoTick->numeroNivel != FIN_DE_JUEGO) {
 		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
 			hiloConexionServidor->enviarInformacionNivel(informacionNivel);
 		}
@@ -130,14 +130,16 @@ void HiloOrquestadorPartida::run() {
 		}
 	}
 	catch (const std::exception &e) {
-        // TODO stoppear hilosConexionesServidores
-        // Si se llegó aca, quiere decir que no se pudo catchear la desconexion dentro de receiveData
         l->error("HiloOrquestadorPartida. Ocurrio un error en el main loop.");
         l->error(e.what());
 	}
 
 	l->info("Esperando que terminen los hilosConexionesServidores.");
 	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
+	    // TODO: Por que doble enviarEstadoTick? Para evitar race conditions donde se cierre el hilo antes de enviarse
+	    // Habria que cambiarse por un sistema mas elegante
+		hiloConexionServidor->enviarEstadoTick(&estadoTick);
+		hiloConexionServidor->enviarEstadoTick(&estadoTick);
 		hiloConexionServidor->terminar();
 	}
 
@@ -146,7 +148,7 @@ void HiloOrquestadorPartida::run() {
 	}
 	l->info("Terminaron todos los hilosConexionesServidores.");
 
-	aceptadorConexiones->xxx();
+    aceptadorConexiones->shutdownSocket();
 
 	l->info("Terminando de correr HiloOrquestadorPartida.");
 }

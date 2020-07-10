@@ -4,6 +4,7 @@
 #include "../GeneradorDeTexturas.h"
 #include "../GraphicRenderer.h"
 #include "HelperVista.h"
+#include "../Audio.h"
 
 JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
@@ -12,6 +13,13 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::contador = 0;
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
+
+//  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
+    JugadorVista::audioPerder = Audio::getInstante();
+    audioPerder->generarSoundEffect("sfx-05.wav");
+    JugadorVista::audioRevivir = Audio::getInstante();
+    audioRevivir->generarSoundEffect("sfx-07.wav");
+
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
 	l->info("La vista del jugador fue creada correctamente.");
@@ -26,6 +34,7 @@ void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
     } else {
         contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);
     }
+
 }
 
 

@@ -1,7 +1,6 @@
 //
 // Created by javier on 10/5/20.
 //
-
 #include "TituloVista.h"
 #include "../../../commons/utils/Vector.h"
 #include "../GeneradorDeTexturas.h"
@@ -20,6 +19,7 @@ class TituloParticula {
     Vector posicion;
     Vector velocidad;
     int contador;
+
 
 public:
     explicit TituloParticula(const Vector &posicion, const Vector &velocidad) : velocidad(velocidad), posicion(posicion), contador(0) {}
@@ -59,6 +59,14 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::contador = 0;
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
+
+    TituloVista::audioInicio = Audio::getInstante();
+    audioInicio->generarSoundEffect("sfx-26.wav");
+    TituloVista::audioError = Audio::getInstante();
+    audioError->generarSoundEffect("sfx-30.wav");
+    TituloVista::audioErrorConexion = Audio::getInstante();
+    audioError->generarAudio("audioNivel6.mp3");
+
 }
 
 void TituloVista::nuevaParticula() {
@@ -67,7 +75,6 @@ void TituloVista::nuevaParticula() {
     Vector velocidad = Vector(velocidadEscalar * cos(angulo), velocidadEscalar * sin(angulo));
     auto* particula = new TituloParticula(Vector(ancho / 2, alto / 2), velocidad);
     particulas.insert(particula);
-    l->debug("Insertando nueva particula con velocidad " + velocidad.getVector());
 }
 
 void TituloVista::renderParticulas() {
@@ -76,7 +83,6 @@ void TituloVista::renderParticulas() {
     for (auto it = particulas.begin(); it != particulas.end(); ) {
         (*it)->render(gRenderer, texturaParticulas);
         if ((*it)->fueraDePantalla(ancho, alto)) {
-            l->debug("Eliminando particula en posicion " + (*it)->getPosicion().getVector());
             it = particulas.erase(it);
         } else {
             ++it;
@@ -147,10 +153,12 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
     } else if (estadoLogin == LOGIN_ERROR_EN_PARTIDA) {
         texto = "PARTIDA EN CURSO";
     } else if (estadoLogin == LOGIN_SIN_CONEXION) {
+        audioError->playMusic(50);
         texto = "PROBLEMA DE CONEXION";
     } else if (estadoLogin == LOGIN_ESPERANDO_RESPUESTA) {
         texto = "ESPERANDO RESPUESTA...";
     } else if (estadoLogin > 0) {
+        audioInicio->playSoundEffect(70);
         texto = "INICIANDO JUEGO";
     }
     TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
@@ -158,6 +166,8 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
 
 void
 TituloVista::render(int estado, int estadoLogin, std::string username, std::string password, bool seleccionadoUsuario) {
+    SDL_Rect posCampo = { 0, 0, ancho, alto };
+    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
     renderParticulas();
     renderTitulo();
     renderInfo(estado, estadoLogin);

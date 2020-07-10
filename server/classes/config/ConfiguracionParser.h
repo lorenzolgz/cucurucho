@@ -32,6 +32,8 @@ private:
     static FondoConfiguracion *parsearFondo(Json::Value fondoJson, int nivel);
 
     std::list<FondoConfiguracion *> parsearFondos(Json::Value fondosConfiguracionJson, int nivel);
+
+    void parsearAudioNivel(Json::Value nivelJason, char audioNivel[255]);
 };
 
 

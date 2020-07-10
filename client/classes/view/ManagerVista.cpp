@@ -46,8 +46,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 }
 
 
-void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel) {
-    if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel) {
+void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, EstadoTick tick) {
+    if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel && tick.numeroNivel >= 0) {
         return;
     }
 

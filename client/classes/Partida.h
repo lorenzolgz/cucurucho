@@ -20,6 +20,8 @@
 #include "view/ManagerVista.h"
 #include "ManagerJuego.h"
 #include "config/Configuracion.h"
+#include "Audio.h"
+#include "GestorSDL.h"
 
 class Partida {
 public:
@@ -35,6 +37,7 @@ private:
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
+    GestorSDL* gestorSDL;
 
     void conexionLoop(const Uint8 *currentKeyStates);
 

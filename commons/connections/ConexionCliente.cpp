@@ -44,3 +44,13 @@ void ConexionCliente::enviarDatosDeLogin(struct Login *logueo) {
 
     enviarData2(client_socket, mensajeJson);
 }
+
+// Por si el server se cae en la pantalla de logueo
+void ConexionCliente::enableTimeout() {
+    struct timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv) >= 0);
+    assert(setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof tv) >= 0);
+}
+

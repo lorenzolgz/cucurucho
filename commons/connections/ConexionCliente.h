@@ -22,6 +22,8 @@ public:
 
     void cerrar();
 
+    void enableTimeout();
+
 private:
 	int client_socket;
 

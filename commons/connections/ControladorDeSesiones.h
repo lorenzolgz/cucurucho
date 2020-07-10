@@ -8,6 +8,7 @@
 #include "ConexionServidor.h"
 #include "../protocols/protocolo.h"
 #include "../../server/classes/config/UsuariosConfiguracion.h"
+#include "../../client/classes/Audio.h"
 #include <iostream>
 #include <jsoncpp/json/json.h>
 #include <fstream>
@@ -25,6 +26,7 @@ public:
     ConexionServidor *getConexionServidor() const;
 
     bool controlarConUsuariosEnJuego(std::string usuario);
+
 private:
 
     ConexionServidor* conexionServidor;
@@ -36,6 +38,7 @@ private:
 
 	bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
 	void pedirCredenciales(Login *login);
+
 };
 
 

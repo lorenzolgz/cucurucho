@@ -3,6 +3,7 @@
 //
 #include "Partida.h"
 #include "GestorSDL.h"
+#include <SDL_mixer.h>
 #include "../../commons/connections/ConexionExcepcion.h"
 
 Partida::Partida() {}
@@ -14,6 +15,7 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
     manager = new ManagerJuego();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
+    GestorSDL* gestorSDL;
 
     colaMensajes = new ColaBloqueante<nlohmann::json>();
     estadoLogin.nroJugador = LOGIN_PENDIENTE;
@@ -37,8 +39,9 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
             if (!colaMensajes->empty()) {
                 while (colaMensajes->size() > configuracion->getMaxCola()){
                     nlohmann::json json = colaMensajes->pop();
-                    // Solo se deberian matar los mensajes de ESTADO_TICK
-                    if (json["tipoMensaje"] != ESTADO_TICK) {
+                    // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
+                    // TODO: quiero llorar
+                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
                         colaMensajes->push_back(json);
                         break;
                     }
@@ -76,9 +79,12 @@ void Partida::play(Configuracion* configuracion, const char* ip_address, int por
 
         while(!colaMensajes->empty()) {
             nlohmann::json instruccion = colaMensajes->pop();
+            l->debug("ERROR DE CONEXION: desencolando " + instruccion.dump());
             if (instruccion["tipoMensaje"] == ESTADO_TICK) setEstadoTick(instruccion);
         }
+
         if (manager->terminoJuego()) {
+            renderLoop();
             l->info("Finalizo el juego.");
         } else {
             l->error("Se interrumpio el juego: " + std::string(exc.what()));
@@ -128,7 +134,6 @@ void Partida::autenticarServidor() {
 // Manejar eventos (teclas, texto) de SDL
 // Si se cumple `SDL_QUIT`, devuelve true.
 bool Partida::eventLoop(std::string* inputText) {
-    GestorSDL* gestorSDL;
     return gestorSDL->event(inputText);
 }
 
@@ -150,6 +155,10 @@ void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
 void Partida::conexionLoop(const Uint8 *currentKeyStates) {
+
+    if (estadoLogin.nroJugador > 0 && !hiloConexionCliente->isActivo()) {
+        throw ConexionExcepcion();
+    }
 
     if (!manager->enJuego() || estadoLogin.nroJugador < 0) return;
 
@@ -200,6 +209,11 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]){
         pantallaPrincipal->setAutoCompletar();
     }
+
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
+        gestorSDL->mutear();
+    }
+
 }
 
 
@@ -238,6 +252,7 @@ void Partida::setInformacionNivel(nlohmann::json mensaje) {
 
     info.velocidad = mensaje["velocidad"];
     strcpy(info.informacionFinNivel, std::string(mensaje["informacionFinNivel"]).c_str());
+    strcpy(info.audioNivel, std::string(mensaje["audioNivel"]).c_str());
     for (nlohmann::json informacionJson : mensaje["informacionFondo"]) {
         InformacionFondo informacionFondoJson;
         informacionFondoJson.pVelocidad = informacionJson["velocidad"];
@@ -245,6 +260,7 @@ void Partida::setInformacionNivel(nlohmann::json mensaje) {
         info.informacionFondo.push_back(informacionFondoJson);
     }
     manager->setInformacionNivel(info);
+    gestorSDL->reproducirMusica(info.audioNivel);
 }
 
 void Partida::setEstadoLogin(nlohmann::json mensaje) {

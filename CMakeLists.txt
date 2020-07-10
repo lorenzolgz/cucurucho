@@ -30,6 +30,7 @@ set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;--filter=${CPPLINT_FILTER_OPTIONS}")
 # END CPPLINT
 
+
 add_executable(cliente
         client/main.cpp
         client/classes/view/FondoVista.cpp
@@ -94,7 +95,10 @@ add_executable(cliente
         client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
         commons/connections/ConexionExcepcion.h
         client/classes/config/Configuracion.cpp
-        client/classes/config/Configuracion.h)
+        client/classes/config/Configuracion.h
+        client/classes/view/DisparoJugadorVista.cpp
+        client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h
+        client/classes/Audio.cpp client/classes/Audio.h)
 
 add_executable(servidor
         server/main.cpp
@@ -158,8 +162,9 @@ add_executable(servidor
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
         libraries/json/json.hpp
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h)
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h
+        )
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
-target_link_libraries(cliente SDL2 -lSDL2_image)
+target_link_libraries(cliente SDL2 -lSDL2_image -lSDL2_mixer)
 target_link_libraries(cliente ${JSONCPP_LIBRARIES})

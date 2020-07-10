@@ -23,11 +23,13 @@ void HiloConexionServidor::run() {
 
             while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
                 nlohmann::json json = colaEnviadora->pop();
-                // Solo se deberian matar los mensajes de ESTADO_TICK
-                if (json["tipoMensaje"] != ESTADO_TICK) {
+                // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
+                // TODO: quiero llorar
+                if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
                     colaEnviadora->push_back(json);
                     break;
                 }
+                l->debug("desencolandoMensaje " + json.dump());
             }
 
             if (!colaEnviadora->empty()) {
@@ -82,7 +84,8 @@ void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* infor
 			{"tipoMensaje", INFORMACION_NIVEL},
 			{"numeroNivel",  informacionNivel->numeroNivel},
 			{"velocidad", informacionNivel->velocidad},
-			{"informacionFinNivel",   informacionNivel->informacionFinNivel}
+			{"informacionFinNivel",   informacionNivel->informacionFinNivel},
+            {"audioNivel", informacionNivel->audioNivel}
 	};
 	for (InformacionFondo informacionFondo: informacionNivel->informacionFondo){
         nlohmann::json mensajeFondo= {

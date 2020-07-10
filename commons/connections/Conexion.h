@@ -6,8 +6,8 @@
 
 class Conexion {
 public:
-	void enviarData2(int client_socket, nlohmann::json dataJson);
-	nlohmann::json recibirData2(int client_socket);
+    void enviarData2(int client_socket, nlohmann::json dataJson);
+    nlohmann::json recibirData2(int client_socket);
 };
 
 

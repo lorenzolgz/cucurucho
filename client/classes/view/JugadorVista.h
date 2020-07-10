@@ -7,6 +7,7 @@
 #include "Colores.h"
 #include "HelperVista.h"
 #include "../../../commons/protocols/protocolo.h"
+#include "../Audio.h"
 
 
 const int JUGADOR_SRC_ANCHO = 96;
@@ -37,6 +38,9 @@ private:
 	void calcularVelocidadY(Vector nuevaPosicion);
 
     int contadorVelocidadY;
+
+    Audio* audioPerder;
+    Audio* audioRevivir;
 };
 
 

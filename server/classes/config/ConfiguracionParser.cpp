@@ -86,6 +86,10 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 	}
 }
 
+void ConfiguracionParser::parsearAudioNivel(Json::Value nivelJason, char *audioNivel) {
+    strcpy(audioNivel, nivelJason["audioNivel"].asString().c_str());
+}
+
 void ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON, char* fondosJson) {
     strcpy(fondosJson, nivelJSON["fin"].asString().c_str());
 }
@@ -184,7 +188,9 @@ NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int
 	try {
 		    auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
 		    char finNivel[LARGO_PATH];
+		    char audioNivel[LARGO_PATH];
 		    parsearFinalNivel(nivelJson, finNivel);
+		    parsearAudioNivel(nivelJson,audioNivel);
             auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
             auto largo = parsearLargoNivel(nivelJson, nivel);
 
@@ -200,7 +206,7 @@ NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int
                 throw exc;
             }
 
-	    	return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
+	    	return new NivelConfiguracion(fondos, enemigos, finNivel,audioNivel, velocidad, largo);
 	    }
 	catch(const std::exception &exc) {
 	        l->error("Ocurrio un error al parsear el nivel " + std::to_string(nivel));

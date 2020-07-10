@@ -78,6 +78,7 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
 		}
         informacionNivel->informacionFondo = listaFondo;
         informacionNivel->velocidad = nivelConfig->getVelocidad();
+        nivelConfig->getAudioNivel(informacionNivel->audioNivel);
 		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
 		pasajeDeNivel();
 	}

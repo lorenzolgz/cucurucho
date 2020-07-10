@@ -11,13 +11,13 @@
 
 class ConexionServidor : public Conexion {
 public:
-	ConexionServidor(int client_socket);
+    ConexionServidor(int client_socket);
 
-	nlohmann::json recibirMensaje();
-	void enviarMensaje(nlohmann::json mensaje);
-	void enviarEstadoLogin(struct EstadoLogin estadoLogin);
+    nlohmann::json recibirMensaje();
+    void enviarMensaje(nlohmann::json mensaje);
+    void enviarEstadoLogin(struct EstadoLogin estadoLogin);
     void enviarEstadoLoginSimple(int estadoLogin, int nroJugador = -1);
-	void cerrar();
+    void cerrar();
 
     const std::string &getUsuario() const;
 
@@ -34,9 +34,9 @@ public:
     void enableTimeout();
 
 private:
-	int client_socket;
-	std::string usuario;
-	int nroJugador;
+    int client_socket;
+    std::string usuario;
+    int nroJugador;
 };
 
 

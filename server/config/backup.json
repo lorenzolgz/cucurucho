@@ -1,7 +1,7 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error",
+         "nivel": "info",
          "std_out": true
       },
       "cantidadJugadores": 2,
@@ -9,6 +9,7 @@
          {
             "archivoFondos": "fondos/fondos1.json",
             "fin": "cleared_con_nave1.png",
+            "audioNivel": "rainonme.mpeg",
             "enemigos": {
                "clase1": 5,
                "clase2": 1
@@ -19,22 +20,24 @@
          {
             "archivoFondos": "fondos/fondos2.json",
             "fin": "cleared_con_nave2.png",
+            "audioNivel": "audioNivel2.mp3",
             "enemigos": {
                "clase1": 5,
                "clase2": 2
             },
             "velocidad": 3,
-            "largo": 200
+            "largo": 500
          },
          {
             "archivoFondos": "fondos/fondos3.json",
             "fin": "cleared_con_nave3.png",
+            "audioNivel": "audioNivel3.mp3",
             "enemigos": {
                "clase1": 5,
                "clase2": 2
             },
             "velocidad": 3,
-            "largo": 200
+            "largo": 500
          }
       ],
       "usuarios": {
