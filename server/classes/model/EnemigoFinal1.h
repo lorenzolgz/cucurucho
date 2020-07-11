@@ -4,10 +4,13 @@
 
 #include "EntidadEnemigo.h"
 
+const int ENEMIGO_FINAL1_ANCHO = 375;
+const int ENEMIGO_FINAL1_ALTO = 288;
+
 class EnemigoFinal1 : public EntidadEnemigo {
 public:
 public:
-	EnemigoFinal1(float x, float y, float velocidadX);
+	EnemigoFinal1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores);
 
 	EstadoEnemigo state() override;
 	float getVelocidadX() override;

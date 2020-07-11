@@ -6,8 +6,8 @@
 #include "../../../commons/protocols/protocolo.h"
 
 // !!!!!
-const int ENEMIGO_FINAL1_SRC_ANCHO = 285;
-const int ENEMIGO_FINAL1_SRC_ALTO = 147;
+const int ENEMIGO_FINAL1_SRC_ANCHO = 375;
+const int ENEMIGO_FINAL1_SRC_ALTO = 288;
 
 class EnemigoFinal1Vista {
 public:

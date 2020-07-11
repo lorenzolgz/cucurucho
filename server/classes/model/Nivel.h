@@ -33,7 +33,7 @@ private:
 	std::map<int, Jugador*>* jugadores;
     float velocidad;
 
-	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, std::map<int, Jugador*>* jugador);
+	CampoMovil *crearCampo(std::map<int, Jugador*>* jugador);
 	void plantarSemillasEnCampo();
 };
 

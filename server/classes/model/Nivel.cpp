@@ -16,7 +16,7 @@
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
 	this->velocidad = nivelConfig->getVelocidad();
 	this->largo = nivelConfig->getLargo();
-	this->campo = crearCampo(nivelConfig, jugadores);
+	this->campo = crearCampo(jugadores);
     this->alto = campo->getAlto();
     this->jugadores = jugadores;
 }
@@ -38,6 +38,10 @@ bool Nivel::termino() {
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 	crearEnemigosDeClase(2, cantClase2);
 	crearEnemigosDeClase(1, cantClase1);
+	// !!!!!
+	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho(), 200, campo->getVelocidadX(), jugadores);
+	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 100, 0));
+	semillasEntidades.push_back(semillaEntidad);
 }
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
@@ -73,13 +77,9 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
         semillasEntidades.push_back(semillaEntidad);
     }
-	// !!!!!
-	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho() + 300, 200, campo->getVelocidadX());
-	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 300, 0));
-	semillasEntidades.push_back(semillaEntidad);
 }
 
-CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
+CampoMovil* Nivel::crearCampo(std::map<int, Jugador*>* jugadores) {
 	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, largo);
 
 	l->info("Se creo correctamente el nivel (Parallax)");

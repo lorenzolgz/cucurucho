@@ -7,7 +7,7 @@
 #include "../../../commons/protocols/protocolo.h"
 
 const int ENEMIGO2_SRC_ANCHO = 285;
-const int ENEMIGO2_SRC_ALTOS = 147;
+const int ENEMIGO2_SRC_ALTO = 147;
 
 class Enemigo2Vista {
 public:
