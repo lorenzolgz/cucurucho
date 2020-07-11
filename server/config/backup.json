@@ -2,7 +2,7 @@
    "configuracion": {
       "log": {
          "nivel": "error",
-         "std_out": true
+         "std_out": false
       },
       "cantidadJugadores": 2,
       "niveles": [

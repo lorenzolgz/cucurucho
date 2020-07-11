@@ -167,26 +167,21 @@ bool Jugador::estaMuerto() {
 }
 
 void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
-    std::cout<<"entidad: "<<entidadEnemigo<<std::endl;
     switch(entidadEnemigo){
         case ENTIDAD_ENEMIGO1: {
             this->puntos += 500;
-            std::cout<<"e1"<<std::endl;
             break;
         }
         case ENTIDAD_ENEMIGO2: {
             this->puntos += 1000;
-            std::cout<<"e2"<<std::endl;
             break;
         }
         case ENTIDAD_ENEMIGO_FINAL1: {
             this->puntos += 2000;
-            std::cout<<"ef"<<std::endl;
             break;
         }
         default: {
             this->puntos = -1;
-            std::cout<<"error"<<std::endl;
         }
     }
 }
