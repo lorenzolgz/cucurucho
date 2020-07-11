@@ -16,7 +16,8 @@
             "audioNivel": "audioNivel1.mp3",
             "enemigos": {
                "clase1": 105,
-               "clase2": 75
+               "clase2": 75,
+               "final": true
             },
             "velocidad": 2,
             "largo": 20000
@@ -27,7 +28,8 @@
             "audioNivel": "audioNivel2.mp3",
             "enemigos": {
                "clase1": 135,
-               "clase2": 45
+               "clase2": 45,
+               "final": true
             },
             "velocidad": 3,
             "largo": 25000
@@ -38,7 +40,8 @@
             "audioNivel": "audioNivel3.mp3",
             "enemigos": {
                "clase1": 40,
-               "clase2": 90
+               "clase2": 90,
+               "final": true
             },
             "velocidad": 3.5,
             "largo": 25000

@@ -12,7 +12,8 @@
             "audioNivel": "rainonme.mpeg",
             "enemigos": {
                "clase1": 8,
-               "clase2": 2
+               "clase2": 2,
+               "final": true
             },
             "velocidad": 2,
             "largo": 600
@@ -23,7 +24,8 @@
             "audioNivel": "audioNivel1.mp3",
             "enemigos": {
                "clase1": 5,
-               "clase2": 2
+               "clase2": 2,
+               "final": false
             },
             "velocidad": 3,
             "largo": 1000
@@ -34,7 +36,8 @@
             "audioNivel": "audioNivel2.mp3",
             "enemigos": {
                "clase1": 5,
-               "clase2": 2
+               "clase2": 2,
+               "final": true
             },
             "velocidad": 3,
             "largo": 1000

@@ -16,7 +16,12 @@ Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores
 	this->campo = crearCampo(jugadores);
     this->alto = campo->getAlto();
     this->jugadores = jugadores;
-	this->extensionNivel = new ExtensionNivel(campo, jugadores);
+
+	if (nivelConfig->getEnemigos()->isFinal()) {
+		this->extensionNivel = new ExtensionNivel(campo, jugadores);
+	} else {
+		this->extensionNivel = nullptr;
+	}
 }
 
 void Nivel::tick() {
@@ -25,7 +30,6 @@ void Nivel::tick() {
 	plantarSemillasEnCampo();
 }
 
-// !!!!!
 bool Nivel::termino() {
 	bool terminoBase = terminoNivelBase();
 	if (terminoBase && extensionNivel != nullptr && !extensionNivel->isIniciado()) {
