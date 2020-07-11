@@ -3,14 +3,10 @@
 #include "Enemigo2.h"
 #include "Enemigo1.h"
 #include "Jugador.h"
-#include "../../../commons/utils/Log.h"
-#include "../states/EstadoInternoNivel.h"
-#include <queue>
-#include <iterator>
 #include <list>
-#include "../../../commons/utils/Constantes.h"
 #include "EnemigoFinal1.h"
 
+// !!!!!
 #define CAMPO_ANCHO 960
 #define CAMPO_ALTO 576
 
@@ -20,29 +16,46 @@ Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores
 	this->campo = crearCampo(jugadores);
     this->alto = campo->getAlto();
     this->jugadores = jugadores;
+	this->extensionNivel = new ExtensionNivel(campo, jugadores);
 }
 
 void Nivel::tick() {
     campo->tick();
+    if (extensionNivel != nullptr) extensionNivel->tick();
 	plantarSemillasEnCampo();
 }
 
+// !!!!!
 bool Nivel::termino() {
+	bool terminoBase = terminoNivelBase();
+	if (terminoBase && extensionNivel != nullptr && !extensionNivel->isIniciado()) {
+		extensionNivel->iniciar();
+	}
+
+	bool terminoExtension = extensionNivel == nullptr ? true : extensionNivel->termino();
+
+	bool termino = terminoBase && terminoExtension;
+
+	if (termino) {
+		l->error("!!!!! Fin de nivel.");
+	}
+
+	return termino;
+}
+
+bool Nivel::terminoNivelBase() {
 	bool verificacionPosicion = campo->verificarPosicionNivel();
 	if (verificacionPosicion) {
-		l->debug("Fin de nivel.");
+		l->debug("Fin de nivel base.");
 	}
 
 	return verificacionPosicion;
 }
 
+
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 	crearEnemigosDeClase(2, cantClase2);
 	crearEnemigosDeClase(1, cantClase1);
-	// !!!!!
-	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho(), 125, campo->getVelocidadX(), jugadores);
-	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 100, 0));
-	semillasEntidades.push_back(semillaEntidad);
 }
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
@@ -61,9 +74,9 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-            case 1: {entidad = new Enemigo1(posXEnNivel, posY, velocidadX, jugadores);}
+            case 1: {entidad = new Enemigo1(campo->getAncho(), posY, velocidadX, jugadores);}
             break;
-            case 2: {entidad = new Enemigo2(posXEnNivel, posY, velocidadX, jugadores);}
+            case 2: {entidad = new Enemigo2(campo->getAncho(), posY, velocidadX, jugadores);}
             break;
             // Todo después vemos
             default: {entidad = nullptr;};

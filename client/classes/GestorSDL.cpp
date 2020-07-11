@@ -113,12 +113,11 @@ bool GestorSDL::reproducirMusica(std::string stringAudio) {
     l->error("Reproduciendo audio " + stringAudio);
     Musica * musica = mixAudio->generarAudio(stringAudio);
     musica->play(200);
-
 }
 
 void GestorSDL::mutear() {
 
-//    TODO: Desmutear y muteo para todo el programa, no por nivel
+	// TODO: Desmutear y muteo para todo el programa, no por nivel
     Musica *audio = new Musica(NULL);
     audio->mutear();
 

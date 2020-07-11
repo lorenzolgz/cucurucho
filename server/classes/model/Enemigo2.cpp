@@ -2,17 +2,13 @@
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "Nivel.h"
-
-const int OFFSET_A = 600;
-const int OFFSET_B = 1500;
-
-
 #include "../../../commons/utils/Constantes.h"
 #include "life/VidaEnemigo2.h"
 #include "ais/IAEnemigoPatron2.h"
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
     if (random() % 2 == 0) {
+    	// !!!!!
         x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }

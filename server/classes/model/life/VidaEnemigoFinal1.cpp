@@ -1,6 +1,7 @@
 #include "VidaEnemigoFinal1.h"
 
-#define ENEMIGO_FINAL1_ENERGIA_INICIAL 1000
+// !!!!! poner 1000
+#define ENEMIGO_FINAL1_ENERGIA_INICIAL 300
 
 VidaEnemigoFinal1::VidaEnemigoFinal1() : VidaEntidad(ENEMIGO_FINAL1_ENERGIA_INICIAL) {
 }

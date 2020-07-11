@@ -27,7 +27,7 @@ class Partida {
 public:
     Partida();
 
-    void play(Configuracion* configuracion, const char *ip_address, int port, bool conexionPerdida = false);
+    void iniciar(Configuracion* configuracion, const char *ip_address, int port, bool conexionPerdida = false);
 
 private:
     Titulo* pantallaPrincipal;
