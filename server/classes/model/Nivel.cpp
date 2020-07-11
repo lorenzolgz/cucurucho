@@ -15,7 +15,7 @@
 
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
 	this->velocidad = nivelConfig->getVelocidad();
-	this->ancho = nivelConfig->getLargo();
+	this->largo = nivelConfig->getLargo();
 	this->campo = crearCampo(nivelConfig, jugadores);
     this->alto = campo->getAlto();
     this->jugadores = jugadores;
@@ -42,15 +42,15 @@ void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     for (int i = 0; i < cantDeEnemigos; i++) {
-        int posInicialX = campo->getAncho();
+        int posXBase = campo->getAncho();
         int posY = std::rand() % alto;
 
-        int rangoEnemigos = (int) ancho - posInicialX;
+        int rangoEnemigos = (int) largo - posXBase;
         if (rangoEnemigos <= 0) {
             l->info("Ancho de pantalla mas grande que largo del nivel");
-            rangoEnemigos = ancho;
+            rangoEnemigos = largo;
         }
-        int posXEnNivel = std::rand() % rangoEnemigos + posInicialX;
+        int posXEnNivel = std::rand() % rangoEnemigos + posXBase;
         float velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
@@ -73,10 +73,14 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
 
         semillasEntidades.push_back(semillaEntidad);
     }
+	// !!!!!
+	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho() + 300, 200, campo->getVelocidadX());
+	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 300, 0));
+	semillasEntidades.push_back(semillaEntidad);
 }
 
 CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
-	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, ancho);
+	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, largo);
 
 	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;
@@ -89,14 +93,14 @@ void Nivel::plantarSemillasEnCampo() {
 		SemillaEntidad* semillaEntidad = semillasEntidades.front();
 		semillasEntidades.pop_front();
 
-		int posXEnemigo = semillaEntidad->getPosicion().getX();
-		int posicionXVentana = campo->getPosicion().getX() + campo->getAncho();
+		int posXSemillaEnemigo = semillaEntidad->getPosicion().getX();
+		int posXCampoEnNivel = campo->getPosicion().getX() + campo->getAncho();
 
-		if (posicionXVentana < posXEnemigo) {
+		if (posXCampoEnNivel < posXSemillaEnemigo) {
 			nuevasSemillasEntidades.push_back(semillaEntidad);
 		} else {
 			Entidad* entidad = semillaEntidad->getEntidad();
-			// !!!! este casteo es pa quilombo
+			// TODO este casteo es pa quilombo!!!!
 			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
 		}
 	}

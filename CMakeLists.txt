@@ -94,7 +94,7 @@ add_executable(cliente
         client/classes/config/Configuracion.h
         client/classes/view/DisparoJugadorVista.cpp
         client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h
-        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h)
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/EnemigoFinal1Vista.cpp client/classes/view/EnemigoFinal1Vista.h)
 
 add_executable(servidor
         server/main.cpp
@@ -165,7 +165,7 @@ add_executable(servidor
         server/classes/model/life/VidaEnemigo1.cpp server/classes/model/life/VidaEnemigo1.h
         server/classes/model/life/VidaEnemigo2.cpp server/classes/model/life/VidaEnemigo2.h
         server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/entities/projectiles/Disparo.cpp server/classes/model/entities/projectiles/Disparo.h server/classes/model/life/VidaProyectil.cpp server/classes/model/life/VidaProyectil.h server/classes/model/life/VidaJugador.cpp server/classes/model/life/VidaJugador.h server/classes/model/ais/IAEnemigo.h server/classes/model/ais/IAEnemigoPatron1.cpp server/classes/model/ais/IAEnemigoPatron1.h server/classes/model/ais/IAEnemigoPatron2.cpp server/classes/model/ais/IAEnemigoPatron2.h)
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/entities/projectiles/Disparo.cpp server/classes/model/entities/projectiles/Disparo.h server/classes/model/life/VidaProyectil.cpp server/classes/model/life/VidaProyectil.h server/classes/model/life/VidaJugador.cpp server/classes/model/life/VidaJugador.h server/classes/model/ais/IAEnemigo.h server/classes/model/ais/IAEnemigoPatron1.cpp server/classes/model/ais/IAEnemigoPatron1.h server/classes/model/ais/IAEnemigoPatron2.cpp server/classes/model/ais/IAEnemigoPatron2.h server/classes/model/EnemigoFinal1.cpp server/classes/model/EnemigoFinal1.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
 target_link_libraries(cliente SDL2 -lSDL2_image -lSDL2_mixer)

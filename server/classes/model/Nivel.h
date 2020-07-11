@@ -26,7 +26,7 @@ public:
     void nuevoDisparo(Disparo *pDisparo);
 
 private:
-	float ancho;
+	float largo;
 	int alto;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;

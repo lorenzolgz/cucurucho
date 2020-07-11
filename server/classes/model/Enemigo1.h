@@ -31,9 +31,6 @@ public:
 private:
     Vector posicion;
 	float velocidadX;
-public:
-
-private:
 	VidaEntidad* vida;
 };
 

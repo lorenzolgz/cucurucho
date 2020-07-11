@@ -16,8 +16,9 @@ ManagerJuego::ManagerJuego() {
 }
 
 void ManagerJuego::render(){
+	// !!!!! pasar al metodo setInformacionNivel
     managerVista->setInformacionNivel(informacionNivel, estadoTick);
-    //Render texture to screen
+    // Render texture to screen
     managerVista->render(estadoTick, estadoLogin, username);
 }
 

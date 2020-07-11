@@ -2,14 +2,15 @@
 #include "CampoMovil.h"
 #include <string>
 #include "../../../commons/utils/Log.h"
+#include "EnemigoFinal1.h"
 
 CampoMovil::CampoMovil(std::map<int, Jugador*>* jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
-	CampoMovil::posicion = Vector(0, 0);
-	CampoMovil::velocidadX = velocidadNivel;
-	CampoMovil::largoNivel = largoNivel;
-    CampoMovil::ancho = ancho;
-	CampoMovil::alto = alto;
-	CampoMovil::jugadores = jugadores;
+	this->posicion = Vector(0, 0);
+	this->velocidadX = velocidadNivel;
+	this->largoNivel = largoNivel;
+	this->ancho = ancho;
+	this->alto = alto;
+	this->jugadores = jugadores;
 
     std::map<int, Jugador*>::iterator it;
     for (it = jugadores->begin(); it != jugadores->end(); it++) {
