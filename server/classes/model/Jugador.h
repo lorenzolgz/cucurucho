@@ -17,7 +17,7 @@ class Entidad;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
-const int TICKS_COOLDOWN_DISPARO = 30;
+const int TICKS_COOLDOWN_DISPARO = 18;
 const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
 
 class Jugador : public Entidad {

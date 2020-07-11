@@ -9,6 +9,7 @@
 #include <iterator>
 #include <list>
 #include "../../../commons/utils/Constantes.h"
+#include "EnemigoFinal1.h"
 
 #define CAMPO_ANCHO 960
 #define CAMPO_ALTO 576
@@ -39,7 +40,7 @@ void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 	crearEnemigosDeClase(2, cantClase2);
 	crearEnemigosDeClase(1, cantClase1);
 	// !!!!!
-	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho(), 200, campo->getVelocidadX(), jugadores);
+	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho(), 125, campo->getVelocidadX(), jugadores);
 	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 100, 0));
 	semillasEntidades.push_back(semillaEntidad);
 }

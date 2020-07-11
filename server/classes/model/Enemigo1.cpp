@@ -29,6 +29,7 @@ int Enemigo1::getAlto() {
 
 void Enemigo1::tick() {
 	ia = ia->tick();
+	l->debug("Posicion del Enemigo 01: "+ posicion.getVector());
 }
 
 Vector Enemigo1::getPosicion() {
@@ -64,9 +65,4 @@ float Enemigo1::getVelocidadX() {
 
 void Enemigo1::setPosicion(Vector nuevaPosicion) {
 	posicion = nuevaPosicion;
-}
-
-void Enemigo1::innerTick() {
-	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
-	l->debug("Posicion del Enemigo 01: "+ posicion.getVector());
 }

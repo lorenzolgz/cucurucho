@@ -3,7 +3,6 @@
 #include "../../../../../commons/utils/Utils.h"
 
 IACircular::IACircular(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador *> *jugadores, Vector factor, float radio) {
-	l->error("!!!!! IACircular");
 	this->entidadEnemigo = entidadEnemigo;
 	this->jugadores = jugadores;
 	this->primerTick = true;

@@ -9,7 +9,6 @@
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
 #include "entities/projectiles/Disparo.h"
-#include "EnemigoFinal1.h"
 
 const int CAMPO_OFFSET = 300;
 

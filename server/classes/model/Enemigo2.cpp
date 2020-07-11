@@ -34,20 +34,7 @@ int Enemigo2::getAlto() {
 
 void Enemigo2::tick() {
 	ia = ia->tick();
-}
-
-// !!!!!
-void Enemigo2::recalcularPosicion() {
-// Por si queremos mostrar como entra y sale en loop, moficando el sprite dependiendo
-// si avanza o retrocede
-//
-    if (posicion.getX() > OFFSET_A and velocidadX) {
-        posicion = posicion + Vector(-velocidadEscalar, 0);
-        if (posicion.getX() <= OFFSET_A) velocidadX = false;
-    } else{
-        posicion = posicion + Vector(velocidadEscalar, 0);
-        if (posicion.getX() >= OFFSET_B) velocidadX = true;
-    }
+	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 Vector Enemigo2::getPosicion() {
@@ -83,9 +70,4 @@ float Enemigo2::getVelocidadX() {
 
 void Enemigo2::setPosicion(Vector nuevaPosicion) {
 	posicion = nuevaPosicion;
-}
-
-void Enemigo2::innerTick() {
-	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
-	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }

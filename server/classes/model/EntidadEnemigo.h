@@ -12,8 +12,6 @@ public:
 	virtual struct EstadoEnemigo state() = 0;
 	virtual float getVelocidadX() = 0;
 	virtual void setPosicion(Vector nuevaPosicion) = 0;
-	// !!!!!
-	virtual void innerTick() = 0;
 
 protected:
 	IAEnemigo* ia;

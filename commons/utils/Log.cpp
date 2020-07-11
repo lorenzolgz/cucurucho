@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string.h>
 
+
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"
 #define ERROR INFO or nivel == "error"
@@ -11,7 +12,6 @@
 #define RELATIVE_PATHLOG "log.txt"
 #define RELATIVE_HOME_PATH "/log/"
 
-// !!!!! Revertir
 namespace fs = std::experimental::filesystem;
 
 Log::Log(std::string basePath) {
@@ -68,8 +68,7 @@ void Log::cargar_log(std::string log, time_t timestamp, const std::string& estad
     archivo.open(log , std::fstream::app);
     char horario[30];
     std::strftime(horario, 100, "%x %X" , std::localtime(&timestamp));
-	// archivo << horario << estado << msj << std::endl;
-	std::cout << horario << estado << msj << std::endl;
+    archivo << horario << estado << msj << std::endl;
     archivo.flush();
     archivo.close();
 

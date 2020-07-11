@@ -7,8 +7,8 @@ IAEnemigoPatron3::IAEnemigoPatron3(EntidadEnemigo *entidadEnemigo, std::map<int,
 	this->entidadEnemigo = entidadEnemigo;
 	this->jugadores = jugadores;
 
-	IAEnemigo* iaCircular = new IACircular(entidadEnemigo, jugadores, Vector(0.5, 1), 120);
-	IAEnemigo* iaEstatico = new IAEstatico(entidadEnemigo, jugadores, 10, iaCircular);
+	IAEnemigo* iaCircular = new IACircular(entidadEnemigo, jugadores, Vector(0.45, 1), 80);
+	IAEnemigo* iaEstatico = new IAEstatico(entidadEnemigo, jugadores, 5, iaCircular);
 	IAEnemigo* iaHorizontal = new IAHorizontal(entidadEnemigo, jugadores, 100, iaEstatico);
 
 	this->innerIa = iaHorizontal;

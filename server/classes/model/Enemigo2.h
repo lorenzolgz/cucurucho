@@ -24,16 +24,12 @@ public:
 	float getVelocidadX() override;
 	virtual void setPosicion(Vector nuevaPosicion) override;
 
-	void innerTick() override;
-
 private:
     Vector posicion;
     float velocidadEscalar;
     float velocidadX;
 	VidaEntidad* vida;
 	VidaEntidad* getVidaEntidad() override;
-
-	void recalcularPosicion();
 };
 
 

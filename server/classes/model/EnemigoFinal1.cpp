@@ -1,13 +1,11 @@
 #include "EnemigoFinal1.h"
-#include "life/VidaEnemigo1.h"
-#include "ais/default/IAHorizontal.h"
 #include "ais/IAEnemigoPatron3.h"
+#include "life/VidaEnemigoFinal1.h"
 
 EnemigoFinal1::EnemigoFinal1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
 	this->posicion = Vector(x, y);
-	this->velocidadX = velocidadX; // Posición 2 de sprite
-	// !!!!!
-	this->vida = new VidaEnemigo1();
+	this->velocidadX = velocidadX;
+	this->vida = new VidaEnemigoFinal1();
 	this->ia = new IAEnemigoPatron3(this, jugadores);
 	l->info("Se creo correctamente el Enemigo 01.");
 }
@@ -28,12 +26,7 @@ void EnemigoFinal1::setPosicion(Vector nuevaPosicion) {
 	posicion = nuevaPosicion;
 }
 
-void EnemigoFinal1::innerTick() {
-	// !!!!!
-}
-
 void EnemigoFinal1::tick() {
-	// posicion = posicion - Vector(velocidadX, 0);
 	ia = ia->tick();
 }
 
@@ -54,7 +47,10 @@ int EnemigoFinal1::getTipoEntidad() {
 }
 
 std::list<Forma> EnemigoFinal1::getFormas() {
-	return std::list<Forma>();
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
 }
 
 VidaEntidad *EnemigoFinal1::getVidaEntidad() {

@@ -1,5 +1,6 @@
 #include "VidaEntidad.h"
 #include "../entities/Entidad.h"
+#include "../../../../commons/utils/Log.h"
 
 VidaEntidad::VidaEntidad(int energia) {
 	this->energia = energia;

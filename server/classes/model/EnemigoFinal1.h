@@ -15,7 +15,6 @@ public:
 	EstadoEnemigo state() override;
 	float getVelocidadX() override;
 	void setPosicion(Vector nuevaPosicion) override;
-	void innerTick() override;
 	void tick() override;
 	Vector getPosicion() override;
 	int getAncho() override;
