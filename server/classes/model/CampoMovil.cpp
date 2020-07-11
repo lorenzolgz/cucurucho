@@ -130,12 +130,16 @@ void CampoMovil::procesarTodasLasColisiones() {
 		}
 	}
 
-	for (auto it = disparos.begin(); it != disparos.end(); it++) {
-		Disparo* disparo = *it;
-		for (auto* entidadEnemigo : entidadesEnemigos) {
-			procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
-		}
-	}
+    for (auto it = disparos.begin(); it != disparos.end(); it++) {
+        Disparo* disparo = *it;
+        for (auto* entidadEnemigo : entidadesEnemigos) {
+            procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
+            if(entidadEnemigo->getVidaEntidad()->estaMuerto()){
+                Jugador* jugadorActual = this->jugadores->at(disparo->nroJugador);
+                jugadorActual->sumarPuntosPorDestruirA(entidadEnemigo->getTipoEntidad());
+            }
+        }
+    }
 }
 
 void CampoMovil::procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2) {

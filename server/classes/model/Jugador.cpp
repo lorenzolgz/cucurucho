@@ -16,6 +16,7 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
 	this->vida = new VidaJugador();
+	this->puntos = 0;
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -102,6 +103,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.cantidadVidas = vida->getCantidadVidas();
 	estadoJugador.esInvencible = vida->esInvencible();
 	estadoJugador.estaMuerto = estaMuerto();
+	estadoJugador.puntos = this->puntos;
 	return estadoJugador;
 }
 
@@ -162,4 +164,29 @@ Vector Jugador::calcularPosicionInicial() {
 
 bool Jugador::estaMuerto() {
 	return vida->estaMuerto();
+}
+
+void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
+    std::cout<<"entidad: "<<entidadEnemigo<<std::endl;
+    switch(entidadEnemigo){
+        case ENTIDAD_ENEMIGO1: {
+            this->puntos += 500;
+            std::cout<<"e1"<<std::endl;
+            break;
+        }
+        case ENTIDAD_ENEMIGO2: {
+            this->puntos += 1000;
+            std::cout<<"e2"<<std::endl;
+            break;
+        }
+        case ENTIDAD_ENEMIGO_FINAL1: {
+            this->puntos += 2000;
+            std::cout<<"ef"<<std::endl;
+            break;
+        }
+        default: {
+            this->puntos = -1;
+            std::cout<<"error"<<std::endl;
+        }
+    }
 }
