@@ -2,11 +2,6 @@
 #define CUCURUCHO_ENEMIGO1_H
 
 
-#define ATENUADOR_IA 0.65
-#define DISTANCIA_ACTIVADORA_IA 250
-#define DISTANCIA_DESACTIVADORA_IA_DERECHA 150
-#define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA 80
-
 #include <string>
 #include "../../../commons/utils/Vector.h"
 #include "Ticker.h"
@@ -19,7 +14,7 @@ const int ENEMIGO1_ALTO = 66;
 
 class Enemigo1 : public EntidadEnemigo {
 public:
-	Enemigo1(float x, float y, float velocidadX);
+	Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores);
 
 	Vector getPosicion() override;
 	int getAncho() override;
@@ -29,11 +24,16 @@ public:
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
 	VidaEntidad* getVidaEntidad() override;
-    void aproximarAJugador(std::map<int, Jugador *> jugadores) override;
+	float getVelocidadX() override ;
+	virtual void setPosicion(Vector nuevaPosicion) override;
+	void innerTick() override;
 
 private:
     Vector posicion;
 	float velocidadX;
+public:
+
+private:
 	VidaEntidad* vida;
 };
 

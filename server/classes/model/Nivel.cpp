@@ -13,11 +13,12 @@
 #define CAMPO_ANCHO 960
 #define CAMPO_ALTO 576
 
-Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	Nivel::velocidad = nivelConfig->getVelocidad();
-	Nivel::ancho = nivelConfig->getLargo();
-    Nivel::campo = crearCampo(nivelConfig, jugadores);
-    Nivel::alto = campo->getAlto();
+Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
+	this->velocidad = nivelConfig->getVelocidad();
+	this->ancho = nivelConfig->getLargo();
+	this->campo = crearCampo(nivelConfig, jugadores);
+    this->alto = campo->getAlto();
+    this->jugadores = jugadores;
 }
 
 void Nivel::tick() {
@@ -55,9 +56,9 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-            case 1: {entidad = new Enemigo1(posXEnNivel, posY, velocidadX);}
+            case 1: {entidad = new Enemigo1(posXEnNivel, posY, velocidadX, jugadores);}
             break;
-            case 2: {entidad = new Enemigo2(posXEnNivel, posY, velocidadX);}
+            case 2: {entidad = new Enemigo2(posXEnNivel, posY, velocidadX, jugadores);}
             break;
             // Todo después vemos
             default: {entidad = nullptr;};
@@ -74,7 +75,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     }
 }
 
-CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
+CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
 	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, ancho);
 
 	l->info("Se creo correctamente el nivel (Parallax)");

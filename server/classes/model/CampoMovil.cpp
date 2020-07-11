@@ -3,7 +3,7 @@
 #include <string>
 #include "../../../commons/utils/Log.h"
 
-CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
+CampoMovil::CampoMovil(std::map<int, Jugador*>* jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
 	CampoMovil::posicion = Vector(0, 0);
 	CampoMovil::velocidadX = velocidadNivel;
 	CampoMovil::largoNivel = largoNivel;
@@ -12,7 +12,7 @@ CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, 
 	CampoMovil::jugadores = jugadores;
 
     std::map<int, Jugador*>::iterator it;
-    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+    for (it = jugadores->begin(); it != jugadores->end(); it++) {
         it->second->setCampo(this);
     }
 }
@@ -20,10 +20,10 @@ CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, 
 void CampoMovil::tick() {
 	posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
 	for (auto *entidadEnemigo : entidadesEnemigos) {
-        entidadEnemigo->aproximarAJugador(jugadores);
+		entidadEnemigo->tick();
 	}
 	std::map<int, Jugador *>::iterator it;
-	for (it = jugadores.begin(); it != jugadores.end(); it++) {
+	for (it = jugadores->begin(); it != jugadores->end(); it++) {
 		it->second->tick();
 	}
 
@@ -72,7 +72,7 @@ EstadoInternoCampoMovil CampoMovil::state() {
 	}
 
     std::map<int, Jugador*>::iterator it;
-    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+    for (it = jugadores->begin(); it != jugadores->end(); it++) {
         estadosJugadores.push_back(it->second->state());
     }
 
@@ -121,7 +121,7 @@ void CampoMovil::removerDisparosMuertos() {
 }
 
 void CampoMovil::procesarTodasLasColisiones() {
-	for (auto it = jugadores.begin(); it != jugadores.end(); it++) {
+	for (auto it = jugadores->begin(); it != jugadores->end(); it++) {
 		Jugador* jugador = it->second;
 		if (jugador->estaMuerto()) {
 			continue;

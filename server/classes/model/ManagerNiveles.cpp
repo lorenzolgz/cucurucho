@@ -5,7 +5,7 @@
 #include "ManagerNiveles.h"
 #include "../../../commons/utils/Log.h"
 
-ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores) {
+ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*>* jugadores) {
     ancho = config->getAnchoPantalla();
     alto = config->getAltoPantalla();
     ManagerNiveles::jugadores = jugadores;
@@ -21,7 +21,7 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = nivelesConfiguracion.front();
 
     std::map<int, Jugador*>::iterator it;
-    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+    for (it = jugadores->begin(); it != jugadores->end(); it++) {
 		it->second->reiniciarPosicion();
     }
 	Nivel *nivel = new Nivel(nivelConfActual, jugadores);

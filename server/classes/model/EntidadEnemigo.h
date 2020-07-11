@@ -5,11 +5,18 @@
 #include "entities/Entidad.h"
 #include "Jugador.h"
 #include "../../../commons/utils/Log.h"
+#include "ais/IAEnemigo.h"
 
 class EntidadEnemigo : public Entidad {
 public:
 	virtual struct EstadoEnemigo state() = 0;
-    virtual void aproximarAJugador(std::map<int, Jugador *> jugadores){l->debug("No se realiza IA de aproximacion porque no implementada");}
+	virtual float getVelocidadX() = 0;
+	virtual void setPosicion(Vector nuevaPosicion) = 0;
+	// !!!!
+	virtual void innerTick() = 0;
+
+protected:
+	IAEnemigo* ia;
 };
 
 

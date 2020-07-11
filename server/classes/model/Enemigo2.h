@@ -1,10 +1,6 @@
 #ifndef CUCURUCHO_ENEMIGO2_H
 #define CUCURUCHO_ENEMIGO2_H
 
-#define ATENUADOR_IA_2 0.8
-#define DISTANCIA_ACTIVADORA_IA_2 300
-#define DISTANCIA_DESACTIVADORA_IA_DERECHA_2 200
-#define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2 300
 
 #include <string>
 #include "../../../commons/utils/Vector.h"
@@ -16,7 +12,7 @@ const int ENEMIGO2_ALTO = 147;
 
 class Enemigo2 : public EntidadEnemigo {
 public:
-    Enemigo2(float x, float y, float velocidadX);
+    Enemigo2(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores);
 
 	int getAncho() override;
 	int getAlto() override;
@@ -25,8 +21,10 @@ public:
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
-    void aproximarAJugador(std::map<int, Jugador *> jugadores) override;
+	float getVelocidadX() override;
+	virtual void setPosicion(Vector nuevaPosicion) override;
 
+	void innerTick() override;
 
 private:
     Vector posicion;

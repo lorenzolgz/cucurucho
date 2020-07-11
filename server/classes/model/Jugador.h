@@ -36,7 +36,6 @@ public:
 	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
     void setCampo(CampoMovil* campo);
-    // Todo: cada jugador tendria que saber su nroJugador de antemano!!!!
     Disparo* disparar();
     void reiniciarPosicion();
 	VidaEntidad* getVidaEntidad();

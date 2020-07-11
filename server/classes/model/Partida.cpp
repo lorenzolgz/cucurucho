@@ -9,22 +9,23 @@
 #define VELOCIDAD_DISPARO 7
 
 Partida::Partida(Configuracion* config) {
-	Partida::nuevoNivel = 1;
-	Partida::nivel = 1;
+	this->nuevoNivel = 1;
+	this->nivel = 1;
+	this->jugadores = new std::map<int, Jugador*>();
 
     //"jugadores" posee los jugadores que estarán en juego
 	for (int i = 0; i < config->getCantidadJugadores(); i++) {
-		Partida::jugadores.insert({i, new Jugador(config, i)});
+		jugadores->insert({i, new Jugador(config, i)});
 	}
 
-	Partida::managerNiveles = new ManagerNiveles(config, jugadores);
+	this->managerNiveles = new ManagerNiveles(config, jugadores);
 }
 
 void Partida::tick(struct Comando comandos[]) {
 
-	for (int i = 0; i < jugadores.size(); i++) {
+	for (int i = 0; i < jugadores->size(); i++) {
 		struct Comando comando = comandos[i];
-		Jugador *jugadorActual = jugadores.at(i);
+		Jugador *jugadorActual = jugadores->at(i);
 
 		jugadorActual->calcularVectorVelocidad(comando.arriba,
 											   comando.abajo,

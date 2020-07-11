@@ -15,7 +15,7 @@
 
 class Nivel : public Ticker {
 public:
-	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugador);
+	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugador);
 
 	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
@@ -30,10 +30,10 @@ private:
 	int alto;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;
-    int numeroDeNivel;
+	std::map<int, Jugador*>* jugadores;
     float velocidad;
 
-	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, std::map<int, Jugador *> jugador);
+	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, std::map<int, Jugador*>* jugador);
 	void plantarSemillasEnCampo();
 };
 
