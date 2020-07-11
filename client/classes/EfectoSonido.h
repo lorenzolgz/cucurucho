@@ -18,6 +18,8 @@ public:
 
     void play(int volumen);
 
+private:
+	bool mute;
 };
 
 

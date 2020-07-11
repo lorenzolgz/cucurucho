@@ -50,9 +50,6 @@ float CampoMovil::getVelocidadX() {
 }
 
 void CampoMovil::agregarEntidadEnemigo(EntidadEnemigo *entidad) {
-	if (entidad->state().clase == 3) {
-		l->error("!!!! 3");
-	}
 	entidadesEnemigos.push_back(entidad);
 }
 

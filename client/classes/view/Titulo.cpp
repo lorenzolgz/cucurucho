@@ -65,6 +65,7 @@ void Titulo::estaActivada(bool enter) {
         estado = TITULO_INGRESAR;
         seleccionadoUsuario = true;
 
+
         audioInicioPartida->play(200);
         l->info("Pantalla de inicio activada.");
     }

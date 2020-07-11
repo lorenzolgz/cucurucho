@@ -12,6 +12,7 @@
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
 #include "entities/projectiles/Disparo.h"
+#include "ExtensionNivel.h"
 
 class Nivel : public Ticker {
 public:
@@ -32,9 +33,11 @@ private:
 	std::list<SemillaEntidad*> semillasEntidades;
 	std::map<int, Jugador*>* jugadores;
     float velocidad;
+    ExtensionNivel* extensionNivel;
 
 	CampoMovil *crearCampo(std::map<int, Jugador*>* jugador);
 	void plantarSemillasEnCampo();
+	bool terminoNivelBase();
 };
 
 
