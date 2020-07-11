@@ -81,8 +81,8 @@ void Enemigo1::aproximarAJugador(std::map<int, Jugador *> jugadores){
         }
     }
 
-    if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_DERECHA) ||
-        (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_IZQUIERDA)) {
+    if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_IZQUIERDA) ||
+        (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_DERECHA)) {
 
         float velocidadHorizontal = std::abs(velocidadX) * ATENUADOR_IA;
         float velocidadVertical = std::abs(velocidadX) * ATENUADOR_IA;
