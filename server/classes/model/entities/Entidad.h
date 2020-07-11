@@ -6,6 +6,7 @@
 #include "Forma.h"
 #include "../life/VidaEntidad.h"
 
+
 class Ticker;
 
 // Todo: Pasar a commons y reemplazar donde se usa 1 o 2 en los switchs !!!!

@@ -16,6 +16,10 @@ Vector::Vector() {
     y = 0;
 }
 
+float Vector::modulo(){
+    return sqrt(x*x + y*y);
+}
+
 Vector operator+(const Vector &lhs, const Vector &rhs) {
     return {lhs.x + rhs.x, lhs.y + rhs.y};
 }

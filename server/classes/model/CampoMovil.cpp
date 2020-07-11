@@ -20,7 +20,11 @@ CampoMovil::CampoMovil(std::map<int, Jugador *> jugadores, int ancho, int alto, 
 void CampoMovil::tick() {
 	posicion = Vector(posicion.getX() + velocidadX, posicion.getY());
 	for (auto *entidadEnemigo : entidadesEnemigos) {
-		entidadEnemigo->tick();
+		if(entidadEnemigo->getTipoEntidad() == ENTIDAD_ENEMIGO1){
+            entidadEnemigo->aproximarAJugador(jugadores);
+		} else {
+            entidadEnemigo->tick();
+        }
 	}
 	std::map<int, Jugador *>::iterator it;
 	for (it = jugadores.begin(); it != jugadores.end(); it++) {

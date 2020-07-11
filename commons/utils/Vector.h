@@ -32,6 +32,8 @@ public:
     bool esNulo() const;
 
     std::string getVector();
+
+    float modulo();
 };
 
 
