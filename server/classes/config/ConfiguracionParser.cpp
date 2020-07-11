@@ -79,7 +79,11 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 		validarJsonNoNulo(clase2Json,"Enemigos de clase2 del nivel " + std::to_string(nivel));
 		validarJsonNoNegativo(clase2Json, "Enemigos de clase2 del nivel " + std::to_string(nivel));
 
-		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64());
+		Json::Value finalJson = enemigosJson["final"];
+		validarJsonNoNulo(finalJson,"Enemigo final del nivel " + std::to_string(nivel));
+		validarJsonGenerico(!finalJson.isBool(),"Enemigo final del nivel " + std::to_string(nivel));
+
+		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64(), finalJson.asBool());
 	} catch (const std::exception &exc) {
 		l->error("Ocurrio un error al parsear las cantidades de enemigos para el nivel " + std::to_string(nivel));
 		throw exc;

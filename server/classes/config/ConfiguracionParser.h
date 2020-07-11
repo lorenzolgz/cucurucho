@@ -5,8 +5,6 @@
 #include "Configuracion.h"
 #include "UsuariosConfiguracion.h"
 
-#define FIN_ARCH '\0'
-
 class ConfiguracionParser {
 public:
 	Configuracion* parsearConfiguracion(std::string rutaJsonConfig);
