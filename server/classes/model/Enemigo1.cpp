@@ -9,8 +9,7 @@
 
 Enemigo1::Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
     if (random() % 2 == 0) {
-    	// !!!!!
-        x = -x + PANTALLA_ANCHO - ENEMIGO1_ANCHO;
+        x = -x + CAMPO_ANCHO - ENEMIGO1_ANCHO;
         velocidadX *= -1;
     }
 	this->posicion = Vector(x, y);

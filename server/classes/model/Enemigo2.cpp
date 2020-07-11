@@ -8,8 +8,7 @@
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
     if (random() % 2 == 0) {
-    	// !!!!!
-        x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
+        x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
 	this->velocidadEscalar = 1;

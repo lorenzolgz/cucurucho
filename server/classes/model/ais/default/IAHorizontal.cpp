@@ -11,7 +11,7 @@ IAHorizontal::IAHorizontal(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador
 }
 
 IAEnemigo* IAHorizontal::tick() {
-	if (entidadEnemigo->getPosicion().getX() < PANTALLA_ANCHO - paddingIzquierdo -entidadEnemigo->getAncho()) {
+	if (entidadEnemigo->getPosicion().getX() < CAMPO_ANCHO - paddingIzquierdo -entidadEnemigo->getAncho()) {
 		return next;
 	}
 	Vector nuevaPosicion = entidadEnemigo->getPosicion() - Vector(entidadEnemigo->getVelocidadX(), 0);

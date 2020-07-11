@@ -9,9 +9,8 @@
 #define PANTALLA_ALTO 672
 #define PANTALLA_ESCALA 1
 
-// !!!!!
-// #define CAMPO_ANCHO 960
-// #define CAMPO_ALTO 576
+#define CAMPO_ANCHO 960
+#define CAMPO_ALTO 576
 
 #define SONIDO_ACTIVADO 0
 
