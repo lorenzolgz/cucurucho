@@ -10,11 +10,11 @@ HudVista::HudVista() {
 	this->gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     this->textura = generadorDeTexturas->generarTextura("hud.png");
-	this->cantidadVidasYEnergia = new std::string;
-    *this->cantidadVidasYEnergia = std::to_string(0);
+	this->cantidadVidasEnergiaPuntos = new std::string;
+    *this->cantidadVidasEnergiaPuntos = std::to_string(0);
 
     this->nuevoTexto(new std::string("HI"), Vector(24, 24), TEXTO_COLOR_ROJO, true);
-    this->nuevoTexto(cantidadVidasYEnergia, Vector(240, 24), TEXTO_COLOR_ROJO, false);
+    this->nuevoTexto(this->cantidadVidasEnergiaPuntos, Vector(230, 24), TEXTO_COLOR_ROJO, false);
 
     this->nuevoTexto(new std::string("MOV NORMAL"), Vector(312, 24), TEXTO_COLOR_AZUL, true);
 
@@ -50,6 +50,6 @@ void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, bool a
 	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
 }
 
-void HudVista::setCantidadVidasYEnergia(int cantidadVidas, int energia) {
-	*this->cantidadVidasYEnergia = std::to_string(cantidadVidas) + " - " + std::to_string(energia);
+void HudVista::setCantidadVidasEnergiaPuntos(int cantidadVidas, int energia, int puntos) {
+	*this->cantidadVidasEnergiaPuntos = std::to_string(cantidadVidas) + "-" + std::to_string(energia) + "-" + std::to_string(puntos);
 }

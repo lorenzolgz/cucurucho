@@ -69,6 +69,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["esInvencible"] = estadoTick->estadosJugadores[i].esInvencible;
 		mensajeJson["estadosJugadores"][i]["estaMuerto"] = estadoTick->estadosJugadores[i].estaMuerto;
 		mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
+		mensajeJson["estadosJugadores"][i]["puntos"] = estadoTick->estadosJugadores[i].puntos;
     }
 	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
         nlohmann::json mensajeFondo= {

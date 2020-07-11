@@ -23,9 +23,10 @@ public:
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
 	VidaEntidad *getVidaEntidad() override;
+    int nroJugador;
 
 private:
-	int nroJugador;
+
     Vector posicion;
 	float velocidad;
 	VidaEntidad *vida;
