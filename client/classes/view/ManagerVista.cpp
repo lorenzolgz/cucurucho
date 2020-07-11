@@ -33,7 +33,6 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	int i;
 	for (i = 0; i < MAX_JUGADORES; i++) {
 		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
-		// validar presente? !!!! probablemente no se de nunca que no este presente
 		if (i == estadoLogin.nroJugador - 1) {
 			estadoJugadorPropio = estadoJugador;
 			break;

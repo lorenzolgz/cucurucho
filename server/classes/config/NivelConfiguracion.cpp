@@ -28,7 +28,7 @@ const char* NivelConfiguracion::getFinalNivel() const {
 }
 
 float NivelConfiguracion::getVelocidad() const {
-    return velocidad * (PANTALLA_ANCHO / 960.0);
+    return velocidad * (CAMPO_ANCHO / 960.0);
 }
 
 float NivelConfiguracion::getLargo() const {

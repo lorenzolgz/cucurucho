@@ -16,8 +16,6 @@ ManagerJuego::ManagerJuego() {
 }
 
 void ManagerJuego::render(){
-	// !!!! pasar al metodo setInformacionNivel
-    managerVista->setInformacionNivel(informacionNivel, estadoTick);
     // Render texture to screen
     managerVista->render(estadoTick, estadoLogin, username);
 }
@@ -33,6 +31,7 @@ bool ManagerJuego::enJuego() {
 
 void ManagerJuego::setInformacionNivel(const InformacionNivel &informacionNivel) {
     ManagerJuego::informacionNivel = informacionNivel;
+	managerVista->setInformacionNivel(informacionNivel, estadoTick);
 }
 
 void ManagerJuego::setUsername(const std::string &username) {

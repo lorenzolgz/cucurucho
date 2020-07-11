@@ -5,10 +5,7 @@
 #include "Jugador.h"
 #include <list>
 #include "EnemigoFinal1.h"
-
-// !!!!!
-#define CAMPO_ANCHO 960
-#define CAMPO_ALTO 576
+#include "../../../commons/utils/Constantes.h"
 
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
 	this->velocidad = nivelConfig->getVelocidad();
@@ -41,7 +38,7 @@ bool Nivel::termino() {
 	bool termino = terminoBase && terminoExtension;
 
 	if (termino) {
-		l->error("!!!!! Fin de nivel.");
+		l->debug("Fin de nivel.");
 	}
 
 	return termino;
