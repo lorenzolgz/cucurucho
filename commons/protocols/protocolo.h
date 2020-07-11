@@ -85,6 +85,7 @@ struct EstadoJugador {
 	int esInvencible;
 	int estaMuerto;
     int presente;
+    int puntos;
 };
 
 struct EstadoEnemigo {

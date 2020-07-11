@@ -41,10 +41,12 @@ public:
 	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
 	bool estaMuerto();
+    void sumarPuntosPorDestruirA(int entidadEnemigo);
 
 private:
 	Configuracion* config;
 	int nroJugador;
+	int puntos;
     Vector posicion;
     Vector velocidad;
     double velocidadEscalar;
@@ -58,6 +60,8 @@ private:
 	Vector actualizarPosicion(Vector posicionNueva);
 	bool puedeDisparar();
 	Vector calcularPosicionInicial();
+
+
 };
 
 
