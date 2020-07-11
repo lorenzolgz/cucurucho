@@ -4,6 +4,7 @@
 #define DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 250
 #define DISTANCIA_DESACTIVADORA_DERECHA_IA_ENEMIGO_PATRON_1 150
 #define DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1 80
+#define JUGADORES_NO_VIVOS 99999
 
 IAEnemigoPatron1::IAEnemigoPatron1(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -11,10 +12,10 @@ IAEnemigoPatron1::IAEnemigoPatron1(EntidadEnemigo* entidadEnemigo, std::map<int,
 }
 
 IAEnemigo* IAEnemigoPatron1::tick() {
-	Vector desplazamiento = jugadores->at(0)->getPosicion() - entidadEnemigo->getPosicion();
-	float desplazamientoHor = desplazamiento.getX();
-	float desplazamientoVer = desplazamiento.getY();
-	float distanciaMinima = desplazamiento.modulo();
+	Vector desplazamiento;
+	float desplazamientoHor = JUGADORES_NO_VIVOS;
+	float desplazamientoVer = JUGADORES_NO_VIVOS;
+	float distanciaMinima = JUGADORES_NO_VIVOS;
 	bool jugadorPorDerecha;
 	bool jugadorPorArriba;
 
@@ -23,6 +24,9 @@ IAEnemigo* IAEnemigoPatron1::tick() {
 
 	std::map<int, Jugador *>::iterator it;
 	for (it = jugadores->begin(); it != jugadores->end(); it++) {
+        // Solo itero a traves de los que estan vivos
+        if(it->second->estaMuerto())
+            continue;
 		desplazamiento = it->second->getPosicion() - entidadEnemigo->getPosicion();
 		desplazamientoHor = desplazamiento.getX();
 		desplazamientoVer = desplazamiento.getY();
@@ -34,7 +38,11 @@ IAEnemigo* IAEnemigoPatron1::tick() {
 		}
 	}
 
-	if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 && distanciaMinima > DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1) ||
+	if(distanciaMinima == JUGADORES_NO_VIVOS){
+        // Si no hay jugador vivo para perseguir solo tickean
+        entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() - entidadEnemigo->getVelocidadX(), entidadEnemigo->getPosicion().getY()));
+    }
+	else if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 && distanciaMinima > DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1) ||
 	   (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 && distanciaMinima > DISTANCIA_DESACTIVADORA_DERECHA_IA_ENEMIGO_PATRON_1)) {
 
 		float velocidadHorizontal = std::abs(entidadEnemigo->getVelocidadX()) * ATENUADOR_IA_ENEMIGO_PATRON_1;

@@ -4,6 +4,7 @@
 #define DISTANCIA_ACTIVADORA_IA_2 300
 #define DISTANCIA_DESACTIVADORA_IA_DERECHA_2 200
 #define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2 300
+#define JUGADORES_NO_VIVOS_IA_2 99999
 
 IAEnemigoPatron2::IAEnemigoPatron2(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -11,29 +12,36 @@ IAEnemigoPatron2::IAEnemigoPatron2(EntidadEnemigo *entidadEnemigo, std::map<int,
 }
 
 IAEnemigo* IAEnemigoPatron2::tick() {
-	Vector desplazamiento = jugadores->at(0)->getPosicion() - entidadEnemigo->getPosicion();
-	float desplazamientoHor = desplazamiento.getX();
-	float desplazamientoVer = desplazamiento.getY();
-	float distanciaMinima = desplazamiento.modulo();
+	Vector desplazamiento;
+    float desplazamientoHor = JUGADORES_NO_VIVOS_IA_2;
+    float desplazamientoVer = JUGADORES_NO_VIVOS_IA_2;
+    float distanciaMinima = JUGADORES_NO_VIVOS_IA_2;
 	bool jugadorPorDerecha;
 	bool jugadorPorArriba;
 
-	desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
+    desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
 	desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
 
 	std::map<int, Jugador *>::iterator it;
 	for (it = jugadores->begin(); it != jugadores->end(); it++) {
-		desplazamiento = it->second->getPosicion() - entidadEnemigo->getPosicion();
-		desplazamientoHor = desplazamiento.getX();
-		desplazamientoVer = desplazamiento.getY();
-		float distancia = desplazamiento.modulo();
-		if(distancia < distanciaMinima){
-			distanciaMinima = distancia;
-			desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
-			desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
-		}
+        // Solo itero a traves de los que estan vivos
+        if(it->second->estaMuerto())
+            continue;
+        desplazamiento = it->second->getPosicion() - entidadEnemigo->getPosicion();
+        desplazamientoHor = desplazamiento.getX();
+        desplazamientoVer = desplazamiento.getY();
+        float distancia = desplazamiento.modulo();
+        if (distancia < distanciaMinima) {
+            distanciaMinima = distancia;
+            desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
+            desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
+        }
 	}
 
+    if(distanciaMinima == JUGADORES_NO_VIVOS_IA_2){
+        // Si no hay jugador vivo para perseguir solo tickean
+        entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() - entidadEnemigo->getVelocidadX(), entidadEnemigo->getPosicion().getY()));
+    }
 	if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_2 && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2) ||
 	   (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_2 && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_DERECHA_2)) {
 
