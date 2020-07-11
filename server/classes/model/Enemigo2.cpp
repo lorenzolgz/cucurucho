@@ -73,3 +73,49 @@ std::list<Forma> Enemigo2::getFormas() {
 VidaEntidad* Enemigo2::getVidaEntidad() {
 	return vida;
 }
+
+void Enemigo2::aproximarAJugador(std::map<int, Jugador *> jugadores){
+    Vector desplazamiento = jugadores.at(0)->getPosicion() - this->getPosicion();
+    float desplazamientoHor = desplazamiento.getX();
+    float desplazamientoVer = desplazamiento.getY();
+    float distanciaMinima = desplazamiento.modulo();
+    bool jugadorPorDerecha;
+    bool jugadorPorArriba;
+
+    desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
+    desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
+
+    std::map<int, Jugador *>::iterator it;
+    for (it = jugadores.begin(); it != jugadores.end(); it++) {
+        desplazamiento = it->second->getPosicion() - this->getPosicion();
+        desplazamientoHor = desplazamiento.getX();
+        desplazamientoVer = desplazamiento.getY();
+        float distancia = desplazamiento.modulo();
+        if(distancia < distanciaMinima){
+            distanciaMinima = distancia;
+            desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
+            desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
+        }
+    }
+
+    if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_2 && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2) ||
+       (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_2 && distanciaMinima > DISTANCIA_DESACTIVADORA_IA_DERECHA_2)) {
+
+        float velocidadHorizontal = std::abs(velocidadX) * ATENUADOR_IA_2;
+        float velocidadVertical = std::abs(velocidadX) * ATENUADOR_IA_2;
+
+        if (jugadorPorDerecha)
+            velocidadHorizontal = - velocidadHorizontal;
+
+        if (jugadorPorArriba)
+            velocidadVertical = - velocidadVertical;
+
+        posicion = Vector(posicion.getX() + velocidadHorizontal, posicion.getY() + velocidadVertical);
+        l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
+
+    } else if (distanciaMinima > DISTANCIA_ACTIVADORA_IA_2) {
+        // Si ya se alejo lo suficiente tickeo como venia hasta encontrar otro jugador
+        tick();
+    }
+
+}

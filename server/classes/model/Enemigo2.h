@@ -1,6 +1,11 @@
 #ifndef CUCURUCHO_ENEMIGO2_H
 #define CUCURUCHO_ENEMIGO2_H
 
+#define ATENUADOR_IA_2 0.8
+#define DISTANCIA_ACTIVADORA_IA_2 300
+#define DISTANCIA_DESACTIVADORA_IA_DERECHA_2 200
+#define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2 300
+
 #include <string>
 #include "../../../commons/utils/Vector.h"
 #include "Ticker.h"
@@ -20,6 +25,8 @@ public:
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
+    void aproximarAJugador(std::map<int, Jugador *> jugadores) override;
+
 
 private:
     Vector posicion;
