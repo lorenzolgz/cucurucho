@@ -9,6 +9,7 @@
 class IAEnemigoPatron2 : public IAEnemigo {
 public:
 	IAEnemigoPatron2(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores);
+
 	IAEnemigo* tick() override;
 
 private:

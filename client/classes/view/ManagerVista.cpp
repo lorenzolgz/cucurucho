@@ -7,6 +7,7 @@
 #include "NivelIntermedioVista.h"
 #include "Enemigo1Vista.h"
 #include "../../../commons/utils/Constantes.h"
+#include "EnemigoFinal1Vista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
@@ -15,7 +16,8 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     velocidadNivel = 0;
     campoVista = nullptr;
     enemigo1Vista = new Enemigo1Vista();
-    enemigo2Vista = new Enemigo2Vista();
+	enemigo2Vista = new Enemigo2Vista();
+	enemigoFinal1Vista = new EnemigoFinal1Vista();
     disparoJugadorVista = DisparoJugadorVista();
     primerNivel = true;
 
@@ -36,11 +38,6 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 			estadoJugadorPropio = estadoJugador;
 			break;
 		}
-	}
-	// !!!!
-	if (i > MAX_JUGADORES) {
-		l->error("!!!! no tendria que pasar: " + std::to_string(i));
-		exit(3);
 	}
 	hud->setCantidadVidasYEnergia(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia);
     hud->render(estadoLogin, username);
@@ -112,6 +109,9 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
                 break;
             case 2:
                 enemigo2Vista->render(estadoEnemigo);
+				break;
+        	case 3:
+				enemigoFinal1Vista->render(estadoEnemigo);
         }
     }
 }

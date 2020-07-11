@@ -23,6 +23,8 @@ private:
 
 	// Template method.
 	int calcularDanioPorColision(const int tipoEntidad);
+
+	int danioColisionEnemigoFinal1();
 };
 
 

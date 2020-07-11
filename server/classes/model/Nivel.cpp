@@ -9,14 +9,15 @@
 #include <iterator>
 #include <list>
 #include "../../../commons/utils/Constantes.h"
+#include "EnemigoFinal1.h"
 
 #define CAMPO_ANCHO 960
 #define CAMPO_ALTO 576
 
 Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
 	this->velocidad = nivelConfig->getVelocidad();
-	this->ancho = nivelConfig->getLargo();
-	this->campo = crearCampo(nivelConfig, jugadores);
+	this->largo = nivelConfig->getLargo();
+	this->campo = crearCampo(jugadores);
     this->alto = campo->getAlto();
     this->jugadores = jugadores;
 }
@@ -38,19 +39,23 @@ bool Nivel::termino() {
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 	crearEnemigosDeClase(2, cantClase2);
 	crearEnemigosDeClase(1, cantClase1);
+	// !!!!!
+	EntidadEnemigo* entidad = new EnemigoFinal1(campo->getAncho(), 125, campo->getVelocidadX(), jugadores);
+	SemillaEntidad* semillaEntidad = new SemillaEntidad(entidad, Vector(campo->getAncho() + 100, 0));
+	semillasEntidades.push_back(semillaEntidad);
 }
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     for (int i = 0; i < cantDeEnemigos; i++) {
-        int posInicialX = campo->getAncho();
+        int posXBase = campo->getAncho();
         int posY = std::rand() % alto;
 
-        int rangoEnemigos = (int) ancho - posInicialX;
+        int rangoEnemigos = (int) largo - posXBase;
         if (rangoEnemigos <= 0) {
             l->info("Ancho de pantalla mas grande que largo del nivel");
-            rangoEnemigos = ancho;
+            rangoEnemigos = largo;
         }
-        int posXEnNivel = std::rand() % rangoEnemigos + posInicialX;
+        int posXEnNivel = std::rand() % rangoEnemigos + posXBase;
         float velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
@@ -75,8 +80,8 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     }
 }
 
-CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
-	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, ancho);
+CampoMovil* Nivel::crearCampo(std::map<int, Jugador*>* jugadores) {
+	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, largo);
 
 	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;
@@ -89,14 +94,14 @@ void Nivel::plantarSemillasEnCampo() {
 		SemillaEntidad* semillaEntidad = semillasEntidades.front();
 		semillasEntidades.pop_front();
 
-		int posXEnemigo = semillaEntidad->getPosicion().getX();
-		int posicionXVentana = campo->getPosicion().getX() + campo->getAncho();
+		int posXSemillaEnemigo = semillaEntidad->getPosicion().getX();
+		int posXCampoEnNivel = campo->getPosicion().getX() + campo->getAncho();
 
-		if (posicionXVentana < posXEnemigo) {
+		if (posXCampoEnNivel < posXSemillaEnemigo) {
 			nuevasSemillasEntidades.push_back(semillaEntidad);
 		} else {
 			Entidad* entidad = semillaEntidad->getEntidad();
-			// !!!! este casteo es pa quilombo
+			// TODO este casteo es pa quilombo!!!!
 			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
 		}
 	}

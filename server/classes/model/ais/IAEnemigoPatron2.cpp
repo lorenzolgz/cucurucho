@@ -47,11 +47,10 @@ IAEnemigo* IAEnemigoPatron2::tick() {
 			velocidadVertical = - velocidadVertical;
 
 		entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() + velocidadHorizontal, entidadEnemigo->getPosicion().getY() + velocidadVertical));
-		l->debug("Posicion del Enemigo 02: "+ entidadEnemigo->getPosicion().getVector());
 
 	} else if (distanciaMinima > DISTANCIA_ACTIVADORA_IA_2) {
 		// Si ya se alejo lo suficiente tickeo como venia hasta encontrar otro jugador
-		entidadEnemigo->innerTick();
+		entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() - entidadEnemigo->getVelocidadX(), entidadEnemigo->getPosicion().getY()));
 	}
 
 	return this;

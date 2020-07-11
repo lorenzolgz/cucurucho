@@ -4,12 +4,12 @@
 #include "../../../commons/utils/Log.h"
 
 CampoMovil::CampoMovil(std::map<int, Jugador*>* jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
-	CampoMovil::posicion = Vector(0, 0);
-	CampoMovil::velocidadX = velocidadNivel;
-	CampoMovil::largoNivel = largoNivel;
-    CampoMovil::ancho = ancho;
-	CampoMovil::alto = alto;
-	CampoMovil::jugadores = jugadores;
+	this->posicion = Vector(0, 0);
+	this->velocidadX = velocidadNivel;
+	this->largoNivel = largoNivel;
+	this->ancho = ancho;
+	this->alto = alto;
+	this->jugadores = jugadores;
 
     std::map<int, Jugador*>::iterator it;
     for (it = jugadores->begin(); it != jugadores->end(); it++) {
@@ -50,6 +50,9 @@ float CampoMovil::getVelocidadX() {
 }
 
 void CampoMovil::agregarEntidadEnemigo(EntidadEnemigo *entidad) {
+	if (entidad->state().clase == 3) {
+		l->error("!!!! 3");
+	}
 	entidadesEnemigos.push_back(entidad);
 }
 
@@ -80,7 +83,6 @@ EstadoInternoCampoMovil CampoMovil::state() {
 		estadosDisparos.push_back(disparo->state());
 	}
 
-	// EstadoInternoCampoMovil* estadoCampoMovil ;= new EstadoInternoCampoMovil(jugador->state(), estadosEnemigos)
 	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;

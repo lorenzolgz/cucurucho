@@ -26,14 +26,14 @@ public:
     void nuevoDisparo(Disparo *pDisparo);
 
 private:
-	float ancho;
+	float largo;
 	int alto;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;
 	std::map<int, Jugador*>* jugadores;
     float velocidad;
 
-	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, std::map<int, Jugador*>* jugador);
+	CampoMovil *crearCampo(std::map<int, Jugador*>* jugador);
 	void plantarSemillasEnCampo();
 };
 

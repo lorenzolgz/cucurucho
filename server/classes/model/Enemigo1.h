@@ -26,14 +26,10 @@ public:
 	VidaEntidad* getVidaEntidad() override;
 	float getVelocidadX() override ;
 	virtual void setPosicion(Vector nuevaPosicion) override;
-	void innerTick() override;
 
 private:
     Vector posicion;
 	float velocidadX;
-public:
-
-private:
 	VidaEntidad* vida;
 };
 

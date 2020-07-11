@@ -1,5 +1,4 @@
 #include "Log.h"
-
 #include "string.h"
 #include <utility>
 #include <iostream>
@@ -40,7 +39,7 @@ Log::Log(std::string basePath) {
 
 void Log::output(const std::string& estado_log, const std::string& mensaje) {
 	std::time_t timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    cargar_log(logEntrada, timenow, estado_log, mensaje);
+    // cargar_log(logEntrada, timenow, estado_log, mensaje);
     cargar_log(homePath + RELATIVE_PATHLOG, timenow, estado_log, mensaje);
 }
 
