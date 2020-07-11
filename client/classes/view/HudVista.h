@@ -16,13 +16,13 @@ public:
 	HudVista();
 	void render(struct EstadoLogin estadoLogin, std::string username);
 	void nuevoTexto(std::string* texto, Vector posicion, int color, bool alineacionIzq);
-	void setCantidadVidasEnergiaPuntos(int cantidadVidas, int energia, int puntos);
+	void setCantidadVidasYEnergia(int cantidadVidas, int energia);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
 	std::vector<TextoVista*> textos;
-	std::string* cantidadVidasEnergiaPuntos;
+	std::string* cantidadVidasYEnergia;
 };
 
 extern ToastVista* toast;

@@ -2,9 +2,9 @@
    "configuracion": {
       "log": {
          "nivel": "error",
-         "std_out": true
+         "std_out": false
       },
-      "cantidadJugadores": 2,
+      "cantidadJugadores": 1,
       "niveles": [
          {
             "archivoFondos": "fondos/fondos1.json",
