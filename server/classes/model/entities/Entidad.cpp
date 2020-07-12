@@ -1,5 +1,17 @@
 #include "Entidad.h"
 
+Vector Entidad::getPosicion() {
+	return posicion;
+}
+
+int Entidad::getAncho() {
+	return ancho;
+}
+
+int Entidad::getAlto() {
+	return alto;
+}
+
 bool Entidad::colisiona(Entidad *otraEntidad) {
 	std::list<Forma> formas1 = getFormas();
 	std::list<Forma> formas2 = otraEntidad->getFormas();
@@ -13,4 +25,15 @@ bool Entidad::colisiona(Entidad *otraEntidad) {
 	}
 
 	return false;
+}
+
+std::list<Forma> Entidad::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
+
+VidaEntidad *Entidad::getVidaEntidad() {
+	return vida;
 }

@@ -9,27 +9,23 @@
 #include "../../../../../commons/protocols/protocolo.h"
 #include "../../../../../commons/utils/Vector.h"
 #include "../Entidad.h"
+#include "../../Jugador.h"
+
+class Jugador;
 
 class Disparo : public Entidad {
 public:
-    Disparo(float x, float y, int nroJugador);
+    Disparo(float x, float y, Jugador* jugador);
 
 	EstadoDisparo state();
 	float getVelocidad();
-	Vector getPosicion() override;
-    int getAncho() override ;
-	int getAlto() override ;
     void tick() override;
 	int getTipoEntidad() override;
-	std::list<Forma> getFormas() override;
-	VidaEntidad *getVidaEntidad() override;
-    int nroJugador;
+	void matoEntidad(int tipoEntidad);
 
 private:
-
-    Vector posicion;
 	float velocidad;
-	VidaEntidad *vida;
+	Jugador* jugador;
 };
 
 

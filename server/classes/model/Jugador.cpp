@@ -9,6 +9,8 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->nroJugador = nroJugador;
 	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
 	this->posicion = calcularPosicionInicial();
+	this->ancho = JUGADOR_ANCHO;
+	this->alto = JUGADOR_ALTO;
 	this->velocidad = Vector(0, 0);
 	this->ticksHastaDisparo = 0;
 
@@ -74,7 +76,7 @@ Disparo* Jugador::disparar() {
 	}
 
 	ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
-	return new Disparo(getPosicion().getX(), getPosicion().getY(), nroJugador);
+	return new Disparo(getPosicion().getX(), getPosicion().getY(), this);
 }
 
 void Jugador::tick() {
@@ -107,29 +109,12 @@ struct EstadoJugador Jugador::state() {
 	return estadoJugador;
 }
 
-
-const Vector &Jugador::getPosicion() const {
-    return posicion;
-}
-
 const Vector Jugador::getVelocidad() const {
     return velocidad;
 }
 
 void Jugador::setCampo(CampoMovil *campo) {
 	this->campo = campo;
-}
-
-int Jugador::getAncho() {
-	return JUGADOR_ANCHO;
-}
-
-int Jugador::getAlto() {
-	return JUGADOR_ALTO;
-}
-
-Vector Jugador::getPosicion() {
-	return posicion;
 }
 
 void Jugador::reiniciarPosicion() {
@@ -141,13 +126,6 @@ void Jugador::reiniciarPosicion() {
 
 int Jugador::getTipoEntidad() {
 	return ENTIDAD_JUGADOR;
-}
-
-std::list<Forma> Jugador::getFormas() {
-	std::list<Forma> formas;
-	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho(), getAlto());
-	formas.emplace_back(formaSimple);
-	return formas;
 }
 
 VidaEntidad* Jugador::getVidaEntidad() {
@@ -184,4 +162,8 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
             this->puntos = -1;
         }
     }
+}
+
+int Jugador::getNroJugador() {
+	return nroJugador;
 }

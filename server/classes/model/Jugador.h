@@ -14,6 +14,7 @@
 class CampoMovil;
 class Helper;
 class Entidad;
+class Disparo;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
@@ -27,27 +28,22 @@ public:
 	void tick();
 	struct EstadoJugador state();
 
-	Vector getPosicion() override;
-	int getAncho() override;
-	int getAlto() override;
 	int getTipoEntidad() override;
-	std::list<Forma> getFormas() override;
+	VidaEntidad* getVidaEntidad() override;
 
-	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
     void setCampo(CampoMovil* campo);
     Disparo* disparar();
     void reiniciarPosicion();
-	VidaEntidad* getVidaEntidad();
 	void cambiarInvencible(bool invencible);
 	bool estaMuerto();
     void sumarPuntosPorDestruirA(int entidadEnemigo);
+    int getNroJugador();
 
 private:
 	Configuracion* config;
 	int nroJugador;
 	int puntos;
-    Vector posicion;
     Vector velocidad;
     double velocidadEscalar;
     int ticksHastaDisparo;

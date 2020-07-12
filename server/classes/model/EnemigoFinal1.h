@@ -16,17 +16,10 @@ public:
 	float getVelocidadX() override;
 	void setPosicion(Vector nuevaPosicion) override;
 	void tick() override;
-	Vector getPosicion() override;
-	int getAncho() override;
-	int getAlto() override;
 	int getTipoEntidad() override;
-	std::list<Forma> getFormas() override;
-	VidaEntidad *getVidaEntidad() override;
 
 private:
-	Vector posicion;
 	float velocidadX;
-	VidaEntidad* vida;
 };
 
 

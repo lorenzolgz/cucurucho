@@ -85,7 +85,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
         nlohmann::json mensajeDisparo = {
 				{"posicionX", estadoDisparo.posicionX},
 				{"posicionY", estadoDisparo.posicionY},
-				{"id", estadoDisparo.id},
+				{"nroJugador", estadoDisparo.nroJugador},
 				{"energia", estadoDisparo.energia}
         };
         mensajeJson["estadosDisparos"].push_back(mensajeDisparo);

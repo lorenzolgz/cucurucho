@@ -29,7 +29,7 @@ void DisparoJugadorVista::render(EstadoDisparo disparo) {
     SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), DISPARO_JUGADOR_SRC_ANCHO, DISPARO_JUGADOR_SRC_ALTO};
 
     int contador = (int) posicion.getX();
-    std::array<int, 3> color = COLORES_JUGADOR_ARR[disparo.id].getColorGlow(contador / 3);
+    std::array<int, 3> color = COLORES_JUGADOR_ARR[disparo.nroJugador].getColorGlow(contador / 3);
     SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
