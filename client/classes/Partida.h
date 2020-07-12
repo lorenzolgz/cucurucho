@@ -45,6 +45,7 @@ private:
     void pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
     bool eventLoop(std::string *inputText);
     void renderLoop();
+    void finJuegoLoop();
     void autenticarServidor();
     void comenzarHilo();
     void reiniciarInstanciaHilo();

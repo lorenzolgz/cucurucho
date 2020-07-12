@@ -4,8 +4,8 @@
 #include <array>
 #include <deque>
 #include <SDL_render.h>
-#include "../../../commons/utils/Vector.h"
-#include "Colores.h"
+#include "../../../../commons/utils/Vector.h"
+#include "../Colores.h"
 #include "JugadorVista.h"
 
 const int HELPER_BALL_SRC_RADIO = 24;

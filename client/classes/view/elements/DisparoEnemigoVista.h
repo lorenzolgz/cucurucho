@@ -6,8 +6,8 @@
 #define CUCURUCHO_DISPAROENEMIGOVISTA_H
 
 #include <SDL_render.h>
-#include "../../../commons/utils/Vector.h"
-#include "../Audio.h"
+#include "../../../../commons/utils/Vector.h"
+#include "../../Audio.h"
 
 #define DISPARO_ENEMIGO_SRC_ANCHO 16
 #define DISPARO_ENEMIGO_SRC_ALTO 16

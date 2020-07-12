@@ -6,23 +6,24 @@
 #define CUCURUCHO_MANAGERVISTA_H
 
 #include <list>
-#include "JugadorVista.h"
+#include "elements/JugadorVista.h"
 #include "HudVista.h"
 #include "CampoVista.h"
-#include "Enemigo1Vista.h"
-#include "Enemigo2Vista.h"
-#include "DisparoJugadorVista.h"
-#include "EnemigoFinal1Vista.h"
-#include "ExplosionVista.h"
+#include "elements/Enemigo1Vista.h"
+#include "elements/Enemigo2Vista.h"
+#include "elements/DisparoJugadorVista.h"
+#include "elements/EnemigoFinal1Vista.h"
+#include "elements/ExplosionVista.h"
+#include "NivelIntermedioVista.h"
 
 class ManagerVista {
 public:
     ManagerVista(struct InformacionNivel, int nivelActual, int ancho, int alto);
     void render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
 
-    void renderNivelIntermedio();
-
     void setInformacionNivel(InformacionNivel informacionNivel, EstadoTick tick);
+
+	void renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
 
 private:
     struct InformacionNivel informacionNivel;
@@ -31,7 +32,8 @@ private:
 	Enemigo1Vista* enemigo1Vista;
     Enemigo2Vista* enemigo2Vista;
 	EnemigoFinal1Vista* enemigoFinal1Vista;
-    DisparoJugadorVista* disparoJugadorVista;
+	DisparoJugadorVista* disparoJugadorVista;
+	NivelIntermedioVista* nivelIntermedioVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
     std::list<ExplosionVista*> explosiones;
 
@@ -45,15 +47,14 @@ private:
 
     void renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin);
 
-    void renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores);
-
-    void renderEspera(struct EstadoLogin estadoLogin);
-
     void renderDisparos(std::list<EstadoDisparo> estadosDisparos);
 
     void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos);
 
     void renderExplosiones();
+
+	void renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
+
 };
 
 

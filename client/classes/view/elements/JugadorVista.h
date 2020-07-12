@@ -3,11 +3,11 @@
 
 #include <SDL_render.h>
 #include <string>
-#include "../../../commons/utils/Vector.h"
-#include "Colores.h"
+#include "../../../../commons/utils/Vector.h"
+#include "../Colores.h"
 #include "HelperVista.h"
-#include "../../../commons/protocols/protocolo.h"
-#include "../Audio.h"
+#include "../../../../commons/protocols/protocolo.h"
+#include "../../Audio.h"
 
 
 const int JUGADOR_SRC_ANCHO = 96;

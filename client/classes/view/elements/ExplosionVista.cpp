@@ -3,7 +3,7 @@
 //
 
 #include "ExplosionVista.h"
-#include "../GeneradorDeTexturas.h"
+#include "../../GeneradorDeTexturas.h"
 
 ExplosionVista::ExplosionVista(Vector centro, int tipo) {
     // TODO: Reproducir sonido

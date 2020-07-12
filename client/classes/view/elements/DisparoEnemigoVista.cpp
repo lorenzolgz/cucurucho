@@ -3,8 +3,8 @@
 //
 
 #include "DisparoEnemigoVista.h"
-#include "../GraphicRenderer.h"
-#include "../GeneradorDeTexturas.h"
+#include "../../GraphicRenderer.h"
+#include "../../GeneradorDeTexturas.h"
 
 
 DisparoEnemigoVista::DisparoEnemigoVista() {

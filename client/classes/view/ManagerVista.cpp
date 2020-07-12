@@ -5,10 +5,10 @@
 #include "ManagerVista.h"
 #include "../GraphicRenderer.h"
 #include "NivelIntermedioVista.h"
-#include "Enemigo1Vista.h"
+#include "elements/Enemigo1Vista.h"
 #include "../../../commons/utils/Constantes.h"
-#include "EnemigoFinal1Vista.h"
-#include "ExplosionVista.h"
+#include "elements/EnemigoFinal1Vista.h"
+#include "elements/ExplosionVista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
@@ -22,35 +22,28 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     disparoJugadorVista = new DisparoJugadorVista();
     primerNivel = true;
 
-    for (int i = 0; i < MAX_JUGADORES; i++) {
-        jugadores->push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
-    }
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+		jugadores->push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
+	}
+	nivelIntermedioVista = new NivelIntermedioVista(jugadores, ancho, alto);
 
 }
 
 void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
-	// Render Hud
-	struct EstadoJugador estadoJugadorPropio;
-	int i;
-	for (i = 0; i < MAX_JUGADORES; i++) {
-		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
-		if (i == estadoLogin.nroJugador - 1) {
-			estadoJugadorPropio = estadoJugador;
-			break;
-		}
-	}
-	hud->setCantidadVidasEnergiaPuntos(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia, estadoJugadorPropio.puntos);
-    hud->render(estadoLogin, username);
 
-    // Render Campo
-    SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
-    SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
-	if (campoVista == nullptr) {
+	renderHud(estadoTick, estadoLogin, username);
+	if (campoVista == nullptr || campoVista->getNumeroNivel() != estadoTick.numeroNivel || estadoTick.posX <= 1) {
 	    if (estadoLogin.estadoLogin == LOGIN_ESPERAR || estadoLogin.estadoLogin == LOGIN_COMENZAR) {
-            renderEspera(estadoLogin);
+            nivelIntermedioVista->renderEstadoLogin(estadoLogin);
+	    } else {
+			this->renderNivelIntermedio(estadoTick, estadoLogin, username);
 	    }
         return;
 	} // TODO patch para race conditions
+
+	// Render Campo
+	SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
+	SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
     campoVista->render(estadoTick);
 
 	// Render resto
@@ -71,12 +64,6 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
         return;
     }
 
-    if (!primerNivel) {
-        this->renderNivelIntermedio();
-        SDL_RenderPresent(GraphicRenderer::getInstance());
-        SDL_Delay(TIMEOUT_PROXIMO_NIVEL * 1000);
-    }
-
     primerNivel = false;
 
     ManagerVista::informacionNivel = informacionNivel;
@@ -94,8 +81,11 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
 }
 
 
-void ManagerVista::renderNivelIntermedio() {
-    NivelIntermedioVista(informacionNivel.informacionFinNivel).render();
+void ManagerVista::renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
+	if (!primerNivel) {
+		renderHud(estadoTick, estadoLogin, username);
+		nivelIntermedioVista->renderNivelIntermedio(estadoTick);
+	}
 }
 
 
@@ -148,63 +138,6 @@ void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogi
 }
 
 
-// Funcion para generar el estado del jugador y los helpers a partir de un vector posicion.
-// Utilizado para la pantalla de espera.
-struct EstadoJugador generarEstadoJugador(Vector posicion) {
-    struct EstadoJugador estadoJugador;
-    estadoJugador.posicionX = posicion.getX();
-    estadoJugador.posicionY = posicion.getY();
-    estadoJugador.presente = true;
-
-    // Sin helpers
-    Vector posicionHelper1 = posicion + Vector(-10000, -10000);
-    estadoJugador.helper1.posicionX = posicionHelper1.getX();
-    estadoJugador.helper1.posicionY = posicionHelper1.getY();
-
-    Vector posicionHelper2 = posicion + Vector(-10000, -10000);
-    estadoJugador.helper2.posicionX = posicionHelper2.getX();
-    estadoJugador.helper2.posicionY = posicionHelper2.getY();
-
-    // Estos son valores dummies que no se usan
-    estadoJugador.energia = 0;
-    estadoJugador.cantidadVidas = 3;
-    estadoJugador.esInvencible = false;
-
-    // Sin esto no se renderiza el jugador.
-    estadoJugador.estaMuerto = false;
-
-    return estadoJugador;
-}
-
-
-void ManagerVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, int indice, int colorTexto, int cantJugadores) {
-    Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
-    Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-    Vector distancia_y = Vector(0, alto * 7 / 12) / cantJugadores;
-    struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + (distancia_y * indice));
-
-    if (strlen(nombre) > 0) {
-        estado.presente = true;
-        TextoVista::eRender(std::string(nombre), posicionNombreBase + (distancia_y * indice), colorTexto, ALINEACION_IZQUIERDA);
-    } else {
-        estado.presente = false;
-    }
-    jugador->render(estado);
-}
-
-
-void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
-    for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
-        renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], i, i + 1, estadoLogin.cantidadJugadores);
-    }
-
-    if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
-        TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
-    } else if (estadoLogin.estadoLogin == LOGIN_COMENZAR) {
-        TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
-    }
-}
-
 void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos) {
     for (EstadoEnemigo e : enemigos) {
         if (e.energia > 0) continue;
@@ -244,4 +177,19 @@ void ManagerVista::renderExplosiones() {
             it++;
         }
     }
+}
+
+void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
+	struct EstadoJugador estadoJugadorPropio;
+	int i;
+	for (i = 0; i < MAX_JUGADORES; i++) {
+		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
+		if (i == estadoLogin.nroJugador - 1) {
+			estadoJugadorPropio = estadoJugador;
+			break;
+		}
+	}
+
+	hud->setCantidadVidasEnergiaPuntos(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia, estadoJugadorPropio.puntos);
+	hud->render(estadoLogin, username);
 }

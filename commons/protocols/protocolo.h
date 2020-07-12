@@ -26,11 +26,11 @@
 #define LOGIN_COMENZAR 2
 #define LOGIN_FIN 3
 
-// Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
+// Tiempo en segundos entre LOGIN_COMENZAR y LOGIN_FIN
 #define TIMEOUT_LOGIN_FIN 2
 
-// Tiempo de pasaje entre niveles
-#define TIMEOUT_PROXIMO_NIVEL 1
+// Tiempo en segundos de pasaje entre niveles
+#define TIMEOUT_PROXIMO_NIVEL 5
 
 //Fin de Juego
 #define FIN_DE_JUEGO -1
@@ -69,18 +69,19 @@ struct EstadoDisparo {
 };
 
 struct EstadoHelper {
-    EstadoHelper(): posicionX(-200), posicionY(-200), angulo(0) {}
+    EstadoHelper(): posicionX(-1000), posicionY(-1000), angulo(0) {}
 	int posicionX;
 	int posicionY;
 	int angulo;
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-200), posicionY(-200), puntos(0), cantidadVidas(0) {}
+    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), cantidadVidas(0), presente(0) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
 	EstadoHelper helper2;
+	char usuario[LARGO_USERNAME];
 	int energia;
 	int cantidadVidas;
 	int esInvencible;

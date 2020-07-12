@@ -1,10 +1,10 @@
 #include "JugadorVista.h"
-#include "../../../commons/utils/Utils.h"
-#include "../../../commons/utils/Log.h"
-#include "../GeneradorDeTexturas.h"
-#include "../GraphicRenderer.h"
+#include "../../../../commons/utils/Utils.h"
+#include "../../../../commons/utils/Log.h"
+#include "../../GeneradorDeTexturas.h"
+#include "../../GraphicRenderer.h"
 #include "HelperVista.h"
-#include "../Audio.h"
+#include "../../Audio.h"
 
 JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();

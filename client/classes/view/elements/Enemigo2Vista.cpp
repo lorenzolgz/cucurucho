@@ -1,9 +1,9 @@
 #include "Enemigo2Vista.h"
 #include <SDL_image.h>
-#include "../../../commons/utils/Utils.h"
-#include "../../../commons/utils/Log.h"
-#include "../GeneradorDeTexturas.h"
-#include "../GraphicRenderer.h"
+#include "../../../../commons/utils/Utils.h"
+#include "../../../../commons/utils/Log.h"
+#include "../../GeneradorDeTexturas.h"
+#include "../../GraphicRenderer.h"
 
 Enemigo2Vista::Enemigo2Vista() {
 	Enemigo2Vista::gRenderer = GraphicRenderer::getInstance();

@@ -102,6 +102,8 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     }
 
     hiloConexionCliente->cerrarConexion();
+
+	finJuegoLoop();
 }
 
 void Partida::autenticarServidor() {
@@ -186,10 +188,25 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 }
 
 void Partida::renderLoop() {
-    if (estadoLogin.estadoLogin <= 0) return;
+	if (estadoLogin.estadoLogin <= 0) return;
 
-    manager->render();
-    SDL_RenderPresent(GraphicRenderer::getInstance());
+	manager->render();
+	SDL_RenderPresent(GraphicRenderer::getInstance());
+}
+
+void Partida::finJuegoLoop() {
+	if (!manager->terminoJuego()) return;
+
+	bool quit = false;
+	std::string input = "";
+	while (!quit) {
+		SDL_RenderClear(GraphicRenderer::getInstance());
+		quit = eventLoop(&input);
+		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+		quit |= currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_ESCAPE];
+		manager->renderFinJuego();
+		SDL_RenderPresent(GraphicRenderer::getInstance());
+	}
 }
 
 
@@ -247,6 +264,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
 		estadoTick.estadosJugadores[i].estaMuerto = mensaje["estadosJugadores"][i]["estaMuerto"];
 		estadoTick.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
 		estadoTick.estadosJugadores[i].puntos = mensaje["estadosJugadores"][i]["puntos"];
+		strcpy(estadoTick.estadosJugadores[i].usuario, std::string(mensaje["estadosJugadores"][i]["usuario"]).c_str());
     }
     for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){
         EstadoEnemigo estadoEnemigo;
@@ -297,6 +315,7 @@ void Partida::procesarEstadoLogin(nlohmann::json mensaje) {
     }
 
     manager->setEstadoLogin(estadoLogin);
+	manager->setUsername(estadoLogin.jugadores[estadoLogin.nroJugador - 1]);
 
     if (estadoLogin.estadoLogin <= 0) {
         reiniciarInstanciaHilo();
