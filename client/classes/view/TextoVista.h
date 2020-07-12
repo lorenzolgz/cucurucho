@@ -24,7 +24,7 @@ const int ALINEACION_CENTRO = 2;
 
 const int LETRA_ALTO = 24;
 const int LETRA_ANCHO = 24;
-const int ASCII_OFFSET = 32;
+const int ASCII_OFFSET = 30;
 
 class TextoVista {
 public:

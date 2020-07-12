@@ -75,7 +75,7 @@ struct EstadoHelper {
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-200), posicionY(-200) {}
+    EstadoJugador(): posicionX(-200), posicionY(-200), puntos(0), cantidadVidas(0) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;

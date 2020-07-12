@@ -43,6 +43,12 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 	if (estadoJugador.estaMuerto) {
 		return;
 	}
+
+    contador++;
+    if (estadoJugador.esInvencible && contador % 4 >= 2) {
+        return;
+    }
+
     if (estadoJugador.presente) {
         coloresRender = colores;
         JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player.png");
@@ -67,11 +73,8 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     colorShip(srcrect, dstrect);
 
-    // TODO sacar esto, es temporal para visibilizar facilmente cuando es invencible!!!!
-    if (!estadoJugador.esInvencible) {
-		helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador.presente);
-		helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador.presente);
-	}
+    helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador);
+    helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador);
 
     colorGlow();
 
@@ -92,7 +95,6 @@ void JugadorVista::colorShip(SDL_Rect srcrect, SDL_Rect dstrect) {
 
 
 void JugadorVista::colorGlow() {
-	contador++;
     std::array<int, 3> color = coloresRender.getColorGlow(contador);
 	SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
 }

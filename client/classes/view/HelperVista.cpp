@@ -12,8 +12,8 @@ HelperVista::HelperVista() {
     HelperVista::contador = 0;
 }
 
-void HelperVista::render(struct EstadoHelper estadoHelper, ColoresJugador colores, bool presente) {
-    if (presente) {
+void HelperVista::render(struct EstadoHelper estadoHelper, ColoresJugador colores, EstadoJugador estadoJugador) {
+    if (estadoJugador.presente) {
         HelperVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("helper.png");
         HelperVista::texturaBall = GeneradorDeTexturas::getInstance()->generarTextura("helper-ball.png");
     } else {
@@ -25,7 +25,9 @@ void HelperVista::render(struct EstadoHelper estadoHelper, ColoresJugador colore
 	double angulo = estadoHelper.angulo;
 
     contador++;
-    if (recorrido.size() > 20) recorrido.pop_back();
+    while (recorrido.size() > 10 + 10 * !estadoJugador.esInvencible) {
+        recorrido.pop_back();
+    }
 	renderGlow(posicion, recorrido, colores);
 	renderBall(posicion, colores);
 	renderHelper(posicion, angulo, colores);
