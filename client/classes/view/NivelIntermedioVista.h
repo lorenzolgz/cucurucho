@@ -7,18 +7,24 @@
 
 #include <SDL_render.h>
 #include "../../../commons/utils/Log.h"
-#include "FondoVista.h"
+#include "elements/FondoVista.h"
+#include "elements/JugadorVista.h"
 
 class NivelIntermedioVista {
-private:
-
-    FondoVista *fondo;
-    SDL_Renderer *gRenderer;
-
 public:
-    NivelIntermedioVista(const std::string fondoFilename);
-    FondoVista *nuevoFondo(const std::string &archivo);
-    void render();
+	NivelIntermedioVista(std::vector<JugadorVista*>* jugadores, int ancho, int alto);
+
+	void renderNivelIntermedio(struct EstadoTick estadoTick);
+
+	void renderEstadoLogin(EstadoLogin estadoLogin);
+
+private:
+	std::vector<JugadorVista*>* jugadores;
+    SDL_Renderer *gRenderer;
+    int ancho;
+    int alto;
+
+	void renderEsperaJugador(JugadorVista *jugador, char *nombre, Vector offset, int colorTexto);
 };
 
 

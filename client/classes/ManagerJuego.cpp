@@ -16,8 +16,11 @@ ManagerJuego::ManagerJuego() {
 }
 
 void ManagerJuego::render(){
-    // Render texture to screen
-    managerVista->render(estadoTick, estadoLogin, username);
+	managerVista->render(estadoTick, estadoLogin, username);
+}
+
+void ManagerJuego::renderFinJuego(){
+	managerVista->renderNivelIntermedio(estadoTick, estadoLogin, username);
 }
 
 bool ManagerJuego::terminoJuego() {
@@ -41,6 +44,7 @@ void ManagerJuego::setUsername(const std::string &username) {
 void ManagerJuego::setEstadoTick(const EstadoTick &estadoTick) {
     if (ManagerJuego::estadoTick.numeroNivel == FIN_DE_JUEGO) return;
     ManagerJuego::estadoTick = estadoTick;
+	this->setUsername(estadoTick.estadosJugadores[estadoLogin.nroJugador - 1].usuario);
 }
 
 void ManagerJuego::setEstadoLogin(const EstadoLogin &estadoLogin) {

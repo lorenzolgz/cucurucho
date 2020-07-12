@@ -10,7 +10,7 @@
 
 #define ANCHO_DISPARO 96
 #define ALTO_DISPARO 24
-#define VELOCIDAD_DISPARO 14
+#define VELOCIDAD_DISPARO 13
 
 Disparo::Disparo(float x, float y, int nroJugador) {
 	this->posicion = Vector(x + JUGADOR_ANCHO * 1 / 3, y + JUGADOR_ALTO / 5);

@@ -16,7 +16,9 @@ public:
 
     void setUsername(const std::string &username);
 
-    void render();
+	void render();
+
+	void renderFinJuego();
 
     bool terminoJuego();
 

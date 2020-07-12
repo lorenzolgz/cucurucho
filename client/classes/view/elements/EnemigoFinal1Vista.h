@@ -3,7 +3,7 @@
 
 
 #include <SDL_render.h>
-#include "../../../commons/protocols/protocolo.h"
+#include "../../../../commons/protocols/protocolo.h"
 
 const int ENEMIGO_FINAL1_SRC_ANCHO = 375;
 const int ENEMIGO_FINAL1_SRC_ALTO = 288;

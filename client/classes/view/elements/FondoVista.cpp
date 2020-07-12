@@ -3,12 +3,12 @@
 //
 
 #include "FondoVista.h"
-#include "../GraphicRenderer.h"
-#include "../GeneradorDeTexturas.h"
-#include "HudVista.h"
-#include "ManagerVista.h"
+#include "../../GraphicRenderer.h"
+#include "../../GeneradorDeTexturas.h"
+#include "../HudVista.h"
+#include "../ManagerVista.h"
 #include <iostream>
-#include "../../../commons/utils/Constantes.h"
+#include "../../../../commons/utils/Constantes.h"
 
 
 FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad) {

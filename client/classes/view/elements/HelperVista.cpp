@@ -1,7 +1,7 @@
 #include "HelperVista.h"
-#include "../../../commons/utils/Utils.h"
-#include "../GraphicRenderer.h"
-#include "../GeneradorDeTexturas.h"
+#include "../../../../commons/utils/Utils.h"
+#include "../../GraphicRenderer.h"
+#include "../../GeneradorDeTexturas.h"
 
 
 HelperVista::HelperVista() {

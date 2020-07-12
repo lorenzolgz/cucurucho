@@ -1,7 +1,7 @@
 #include "EnemigoFinal1Vista.h"
-#include "../GraphicRenderer.h"
-#include "../GeneradorDeTexturas.h"
-#include "../../../commons/utils/Vector.h"
+#include "../../GraphicRenderer.h"
+#include "../../GeneradorDeTexturas.h"
+#include "../../../../commons/utils/Vector.h"
 
 EnemigoFinal1Vista::EnemigoFinal1Vista() {
 	this->gRenderer = GraphicRenderer::getInstance();

@@ -33,22 +33,22 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(cliente
         client/main.cpp
-        client/classes/view/FondoVista.cpp
-        client/classes/view/FondoVista.h
+        client/classes/view/elements/FondoVista.cpp
+        client/classes/view/elements/FondoVista.h
         commons/utils/Vector.cpp
         commons/utils/Vector.h
         commons/utils/Log.cpp
         commons/utils/Log.h
         commons/utils/Utils.cpp
         commons/utils/Utils.h
-        client/classes/view/JugadorVista.cpp
-        client/classes/view/JugadorVista.h
-        client/classes/view/Enemigo2Vista.cpp
-        client/classes/view/Enemigo2Vista.h
-        client/classes/view/Enemigo1Vista.cpp
-        client/classes/view/Enemigo1Vista.h
-        client/classes/view/HelperVista.cpp
-        client/classes/view/HelperVista.h
+        client/classes/view/elements/JugadorVista.cpp
+        client/classes/view/elements/JugadorVista.h
+        client/classes/view/elements/Enemigo2Vista.cpp
+        client/classes/view/elements/Enemigo2Vista.h
+        client/classes/view/elements/Enemigo1Vista.cpp
+        client/classes/view/elements/Enemigo1Vista.h
+        client/classes/view/elements/HelperVista.cpp
+        client/classes/view/elements/HelperVista.h
         client/classes/view/HudVista.cpp
         client/classes/view/HudVista.h
         client/classes/view/CampoVista.cpp
@@ -92,9 +92,9 @@ add_executable(cliente
         commons/connections/ConexionExcepcion.h
         client/classes/config/Configuracion.cpp
         client/classes/config/Configuracion.h
-        client/classes/view/DisparoJugadorVista.cpp
-        client/classes/view/DisparoJugadorVista.h client/classes/view/DisparoEnemigoVista.cpp client/classes/view/DisparoEnemigoVista.h
-        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/EnemigoFinal1Vista.cpp client/classes/view/EnemigoFinal1Vista.h client/classes/view/ExplosionVista.cpp client/classes/view/ExplosionVista.h)
+        client/classes/view/elements/DisparoJugadorVista.cpp
+        client/classes/view/elements/DisparoJugadorVista.h client/classes/view/elements/DisparoEnemigoVista.cpp client/classes/view/elements/DisparoEnemigoVista.h
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h)
 
 add_executable(servidor
         server/main.cpp

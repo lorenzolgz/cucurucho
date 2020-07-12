@@ -46,3 +46,7 @@ void CampoVista::render(EstadoTick estadoTick) {
         fondo->render(posX);
 	}
 }
+
+int CampoVista::getNumeroNivel() const {
+	return numeroNivel;
+}

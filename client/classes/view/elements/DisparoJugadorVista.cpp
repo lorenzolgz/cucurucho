@@ -3,9 +3,9 @@
 //
 
 #include "DisparoJugadorVista.h"
-#include "../GraphicRenderer.h"
-#include "../GeneradorDeTexturas.h"
-#include "Colores.h"
+#include "../../GraphicRenderer.h"
+#include "../../GeneradorDeTexturas.h"
+#include "../Colores.h"
 #include "ExplosionVista.h"
 
 
