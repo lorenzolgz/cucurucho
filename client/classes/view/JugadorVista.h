@@ -13,18 +13,20 @@
 const int JUGADOR_SRC_ANCHO = 96;
 const int JUGADOR_SRC_ALTO = 48;
 
+const int BARRA_VIDA_SRC_ANCHO = 69;
+const int BARRA_VIDA_SRC_ALTO = 6;
+
 class HelperVista;
 
 class JugadorVista {
 public:
     JugadorVista(ColoresJugador jugador);
-//    void render(Vector posicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2);
     void render(struct EstadoJugador estadoJugador);
-	int getContador() const;
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+    SDL_Texture *texturaEnergia;
 	HelperVista* helperAbove;
 	HelperVista* helperBelow;
 	ColoresJugador colores = ColoresJugador({}, {});
@@ -32,8 +34,9 @@ private:
 	int contador;
 	Vector posicion;
 
-	void colorGlow();
-    void colorShip(SDL_Rect srcrect, SDL_Rect dstrect);
+	void renderGlow(SDL_Rect srcrect, SDL_Rect dstrect);
+    void renderShip(SDL_Rect srcrect, SDL_Rect dstrect);
+    void renderLifebar(int energia);
 
 	void calcularVelocidadY(Vector nuevaPosicion);
 
@@ -41,6 +44,10 @@ private:
 
     EfectoSonido *audioPerder;
     EfectoSonido *audioRevivir;
+
+    bool deberiaRenderizar(EstadoJugador estadoJugador);
+
+    void setColores(EstadoJugador jugador);
 };
 
 

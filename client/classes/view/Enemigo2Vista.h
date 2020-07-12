@@ -5,6 +5,7 @@
 #include <string>
 #include "../../../commons/utils/Vector.h"
 #include "../../../commons/protocols/protocolo.h"
+#include "ExplosionVista.h"
 
 const int ENEMIGO2_SRC_ANCHO = 285;
 const int ENEMIGO2_SRC_ALTO = 147;
@@ -13,6 +14,7 @@ class Enemigo2Vista {
 public:
 	Enemigo2Vista();
 	void render(EstadoEnemigo estadoEnemigo);
+    ExplosionVista *nuevaExplosion(Vector vector);
 
 private:
 	SDL_Renderer* gRenderer;

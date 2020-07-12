@@ -40,7 +40,8 @@ struct EstadoEnemigo Enemigo1::state() {
 	struct EstadoEnemigo estado;
 	estado.posicionX = posicion.getX();
 	estado.posicionY = posicion.getY();
-	estado.clase = 1;
+    estado.clase = 1;
+    estado.energia = vida->getEnergia();
 	return estado;
 }
 

@@ -61,10 +61,11 @@ struct Login {
 };
 
 struct EstadoDisparo {
-  EstadoDisparo(): posicionX(-200), posicionY(-200), id(0) {}
+  EstadoDisparo(): posicionX(-200), posicionY(-200), id(0), energia(1) {}
   int posicionX;
   int posicionY;
   int id;
+  int energia;
 };
 
 struct EstadoHelper {
@@ -75,7 +76,7 @@ struct EstadoHelper {
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-200), posicionY(-200) {}
+    EstadoJugador(): posicionX(-200), posicionY(-200), puntos(0), cantidadVidas(0) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
@@ -89,9 +90,10 @@ struct EstadoJugador {
 };
 
 struct EstadoEnemigo {
-    EstadoEnemigo(): posicionX(-200), posicionY(-200) {}
+	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0) {}
 	int posicionX;
 	int posicionY;
+	int energia;
 	int clase;
 };
 

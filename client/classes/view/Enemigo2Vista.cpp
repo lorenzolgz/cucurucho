@@ -21,3 +21,8 @@ void Enemigo2Vista::render(EstadoEnemigo estadoEnemigo) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 	l->debug("Vista del Enemigo 02: "+ posicion.getVector());
 }
+
+ExplosionVista * Enemigo2Vista::nuevaExplosion(Vector vector) {
+	Vector offset = Vector(ENEMIGO2_SRC_ANCHO / 2, ENEMIGO2_SRC_ALTO / 2);
+	return new ExplosionVista(vector + offset, EXPLOSION_GRANDE);
+}

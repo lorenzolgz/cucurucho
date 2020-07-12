@@ -10,8 +10,6 @@
 #include "../states/EstadoInternoCampoMovil.h"
 #include "entities/projectiles/Disparo.h"
 
-const int CAMPO_OFFSET = 300;
-
 class Entidad;
 class Ticker;
 class Jugador;

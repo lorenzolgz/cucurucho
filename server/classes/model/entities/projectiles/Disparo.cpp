@@ -10,10 +10,10 @@
 
 #define ANCHO_DISPARO 96
 #define ALTO_DISPARO 24
-#define VELOCIDAD_DISPARO 7
+#define VELOCIDAD_DISPARO 14
 
 Disparo::Disparo(float x, float y, int nroJugador) {
-	this->posicion = Vector(x + JUGADOR_ANCHO, y + JUGADOR_ALTO / 3);
+	this->posicion = Vector(x + JUGADOR_ANCHO * 1 / 3, y + JUGADOR_ALTO / 5);
     this->velocidad = VELOCIDAD_DISPARO;
     this->nroJugador = nroJugador;
     this->vida = new VidaProyectil();
@@ -47,6 +47,7 @@ EstadoDisparo Disparo::state() {
     disparo.posicionX = getPosicion().getX();
     disparo.posicionY = getPosicion().getY();
     disparo.id = nroJugador;
+    disparo.energia = vida->getEnergia();
     return disparo;
 }
 

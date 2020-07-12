@@ -8,6 +8,7 @@
 #include "Enemigo1Vista.h"
 #include "../../../commons/utils/Constantes.h"
 #include "EnemigoFinal1Vista.h"
+#include "ExplosionVista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
@@ -18,7 +19,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     enemigo1Vista = new Enemigo1Vista();
 	enemigo2Vista = new Enemigo2Vista();
 	enemigoFinal1Vista = new EnemigoFinal1Vista();
-    disparoJugadorVista = DisparoJugadorVista();
+    disparoJugadorVista = new DisparoJugadorVista();
     primerNivel = true;
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -54,10 +55,11 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
 	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
-
     renderDisparos(estadoTick.estadosDisparos);
-
     renderJugadores(estadoTick, estadoLogin);
+
+    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos);
+    renderExplosiones();
 
     posCampo = { 0, 0, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
@@ -98,8 +100,6 @@ void ManagerVista::renderNivelIntermedio() {
 
 
 void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
-    int n = 0;
-
 
     for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
         switch (estadoEnemigo.clase) {
@@ -121,7 +121,7 @@ void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
       // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
       if (estadoDisparo.id < 0) continue;
 
-      disparoJugadorVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY), estadoDisparo.id);
+      disparoJugadorVista->render(estadoDisparo);
     }
 
 }
@@ -166,7 +166,7 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
     estadoJugador.helper2.posicionY = posicionHelper2.getY();
 
     // Estos son valores dummies que no se usan
-    estadoJugador.energia = 100;
+    estadoJugador.energia = 0;
     estadoJugador.cantidadVidas = 3;
     estadoJugador.esInvencible = false;
 
@@ -202,5 +202,46 @@ void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
         TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
     } else if (estadoLogin.estadoLogin == LOGIN_COMENZAR) {
         TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
+    }
+}
+
+void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos) {
+    for (EstadoEnemigo e : enemigos) {
+        if (e.energia > 0) continue;
+
+        Vector pos = Vector(e.posicionX, e.posicionY);
+        switch (e.clase) {
+            case 1:
+                explosiones.push_back(enemigo1Vista->nuevaExplosion(pos));
+                break;
+            case 2:
+                explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
+                break;
+        }
+    }
+
+    for (EstadoDisparo d : disparos) {
+        if (d.energia > 0) continue;
+
+        Vector pos = Vector(d.posicionX, d.posicionY);
+        switch (d.id) {
+            default:
+                explosiones.push_back(disparoJugadorVista->nuevaExplosion(pos));
+        }
+
+    }
+}
+
+void ManagerVista::renderExplosiones() {
+    auto it = explosiones.begin();
+    while (it != explosiones.end()) {
+        (*it)->render();
+        if (!(*it)->activa()) {
+            delete (*it);
+            it = explosiones.erase(it);
+            l->debug("Explosion eliminada");
+        } else {
+            it++;
+        }
     }
 }

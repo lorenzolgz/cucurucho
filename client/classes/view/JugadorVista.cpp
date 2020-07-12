@@ -10,6 +10,7 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
+    JugadorVista::texturaEnergia = generadorDeTexturas->generarTextura("lifebar.png");
 	JugadorVista::contador = 0;
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
@@ -34,27 +35,17 @@ void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
     } else {
         contadorVelocidadY += (contadorVelocidadY < 0) - (contadorVelocidadY > 0);
     }
-
+    posicion = nuevaPosicion;
 }
 
 
-//void JugadorVista::render(Vector nuevaPosicion, Vector posHelper1, float argHelper1, Vector posHelper2, float argHelper2) {
 void JugadorVista::render(struct EstadoJugador estadoJugador) {
-	if (estadoJugador.estaMuerto) {
-		return;
-	}
-    if (estadoJugador.presente) {
-        coloresRender = colores;
-        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player.png");
-    } else {
-        coloresRender = COLORES_GRIS;
-        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player-g.png");
-    }
+    contador++;
 
-    Vector nuevaPosicion = Vector(estadoJugador.posicionX, estadoJugador.posicionY);
+    if (!deberiaRenderizar(estadoJugador)) return;
 
-    calcularVelocidadY(nuevaPosicion);
-    posicion = nuevaPosicion;
+    calcularVelocidadY(Vector(estadoJugador.posicionX, estadoJugador.posicionY));
+    setColores(estadoJugador);
 
 	SDL_Rect srcrect = {JUGADOR_SRC_ANCHO + JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
 						0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
@@ -64,39 +55,67 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
 						JUGADOR_SRC_ANCHO,
 						JUGADOR_SRC_ALTO};
 
-	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-    colorShip(srcrect, dstrect);
+    renderShip(srcrect, dstrect);
 
-    // TODO sacar esto, es temporal para visibilizar facilmente cuando es invencible!!!!
-    if (!estadoJugador.esInvencible) {
-		helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador.presente);
-		helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador.presente);
-	}
+    helperAbove->render(estadoJugador.helper1, coloresRender, estadoJugador);
+    helperBelow->render(estadoJugador.helper2, coloresRender, estadoJugador);
 
-    colorGlow();
+    renderGlow(srcrect, dstrect);
 
-	srcrect = {JUGADOR_SRC_ANCHO * 2 * (contadorVelocidadY < -10) + JUGADOR_SRC_ANCHO * 4 * (contadorVelocidadY > 10),
-			   0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
-	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-    SDL_SetTextureColorMod(textura, 255, 255, 255);
+    renderLifebar(estadoJugador.energia);
 }
 
 
-void JugadorVista::colorShip(SDL_Rect srcrect, SDL_Rect dstrect) {
+void JugadorVista::renderShip(SDL_Rect srcrect, SDL_Rect dstrect) {
+    SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     for (auto & i : coloresRender.base) {
         srcrect.y += JUGADOR_SRC_ALTO;
         SDL_SetTextureColorMod(textura, i[0], i[1], i[2]);
         SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
     }
+    SDL_SetTextureColorMod(textura, 255, 255, 255);
 }
 
 
-void JugadorVista::colorGlow() {
-	contador++;
+void JugadorVista::renderGlow(SDL_Rect srcrect, SDL_Rect dstrect) {
     std::array<int, 3> color = coloresRender.getColorGlow(contador);
 	SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
+
+    srcrect.x -= JUGADOR_SRC_ANCHO;
+    SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+    SDL_SetTextureColorMod(textura, 255, 255, 255);
 }
 
-int JugadorVista::getContador() const {
-	return contador;
+
+void JugadorVista::renderLifebar(int energia) {
+    SDL_Rect srcrect = {0, 0, BARRA_VIDA_SRC_ANCHO, BARRA_VIDA_SRC_ALTO};
+    SDL_Rect dstrect = {(int) posicion.getX() + JUGADOR_SRC_ANCHO / 10,
+                        (int) posicion.getY() + JUGADOR_SRC_ALTO + BARRA_VIDA_SRC_ALTO,
+                        BARRA_VIDA_SRC_ANCHO * energia / 100, BARRA_VIDA_SRC_ALTO};
+
+    std::array<int, 3> color = coloresRender.base[0];
+    SDL_SetTextureColorMod(texturaEnergia, color[0], color[1], color[2]);
+
+    SDL_RenderCopy(gRenderer, texturaEnergia, &srcrect, &dstrect);
+
+    SDL_SetTextureColorMod(texturaEnergia, 255, 255, 255);
+}
+
+
+bool JugadorVista::deberiaRenderizar(struct EstadoJugador estadoJugador) {
+    if (estadoJugador.estaMuerto) {
+        return false;
+    }
+
+    return !(estadoJugador.esInvencible && contador % 4 >= 2);
+}
+
+void JugadorVista::setColores(EstadoJugador estadoJugador) {
+    if (estadoJugador.presente) {
+        coloresRender = colores;
+        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player.png");
+    } else {
+        coloresRender = COLORES_GRIS;
+        JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player-g.png");
+    }
 }
