@@ -23,3 +23,7 @@ void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {
 
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 }
+
+Vector Enemigo1Vista::vectorOffset() {
+    return Vector(ENEMIGO1_SRC_ANCHO / 2, ENEMIGO1_SRC_ALTO / 2);
+}

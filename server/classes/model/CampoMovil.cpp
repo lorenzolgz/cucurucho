@@ -27,8 +27,8 @@ void CampoMovil::tick() {
 		it->second->tick();
 	}
 
+    removerEntidadesEnemigosMuertas();
 	procesarTodasLasColisiones();
-	removerEntidadesEnemigosMuertas();
 	removerDisparosMuertos();
 	removerDisparosFueraDePantalla();
 }
@@ -126,6 +126,7 @@ void CampoMovil::procesarTodasLasColisiones() {
 			continue;
 		}
 		for (auto* entidadEnemigo : entidadesEnemigos) {
+		    if (entidadEnemigo->getVidaEntidad()->estaMuerto()) continue;
 			procesarColisionEntreDosEntidades(jugador, entidadEnemigo);
 		}
 	}
@@ -133,6 +134,7 @@ void CampoMovil::procesarTodasLasColisiones() {
     for (auto it = disparos.begin(); it != disparos.end(); it++) {
         Disparo* disparo = *it;
         for (auto* entidadEnemigo : entidadesEnemigos) {
+            if (entidadEnemigo->getVidaEntidad()->estaMuerto()) continue;
             procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
             if(entidadEnemigo->getVidaEntidad()->estaMuerto()){
                 Jugador* jugadorActual = this->jugadores->at(disparo->nroJugador);

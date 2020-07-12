@@ -21,3 +21,7 @@ void Enemigo2Vista::render(EstadoEnemigo estadoEnemigo) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 	l->debug("Vista del Enemigo 02: "+ posicion.getVector());
 }
+
+Vector Enemigo2Vista::vectorOffset() {
+    return Vector(ENEMIGO2_SRC_ANCHO / 2, ENEMIGO2_SRC_ALTO / 2);
+}

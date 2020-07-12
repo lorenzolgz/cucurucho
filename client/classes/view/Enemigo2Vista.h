@@ -13,6 +13,7 @@ class Enemigo2Vista {
 public:
 	Enemigo2Vista();
 	void render(EstadoEnemigo estadoEnemigo);
+	Vector vectorOffset();
 
 private:
 	SDL_Renderer* gRenderer;

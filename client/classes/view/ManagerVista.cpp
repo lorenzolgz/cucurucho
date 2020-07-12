@@ -8,6 +8,7 @@
 #include "Enemigo1Vista.h"
 #include "../../../commons/utils/Constantes.h"
 #include "EnemigoFinal1Vista.h"
+#include "ExplosionVista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
@@ -59,6 +60,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
     renderJugadores(estadoTick, estadoLogin);
 
+    renderExplosiones(estadoTick.estadosEnemigos);
+
     posCampo = { 0, 0, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 }
@@ -98,8 +101,6 @@ void ManagerVista::renderNivelIntermedio() {
 
 
 void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
-    int n = 0;
-
 
     for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
         switch (estadoEnemigo.clase) {
@@ -166,7 +167,7 @@ struct EstadoJugador generarEstadoJugador(Vector posicion) {
     estadoJugador.helper2.posicionY = posicionHelper2.getY();
 
     // Estos son valores dummies que no se usan
-    estadoJugador.energia = 100;
+    estadoJugador.energia = 0;
     estadoJugador.cantidadVidas = 3;
     estadoJugador.esInvencible = false;
 
@@ -202,5 +203,39 @@ void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
         TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
     } else if (estadoLogin.estadoLogin == LOGIN_COMENZAR) {
         TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
+    }
+}
+
+void ManagerVista::renderExplosiones(std::list<EstadoEnemigo> enemigos) {
+    for (EstadoEnemigo e : enemigos) {
+        if (e.energia > 0) continue;
+
+        Vector pos = Vector(e.posicionX, e.posicionY);
+        l->debug("Nueva explosion en " + pos.getVector());
+
+        // TODO: Reproducir audio
+        switch (e.clase) {
+            case 1:
+                pos = pos + enemigo1Vista->vectorOffset();
+                explosiones.push_back(new ExplosionVista(pos, EXPLOSION_MEDIANA));
+                break;
+            case 2:
+                pos = pos + enemigo2Vista->vectorOffset();
+                explosiones.push_back(new ExplosionVista(pos, EXPLOSION_GRANDE));
+                break;
+        }
+    }
+
+    auto it = explosiones.begin();
+
+    while (it != explosiones.end()) {
+        (*it)->render();
+        if (!(*it)->activa()) {
+            delete (*it);
+            it = explosiones.erase(it);
+            l->debug("Explosion eliminada");
+        } else {
+            it++;
+        }
     }
 }

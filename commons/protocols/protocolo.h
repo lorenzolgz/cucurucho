@@ -89,9 +89,10 @@ struct EstadoJugador {
 };
 
 struct EstadoEnemigo {
-    EstadoEnemigo(): posicionX(-200), posicionY(-200) {}
+    EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0) {}
 	int posicionX;
 	int posicionY;
+	int energia;
 	int clase;
 };
 

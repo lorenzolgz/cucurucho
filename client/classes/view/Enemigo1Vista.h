@@ -13,10 +13,12 @@ class Enemigo1Vista {
 public:
 	Enemigo1Vista();
 	void render(EstadoEnemigo estadoEnemigo);
+    Vector vectorOffset();
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+
 };
 
 
