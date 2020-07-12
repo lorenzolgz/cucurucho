@@ -19,7 +19,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     enemigo1Vista = new Enemigo1Vista();
 	enemigo2Vista = new Enemigo2Vista();
 	enemigoFinal1Vista = new EnemigoFinal1Vista();
-    disparoJugadorVista = DisparoJugadorVista();
+    disparoJugadorVista = new DisparoJugadorVista();
     primerNivel = true;
 
     for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -55,12 +55,11 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
 	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
-
     renderDisparos(estadoTick.estadosDisparos);
-
     renderJugadores(estadoTick, estadoLogin);
 
-    renderExplosiones(estadoTick.estadosEnemigos);
+    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos);
+    renderExplosiones();
 
     posCampo = { 0, 0, ancho, alto };
     SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
@@ -122,7 +121,7 @@ void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
       // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
       if (estadoDisparo.id < 0) continue;
 
-      disparoJugadorVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY), estadoDisparo.id);
+      disparoJugadorVista->render(estadoDisparo);
     }
 
 }
@@ -206,28 +205,35 @@ void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
     }
 }
 
-void ManagerVista::renderExplosiones(std::list<EstadoEnemigo> enemigos) {
+void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos) {
     for (EstadoEnemigo e : enemigos) {
         if (e.energia > 0) continue;
 
         Vector pos = Vector(e.posicionX, e.posicionY);
-        l->debug("Nueva explosion en " + pos.getVector());
-
-        // TODO: Reproducir audio
         switch (e.clase) {
             case 1:
-                pos = pos + enemigo1Vista->vectorOffset();
-                explosiones.push_back(new ExplosionVista(pos, EXPLOSION_MEDIANA));
+                explosiones.push_back(enemigo1Vista->nuevaExplosion(pos));
                 break;
             case 2:
-                pos = pos + enemigo2Vista->vectorOffset();
-                explosiones.push_back(new ExplosionVista(pos, EXPLOSION_GRANDE));
+                explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
                 break;
         }
     }
 
-    auto it = explosiones.begin();
+    for (EstadoDisparo d : disparos) {
+        if (d.energia > 0) continue;
 
+        Vector pos = Vector(d.posicionX, d.posicionY);
+        switch (d.id) {
+            default:
+                explosiones.push_back(disparoJugadorVista->nuevaExplosion(pos));
+        }
+
+    }
+}
+
+void ManagerVista::renderExplosiones() {
+    auto it = explosiones.begin();
     while (it != explosiones.end()) {
         (*it)->render();
         if (!(*it)->activa()) {

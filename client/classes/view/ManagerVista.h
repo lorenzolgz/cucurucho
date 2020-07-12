@@ -31,7 +31,7 @@ private:
 	Enemigo1Vista* enemigo1Vista;
     Enemigo2Vista* enemigo2Vista;
 	EnemigoFinal1Vista* enemigoFinal1Vista;
-    DisparoJugadorVista disparoJugadorVista;
+    DisparoJugadorVista* disparoJugadorVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
     std::list<ExplosionVista*> explosiones;
 
@@ -51,7 +51,9 @@ private:
 
     void renderDisparos(std::list<EstadoDisparo> estadosDisparos);
 
-    void renderExplosiones(std::list<EstadoEnemigo> list);
+    void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos);
+
+    void renderExplosiones();
 };
 
 

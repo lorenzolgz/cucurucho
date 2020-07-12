@@ -261,6 +261,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
         estadoDisparo.posicionX = informacionJson["posicionX"];
         estadoDisparo.posicionY = informacionJson["posicionY"];
         estadoDisparo.id = informacionJson["id"];
+        estadoDisparo.energia = informacionJson["energia"];
         estadoTick.estadosDisparos.push_back(estadoDisparo);
     }
     manager->setEstadoTick(estadoTick);

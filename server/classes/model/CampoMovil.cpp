@@ -28,8 +28,8 @@ void CampoMovil::tick() {
 	}
 
     removerEntidadesEnemigosMuertas();
-	procesarTodasLasColisiones();
 	removerDisparosMuertos();
+	procesarTodasLasColisiones();
 	removerDisparosFueraDePantalla();
 }
 
@@ -90,9 +90,11 @@ EstadoInternoCampoMovil CampoMovil::state() {
 }
 
 bool CampoMovil::verificarEntidadEstaDentroDelCampo(Entidad* entidad) {
-    int posX = entidad->getPosicion().getX();
-    int posY = entidad->getPosicion().getY();
-    return !(posX < 0 - CAMPO_OFFSET || posX > ancho + CAMPO_OFFSET || posY < 0 - CAMPO_OFFSET || posY > alto + CAMPO_OFFSET);
+	int posX = entidad->getPosicion().getX();
+	int posY = entidad->getPosicion().getY();
+	int ancho_e = entidad->getAncho();
+	int alto_e = entidad->getAlto();
+	return !(posX + ancho_e < 0 || posX - ancho_e > ancho || posY + alto_e < 0 || posY - alto_e > alto);
 }
 
 void CampoMovil::removerEntidadesEnemigosMuertas() {
@@ -134,7 +136,7 @@ void CampoMovil::procesarTodasLasColisiones() {
     for (auto it = disparos.begin(); it != disparos.end(); it++) {
         Disparo* disparo = *it;
         for (auto* entidadEnemigo : entidadesEnemigos) {
-            if (entidadEnemigo->getVidaEntidad()->estaMuerto()) continue;
+            if (entidadEnemigo->getVidaEntidad()->estaMuerto() || disparo->getVidaEntidad()->estaMuerto()) continue;
             procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
             if(entidadEnemigo->getVidaEntidad()->estaMuerto()){
                 Jugador* jugadorActual = this->jugadores->at(disparo->nroJugador);
@@ -160,7 +162,7 @@ void CampoMovil::removerDisparosFueraDePantalla() {
 
 	while (itd != disparos.end()) {
 		(*itd)->tick();
-		if (!entidadEstaDentroDelCampo(*itd)) {
+		if (!verificarEntidadEstaDentroDelCampo(*itd)) {
 			itd = disparos.erase(itd);
 			l->debug("Disparo eliminado por salir de pantalla.");
 		} else {

@@ -8,6 +8,8 @@
 #include <SDL_render.h>
 #include "../../../commons/utils/Vector.h"
 #include "../Audio.h"
+#include "../../../commons/protocols/protocolo.h"
+#include "ExplosionVista.h"
 
 #define DISPARO_JUGADOR_SRC_ANCHO 96
 #define DISPARO_JUGADOR_SRC_ALTO 24
@@ -17,9 +19,9 @@
 class DisparoJugadorVista {
 public:
     DisparoJugadorVista();
-    // TODO: En vez de Vector deberia recibir un tick o lo que sea
-    // Deberia tener posicion y numero de jugador
-    void render(Vector posicion, int nroJugador);
+	void render(EstadoDisparo disparo);
+	ExplosionVista *nuevaExplosion(Vector vector);
+
 
 private:
     SDL_Renderer* gRenderer;
@@ -27,7 +29,6 @@ private:
 
     EfectoSonido *audioDisparo1;
     EfectoSonido *audioDisparo2;
-
 };
 
 

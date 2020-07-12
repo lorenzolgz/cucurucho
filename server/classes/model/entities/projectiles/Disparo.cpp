@@ -47,6 +47,7 @@ EstadoDisparo Disparo::state() {
     disparo.posicionX = getPosicion().getX();
     disparo.posicionY = getPosicion().getY();
     disparo.id = nroJugador;
+    disparo.energia = vida->getEnergia();
     return disparo;
 }
 
