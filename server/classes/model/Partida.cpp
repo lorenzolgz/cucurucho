@@ -4,9 +4,9 @@
 #include "../../../commons/utils/Log.h"
 #include "../config/FondoConfiguracion.h"
 
-#define ANCHO_DISPARO 10
-#define ALTO_DISPARO 10
-#define VELOCIDAD_DISPARO 7
+#define ANCHO_DISPARO_JUGADOR 10
+#define ALTO_DISPARO_JUGADOR 10
+#define VELOCIDAD_DISPARO_JUGADOR 7
 
 Partida::Partida(Configuracion* config) {
 	this->nuevoNivel = 1;

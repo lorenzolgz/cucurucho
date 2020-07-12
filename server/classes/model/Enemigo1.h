@@ -16,21 +16,14 @@ class Enemigo1 : public EntidadEnemigo {
 public:
 	Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores);
 
-	Vector getPosicion() override;
-	int getAncho() override;
-	int getAlto() override;
 	void tick() override;
 	struct EstadoEnemigo state() override;
 	int getTipoEntidad() override;
-	std::list<Forma> getFormas() override;
-	VidaEntidad* getVidaEntidad() override;
 	float getVelocidadX() override ;
 	virtual void setPosicion(Vector nuevaPosicion) override;
 
 private:
-    Vector posicion;
 	float velocidadX;
-	VidaEntidad* vida;
 };
 
 

@@ -7,33 +7,22 @@
 #include "ais/IAEnemigoPatron2.h"
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
-    if (random() % 2 == 0) {
+    if (random() % 10 < 2) {
         x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
-	this->velocidadEscalar = 1;
 	this->posicion = Vector(x, y);
+	this->ancho = ENEMIGO2_ANCHO;
+	this->alto = ENEMIGO2_ALTO;
 	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
 	this->ia = new IAEnemigoPatron2(this, jugadores);
 	l->info("Se creo correctamente el Enemigo 02.");
 }
 
-int Enemigo2::getAncho() {
-	return ENEMIGO2_ANCHO;
-}
-
-int Enemigo2::getAlto() {
-	return ENEMIGO2_ALTO;
-}
-
 void Enemigo2::tick() {
 	ia = ia->tick();
 	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
-}
-
-Vector Enemigo2::getPosicion() {
-	return posicion;
 }
 
 struct EstadoEnemigo Enemigo2::state() {
@@ -54,10 +43,6 @@ std::list<Forma> Enemigo2::getFormas() {
 	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho()-20, getAlto());
 	formas.emplace_back(formaSimple);
 	return formas;
-}
-
-VidaEntidad* Enemigo2::getVidaEntidad() {
-	return vida;
 }
 
 float Enemigo2::getVelocidadX() {

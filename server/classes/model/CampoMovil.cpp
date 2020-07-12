@@ -123,27 +123,30 @@ void CampoMovil::removerDisparosMuertos() {
 
 void CampoMovil::procesarTodasLasColisiones() {
 	for (auto it = jugadores->begin(); it != jugadores->end(); it++) {
-		Jugador* jugador = it->second;
+		Jugador *jugador = it->second;
 		if (jugador->estaMuerto()) {
 			continue;
 		}
-		for (auto* entidadEnemigo : entidadesEnemigos) {
-		    if (entidadEnemigo->getVidaEntidad()->estaMuerto()) continue;
+		for (auto *entidadEnemigo : entidadesEnemigos) {
+			if (entidadEnemigo->getVidaEntidad()->estaMuerto()) {
+				continue;
+			}
 			procesarColisionEntreDosEntidades(jugador, entidadEnemigo);
 		}
 	}
 
-    for (auto it = disparos.begin(); it != disparos.end(); it++) {
-        Disparo* disparo = *it;
-        for (auto* entidadEnemigo : entidadesEnemigos) {
-            if (entidadEnemigo->getVidaEntidad()->estaMuerto() || disparo->getVidaEntidad()->estaMuerto()) continue;
-            procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
-            if(entidadEnemigo->getVidaEntidad()->estaMuerto()){
-                Jugador* jugadorActual = this->jugadores->at(disparo->nroJugador);
-                jugadorActual->sumarPuntosPorDestruirA(entidadEnemigo->getTipoEntidad());
-            }
-        }
-    }
+	for (auto it = disparos.begin(); it != disparos.end(); it++) {
+		Disparo *disparo = *it;
+		for (auto *entidadEnemigo : entidadesEnemigos) {
+			if (entidadEnemigo->getVidaEntidad()->estaMuerto() || disparo->getVidaEntidad()->estaMuerto()) {
+				continue;
+			}
+			procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
+			if (entidadEnemigo->getVidaEntidad()->estaMuerto()) {
+				disparo->matoEntidad(entidadEnemigo->getTipoEntidad());
+			}
+		}
+	}
 }
 
 void CampoMovil::procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2) {

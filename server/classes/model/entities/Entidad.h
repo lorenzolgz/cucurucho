@@ -5,9 +5,8 @@
 #include "../Ticker.h"
 #include "Forma.h"
 #include "../life/VidaEntidad.h"
+#include "../../../../commons/utils/Vector.h"
 
-
-class Ticker;
 
 // Todo: Pasar a commons y reemplazar donde se usa 1 o 2 en los switchs !!!!
 enum {
@@ -20,13 +19,19 @@ enum {
 
 class Entidad : public Ticker {
 public:
-	virtual Vector getPosicion() = 0;
-	virtual int getAncho() = 0;
-	virtual int getAlto() = 0;
-	virtual int getTipoEntidad() = 0;
-	virtual std::list<Forma> getFormas() = 0;
-	virtual VidaEntidad* getVidaEntidad() = 0;
+	Vector getPosicion();
+	int getAncho();
+	int getAlto();
+	virtual std::list<Forma> getFormas();
+	virtual VidaEntidad* getVidaEntidad();
 	bool colisiona(Entidad* otraEntidad);
+	virtual int getTipoEntidad() = 0;
+
+protected:
+	Vector posicion;
+	float ancho;
+	float alto;
+	VidaEntidad* vida;
 };
 
 

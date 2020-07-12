@@ -109,7 +109,7 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
     for (EstadoDisparo estadoDisparo: estadosDisparos) {
       // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
-      if (estadoDisparo.id < 0) continue;
+      if (estadoDisparo.nroJugador < 0) continue;
 
       disparoJugadorVista->render(estadoDisparo);
     }
@@ -157,7 +157,7 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
         if (d.energia > 0) continue;
 
         Vector pos = Vector(d.posicionX, d.posicionY);
-        switch (d.id) {
+        switch (d.nroJugador) {
             default:
                 explosiones.push_back(disparoJugadorVista->nuevaExplosion(pos));
         }

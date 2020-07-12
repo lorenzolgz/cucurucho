@@ -61,10 +61,10 @@ struct Login {
 };
 
 struct EstadoDisparo {
-  EstadoDisparo(): posicionX(-200), posicionY(-200), id(0), energia(1) {}
+  EstadoDisparo(): posicionX(-200), posicionY(-200), nroJugador(0), energia(1) {}
   int posicionX;
   int posicionY;
-  int id;
+  int nroJugador;
   int energia;
 };
 
