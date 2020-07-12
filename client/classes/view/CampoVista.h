@@ -21,6 +21,7 @@ private:
 	float posX;
 	int ultimoTick;
 	int numeroNivel;
+	bool overrideTick;
 	std::list<FondoVista*> fondos;
 
 };

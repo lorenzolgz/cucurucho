@@ -9,6 +9,7 @@
 #include "../../../commons/utils/Log.h"
 #include "elements/FondoVista.h"
 #include "elements/JugadorVista.h"
+#include "CampoVista.h"
 
 class NivelIntermedioVista {
 public:
@@ -20,11 +21,15 @@ public:
 
 private:
 	std::vector<JugadorVista*>* jugadores;
-    SDL_Renderer *gRenderer;
-    int ancho;
+	SDL_Renderer *gRenderer;
+	CampoVista* campoVista;
+	int ancho;
+
     int alto;
 
 	void renderEsperaJugador(JugadorVista *jugador, char *nombre, Vector offset, int colorTexto);
+
+	void renderComun();
 };
 
 

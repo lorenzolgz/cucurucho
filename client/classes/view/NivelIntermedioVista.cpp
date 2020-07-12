@@ -13,6 +13,11 @@ NivelIntermedioVista::NivelIntermedioVista(std::vector<JugadorVista*>* jugadores
 	NivelIntermedioVista::jugadores = jugadores;
 	NivelIntermedioVista::ancho = ancho;
 	NivelIntermedioVista::alto = alto;
+	NivelIntermedioVista::campoVista = new CampoVista(2, -1);
+	campoVista->nuevoFondo("dungeon_3.png", 0, 0, 3.5);
+	campoVista->nuevoFondo("dungeon_5.png", 0, 0, 4.75);
+	campoVista->nuevoFondo("dungeon_4.png", 0, 0, 5.5);
+
     l->info("La vista del Nivel Intermedio fue creada correctamente.");
 }
 
@@ -52,6 +57,13 @@ void setViewport(int ancho, int alto) {
 	SDL_RenderSetViewport(GraphicRenderer::getInstance(), &posCampo);
 }
 
+void NivelIntermedioVista::renderComun() {
+	setViewport(ancho, alto);
+	EstadoTick estadoTick;
+	estadoTick.posX = 1;
+	estadoTick.numeroNivel = -1;
+	campoVista->render(estadoTick);
+}
 
 void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto) {
 	Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
@@ -67,9 +79,9 @@ void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nomb
 	jugador->render(estado);
 }
 
-
 void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
-	setViewport(ancho, alto);
+	renderComun();
+
 	for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
 		Vector offset = Vector(0, alto * 7 / 12) / estadoLogin.cantidadJugadores * i;
 		renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], offset, i + 1);
@@ -83,7 +95,8 @@ void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
 }
 
 void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick estadoTick) {
-	setViewport(ancho, alto);
+	renderComun();
+
 	int cantidadJugadores = 0;
 
 	for (auto & estadosJugador : estadoTick.estadosJugadores) {
