@@ -50,6 +50,8 @@ private:
     void renderEspera(struct EstadoLogin estadoLogin);
 
     void renderDisparos(std::list<EstadoDisparo> estadosDisparos);
+
+    void renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos);
 };
 
 

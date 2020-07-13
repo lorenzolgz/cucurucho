@@ -58,6 +58,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
     renderDisparos(estadoTick.estadosDisparos);
 
+    renderDisparosEnemigos(estadoTick.estadosDisparosEnemigos);
+
     renderJugadores(estadoTick, estadoLogin);
 
     posCampo = { 0, 0, ancho, alto };
@@ -119,17 +121,16 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 
 void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
     for (EstadoDisparo estadoDisparo: estadosDisparos) {
-        // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
-      if (estadoDisparo.id < 0) {
-          disparoEnemigoVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY));
-      }
-      else {
           disparoJugadorVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY), estadoDisparo.id);
-      }
     }
-
 }
 
+
+void ManagerVista::renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos) {
+    for (EstadoDisparo estadoDisparo: disparosEnemigos) {
+        disparoEnemigoVista.render(Vector(estadoDisparo.posicionX, estadoDisparo.posicionY));
+    }
+}
 
 void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin) {
 
@@ -208,3 +209,4 @@ void ManagerVista::renderEspera(struct EstadoLogin estadoLogin) {
         TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
     }
 }
+

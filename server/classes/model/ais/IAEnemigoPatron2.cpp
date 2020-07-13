@@ -5,7 +5,7 @@
 #define DISTANCIA_DESACTIVADORA_IA_DERECHA_2 200
 #define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2 300
 #define JUGADORES_NO_VIVOS_IA_2 99999
-#define RANGO_DISPARO 60
+#define RANGO_DISPARO 180
 
 IAEnemigoPatron2::IAEnemigoPatron2(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -37,6 +37,7 @@ IAEnemigo* IAEnemigoPatron2::tick() {
             desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
             desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
         }
+        // TODO: por ahora esto choto :)
         int lineaHor = abs(it->second->getPosicion().getX() - entidadEnemigo->getPosicion().getX());
         if (lineaHor < RANGO_DISPARO) {
             entidadEnemigo->disparar();

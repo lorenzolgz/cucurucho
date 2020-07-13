@@ -11,8 +11,8 @@
             "fin": "cleared_con_nave1.png",
             "audioNivel": "rainonme.mpeg",
             "enemigos": {
-               "clase1": 18,
-               "clase2": 2,
+               "clase1": 8,
+               "clase2": 5,
                "final": true
             },
             "velocidad": 2,
