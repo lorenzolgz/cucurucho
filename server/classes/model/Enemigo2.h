@@ -13,7 +13,7 @@ const int ENEMIGO2_ALTO = 147;
 
 class Enemigo2 : public EntidadEnemigo {
 public:
-    Enemigo2(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores);
+    Enemigo2(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo);
 
 	int getAncho() override;
 	int getAlto() override;

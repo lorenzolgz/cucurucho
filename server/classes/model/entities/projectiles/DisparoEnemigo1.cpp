@@ -7,8 +7,8 @@
 
 
 DisparoEnemigo1::DisparoEnemigo1(float x, float y) {
-    this->posicion = Vector(x + ENEMIGO1_ANCHO, y + ENEMIGO1_ALTO / 3);
-    this->velocidad = VELOCIDAD_DISPARO;
+    this->posicion = Vector(x + ENEMIGO1_ANCHO / 2, y + ENEMIGO1_ALTO / 2);
+    this->velocidad = VELOCIDAD_DISPARO_ENEMIGO1;
     this->vida = new VidaProyectil();
     l->debug("Disparo Enemigo01 creado en " + std::to_string(x) + "," + std::to_string(y));
 }
@@ -22,7 +22,7 @@ EstadoDisparo DisparoEnemigo1::state() {
 }
 
 float DisparoEnemigo1::getVelocidad() {
-    return VELOCIDAD_DISPARO;
+    return VELOCIDAD_DISPARO_ENEMIGO1;
 }
 
 Vector DisparoEnemigo1::getPosicion() {
@@ -30,11 +30,11 @@ Vector DisparoEnemigo1::getPosicion() {
 }
 
 int DisparoEnemigo1::getAncho() {
-    return ANCHO_DISPARO;
+    return ANCHO_DISPARO_ENEMIGO1;
 }
 
 int DisparoEnemigo1::getAlto() {
-    return ALTO_DISPARO;
+    return ALTO_DISPARO_ENEMIGO1;
 }
 
 void DisparoEnemigo1::tick() {

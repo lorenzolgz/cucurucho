@@ -10,7 +10,7 @@
 
 Enemigo1::Enemigo1(float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
 
-    int x = campo->getPosicion().getX();
+    int x = campo->getAncho();
     if (random() % 2 == 0) {
         x = -x + CAMPO_ANCHO - ENEMIGO1_ANCHO;
         velocidadX *= -1;

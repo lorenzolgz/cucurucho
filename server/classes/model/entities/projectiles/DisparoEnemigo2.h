@@ -10,9 +10,9 @@
 #include "../../life/VidaProyectil.h"
 #include "../../../../../commons/utils/Vector.h"
 
-#define ANCHO_DISPARO 72
-#define ALTO_DISPARO 12
-#define VELOCIDAD_DISPARO 15
+#define ANCHO_DISPARO_ENEMIGO2 18
+#define ALTO_DISPARO_ENEMIGO2 18
+#define VELOCIDAD_DISPARO_ENEMIGO2 7
 #define ID_ENEMIGO2 -2
 
 class DisparoEnemigo2: public EntidadDisparo {

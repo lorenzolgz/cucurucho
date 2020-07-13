@@ -7,7 +7,7 @@
 #include "ais/IAEnemigoPatron2.h"
 #include "entities/projectiles/DisparoEnemigo2.h"
 
-Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
+Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
     if (random() % 2 == 0) {
         x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
@@ -17,6 +17,7 @@ Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* j
 	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
 	this->ia = new IAEnemigoPatron2(this, jugadores);
+	this->campo = campo;
 	l->info("Se creo correctamente el Enemigo 02.");
 }
 

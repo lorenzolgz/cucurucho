@@ -173,7 +173,7 @@ void CampoMovil::nuevoDisparo(EntidadDisparo *disparo) {
 }
 
 void CampoMovil::nuevoDisparoEnemigo(EntidadDisparo *disparo) {
-    disparosEnemigos.push_back(disparo);
+	disparosEnemigos.push_back(disparo);
 }
 
 void CampoMovil::removerDisparosFueraDePantalla() {

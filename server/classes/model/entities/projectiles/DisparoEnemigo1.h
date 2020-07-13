@@ -12,9 +12,9 @@
 #include "../../../../../commons/utils/Vector.h"
 #include "EntidadDisparo.h"
 
-#define ANCHO_DISPARO 72
-#define ALTO_DISPARO 12
-#define VELOCIDAD_DISPARO 12
+#define ANCHO_DISPARO_ENEMIGO1 18
+#define ALTO_DISPARO_ENEMIGO1 18
+#define VELOCIDAD_DISPARO_ENEMIGO1 6
 
 #define ID_ENEMIGO1 -1
 

@@ -77,7 +77,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
         switch (tipoDeEnemigo) {
             case 1: {entidad = new Enemigo1(posY, velocidadX, jugadores, campo);}
             break;
-            case 2: {entidad = new Enemigo2(campo->getAncho(), posY, velocidadX, jugadores);}
+            case 2: {entidad = new Enemigo2(campo->getAncho(), posY, velocidadX, jugadores, campo);}
             break;
             // Todo después vemos
             default: {entidad = nullptr;};
