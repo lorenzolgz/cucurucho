@@ -5,6 +5,7 @@
 #include "../../../commons/utils/Constantes.h"
 #include "life/VidaEnemigo2.h"
 #include "ais/IAEnemigoPatron2.h"
+#include "entities/projectiles/DisparoEnemigo2.h"
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
     if (random() % 2 == 0) {
@@ -29,7 +30,9 @@ int Enemigo2::getAlto() {
 
 void Enemigo2::tick() {
 	ia = ia->tick();
-	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
+
+    ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+    l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 Vector Enemigo2::getPosicion() {
@@ -65,4 +68,15 @@ float Enemigo2::getVelocidadX() {
 
 void Enemigo2::setPosicion(Vector nuevaPosicion) {
 	posicion = nuevaPosicion;
+}
+
+void Enemigo2::disparar() {
+    if (ticksHastaDisparo <= 0) {
+
+        ticksHastaDisparo = TICKS_COOLDOWN_DISPARO_ENEMIGO2;
+        DisparoEnemigo2 *disparo = new DisparoEnemigo2(getPosicion().getX(), getPosicion().getY());
+        campo->nuevoDisparoEnemigo(disparo);
+        l->info("Se crea un nuevo disparo Enemigo 02");
+    }
+
 }

@@ -5,6 +5,7 @@
 #define DISTANCIA_DESACTIVADORA_DERECHA_IA_ENEMIGO_PATRON_1 150
 #define DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1 80
 #define JUGADORES_NO_VIVOS 99999
+#define RANGO_DISPARO 40
 
 IAEnemigoPatron1::IAEnemigoPatron1(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -36,6 +37,10 @@ IAEnemigo* IAEnemigoPatron1::tick() {
 			desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
 			desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
 		}
+		int lineaHor = abs(it->second->getPosicion().getX() - entidadEnemigo->getPosicion().getX());
+		if (lineaHor < RANGO_DISPARO) {
+            entidadEnemigo->disparar();
+        }
 	}
 
 	if(distanciaMinima == JUGADORES_NO_VIVOS){

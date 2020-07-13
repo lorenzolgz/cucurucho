@@ -100,7 +100,8 @@ struct EstadoTick {
 	int nuevoNivel;
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
-	std::list<EstadoDisparo> estadosDisparos;
+    std::list<EstadoDisparo> estadosDisparos;
+    std::list<EstadoDisparo> estadosDisparosEnemigos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 

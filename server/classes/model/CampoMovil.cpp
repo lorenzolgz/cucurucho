@@ -65,10 +65,13 @@ bool CampoMovil::verificarPosicionNivel() {
 EstadoInternoCampoMovil CampoMovil::state() {
 	std::list<EstadoEnemigo> estadosEnemigos;
     std::list<EstadoJugador> estadosJugadores;
-	std::list<EstadoDisparo> estadosDisparos;
-	for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
+    std::list<EstadoDisparo> estadosDisparos;
+    std::list<EstadoDisparo> estadosDisparosEnemigos;
+    for (EntidadEnemigo* entidadEnemigo : entidadesEnemigos) {
 		// En vez de eliminar a los enemigos que estan fuera del campo, simplemente no los enviamos a los clientes.
-        if (verificarEntidadEstaDentroDelCampo(entidadEnemigo)) estadosEnemigos.push_back(entidadEnemigo->state());
+        if (verificarEntidadEstaDentroDelCampo(entidadEnemigo)) {
+            estadosEnemigos.push_back(entidadEnemigo->state());
+        }
 	}
 
     std::map<int, Jugador*>::iterator it;
@@ -76,14 +79,19 @@ EstadoInternoCampoMovil CampoMovil::state() {
         estadosJugadores.push_back(it->second->state());
     }
 
-	for (Disparo* disparo : disparos) {
+	for (EntidadDisparo* disparo : disparosJugador) {
 		estadosDisparos.push_back(disparo->state());
+	}
+
+	for(EntidadDisparo* disparoEnemigo : disparosEnemigos) {
+	    estadosDisparosEnemigos.push_back(disparoEnemigo->state());
 	}
 
 	EstadoInternoCampoMovil estadoCampoMovil;
 	estadoCampoMovil.estadosJugadores = estadosJugadores;
 	estadoCampoMovil.estadosEnemigos = estadosEnemigos;
 	estadoCampoMovil.estadosDisparos = estadosDisparos;
+	estadoCampoMovil.estadosDisparosEnemigos = estadosDisparosEnemigos;
 	estadoCampoMovil.posX = (int) posicion.getX();
 
 	return estadoCampoMovil;
@@ -108,15 +116,25 @@ void CampoMovil::removerEntidadesEnemigosMuertas() {
 }
 
 void CampoMovil::removerDisparosMuertos() {
-	auto it = disparos.begin();
-	while (it != disparos.end()) {
-		Disparo* disparo = *it;
-		if (disparo->getVidaEntidad()->estaMuerto()) {
-			it = disparos.erase(it);
-		} else {
-			++it;
-		}
-	}
+    auto ite = disparosEnemigos.begin();
+    while (ite != disparosEnemigos.end()) {
+        EntidadDisparo* disparo = *ite;
+        if (disparo->getVidaEntidad()->estaMuerto()) {
+            ite = disparosEnemigos.erase(ite);
+        } else {
+            ++ite;
+        }
+    }
+    auto it = disparosJugador.begin();
+    while (it != disparosJugador.end()) {
+        EntidadDisparo* disparo = *it;
+        if (disparo->getVidaEntidad()->estaMuerto()) {
+            it = disparosJugador.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
 }
 
 void CampoMovil::procesarTodasLasColisiones() {
@@ -128,14 +146,19 @@ void CampoMovil::procesarTodasLasColisiones() {
 		for (auto* entidadEnemigo : entidadesEnemigos) {
 			procesarColisionEntreDosEntidades(jugador, entidadEnemigo);
 		}
+        for (auto it = disparosEnemigos.begin(); it != disparosEnemigos.end(); it++) {
+            EntidadDisparo* pDisparo = *it;
+            procesarColisionEntreDosEntidades(pDisparo, jugador);
+        }
 	}
 
-	for (auto it = disparos.begin(); it != disparos.end(); it++) {
-		Disparo* disparo = *it;
+	for (auto it = disparosJugador.begin(); it != disparosJugador.end(); it++) {
+		EntidadDisparo* disparo = *it;
 		for (auto* entidadEnemigo : entidadesEnemigos) {
-			procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
+		    procesarColisionEntreDosEntidades(disparo, entidadEnemigo);
 		}
 	}
+
 }
 
 void CampoMovil::procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2) {
@@ -145,20 +168,35 @@ void CampoMovil::procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2) {
 	}
 }
 
-void CampoMovil::nuevoDisparo(Disparo *pDisparo) {
-	disparos.push_back(pDisparo);
+void CampoMovil::nuevoDisparo(EntidadDisparo *disparo) {
+    disparosJugador.push_back(disparo);
+}
+
+void CampoMovil::nuevoDisparoEnemigo(EntidadDisparo *disparo) {
+    disparosEnemigos.push_back(disparo);
 }
 
 void CampoMovil::removerDisparosFueraDePantalla() {
-	std::list<Disparo *>::iterator itd = disparos.begin();
+    std::list<EntidadDisparo *>::iterator itd = disparosJugador.begin();
+    std::list<EntidadDisparo *>::iterator itde = disparosEnemigos.begin();
 
-	while (itd != disparos.end()) {
-		(*itd)->tick();
-		if (!entidadEstaDentroDelCampo(*itd)) {
-			itd = disparos.erase(itd);
-			l->debug("Disparo eliminado por salir de pantalla.");
-		} else {
-			itd++;
-		}
-	}
+    while (itd != disparosJugador.end()) {
+        (*itd)->tick();
+        if (!entidadEstaDentroDelCampo(*itd)) {
+            itd = disparosJugador.erase(itd);
+            l->debug("Disparo eliminado por salir de pantalla.");
+        } else {
+            itd++;
+        }
+    }
+    while (itde != disparosEnemigos.end()) {
+        (*itde)->tick();
+        if (!entidadEstaDentroDelCampo(*itde)) {
+            itde = disparosEnemigos.erase(itde);
+            l->debug("Disparo eliminado por salir de pantalla.");
+        } else {
+            itde++;
+        }
+    }
 }
+

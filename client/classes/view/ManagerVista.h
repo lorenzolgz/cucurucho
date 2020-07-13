@@ -13,6 +13,7 @@
 #include "Enemigo2Vista.h"
 #include "DisparoJugadorVista.h"
 #include "EnemigoFinal1Vista.h"
+#include "DisparoEnemigoVista.h"
 
 class ManagerVista {
 public:
@@ -31,6 +32,7 @@ private:
     Enemigo2Vista* enemigo2Vista;
 	EnemigoFinal1Vista* enemigoFinal1Vista;
     DisparoJugadorVista disparoJugadorVista;
+    DisparoEnemigoVista disparoEnemigoVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
 
     int nivelActual;

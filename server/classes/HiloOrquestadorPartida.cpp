@@ -184,8 +184,9 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
 	}
 
-  estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
-  estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
+    estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
+    estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
+    estadoTick->estadosDisparosEnemigos = estadoCampoMovil.estadosDisparosEnemigos;
 	return false;
 }
 

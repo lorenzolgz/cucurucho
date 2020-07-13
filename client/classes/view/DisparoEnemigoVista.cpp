@@ -5,6 +5,7 @@
 #include "DisparoEnemigoVista.h"
 #include "../GraphicRenderer.h"
 #include "../GeneradorDeTexturas.h"
+#include "Colores.h"
 
 
 DisparoEnemigoVista::DisparoEnemigoVista() {
@@ -25,6 +26,7 @@ void DisparoEnemigoVista::render(Vector posicion) {
     int contador = (int) posicion.getX();
     srcrect.x += DISPARO_ENEMIGO_SRC_ANCHO * (contador % 4);
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-//    audioDisparo->playSoundEffect(300);
+    audioDisparo->play(100);
     l->debug("Vista del disparo del enemigo: "+ posicion.getVector());
+
 }

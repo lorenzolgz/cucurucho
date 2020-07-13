@@ -261,6 +261,14 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
         estadoDisparo.id = informacionJson["id"];
         estadoTick.estadosDisparos.push_back(estadoDisparo);
     }
+    for (nlohmann::json informacionJson : mensaje["estadosDisparosEnemigos"]){
+        EstadoDisparo estadoDisparoEnemigos;
+        estadoDisparoEnemigos.posicionX = informacionJson["posicionX"];
+        estadoDisparoEnemigos.posicionY = informacionJson["posicionY"];
+        estadoDisparoEnemigos.id = informacionJson["id"];
+        estadoTick.estadosDisparos.push_back(estadoDisparoEnemigos);
+    }
+
     manager->setEstadoTick(estadoTick);
 }
 

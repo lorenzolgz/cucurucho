@@ -30,7 +30,9 @@ public:
 
 	bool verificarPosicionNivel();
 	EstadoInternoCampoMovil state();
-    void nuevoDisparo(Disparo *pDisparo);
+    void nuevoDisparo(EntidadDisparo *entidadDisparo);
+
+    void nuevoDisparoEnemigo(EntidadDisparo *disparo);
 
 private:
 	int ancho;
@@ -40,7 +42,9 @@ private:
     float largoNivel;
     std::map<int, Jugador*>* jugadores;
 	std::list<EntidadEnemigo*> entidadesEnemigos;
-	std::list<Disparo*> disparos;
+    std::list<EntidadDisparo*> disparosJugador;
+    std::list<EntidadDisparo*> disparosEnemigos;
+
 
     bool verificarEntidadEstaDentroDelCampo(Entidad* entidad);
 	void procesarTodasLasColisiones();

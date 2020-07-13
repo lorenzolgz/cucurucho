@@ -56,3 +56,7 @@ std::list<Forma> EnemigoFinal1::getFormas() {
 VidaEntidad *EnemigoFinal1::getVidaEntidad() {
 	return vida;
 }
+
+void EnemigoFinal1::disparar() {
+
+}

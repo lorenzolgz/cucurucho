@@ -9,6 +9,7 @@
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
+#define TICKS_COOLDOWN_DISPARO_ENEMIGO2 40
 
 class Enemigo2 : public EntidadEnemigo {
 public:
@@ -23,13 +24,18 @@ public:
 	std::list<Forma> getFormas() override;
 	float getVelocidadX() override;
 	virtual void setPosicion(Vector nuevaPosicion) override;
+    virtual void disparar() override;
+    VidaEntidad* getVidaEntidad() override;
 
 private:
     Vector posicion;
     float velocidadEscalar;
     float velocidadX;
 	VidaEntidad* vida;
-	VidaEntidad* getVidaEntidad() override;
+    int ticksHastaDisparo;
+    CampoMovil* campo;
+
+
 };
 
 

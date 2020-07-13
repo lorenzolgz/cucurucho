@@ -22,6 +22,7 @@ public:
 	int getTipoEntidad() override;
 	std::list<Forma> getFormas() override;
 	VidaEntidad *getVidaEntidad() override;
+	virtual void disparar() override;
 
 private:
 	Vector posicion;

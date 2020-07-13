@@ -8,9 +8,9 @@
 
 #include "../../../../../commons/protocols/protocolo.h"
 #include "../../../../../commons/utils/Vector.h"
-#include "../Entidad.h"
+#include "EntidadDisparo.h"
 
-class Disparo : public Entidad {
+class Disparo : public EntidadDisparo {
 public:
     Disparo(float x, float y, int nroJugador);
 

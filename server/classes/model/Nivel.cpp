@@ -75,7 +75,7 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-            case 1: {entidad = new Enemigo1(campo->getAncho(), posY, velocidadX, jugadores);}
+            case 1: {entidad = new Enemigo1(posY, velocidadX, jugadores, campo);}
             break;
             case 2: {entidad = new Enemigo2(campo->getAncho(), posY, velocidadX, jugadores);}
             break;

@@ -79,16 +79,24 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
         mensajeJson["estadosEnemigos"].push_back(mensajeFondo);
 
 	}
-  for (EstadoDisparo estadoDisparo : estadoTick->estadosDisparos) {
+    for (EstadoDisparo estadoDisparo : estadoTick->estadosDisparos) {
         nlohmann::json mensajeDisparo = {
                 {"posicionX", estadoDisparo.posicionX},
                 {"posicionY", estadoDisparo.posicionY},
                 {"id", estadoDisparo.id}
         };
         mensajeJson["estadosDisparos"].push_back(mensajeDisparo);
+    }
 
-  }
-	colaEnviadora->push(mensajeJson);
+    for (EstadoDisparo estadoDisparoEnemigos: estadoTick->estadosDisparosEnemigos){
+        nlohmann::json mensajeDisparo = {
+                {"posicionX", estadoDisparoEnemigos.posicionX},
+                {"posicionY", estadoDisparoEnemigos.posicionY},
+                {"id", estadoDisparoEnemigos.id}
+        };
+        mensajeJson["estadosDisparosEnemigos"].push_back(mensajeDisparo);
+    }
+    colaEnviadora->push(mensajeJson);
 }
 
 void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
