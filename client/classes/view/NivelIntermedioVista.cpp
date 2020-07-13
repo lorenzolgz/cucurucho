@@ -94,11 +94,27 @@ void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
 	}
 }
 
-void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick estadoTick) {
+void NivelIntermedioVista::actualizarEstadoTick(struct EstadoTick tick) {
+	if (tick.numeroNivel != estadoTick.numeroNivel) {
+		estadoTick = tick;
+		for (auto & estadoJugador : estadoTick.estadosJugadores) {
+			estadoJugador.puntos -= estadoJugador.puntosParcial;
+		}
+	}
+
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+		estadoTick.estadosJugadores[i].puntos += estadoTick.estadosJugadores[i].puntosParcial / (TIMEOUT_PROXIMO_NIVEL / 3 * 60);
+		if (tick.estadosJugadores[i].puntos < estadoTick.estadosJugadores[i].puntos) {
+			estadoTick.estadosJugadores[i].puntos = tick.estadosJugadores[i].puntos;
+		}
+	}
+}
+
+void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 	renderComun();
+	actualizarEstadoTick(nuevoTick);
 
 	int cantidadJugadores = 0;
-
 	for (auto & estadosJugador : estadoTick.estadosJugadores) {
 		if (strlen(estadosJugador.usuario) > 0) {
 			cantidadJugadores++;
@@ -110,8 +126,12 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick estadoTick) {
 		Vector offset = Vector(0, alto * 8 / 12) / cantidadJugadores * i - Vector(ancho / 5, 0);
 		renderEsperaJugador((*jugadores)[i], estado.usuario, offset, i + 1);
 
-		Vector posicionPuntajeBase = Vector(ancho * 12 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-		TextoVista::eRender(std::to_string(estado.puntos), posicionPuntajeBase + offset, TEXTO_COLOR_NARANJA, ALINEACION_IZQUIERDA);
+		Vector posicionPuntajeBase = Vector(ancho * 14 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
+		TextoVista::eRender(" +" + std::to_string(estado.puntosParcial),
+							posicionPuntajeBase + offset - Vector(0, LETRA_ALTO / 2), TEXTO_COLOR_NARANJA, ALINEACION_DERECHA);
+
+		TextoVista::eRender(std::to_string(estado.puntos),
+							posicionPuntajeBase + offset + Vector(0, LETRA_ALTO), TEXTO_COLOR_ROJO, ALINEACION_DERECHA);
 	}
 
 	std::string texto = "COMENZANDO PROXIMO NIVEL...";

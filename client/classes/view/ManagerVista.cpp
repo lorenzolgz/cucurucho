@@ -32,7 +32,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
 
 	renderHud(estadoTick, estadoLogin, username);
-	if (campoVista == nullptr || campoVista->getNumeroNivel() != estadoTick.numeroNivel || estadoTick.posX <= 1) {
+	if (campoVista == nullptr || (estadoTick.posX <= 1 && !primerNivel)) {
 	    if (estadoLogin.estadoLogin == LOGIN_ESPERAR || estadoLogin.estadoLogin == LOGIN_COMENZAR) {
             nivelIntermedioVista->renderEstadoLogin(estadoLogin);
 	    } else {
