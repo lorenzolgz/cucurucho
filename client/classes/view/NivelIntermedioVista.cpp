@@ -65,13 +65,13 @@ void NivelIntermedioVista::renderComun() {
 	campoVista->render(estadoTick);
 }
 
-void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto) {
+void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto, int estaMuerto) {
 	Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
 	Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
 	struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + offset);
 
 	if (strlen(nombre) > 0) {
-		estado.presente = true;
+		estado.presente = !estaMuerto;
 		TextoVista::eRender(std::string(nombre), posicionNombreBase + offset, colorTexto, ALINEACION_IZQUIERDA);
 	} else {
 		estado.presente = false;
@@ -84,7 +84,7 @@ void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
 
 	for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
 		Vector offset = Vector(0, alto * 7 / 12) / estadoLogin.cantidadJugadores * i;
-		renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], offset, i + 1);
+		renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], offset, i + 1, false);
 	}
 
 	if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
@@ -124,7 +124,7 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 	for (int i = 0; i < cantidadJugadores; i++) {
 		EstadoJugador estado = estadoTick.estadosJugadores[i];
 		Vector offset = Vector(0, alto * 8 / 12) / cantidadJugadores * i - Vector(ancho / 5, 0);
-		renderEsperaJugador((*jugadores)[i], estado.usuario, offset, i + 1);
+		renderEsperaJugador((*jugadores)[i], estado.usuario, offset, i + 1, estado.estaMuerto);
 
 		Vector posicionPuntajeBase = Vector(ancho * 14 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
 		TextoVista::eRender(" +" + std::to_string(estado.puntosParcial),

@@ -41,10 +41,20 @@ void ManagerJuego::setUsername(const std::string &username) {
     ManagerJuego::username = username;
 }
 
-void ManagerJuego::setEstadoTick(const EstadoTick &estadoTick) {
+void ManagerJuego::verificarJugadoresMuertos(const EstadoTick tick) {
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+		if (tick.estadosJugadores[i].estaMuerto && !estadoTick.estadosJugadores[i].estaMuerto) {
+			toast->setTexto("NAVE " + std::string(tick.estadosJugadores[i].usuario) + " SIN VIDAS", 5, i + 1);
+		}
+	}
+}
+
+void ManagerJuego::setEstadoTick(const EstadoTick &tick) {
     if (ManagerJuego::estadoTick.numeroNivel == FIN_DE_JUEGO) return;
-    ManagerJuego::estadoTick = estadoTick;
-	this->setUsername(estadoTick.estadosJugadores[estadoLogin.nroJugador - 1].usuario);
+    verificarJugadoresMuertos(tick);
+    ManagerJuego::estadoTick = tick;
+	this->setUsername(tick.estadosJugadores[estadoLogin.nroJugador - 1].usuario);
+
 }
 
 void ManagerJuego::setEstadoLogin(const EstadoLogin &estadoLogin) {

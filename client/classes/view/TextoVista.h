@@ -35,6 +35,8 @@ public:
     void setTexto(const std::string texto);
 	void setPosicion(Vector posicion);
 
+	std::string *getTexto() const;
+
 private:
     std::string* texto;
     Vector posicion;

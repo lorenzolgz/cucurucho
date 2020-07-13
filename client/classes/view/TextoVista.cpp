@@ -52,3 +52,7 @@ void TextoVista::eRender(std::string texto, Vector posicion, const int color, in
 void TextoVista::setPosicion(Vector delta) {
     posicion = delta;
 }
+
+string *TextoVista::getTexto() const {
+	return texto;
+}

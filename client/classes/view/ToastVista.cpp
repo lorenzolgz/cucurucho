@@ -12,14 +12,21 @@ const int TOAST_TICKS = 15;
 ToastVista::ToastVista() {
     contador = 0;
     tiempo = -1;
-    posicionFinal = Vector(HUD_SRC_ANCHO / 2, 24);
+    posicionFinal = Vector(HUD_SRC_ANCHO / 2, LETRA_ANCHO);
 }
 
 void ToastVista::render() {
     if (contador > tiempo * 60) return;
 
-    SDL_Rect rect = { (int) (posicion.getX()) - ((textoMaximo) * LETRA_ANCHO / 2), (int) posicion.getY() - LETRA_ALTO / 2,
-                      ((textoMaximo + 1) * LETRA_ANCHO), (int) (textos.size() + 1) * LETRA_ALTO - 3 };
+    // Rectangulo para mostrar un cuadrado negro solo atras del texto
+    // En este momento queda feo
+//    SDL_Rect rect = { (int) (posicion.getX()) - ((textoMaximo) * LETRA_ANCHO / 2), (int) posicion.getY() - LETRA_ALTO / 2,
+//                      ((textoMaximo + 1) * LETRA_ANCHO), (int) (textos.size() + 1) * LETRA_ALTO - 3 };
+
+	// Rectangulo para mostrar un cuadrado negro sobre el largo del HUD
+    SDL_Rect rect = { (int) LETRA_ANCHO, (int) posicion.getY() - LETRA_ALTO / 2,
+                      HUD_SRC_ANCHO - LETRA_ANCHO * 2, (int) (textos.size() + 1) * LETRA_ALTO - 3 };
+	SDL_SetRenderDrawColor(GraphicRenderer::getInstance(), 0, 0, 0, 255);
     SDL_RenderFillRect(GraphicRenderer::getInstance(), &rect);
 
     Vector velocidad = Vector(0, TOAST_VELOCIDAD);
@@ -35,7 +42,13 @@ void ToastVista::render() {
     contador++;
 }
 
+// OBS: "textos" es un arreglo porque el texto que recibe se puede separar por '\n'.
+// Aunque ahora solo se pueda mostrar una linea sola, se deja la funcionalidad.
 void ToastVista::setTexto(std::string texto, int tiempo, int color) {
+	if (!textos.empty() && *(textos[0]->getTexto()) == texto) {
+		return;
+	}
+
     textos.clear();
 
     size_t pos = 0;

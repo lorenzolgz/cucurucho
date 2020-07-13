@@ -36,7 +36,8 @@ private:
     ManagerVista* managerVista;
     EstadoLogin estadoLogin;
     std::string username;
-    Titulo* titulo;
+
+	void verificarJugadoresMuertos(const EstadoTick tick);
 
 };
 

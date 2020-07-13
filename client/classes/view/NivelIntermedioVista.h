@@ -27,7 +27,7 @@ private:
 	int ancho;
     int alto;
 
-	void renderEsperaJugador(JugadorVista *jugador, char *nombre, Vector offset, int colorTexto);
+	void renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto, int estaMuerto);
 
 	void renderComun();
 
