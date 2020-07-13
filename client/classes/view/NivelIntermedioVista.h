@@ -23,13 +23,15 @@ private:
 	std::vector<JugadorVista*>* jugadores;
 	SDL_Renderer *gRenderer;
 	CampoVista* campoVista;
+	EstadoTick estadoTick;
 	int ancho;
-
     int alto;
 
 	void renderEsperaJugador(JugadorVista *jugador, char *nombre, Vector offset, int colorTexto);
 
 	void renderComun();
+
+	void actualizarEstadoTick(struct EstadoTick tick);
 };
 
 

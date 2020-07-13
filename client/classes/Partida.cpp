@@ -264,6 +264,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
 		estadoTick.estadosJugadores[i].estaMuerto = mensaje["estadosJugadores"][i]["estaMuerto"];
 		estadoTick.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
 		estadoTick.estadosJugadores[i].puntos = mensaje["estadosJugadores"][i]["puntos"];
+		estadoTick.estadosJugadores[i].puntosParcial = mensaje["estadosJugadores"][i]["puntosParcial"];
 		strcpy(estadoTick.estadosJugadores[i].usuario, std::string(mensaje["estadosJugadores"][i]["usuario"]).c_str());
     }
     for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){
