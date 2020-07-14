@@ -55,7 +55,7 @@ void Vector::setY(double y) {
 
 double Vector::arg() const {
     // atan2 da un angulo en [-pi, pi]
-    // creanme que esto lo pasa estadosEnemigos [0°, 360°]
+    // creanme que esto lo pasa a [0°, 360°]
 
     double d = to_d(atan2(y, x));
     d = -d + 360 * (d > 0);
@@ -69,4 +69,11 @@ bool Vector::esNulo() const {
 
 std::string Vector::getVector() {
     return "("+ std::to_string(x)+" , "+std::to_string(y) + ").";
+}
+
+// Devuelve un nuevo vector con modulo `d`, conservando el angulo del vector actual
+// Considerando el sistema de coordenadas del juego
+Vector Vector::escalar(double d) {
+	Vector v = Vector(- d * cos_d(arg()), d * sin_d(arg()));
+	return v;
 }

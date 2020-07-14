@@ -18,13 +18,18 @@ DisparoEnemigoVista::DisparoEnemigoVista() {
     l->info("La vista del disparo fue creada correctamente.");
 }
 
-void DisparoEnemigoVista::render(Vector posicion) {
+void DisparoEnemigoVista::render(EstadoDisparo estadoDisparo) {
     SDL_Rect srcrect = {0, DISPARO_ENEMIGO_SRC_ALTO_OFFSET, DISPARO_ENEMIGO_SRC_ANCHO, DISPARO_ENEMIGO_SRC_ALTO};
-    SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), DISPARO_ENEMIGO_SRC_ANCHO, DISPARO_ENEMIGO_SRC_ALTO};
+    SDL_Rect dstrect = {(int) estadoDisparo.posicionX, (int) estadoDisparo.posicionY, DISPARO_ENEMIGO_SRC_ANCHO, DISPARO_ENEMIGO_SRC_ALTO};
 
-    int contador = (int) posicion.getX();
+    int contador = (int) estadoDisparo.posicionX;
     srcrect.x += DISPARO_ENEMIGO_SRC_ANCHO * (contador % 4);
     SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
-//    audioDisparo->playSoundEffect(300);
-    l->debug("Vista del disparo del enemigo: "+ posicion.getVector());
+    l->debug("Vista del disparo del enemigo: " + Vector(estadoDisparo.posicionX, estadoDisparo.posicionY).getVector());
+
+}
+
+ExplosionVista* DisparoEnemigoVista::nuevaExplosion(Vector pos) {
+	Vector offset = Vector(DISPARO_ENEMIGO_SRC_ALTO * 2, DISPARO_ENEMIGO_SRC_ANCHO / 2);
+	return new ExplosionVista(pos + offset, EXPLOSION_CHICA);
 }

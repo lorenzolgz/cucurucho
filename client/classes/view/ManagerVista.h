@@ -12,6 +12,7 @@
 #include "elements/Enemigo1Vista.h"
 #include "elements/Enemigo2Vista.h"
 #include "elements/DisparoJugadorVista.h"
+#include "elements/DisparoEnemigoVista.h"
 #include "elements/EnemigoFinal1Vista.h"
 #include "elements/ExplosionVista.h"
 #include "NivelIntermedioVista.h"
@@ -33,6 +34,7 @@ private:
     Enemigo2Vista* enemigo2Vista;
 	EnemigoFinal1Vista* enemigoFinal1Vista;
 	DisparoJugadorVista* disparoJugadorVista;
+	DisparoEnemigoVista* disparoEnemigoVista;
 	NivelIntermedioVista* nivelIntermedioVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();
     std::list<ExplosionVista*> explosiones;
@@ -49,12 +51,13 @@ private:
 
     void renderDisparos(std::list<EstadoDisparo> estadosDisparos);
 
-    void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos);
+	void renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos);
+
+    void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo);
 
     void renderExplosiones();
 
 	void renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
-
 };
 
 

@@ -35,3 +35,7 @@ void EnemigoFinal1::tick() {
 int EnemigoFinal1::getTipoEntidad() {
 	return ENTIDAD_ENEMIGO_FINAL1;
 }
+
+void EnemigoFinal1::disparar(Vector vector) {
+	// pass
+}

@@ -33,6 +33,8 @@ public:
 
     std::string getVector();
 
+	Vector escalar(double d);
+
     float modulo();
 };
 

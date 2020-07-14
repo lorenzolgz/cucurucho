@@ -5,9 +5,11 @@
 #include "../../../commons/utils/Constantes.h"
 #include "life/VidaEnemigo2.h"
 #include "ais/IAEnemigoPatron2.h"
+#include "entities/projectiles/DisparoEnemigo2.h"
 
-Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores) {
-    if (random() % 10 < 2) {
+
+Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
+	if (random() % 10 < 2) {
         x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
@@ -17,12 +19,15 @@ Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* j
 	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
 	this->ia = new IAEnemigoPatron2(this, jugadores);
+	this->campo = campo;
 	l->info("Se creo correctamente el Enemigo 02.");
 }
 
 void Enemigo2::tick() {
 	ia = ia->tick();
-	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
+
+    ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+    l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 struct EstadoEnemigo Enemigo2::state() {
@@ -51,4 +56,14 @@ float Enemigo2::getVelocidadX() {
 
 void Enemigo2::setPosicion(Vector nuevaPosicion) {
 	posicion = nuevaPosicion;
+}
+
+void Enemigo2::disparar(Vector direccion) {
+    if (ticksHastaDisparo <= 0) {
+        ticksHastaDisparo = TICKS_COOLDOWN_DISPARO_ENEMIGO2;
+        DisparoEnemigo2 *disparo = new DisparoEnemigo2(posicion, direccion);
+        campo->nuevoDisparoEnemigo(disparo);
+        l->info("Se crea un nuevo disparo Enemigo 02");
+    }
+
 }

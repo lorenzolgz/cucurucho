@@ -5,6 +5,7 @@
 #define DISTANCIA_DESACTIVADORA_IA_DERECHA_2 200
 #define DISTANCIA_DESACTIVADORA_IA_IZQUIERDA_2 300
 #define JUGADORES_NO_VIVOS_IA_2 99999
+#define RANGO_DISPARO 400
 
 IAEnemigoPatron2::IAEnemigoPatron2(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -36,6 +37,11 @@ IAEnemigo* IAEnemigoPatron2::tick() {
             desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
             desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
         }
+
+        Vector direccion = entidadEnemigo->getCentroDeMasa() - it->second->getCentroDeMasa();
+		if (direccion.modulo() > RANGO_DISPARO) {
+			entidadEnemigo->disparar(direccion);
+		}
 	}
 
     if(distanciaMinima == JUGADORES_NO_VIVOS_IA_2){

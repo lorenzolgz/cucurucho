@@ -13,13 +13,16 @@ enum {
 	ENTIDAD_JUGADOR,
 	ENTIDAD_ENEMIGO1,
 	ENTIDAD_ENEMIGO2,
-	ENTIDAD_DISPARO_JUGADOR,
-	ENTIDAD_ENEMIGO_FINAL1
+    ENTIDAD_DISPARO_JUGADOR,
+    ENTIDAD_DISPARO_ENEMIGO1,
+    ENTIDAD_DISPARO_ENEMIGO2,
+    ENTIDAD_ENEMIGO_FINAL1
 };
 
 class Entidad : public Ticker {
 public:
 	Vector getPosicion();
+	Vector getCentroDeMasa();
 	int getAncho();
 	int getAlto();
 	virtual std::list<Forma> getFormas();

@@ -20,6 +20,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 	enemigo2Vista = new Enemigo2Vista();
 	enemigoFinal1Vista = new EnemigoFinal1Vista();
     disparoJugadorVista = new DisparoJugadorVista();
+    disparoEnemigoVista = new DisparoEnemigoVista();
     primerNivel = true;
 
 	for (int i = 0; i < MAX_JUGADORES; i++) {
@@ -48,10 +49,13 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
 	// Render resto
     renderEnemigos(estadoTick.estadosEnemigos);
+
     renderDisparos(estadoTick.estadosDisparos);
+    renderDisparosEnemigos(estadoTick.estadosDisparosEnemigos);
+
     renderJugadores(estadoTick, estadoLogin);
 
-    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos);
+    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos, estadoTick.estadosDisparosEnemigos);
     renderExplosiones();
 
     posCampo = { 0, 0, ancho, alto };
@@ -108,14 +112,16 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 
 void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
     for (EstadoDisparo estadoDisparo: estadosDisparos) {
-      // Los ids positivos corresponden a JUGADORES, los negativos corresponden a ENEMIGOS
-      if (estadoDisparo.nroJugador < 0) continue;
-
       disparoJugadorVista->render(estadoDisparo);
     }
-
 }
 
+
+void ManagerVista::renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos) {
+    for (EstadoDisparo estadoDisparo: disparosEnemigos) {
+        disparoEnemigoVista->render(estadoDisparo);
+    }
+}
 
 void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogin) {
 
@@ -138,10 +144,9 @@ void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogi
 }
 
 
-void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparos) {
+void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo) {
     for (EstadoEnemigo e : enemigos) {
         if (e.energia > 0) continue;
-
         Vector pos = Vector(e.posicionX, e.posicionY);
         switch (e.clase) {
             case 1:
@@ -153,16 +158,17 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
         }
     }
 
-    for (EstadoDisparo d : disparos) {
-        if (d.energia > 0) continue;
+	for (EstadoDisparo d : disparosJugador) {
+		if (d.energia > 0) continue;
+		Vector pos = Vector(d.posicionX, d.posicionY);
+		explosiones.push_back(disparoJugadorVista->nuevaExplosion(pos));
+	}
 
-        Vector pos = Vector(d.posicionX, d.posicionY);
-        switch (d.nroJugador) {
-            default:
-                explosiones.push_back(disparoJugadorVista->nuevaExplosion(pos));
-        }
-
-    }
+	for (EstadoDisparo d : disparosEnemigo) {
+		if (d.energia > 0) continue;
+		Vector pos = Vector(d.posicionX, d.posicionY);
+		explosiones.push_back(disparoEnemigoVista->nuevaExplosion(pos));
+	}
 }
 
 void ManagerVista::renderExplosiones() {
@@ -181,8 +187,7 @@ void ManagerVista::renderExplosiones() {
 
 void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
 	struct EstadoJugador estadoJugadorPropio;
-	int i;
-	for (i = 0; i < MAX_JUGADORES; i++) {
+	for (int i = 0; i < MAX_JUGADORES; i++) {
 		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
 		if (i == estadoLogin.nroJugador - 1) {
 			estadoJugadorPropio = estadoJugador;

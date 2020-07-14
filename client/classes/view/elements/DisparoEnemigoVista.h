@@ -7,18 +7,21 @@
 
 #include <SDL_render.h>
 #include "../../../../commons/utils/Vector.h"
+#include "../../../../commons/protocols/protocolo.h"
 #include "../../Audio.h"
+#include "ExplosionVista.h"
 
-#define DISPARO_ENEMIGO_SRC_ANCHO 16
-#define DISPARO_ENEMIGO_SRC_ALTO 16
-#define DISPARO_ENEMIGO_SRC_ALTO_OFFSET 161
+#define DISPARO_ENEMIGO_SRC_ANCHO 18
+#define DISPARO_ENEMIGO_SRC_ALTO 18
+#define DISPARO_ENEMIGO_SRC_ALTO_OFFSET 159
 
 class DisparoEnemigoVista {
 public:
     DisparoEnemigoVista();
     // TODO: En vez de Vector deberia recibir un tick o lo que sea
     // Deberia tener solo posicion
-    void render(Vector posicion);
+    void render(EstadoDisparo estadoDisparo);
+	ExplosionVista* nuevaExplosion(Vector pos);
 
 private:
     SDL_Renderer* gRenderer;

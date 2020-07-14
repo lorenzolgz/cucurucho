@@ -37,3 +37,7 @@ std::list<Forma> Entidad::getFormas() {
 VidaEntidad *Entidad::getVidaEntidad() {
 	return vida;
 }
+
+Vector Entidad::getCentroDeMasa() {
+	return getPosicion() + Vector(getAncho() / 2, getAlto() / 2);
+}

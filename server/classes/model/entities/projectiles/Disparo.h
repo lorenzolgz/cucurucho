@@ -10,10 +10,11 @@
 #include "../../../../../commons/utils/Vector.h"
 #include "../Entidad.h"
 #include "../../Jugador.h"
+#include "EntidadDisparo.h"
 
 class Jugador;
 
-class Disparo : public Entidad {
+class Disparo : public EntidadDisparo {
 public:
     Disparo(float x, float y, Jugador* jugador);
 

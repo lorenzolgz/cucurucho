@@ -33,6 +33,8 @@ int VidaEntidad::calcularDanioPorColision(const int tipoEntidad) {
 			return danioColisionEnemigo2();
 		case ENTIDAD_DISPARO_JUGADOR:
 			return danioColisionDisparoJugador();
+	    case ENTIDAD_DISPARO_ENEMIGO1:
+	        return danioColisionDisparoEnemigo1();
 		case ENTIDAD_ENEMIGO_FINAL1:
 			return danioColisionEnemigoFinal1();
 		default:
@@ -60,6 +62,11 @@ int VidaEntidad::danioColisionEnemigoFinal1() {
 	return DANIO_TOTAL;
 }
 
+int VidaEntidad::danioColisionDisparoEnemigo1() {
+    return DANIO_TOTAL;
+}
+
 bool VidaEntidad::estaMuerto() {
 	return energia == 0;
 }
+

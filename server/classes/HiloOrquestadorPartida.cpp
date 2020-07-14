@@ -179,5 +179,6 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 
 	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
 	estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
+	estadoTick->estadosDisparosEnemigos = estadoCampoMovil.estadosDisparosEnemigos;
 	return false;
 }

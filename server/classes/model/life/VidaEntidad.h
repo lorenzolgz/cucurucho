@@ -25,6 +25,8 @@ private:
 	int calcularDanioPorColision(const int tipoEntidad);
 
 	int danioColisionEnemigoFinal1();
+
+    int danioColisionDisparoEnemigo1();
 };
 
 
