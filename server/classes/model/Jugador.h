@@ -39,11 +39,13 @@ public:
 	bool estaMuerto();
     void sumarPuntosPorDestruirA(int entidadEnemigo);
     int getNroJugador();
+    void finNivel();
 
 private:
 	Configuracion* config;
 	int nroJugador;
 	int puntos;
+	int puntosParcial;
     Vector velocidad;
     double velocidadEscalar;
     int ticksHastaDisparo;
@@ -58,6 +60,7 @@ private:
 	Vector calcularPosicionInicial();
 
 
+    int acumulado;
 };
 
 

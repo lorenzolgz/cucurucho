@@ -39,6 +39,9 @@ bool Nivel::termino() {
 
 	if (termino) {
 		l->debug("Fin de nivel.");
+		for(int i=0; i<this->jugadores->size(); i++){
+		    this->jugadores->at(i)->finNivel();
+		}
 	}
 
 	return termino;
