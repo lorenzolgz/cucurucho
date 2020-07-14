@@ -195,7 +195,7 @@ void CampoMovil::removerDisparosFueraDePantalla() {
 
     while (itd != disparosJugador.end()) {
         (*itd)->tick();
-        if (!entidadEstaDentroDelCampo(*itd)) {
+        if (!verificarEntidadEstaDentroDelCampo(*itd)) {
         	delete (*itd);
             itd = disparosJugador.erase(itd);
             l->debug("Disparo eliminado por salir de pantalla.");
@@ -205,7 +205,7 @@ void CampoMovil::removerDisparosFueraDePantalla() {
     }
     while (itde != disparosEnemigos.end()) {
         (*itde)->tick();
-        if (!entidadEstaDentroDelCampo(*itde)) {
+        if (!verificarEntidadEstaDentroDelCampo(*itde)) {
 			delete (*itde);
             itde = disparosEnemigos.erase(itde);
             l->debug("Disparo eliminado por salir de pantalla.");
