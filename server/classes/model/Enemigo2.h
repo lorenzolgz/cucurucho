@@ -9,7 +9,7 @@
 
 const int ENEMIGO2_ANCHO = 285;
 const int ENEMIGO2_ALTO = 147;
-#define TICKS_COOLDOWN_DISPARO_ENEMIGO2 60
+#define TICKS_COOLDOWN_DISPARO_ENEMIGO2 160
 
 class Enemigo2 : public EntidadEnemigo {
 public:

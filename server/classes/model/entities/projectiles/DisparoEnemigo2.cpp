@@ -33,5 +33,5 @@ void DisparoEnemigo2::tick() {
 }
 
 int DisparoEnemigo2::getTipoEntidad() {
-    return ENTIDAD_DISPARO_ENEMIGO1;
+    return ENTIDAD_DISPARO_ENEMIGO2;
 }

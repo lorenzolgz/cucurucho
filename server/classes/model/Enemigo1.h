@@ -11,7 +11,7 @@
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;
-const int TICKS_COOLDOWN_DISPARO_ENEMIGO1 = 180;
+const int TICKS_COOLDOWN_DISPARO_ENEMIGO1 = 280;
 
 
 class Enemigo1 : public EntidadEnemigo {

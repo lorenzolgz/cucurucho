@@ -9,7 +9,12 @@ public:
 	VidaJugadorMortal(int energia);
 
 protected:
-	int danioColisionEnemigo1() override;
+
+    int danioColisionDisparoEnemigo1() override;
+
+
+    int danioColisionDisparoEnemigo2() override;
+
 };
 
 

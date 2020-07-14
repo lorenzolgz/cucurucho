@@ -9,3 +9,4 @@ VidaEnemigo1::VidaEnemigo1() : VidaEntidad(ENEMIGO1_ENERGIA_INICIAL) {
 int VidaEnemigo1::danioColisionDisparoJugador() {
 	return 50;
 }
+
