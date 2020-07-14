@@ -174,6 +174,8 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
 void Jugador::finNivel(){
     this->puntosParcial = this->acumulado;
     this->acumulado = 0;
+    std::cout<<"Fin nivel con puntos parciales: ";
+    std::cout<<this->puntosParcial<<std::endl;
 }
 
 int Jugador::getNroJugador() {
