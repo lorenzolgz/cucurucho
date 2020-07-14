@@ -32,7 +32,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
 
 	renderHud(estadoTick, estadoLogin, username);
-	if (campoVista == nullptr || (estadoTick.posX <= 1 && !primerNivel)) {
+	if (campoVista == nullptr || (estadoTick.posX < 1 && !primerNivel)) {
 	    if (estadoLogin.estadoLogin == LOGIN_ESPERAR || estadoLogin.estadoLogin == LOGIN_COMENZAR) {
             nivelIntermedioVista->renderEstadoLogin(estadoLogin);
 	    } else {
@@ -40,6 +40,8 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 	    }
         return;
 	} // TODO patch para race conditions
+
+	primerNivel = false;
 
 	// Render Campo
 	SDL_Rect posCampo = { 0, HUD_SRC_ALTO, ancho, alto };
@@ -63,8 +65,6 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
     if (ManagerVista::informacionNivel.numeroNivel == informacionNivel.numeroNivel && tick.numeroNivel >= 0) {
         return;
     }
-
-    primerNivel = false;
 
     ManagerVista::informacionNivel = informacionNivel;
 
