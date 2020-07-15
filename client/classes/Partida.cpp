@@ -197,6 +197,11 @@ void Partida::renderLoop() {
 void Partida::finJuegoLoop() {
 	if (!manager->terminoJuego()) return;
 
+	while(!colaMensajes->empty()) {
+		nlohmann::json instruccion = colaMensajes->pop();
+		if (instruccion["tipoMensaje"] == ESTADO_TICK) procesarEstadoTick(instruccion);
+	}
+
 	bool quit = false;
 	std::string input = "";
 	while (!quit) {

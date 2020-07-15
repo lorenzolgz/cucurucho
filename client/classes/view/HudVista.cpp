@@ -5,6 +5,8 @@
 #include <string>
 #include "../../../commons/utils/Constantes.h"
 
+const char VIDA_NAVE_IZQ = 30;
+const char VIDA_NAVE_DER = 31;
 
 HudVista::HudVista() {
 	this->gRenderer = GraphicRenderer::getInstance();
@@ -16,7 +18,7 @@ HudVista::HudVista() {
     *this->vidas = "00";
 
     this->nuevoTexto(this->puntaje, Vector(156, 24), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
-    this->nuevoTexto(this->vidas, Vector(852, 24), TEXTO_COLOR_NARANJA, ALINEACION_IZQUIERDA);
+    this->nuevoTexto(this->vidas, Vector(864, 24), TEXTO_COLOR_NARANJA, ALINEACION_IZQUIERDA);
 }
 
 void HudVista::render(EstadoLogin estadoLogin, std::string username) {
@@ -32,7 +34,7 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
     }
 
     TextoVista::eRender(username, Vector(528, 24), estadoLogin.nroJugador, ALINEACION_CENTRO);
-    TextoVista::eRender(std::string({30, 31}), Vector(804, 24), estadoLogin.nroJugador, true);
+    TextoVista::eRender(std::string({VIDA_NAVE_IZQ, VIDA_NAVE_DER}), Vector(792, 24), estadoLogin.nroJugador, true);
 
     if (toast != nullptr) {
         toast->render();

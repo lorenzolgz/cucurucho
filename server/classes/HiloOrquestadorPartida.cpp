@@ -150,19 +150,13 @@ bool HiloOrquestadorPartida::termino() {
 
 bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones, int* nuevoNivel) {
-	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
-	partida->tick(comandos);
 
-    // Seteando estadoTick
+	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
 	*nuevoNivel = estadoInternoNivel.nuevoNivel;
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 	estadoTick->numeroNivel = estadoInternoNivel.nivel;
 
-	if (partida->termino()) {
-        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
-		l->info("La partida finalizo");
-		return true;
-	}
+    // Seteando estadoTick
 
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->posX = estadoCampoMovil.posX;
@@ -180,5 +174,17 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
 	estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
 	estadoTick->estadosDisparosEnemigos = estadoCampoMovil.estadosDisparosEnemigos;
+
+	if (partida->termino()) {
+		std::cout << "FIN DE JUEGO PUNTAJES PARCIALES" << std::endl;
+		for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
+			std::cout << std::to_string(estadoJugador.puntosParcial) << std::endl;
+		}
+		estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
+		l->info("La partida finalizo");
+		return true;
+	}
+	partida->tick(comandos);
+
 	return false;
 }
