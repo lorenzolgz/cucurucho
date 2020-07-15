@@ -1,7 +1,7 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "error",
+         "nivel": "info",
          "std_out": true
       },
       "cantidadJugadores": 1,

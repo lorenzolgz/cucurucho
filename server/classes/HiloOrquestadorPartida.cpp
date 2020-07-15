@@ -150,19 +150,18 @@ bool HiloOrquestadorPartida::termino() {
 
 bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones, int* nuevoNivel) {
+
+	// TODO: No esta lindo para nada. Antes se tickeaba despues de obtener el estado,
+	// Y es necesario hacer esto para poder enviar un nuevo informacionNivel.
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
+	*nuevoNivel = estadoInternoNivel.nuevoNivel;
+
 	partida->tick(comandos);
+	estadoInternoNivel = partida->state(informacionNivel);
 
     // Seteando estadoTick
-	*nuevoNivel = estadoInternoNivel.nuevoNivel;
 	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
 	estadoTick->numeroNivel = estadoInternoNivel.nivel;
-
-	if (partida->termino()) {
-        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
-		l->info("La partida finalizo");
-		return true;
-	}
 
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->posX = estadoCampoMovil.posX;
@@ -179,5 +178,15 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 
 	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
 	estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
+
+	if (partida->termino()) {
+		std::cout << "FIN DE JUEGO PUNTAJES PARCIALES" << std::endl;
+		for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
+			std::cout << std::to_string(estadoJugador.puntosParcial) << std::endl;
+		}
+		estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
+		l->info("La partida finalizo");
+		return true;
+	}
 	return false;
 }
