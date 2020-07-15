@@ -20,7 +20,7 @@ public:
 private:
 	SDL_Window* gWindow = nullptr;
 //    Musica* musica;
-
+    char cancion[100];
 };
 
 

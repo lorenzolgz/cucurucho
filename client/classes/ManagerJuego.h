@@ -40,6 +40,7 @@ private:
 	void verificarJugadoresMuertos(const EstadoTick tick);
 
     EfectoSonido *audioPerder;
+    Musica *audioFinDeJuego;
 };
 
 

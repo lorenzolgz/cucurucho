@@ -115,7 +115,6 @@ bool GestorSDL::reproducirMusica(std::string stringAudio) {
 }
 
 void GestorSDL::mutear() {
-
 //    musica->mutear();
 
 }

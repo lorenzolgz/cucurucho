@@ -16,8 +16,6 @@ ManagerJuego::ManagerJuego() {
 
     Audio *audio = new Audio();
     ManagerJuego::audioPerder = audio->generarEfecto("sfx-37.wav");
-//    ManagerJuego::audioRevivir = audio->generarEfecto("sfx-07.wav");
-
 
 }
 
