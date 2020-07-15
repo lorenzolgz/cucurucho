@@ -18,10 +18,9 @@ Titulo::Titulo(int ancho, int alto, bool conexionPerdida) {
     autoCompletar = false;
     autoCompletarIndice = 0;
 
-    Audio *audio1 = Audio::getInstante();
-    audioInicioPartida = audio1->generarSoundEffect("sfx-29.wav");
-    Audio *audio2 = Audio::getInstante();
-    audioErrorUsuario = audio2->generarSoundEffect("sfx-30.wav");
+    Audio *audio = new Audio();
+    audioInicioPartida = audio->generarEfecto("sfx-29.wav");
+    audioErrorUsuario = audio->generarEfecto("sfx-30.wav");
 
 
     l->info("La pantalla incial fue creada correctamente.");

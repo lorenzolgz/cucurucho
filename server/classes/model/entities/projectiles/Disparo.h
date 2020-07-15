@@ -27,6 +27,7 @@ public:
 private:
 	float velocidad;
 	Jugador* jugador;
+    Vector inicio;
 };
 
 

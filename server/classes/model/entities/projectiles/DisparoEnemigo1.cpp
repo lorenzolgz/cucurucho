@@ -12,6 +12,7 @@ DisparoEnemigo1::DisparoEnemigo1(Vector posicion, Vector velocidad) {
     this->vida = new VidaProyectil();
 	this->ancho = ANCHO_DISPARO_ENEMIGO1;
 	this->alto = ALTO_DISPARO_ENEMIGO1;
+
     l->debug("Disparo Enemigo01 creado en " + posicion.getVector());
 }
 
@@ -21,6 +22,7 @@ EstadoDisparo DisparoEnemigo1::state() {
     disparo.posicionY = getPosicion().getY();
     disparo.nroJugador = ID_ENEMIGO1;
     disparo.energia = vida->getEnergia();
+    disparo.inicio = 0;
     return disparo;
 }
 

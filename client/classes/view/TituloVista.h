@@ -24,7 +24,7 @@ class TituloVista {
     SDL_Renderer* gRenderer;
     std::set<TituloParticula*> particulas;
 
-    Musica *audioErrorConexion;
+    Musica *musica;
 
 public:
     TituloVista(int ancho, int alto, bool conexionPerdida);

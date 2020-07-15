@@ -12,14 +12,13 @@ class EfectoSonido {
 private:
     Mix_Chunk *audio;
 
+    bool mute;
 public:
 
     EfectoSonido(Mix_Chunk* audio);
 
     void play(int volumen);
 
-private:
-	bool mute;
 };
 
 

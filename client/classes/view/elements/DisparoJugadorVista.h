@@ -14,6 +14,7 @@
 #define DISPARO_JUGADOR_SRC_ANCHO 96
 #define DISPARO_JUGADOR_SRC_ALTO 24
 #define DISPARO_JUGADOR_SRC_ALTO_OFFSET 177
+#define DISPARO_RANGO 13
 
 
 class DisparoJugadorVista {
@@ -27,8 +28,9 @@ private:
     SDL_Renderer* gRenderer;
     SDL_Texture* textura;
 
-    EfectoSonido *audioDisparo1;
-    EfectoSonido *audioDisparo2;
+    EfectoSonido *audiodisparo;
+
+    EfectoSonido *audioexplosion;
 };
 
 

@@ -60,8 +60,8 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
 
-    Audio *audio1 = Audio::getInstante();
-    TituloVista::audioErrorConexion = audio1->generarAudio("audioPantallaInicio.mp3");
+    Audio* audio = new Audio();
+    TituloVista::musica = audio->generarMusica("audioPantallaInicio.mp3");
 }
 
 void TituloVista::nuevaParticula() {
@@ -132,7 +132,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
 
     if (conexionPerdida) {
-        audioErrorConexion->play(50);
+        musica->play(50);
         TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
     }
 }

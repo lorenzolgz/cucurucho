@@ -19,7 +19,7 @@ public:
 
 private:
 	SDL_Window* gWindow = nullptr;
-    Audio* audio;
+//    Musica* musica;
 
 };
 

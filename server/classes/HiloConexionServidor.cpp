@@ -88,7 +88,8 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 				{"posicionX", estadoDisparo.posicionX},
 				{"posicionY", estadoDisparo.posicionY},
 				{"nroJugador", estadoDisparo.nroJugador},
-				{"energia", estadoDisparo.energia}
+				{"energia", estadoDisparo.energia},
+                {"inicio", estadoDisparo.inicio}
         };
         mensajeJson["estadosDisparos"].push_back(mensajeDisparo);
     }
@@ -98,7 +99,8 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
                 {"posicionX", estadoDisparoEnemigo.posicionX},
                 {"posicionY", estadoDisparoEnemigo.posicionY},
                 {"nroJugador", estadoDisparoEnemigo.nroJugador},
-				{"energia", estadoDisparoEnemigo.energia}
+				{"energia", estadoDisparoEnemigo.energia},
+                {"inicio",estadoDisparoEnemigo.inicio}
         };
         mensajeJson["estadosDisparosEnemigos"].push_back(mensajeDisparo);
     }

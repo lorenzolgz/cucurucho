@@ -12,13 +12,14 @@ DisparoEnemigoVista::DisparoEnemigoVista() {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     DisparoEnemigoVista::textura = generadorDeTexturas->generarTextura("fx.png");
 
-    Audio *audio1 = Audio::getInstante();
-    DisparoEnemigoVista::audioDisparo = audio1->generarSoundEffect("sfx-10.wav");
+    Audio *audio = Audio::getInstante();
+    DisparoEnemigoVista::audioExplosion = audio->generarEfecto("sfx-11.wav");
 
     l->info("La vista del disparo fue creada correctamente.");
 }
 
 void DisparoEnemigoVista::render(EstadoDisparo estadoDisparo) {
+
     SDL_Rect srcrect = {0, DISPARO_ENEMIGO_SRC_ALTO_OFFSET, DISPARO_ENEMIGO_SRC_ANCHO, DISPARO_ENEMIGO_SRC_ALTO};
     SDL_Rect dstrect = {(int) estadoDisparo.posicionX, (int) estadoDisparo.posicionY, DISPARO_ENEMIGO_SRC_ANCHO, DISPARO_ENEMIGO_SRC_ALTO};
 
@@ -30,6 +31,8 @@ void DisparoEnemigoVista::render(EstadoDisparo estadoDisparo) {
 }
 
 ExplosionVista* DisparoEnemigoVista::nuevaExplosion(Vector pos) {
+
+    audioExplosion->play(100);
 	Vector offset = Vector(DISPARO_ENEMIGO_SRC_ALTO * 2, DISPARO_ENEMIGO_SRC_ANCHO / 2);
 	return new ExplosionVista(pos + offset, EXPLOSION_CHICA);
 }

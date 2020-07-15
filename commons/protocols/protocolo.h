@@ -66,6 +66,7 @@ struct EstadoDisparo {
   int posicionY;
   int nroJugador;
   int energia;
+  int inicio;
 };
 
 struct EstadoHelper {

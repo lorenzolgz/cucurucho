@@ -14,16 +14,20 @@ DisparoJugadorVista::DisparoJugadorVista() {
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     DisparoJugadorVista::textura = generadorDeTexturas->generarTextura("fx.png");
 
-    Audio *audio1 = Audio::getInstante();
-    Audio *audio2 = Audio::getInstante();
-    audioDisparo1 = audio1->generarSoundEffect("sfx-01.wav");
-    audioDisparo2 = audio2->generarSoundEffect("sfx-01.wav");
+//  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
+    Audio *audio = new Audio();
+    DisparoJugadorVista::audiodisparo = audio->generarEfecto("sfx-01.wav");
+    DisparoJugadorVista::audioexplosion = audio->generarEfecto("sfx-25.wav");
+
 
     l->info("La vista del disparo del jugador fue creada correctamente.");
 }
 
 void DisparoJugadorVista::render(EstadoDisparo disparo) {
-	Vector posicion = Vector(disparo.posicionX, disparo.posicionY);
+    if (disparo.inicio + DISPARO_RANGO == disparo.posicionX){
+        audiodisparo->play(100);
+    }
+    Vector posicion = Vector(disparo.posicionX, disparo.posicionY);
 
     SDL_Rect srcrect = {0, DISPARO_JUGADOR_SRC_ALTO_OFFSET, DISPARO_JUGADOR_SRC_ANCHO, DISPARO_JUGADOR_SRC_ALTO};
     SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), DISPARO_JUGADOR_SRC_ANCHO, DISPARO_JUGADOR_SRC_ALTO};
@@ -46,6 +50,8 @@ void DisparoJugadorVista::render(EstadoDisparo disparo) {
 }
 
 ExplosionVista * DisparoJugadorVista::nuevaExplosion(Vector vector) {
-	Vector offset = Vector(DISPARO_JUGADOR_SRC_ANCHO * 4 / 5, DISPARO_JUGADOR_SRC_ALTO / 2);
+
+    audioexplosion->play(100);
+    Vector offset = Vector(DISPARO_JUGADOR_SRC_ANCHO * 4 / 5, DISPARO_JUGADOR_SRC_ALTO / 2);
 	return new ExplosionVista(vector + offset, EXPLOSION_CHICA);
 }

@@ -108,18 +108,15 @@ bool GestorSDL::event(std::string* inputText) {
 
 bool GestorSDL::reproducirMusica(std::string stringAudio) {
 
-    Audio* mixAudio = Audio::getInstante();
-
     l->error("Reproduciendo audio " + stringAudio);
-    Musica * musica = mixAudio->generarAudio(stringAudio);
-    musica->play(200);
+    Audio* audio = new Audio();
+    Musica* musica = audio->generarMusica(stringAudio);
+    musica->play(80);
 }
 
 void GestorSDL::mutear() {
 
-	// TODO: Desmutear y muteo para todo el programa, no por nivel
-    Musica *audio = new Musica(NULL);
-    audio->mutear();
+//    musica->mutear();
 
 }
 

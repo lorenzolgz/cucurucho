@@ -16,10 +16,9 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
     JugadorVista::colores = colores;
 
 //  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
-    Audio *audio1 = Audio::getInstante();
-    JugadorVista::audioPerder = audio1->generarSoundEffect("sfx-05.wav");
-    Audio *audio2 = Audio::getInstante();
-    JugadorVista::audioRevivir = audio2->generarSoundEffect("sfx-07.wav");
+    Audio *audio = new Audio();
+    JugadorVista::audioPerder = audio->generarEfecto("sfx-25.wav");
+    JugadorVista::audioRevivir = audio->generarEfecto("sfx-07.wav");
 
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
@@ -99,6 +98,7 @@ void JugadorVista::renderLifebar(int energia) {
     SDL_RenderCopy(gRenderer, texturaEnergia, &srcrect, &dstrect);
 
     SDL_SetTextureColorMod(texturaEnergia, 255, 255, 255);
+
 }
 
 

@@ -13,6 +13,12 @@ ManagerJuego::ManagerJuego() {
     ManagerJuego::estadoLogin = {LOGIN_PENDIENTE};
     ManagerJuego::estadoTick.numeroNivel = 0;
     ManagerJuego::estadoTick.nuevoNivel = 0;
+
+    Audio *audio = new Audio();
+    ManagerJuego::audioPerder = audio->generarEfecto("sfx-37.wav");
+//    ManagerJuego::audioRevivir = audio->generarEfecto("sfx-07.wav");
+
+
 }
 
 void ManagerJuego::render(){
@@ -44,6 +50,7 @@ void ManagerJuego::setUsername(const std::string &username) {
 void ManagerJuego::verificarJugadoresMuertos(const EstadoTick tick) {
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 		if (tick.estadosJugadores[i].estaMuerto && !estadoTick.estadosJugadores[i].estaMuerto) {
+		    audioPerder->play(100);
 			toast->setTexto("NAVE " + std::string(tick.estadosJugadores[i].usuario) + " SIN VIDAS", 5, i + 1);
 		}
 	}

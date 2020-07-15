@@ -18,6 +18,7 @@ Disparo::Disparo(float x, float y, Jugador* jugador) {
 	this->velocidad = VELOCIDAD_DISPARO_JUGADOR;
     this->jugador = jugador;
     this->vida = new VidaProyectil();
+    this->inicio = this->posicion;
     l->debug("Disparo creado en " + std::to_string(x) + "," + std::to_string(y));
 }
 
@@ -37,6 +38,7 @@ EstadoDisparo Disparo::state() {
     disparo.posicionY = getPosicion().getY();
     disparo.nroJugador = jugador->getNroJugador();
     disparo.energia = vida->getEnergia();
+    disparo.inicio = inicio.getX();
     return disparo;
 }
 

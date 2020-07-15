@@ -19,7 +19,8 @@ Audio *Audio::getInstante() {
 
 }
 
-Musica *Audio::generarAudio(std::string stringAudio) {
+
+Musica *Audio::cargarMusica(std::string stringAudio) {
 
     const std::string& MUSIC_LOCATION = "../client/assets/music/";
     Audio::mixAudio = Mix_LoadMUS((MUSIC_LOCATION + stringAudio).c_str());
@@ -33,7 +34,7 @@ Musica *Audio::generarAudio(std::string stringAudio) {
 
 }
 
-EfectoSonido *Audio::generarSoundEffect(std::string stringSoundEffect){
+EfectoSonido *Audio::cargarEfectosSonido(std::string stringSoundEffect){
 
     const std::string& SFX_LOCATION = "../client/assets/sfx/";
     mixSoundEffect = Mix_LoadWAV((SFX_LOCATION + stringSoundEffect).c_str());
@@ -43,6 +44,39 @@ EfectoSonido *Audio::generarSoundEffect(std::string stringSoundEffect){
     }
     EfectoSonido *efecto = new EfectoSonido(mixSoundEffect);
     return efecto;
-
 }
 
+Audio::Audio(){
+//    efecto_defecto = cargarEfectosSonido("sfx-01.wav");
+//    musica_defecto = cargarMusica("rainonme.mpeg");
+    l->info("Creacion de instancia GeneradorDeTexturas");
+}
+
+EfectoSonido* Audio::generarEfecto(std::string soundEffect) {
+    EfectoSonido* efecto = efectos[soundEffect];
+
+    if (efecto == NULL){
+        efectos[soundEffect] = cargarEfectosSonido(soundEffect);
+        efecto = efectos[soundEffect];
+    }
+
+    if (efecto == NULL){
+        return efecto_defecto;
+    }
+    return efecto;
+}
+
+
+Musica* Audio::generarMusica(std::string cancion) {
+    Musica* musica = canciones[cancion];
+
+    if (musica == NULL){
+        canciones[cancion] = cargarMusica(cancion);
+        musica = canciones[cancion];
+    }
+
+    if (musica == NULL){
+        return musica_defecto;
+    }
+    return musica;
+}

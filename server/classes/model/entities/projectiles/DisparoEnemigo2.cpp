@@ -20,6 +20,7 @@ EstadoDisparo DisparoEnemigo2::state() {
     disparo.posicionY = getPosicion().getY();
     disparo.nroJugador = ID_ENEMIGO2;
 	disparo.energia = vida->getEnergia();
+	disparo.inicio = 0;
     return disparo;
 }
 

@@ -24,10 +24,9 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
-    Audio* audio = Audio::getInstante();
-    Musica * audioErrorConexion = audio->generarAudio("audioPantallaInicio.mp3");
-    audioErrorConexion->play(40);
-
+//    Audio* audio = new Audio();
+//    Musica * intro = audio->generarMusica("audioPantallaInicio.mp3");
+//    intro->play(10);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     try{
@@ -286,6 +285,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
         estadoDisparo.posicionY = informacionJson["posicionY"];
         estadoDisparo.nroJugador = informacionJson["nroJugador"];
         estadoDisparo.energia = informacionJson["energia"];
+        estadoDisparo.inicio = informacionJson["inicio"];
         estadoTick.estadosDisparos.push_back(estadoDisparo);
     }
     for (nlohmann::json informacionJson : mensaje["estadosDisparosEnemigos"]){
@@ -294,6 +294,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
 		estadoDisparoEnemigo.posicionY = informacionJson["posicionY"];
 		estadoDisparoEnemigo.nroJugador = informacionJson["nroJugador"];
 		estadoDisparoEnemigo.energia = informacionJson["energia"];
+		estadoDisparoEnemigo.inicio = informacionJson["inicio"];
 		estadoTick.estadosDisparosEnemigos.push_back(estadoDisparoEnemigo);
     }
 
