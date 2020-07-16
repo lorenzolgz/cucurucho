@@ -176,10 +176,6 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	estadoTick->estadosDisparosEnemigos = estadoCampoMovil.estadosDisparosEnemigos;
 
 	if (partida->termino()) {
-		std::cout << "FIN DE JUEGO PUNTAJES PARCIALES" << std::endl;
-		for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
-			std::cout << std::to_string(estadoJugador.puntosParcial) << std::endl;
-		}
 		estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
 		l->info("La partida finalizo");
 		return true;

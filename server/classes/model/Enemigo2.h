@@ -7,8 +7,8 @@
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 
-const int ENEMIGO2_ANCHO = 285;
-const int ENEMIGO2_ALTO = 147;
+const int ENEMIGO2_ANCHO = 66;
+const int ENEMIGO2_ALTO = 63;
 #define TICKS_COOLDOWN_DISPARO_ENEMIGO2 160
 
 class Enemigo2 : public EntidadEnemigo {

@@ -7,8 +7,8 @@
 #include "../../../../commons/protocols/protocolo.h"
 #include "ExplosionVista.h"
 
-const int ENEMIGO2_SRC_ANCHO = 285;
-const int ENEMIGO2_SRC_ALTO = 147;
+const int ENEMIGO2_SRC_ANCHO = 66;
+const int ENEMIGO2_SRC_ALTO = 63;
 
 class Enemigo2Vista {
 public:
