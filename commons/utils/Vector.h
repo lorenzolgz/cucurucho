@@ -32,6 +32,10 @@ public:
     bool esNulo() const;
 
     std::string getVector();
+
+	Vector escalar(double d);
+
+    float modulo();
 };
 
 

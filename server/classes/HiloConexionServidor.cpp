@@ -38,7 +38,7 @@ void HiloConexionServidor::run() {
                 l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
             }
         }
-    } catch (...) { // !!!!! catcheo y logueo
+    } catch (...) { // !!!! catcheo y logueo
 		l->error("Error en el loop de HiloConexionServidor.");
 	    cicloReconectar();
 	}
@@ -64,32 +64,62 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["helper2"]["angulo"] = estadoTick->estadosJugadores[i].helper2.angulo;
 		mensajeJson["estadosJugadores"][i]["posicionX"] = estadoTick->estadosJugadores[i].posicionX;
 		mensajeJson["estadosJugadores"][i]["posicionY"] = estadoTick->estadosJugadores[i].posicionY;
-        mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
+		mensajeJson["estadosJugadores"][i]["energia"] = estadoTick->estadosJugadores[i].energia;
+		mensajeJson["estadosJugadores"][i]["cantidadVidas"] = estadoTick->estadosJugadores[i].cantidadVidas;
+		mensajeJson["estadosJugadores"][i]["esInvencible"] = estadoTick->estadosJugadores[i].esInvencible;
+		mensajeJson["estadosJugadores"][i]["estaMuerto"] = estadoTick->estadosJugadores[i].estaMuerto;
+		mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
+		mensajeJson["estadosJugadores"][i]["puntos"] = estadoTick->estadosJugadores[i].puntos;
+		mensajeJson["estadosJugadores"][i]["puntosParcial"] = estadoTick->estadosJugadores[i].puntosParcial;
+		mensajeJson["estadosJugadores"][i]["usuario"] = std::string(estadoTick->estadosJugadores[i].usuario);
     }
 	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
-        nlohmann::json mensajeFondo= {
-                {"posicionX", estadoEnemigo.posicionX},
-                {"posicionY", estadoEnemigo.posicionY},
-                {"clase", estadoEnemigo.clase}
+        nlohmann::json mensajeEnemigo = {
+				{"posicionX", estadoEnemigo.posicionX},
+				{"posicionY", estadoEnemigo.posicionY},
+				{"energia", estadoEnemigo.energia},
+				{"clase", estadoEnemigo.clase}
         };
-        mensajeJson["estadosEnemigos"].push_back(mensajeFondo);
+        mensajeJson["estadosEnemigos"].push_back(mensajeEnemigo);
 
 	}
-	colaEnviadora->push(mensajeJson);
+    for (EstadoDisparo estadoDisparo : estadoTick->estadosDisparos) {
+        nlohmann::json mensajeDisparo = {
+				{"posicionX", estadoDisparo.posicionX},
+				{"posicionY", estadoDisparo.posicionY},
+				{"nroJugador", estadoDisparo.nroJugador},
+				{"energia", estadoDisparo.energia},
+                {"inicio", estadoDisparo.inicio}
+        };
+        mensajeJson["estadosDisparos"].push_back(mensajeDisparo);
+    }
+
+    for (EstadoDisparo estadoDisparoEnemigo: estadoTick->estadosDisparosEnemigos){
+        nlohmann::json mensajeDisparo = {
+                {"posicionX", estadoDisparoEnemigo.posicionX},
+                {"posicionY", estadoDisparoEnemigo.posicionY},
+                {"nroJugador", estadoDisparoEnemigo.nroJugador},
+				{"energia", estadoDisparoEnemigo.energia},
+                {"inicio",estadoDisparoEnemigo.inicio}
+        };
+        mensajeJson["estadosDisparosEnemigos"].push_back(mensajeDisparo);
+    }
+    colaEnviadora->push(mensajeJson);
 }
 
 void HiloConexionServidor::enviarInformacionNivel(struct InformacionNivel* informacionNivel) {
 
 	nlohmann::json mensajeJson = {
-			{"tipoMensaje", INFORMACION_NIVEL},
-			{"numeroNivel",  informacionNivel->numeroNivel},
-			{"velocidad", informacionNivel->velocidad},
-			{"informacionFinNivel",   informacionNivel->informacionFinNivel}
+				{"tipoMensaje", INFORMACION_NIVEL},
+				{"numeroNivel",  informacionNivel->numeroNivel},
+				{"velocidad", informacionNivel->velocidad},
+				{"informacionFinNivel",   informacionNivel->informacionFinNivel},
+				{"audioNivel", informacionNivel->audioNivel}
 	};
 	for (InformacionFondo informacionFondo: informacionNivel->informacionFondo){
         nlohmann::json mensajeFondo= {
-                {"velocidad", informacionFondo.pVelocidad},
-                {"fondo", informacionFondo.pFondo}
+				{"velocidad", informacionFondo.pVelocidad},
+				{"fondo", informacionFondo.pFondo}
         };
 	    mensajeJson["informacionFondo"].push_back(mensajeFondo);
 	}

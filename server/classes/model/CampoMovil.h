@@ -4,13 +4,11 @@
 
 #include <list>
 #include <map>
-#include "Hud.h"
 #include "Jugador.h"
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
 #include "../states/EstadoInternoCampoMovil.h"
-
-const int CAMPO_OFFSET = 300;
+#include "entities/projectiles/Disparo.h"
 
 class Entidad;
 class Ticker;
@@ -18,7 +16,7 @@ class Jugador;
 
 class CampoMovil : public Ticker {
 public:
-	CampoMovil(std::map<int, Jugador *> jugador, int ancho, int alto, int inicioEnEjeY, float velocidadNivel, float largoNivel);
+	CampoMovil(std::map<int, Jugador*>* jugador, int ancho, int alto, float velocidadNivel, float largoNivel);
 
 	int getAncho();
 	int getAlto();
@@ -30,7 +28,8 @@ public:
 
 	bool verificarPosicionNivel();
 	EstadoInternoCampoMovil state();
-
+    void nuevoDisparo(Disparo *disparo);
+    void nuevoDisparoEnemigo(EntidadDisparo *entidadDisparo);
 
 private:
 	int ancho;
@@ -38,10 +37,18 @@ private:
 	Vector posicion;
     float velocidadX;
     float largoNivel;
-    std::map<int, Jugador *> jugadores;
+    std::map<int, Jugador*>* jugadores;
 	std::list<EntidadEnemigo*> entidadesEnemigos;
+    std::list<Disparo*> disparosJugador;
+    std::list<EntidadDisparo*> disparosEnemigos;
 
-    bool verificarPosicionEnemigo(EntidadEnemigo *pEnemigo);
+
+    bool verificarEntidadEstaDentroDelCampo(Entidad* entidad);
+	void procesarTodasLasColisiones();
+	void procesarColisionEntreDosEntidades(Entidad* e1, Entidad* e2);
+	void removerEntidadesEnemigosMuertas();
+	void removerDisparosMuertos();
+	void removerDisparosFueraDePantalla();
 };
 
 

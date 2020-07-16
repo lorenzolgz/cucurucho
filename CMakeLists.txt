@@ -30,24 +30,25 @@ set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;--filter=${CPPLINT_FILTER_OPTIONS}")
 # END CPPLINT
 
+
 add_executable(cliente
         client/main.cpp
-        client/classes/view/FondoVista.cpp
-        client/classes/view/FondoVista.h
+        client/classes/view/elements/FondoVista.cpp
+        client/classes/view/elements/FondoVista.h
         commons/utils/Vector.cpp
         commons/utils/Vector.h
         commons/utils/Log.cpp
         commons/utils/Log.h
         commons/utils/Utils.cpp
         commons/utils/Utils.h
-        client/classes/view/JugadorVista.cpp
-        client/classes/view/JugadorVista.h
-        client/classes/view/Enemigo2Vista.cpp
-        client/classes/view/Enemigo2Vista.h
-        client/classes/view/Enemigo1Vista.cpp
-        client/classes/view/Enemigo1Vista.h
-        client/classes/view/HelperVista.cpp
-        client/classes/view/HelperVista.h
+        client/classes/view/elements/JugadorVista.cpp
+        client/classes/view/elements/JugadorVista.h
+        client/classes/view/elements/Enemigo2Vista.cpp
+        client/classes/view/elements/Enemigo2Vista.h
+        client/classes/view/elements/Enemigo1Vista.cpp
+        client/classes/view/elements/Enemigo1Vista.h
+        client/classes/view/elements/HelperVista.cpp
+        client/classes/view/elements/HelperVista.h
         client/classes/view/HudVista.cpp
         client/classes/view/HudVista.h
         client/classes/view/CampoVista.cpp
@@ -67,10 +68,6 @@ add_executable(cliente
         client/classes/view/Colores.h
         client/classes/view/ManagerVista.cpp
         client/classes/view/ManagerVista.h
-        client/classes/config/FondoConfiguracion.cpp
-        client/classes/config/FondoConfiguracion.h
-        client/classes/config/NivelConfiguracion.cpp
-        client/classes/config/NivelConfiguracion.h
         client/classes/config/ConfiguracionParser.cpp
         client/classes/config/ConfiguracionParser.h
         commons/connections/ConexionCliente.cpp
@@ -94,7 +91,10 @@ add_executable(cliente
         client/classes/ManagerJuego.cpp client/classes/ManagerJuego.h
         commons/connections/ConexionExcepcion.h
         client/classes/config/Configuracion.cpp
-        client/classes/config/Configuracion.h)
+        client/classes/config/Configuracion.h
+        client/classes/view/elements/DisparoJugadorVista.cpp
+        client/classes/view/elements/DisparoJugadorVista.h client/classes/view/elements/DisparoEnemigoVista.cpp client/classes/view/elements/DisparoEnemigoVista.h
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h)
 
 add_executable(servidor
         server/main.cpp
@@ -109,8 +109,6 @@ add_executable(servidor
         commons/connections/ConexionCliente.h
         server/classes/model/Jugador.cpp
         server/classes/model/Jugador.h
-        server/classes/model/Hud.cpp
-        server/classes/model/Hud.h
         server/classes/model/Helper.cpp
         server/classes/model/Helper.h
         server/classes/model/Enemigo2.cpp
@@ -127,8 +125,6 @@ add_executable(servidor
         server/classes/model/CampoMovil.h
         server/classes/model/ManagerNiveles.cpp
         server/classes/model/ManagerNiveles.h
-        server/classes/model/NivelIntermedio.cpp
-        server/classes/model/NivelIntermedio.h
         server/classes/config/Configuracion.h
         server/classes/config/Configuracion.cpp
         server/classes/config/NivelConfiguracion.cpp
@@ -158,8 +154,20 @@ add_executable(servidor
         commons/connections/ConexionUtils.h
         commons/connections/Conexion.cpp commons/connections/Conexion.h
         libraries/json/json.hpp
-        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h)
+        commons/connections/ConexionExcepcion.h
+        server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h
+        commons/connections/AceptarConexionExcepcion.h
+        server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h
+        server/classes/model/life/VidaJugadorMortal.cpp server/classes/model/life/VidaJugadorMortal.h
+        server/classes/model/life/VidaEntidad.cpp server/classes/model/life/VidaEntidad.h
+        server/classes/model/life/VidaJugadorInvencible.cpp server/classes/model/life/VidaJugadorInvencible.h
+        server/classes/model/entities/Forma.cpp server/classes/model/entities/Forma.h
+        server/classes/model/life/VidaEnemigo1.cpp server/classes/model/life/VidaEnemigo1.h
+        server/classes/model/life/VidaEnemigo2.cpp server/classes/model/life/VidaEnemigo2.h
+        server/classes/model/entities/Entidad.cpp server/classes/model/entities/Entidad.h
+        commons/connections/ConexionExcepcion.h server/classes/HiloAceptadorConexiones.cpp server/classes/HiloAceptadorConexiones.h commons/connections/AceptarConexionExcepcion.h server/classes/config/UsuariosConfiguracion.cpp server/classes/config/UsuariosConfiguracion.h server/classes/model/entities/projectiles/Disparo.cpp server/classes/model/entities/projectiles/Disparo.h server/classes/model/life/VidaProyectil.cpp server/classes/model/life/VidaProyectil.h server/classes/model/life/VidaJugador.cpp server/classes/model/life/VidaJugador.h server/classes/model/ais/IAEnemigo.h server/classes/model/ais/IAEnemigoPatron1.cpp server/classes/model/ais/IAEnemigoPatron1.h server/classes/model/ais/IAEnemigoPatron2.cpp server/classes/model/ais/IAEnemigoPatron2.h server/classes/model/EnemigoFinal1.cpp server/classes/model/EnemigoFinal1.h
+        server/classes/model/ais/default/IAHorizontal.cpp server/classes/model/ais/default/IAHorizontal.h server/classes/model/ais/default/IAEstatico.cpp server/classes/model/ais/default/IAEstatico.h server/classes/model/ais/default/IACircular.cpp server/classes/model/ais/default/IACircular.h server/classes/model/ais/IAEnemigoPatron3.cpp server/classes/model/ais/IAEnemigoPatron3.h server/classes/model/life/VidaEnemigoFinal1.cpp server/classes/model/life/VidaEnemigoFinal1.h server/classes/model/ExtensionNivel.cpp server/classes/model/ExtensionNivel.h server/classes/model/entities/projectiles/DisparoEnemigo1.cpp server/classes/model/entities/projectiles/DisparoEnemigo1.h server/classes/model/entities/projectiles/EntidadDisparo.h server/classes/model/entities/projectiles/DisparoEnemigo2.cpp server/classes/model/entities/projectiles/DisparoEnemigo2.h)
 
 target_link_libraries(cliente ${SDL2_LIBRARIES})
-target_link_libraries(cliente SDL2 -lSDL2_image)
+target_link_libraries(cliente SDL2 -lSDL2_image -lSDL2_mixer)
 target_link_libraries(cliente ${JSONCPP_LIBRARIES})

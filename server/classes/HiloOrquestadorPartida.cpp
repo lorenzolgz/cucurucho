@@ -1,9 +1,8 @@
 #include "HiloOrquestadorPartida.h"
 #include "HiloConexionServidor.h"
 
-void initializeData(struct EstadoTick* estadoTick);
 bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
-                 std::list<HiloConexionServidor *> *pList);
+                 std::list<HiloConexionServidor *> *pList, int* nuevoNivel);
 int esperarConexiones(int puerto, Configuracion* config);
 
 
@@ -19,8 +18,6 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, Comando *comandos,
                  Configuracion *config) {
     hilosConexionesServidores->reverse();
-
-    std::string usuarioPerdido;
 
     try {
         // Uno de los clientes se queda esperando al resto, por eso siempre unos se ven mejor y otros peor.
@@ -39,7 +36,7 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
 
                     if (mensajeJson["_t"] == COMANDO) {
                         int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
-                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"]};
+                        struct Comando comando = {nroJugador, mensajeJson["arriba"], mensajeJson["abajo"], mensajeJson["izquierda"], mensajeJson["derecha"], mensajeJson["disparo"], mensajeJson["invencible"]};
                         comandos[nroJugador - 1] = comando;
                     } else {
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
@@ -58,17 +55,16 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
 void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struct InformacionNivel* informacionNivel, struct EstadoTick* estadoTick, int* nuevoNivel) {
     if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
-	}
-	if (*nuevoNivel && estadoTick->numeroNivel != FIN_DE_JUEGO) {
-		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
-			hiloConexionServidor->enviarInformacionNivel(informacionNivel);
-		}
 		*nuevoNivel = false;
+		if (estadoTick->numeroNivel != FIN_DE_JUEGO) {
+			for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
+				hiloConexionServidor->enviarInformacionNivel(informacionNivel);
+			}
+		}
 	} else {
 		for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
             hiloConexionServidor->enviarEstadoTick(estadoTick);
 		}
-		*nuevoNivel = estadoTick->nuevoNivel;
 	}
 }
 
@@ -80,10 +76,9 @@ void HiloOrquestadorPartida::run() {
 	struct EstadoTick estadoTick;
 	bool terminoNivelActual = false;
 	clock_t t2, t1 = clock();
-	clock_t entreNiveles = clock();
+	clock_t tiempoNivelInt = clock();
 
 	int commands_count = 0;
-	initializeData(&estadoTick);
 	// Todo esto es necesario?
 	informacionNivel.numeroNivel = 0;
 	// Comunicacion inicial.
@@ -105,25 +100,21 @@ void HiloOrquestadorPartida::run() {
 
 			// Receive data (command)
             receiveData(hilosConexionesServidores, comandos, config);
-            if (clock() < entreNiveles) { // Si los clientes estan viendo la pantalla intermedia, no procesar comandos.
-                for (int i = 0; i < hilosConexionesServidores->size(); i++) {
-                    comandos[i] = {0, 0, 0, 0, 0};
-                }
-            }
-            //--------------------
-			// Process model
-            quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores);
 
-            //--------------------
+			// Si los clientes estan viendo la pantalla intermedia, no procesar datos.
+            if (clock() > tiempoNivelInt) {
+				// Process model
+				quit |= processData(partida, comandos, &estadoTick, &informacionNivel, hilosConexionesServidores, &nuevoNivel);
+            }
+
+            if (nuevoNivel && informacionNivel.numeroNivel != 1) {
+                tiempoNivelInt = clock() + TIMEOUT_PROXIMO_NIVEL * CLOCKS_PER_SEC;
+            }
+
 			// Send data (view)
             sendData(hilosConexionesServidores, &informacionNivel, &estadoTick, &nuevoNivel);
-			//--------------------
             if (quit) {
                 break;
-            }
-
-            if (nuevoNivel) {
-                entreNiveles = clock() + TIMEOUT_PROXIMO_NIVEL * CLOCKS_PER_SEC;
             }
 
 			t1 = clock();
@@ -158,19 +149,14 @@ bool HiloOrquestadorPartida::termino() {
 }
 
 bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
-                 std::list<HiloConexionServidor *> *conexiones) {
+                 std::list<HiloConexionServidor *> *conexiones, int* nuevoNivel) {
+
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
-	partida->tick(comandos);
+	*nuevoNivel = estadoInternoNivel.nuevoNivel;
+	estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
+	estadoTick->numeroNivel = estadoInternoNivel.nivel;
 
     // Seteando estadoTick
-    estadoTick->nuevoNivel = estadoInternoNivel.nuevoNivel;
-    estadoTick->numeroNivel = estadoInternoNivel.nivel;
-
-	if (partida->termino()) {
-        estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
-		l->info("La partida finalizo");
-		return true;
-	}
 
 	EstadoInternoCampoMovil estadoCampoMovil = estadoInternoNivel.estadoCampoMovil;
 	estadoTick->posX = estadoCampoMovil.posX;
@@ -182,21 +168,19 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 
 	for (HiloConexionServidor* h : *conexiones) {
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
+		strcpy(estadoTick->estadosJugadores[h->jugador - 1].usuario, h->username.c_str());
 	}
 
 	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
-	return false;
-}
+	estadoTick->estadosDisparos = estadoCampoMovil.estadosDisparos;
+	estadoTick->estadosDisparosEnemigos = estadoCampoMovil.estadosDisparosEnemigos;
 
-
-void initializeData(struct EstadoTick* estadoTick) {
-	for (int i = 0; i < MAX_JUGADORES; i++) {
-		estadoTick->estadosJugadores[i].posicionX = -1000;
-		estadoTick->estadosJugadores[i].posicionY = -1000;
-        estadoTick->estadosJugadores[i].presente = 0;
-        estadoTick->estadosJugadores[i].helper1.posicionX = -1000;
-		estadoTick->estadosJugadores[i].helper1.posicionY = -1000;
-		estadoTick->estadosJugadores[i].helper2.posicionX = -1000;
-		estadoTick->estadosJugadores[i].helper2.posicionY = -1000;
+	if (partida->termino()) {
+		estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
+		l->info("La partida finalizo");
+		return true;
 	}
+	partida->tick(comandos);
+
+	return false;
 }

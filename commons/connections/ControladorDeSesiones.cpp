@@ -14,6 +14,8 @@ ControladorDeSesiones::ControladorDeSesiones(ConexionServidor *conexionServidor,
     this->usuarios = usuarios;
 	this->nroJugador = nroJugador;
 	this->usuarioEnJuego = usuarioEnJuego;
+
+
 }
 
 

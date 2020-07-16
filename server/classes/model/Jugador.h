@@ -6,48 +6,61 @@
 #include "../../../commons/utils/Vector.h"
 #include "../../../commons/protocols/protocolo.h"
 #include "Helper.h"
-#include "Entidad.h"
+#include "entities/Entidad.h"
+#include "life/VidaJugador.h"
+#include "entities/projectiles/Disparo.h"
+#include "../config/Configuracion.h"
 
 class CampoMovil;
 class Helper;
-class HelperVista;
 class Entidad;
+class Disparo;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
-
-const double JUGADOR_VELOCIDAD_ESCALAR = 4.5;
+const int TICKS_COOLDOWN_DISPARO = 18;
+const double JUGADOR_VELOCIDAD_ESCALAR = 5.75;
 
 class Jugador : public Entidad {
 public:
-    Jugador(int x, int y);
+    Jugador(Configuracion* config, int nroJugador);
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 	struct EstadoJugador state();
 
-	int getAncho() override;
+	int getTipoEntidad() override;
+	VidaEntidad* getVidaEntidad() override;
 
-	int getAlto() override;
-
-	Vector getPosicion() override;
-
-	const Vector &getPosicion() const;
     const Vector getVelocidad() const;
-    void setPosicion(int x, int y);
     void setCampo(CampoMovil* campo);
-
-    void resetState();
+    Disparo* disparar();
+    void reiniciarPosicion();
+	void cambiarInvencible(bool invencible);
+	bool estaMuerto();
+    void sumarPuntosPorDestruirA(int entidadEnemigo);
+    int getNroJugador();
+    void finNivel();
 
 private:
-    Vector posicion;
+	Configuracion* config;
+	int nroJugador;
+	int puntos;
+	int puntosParcial;
     Vector velocidad;
     double velocidadEscalar;
+    int ticksHastaDisparo;
 
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
+	VidaJugador* vida;
 
 	Vector actualizarPosicion(Vector posicionNueva);
+	bool puedeDisparar();
+	Vector calcularPosicionInicial();
+
+
+    int acumulado;
 };
 
 

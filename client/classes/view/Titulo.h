@@ -8,6 +8,7 @@
 #include "../view/TituloVista.h"
 #include "../../../commons/protocols/protocolo.h"
 #include "../../../commons/connections/ConexionCliente.h"
+#include "../Audio.h"
 #include <string>
 
 const struct Login autoCredenciales[5] = {{"rodri", "12"},
@@ -52,6 +53,9 @@ private:
     int autoCompletarIndice;
 
     void leerInput(std::string input, bool *validarLogin);
+
+    EfectoSonido *audioErrorUsuario;
+    EfectoSonido *audioInicioPartida;
 };
 
 #endif //CUCURUCHO_TITULO_H

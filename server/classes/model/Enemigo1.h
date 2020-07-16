@@ -6,24 +6,29 @@
 #include "../../../commons/utils/Vector.h"
 #include "Ticker.h"
 #include "EntidadEnemigo.h"
+#include "Jugador.h"
+#include "entities/projectiles/DisparoEnemigo1.h"
 
 const int ENEMIGO1_ANCHO = 66;
 const int ENEMIGO1_ALTO = 66;
+const int TICKS_COOLDOWN_DISPARO_ENEMIGO1 = 280;
 
 
 class Enemigo1 : public EntidadEnemigo {
 public:
-	Enemigo1(float x, float y, float velocidadX);
+	Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo);
 
-	int getAncho() override;
-	int getAlto() override;
-	Vector getPosicion() override;
 	void tick() override;
-	struct EstadoEnemigo state() override ;
+	struct EstadoEnemigo state() override;
+	int getTipoEntidad() override;
+	float getVelocidadX() override ;
+	virtual void setPosicion(Vector nuevaPosicion) override;
+    virtual void disparar(Vector vector) override;
 
 private:
-    Vector posicion;
 	float velocidadX;
+    int ticksHastaDisparo;
+    CampoMovil* campo;
 };
 
 

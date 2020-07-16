@@ -79,11 +79,19 @@ EnemigosConfiguracion* ConfiguracionParser::parsearEnemigos(Json::Value enemigos
 		validarJsonNoNulo(clase2Json,"Enemigos de clase2 del nivel " + std::to_string(nivel));
 		validarJsonNoNegativo(clase2Json, "Enemigos de clase2 del nivel " + std::to_string(nivel));
 
-		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64());
+		Json::Value finalJson = enemigosJson["final"];
+		validarJsonNoNulo(finalJson,"Enemigo final del nivel " + std::to_string(nivel));
+		validarJsonGenerico(!finalJson.isBool(),"Enemigo final del nivel " + std::to_string(nivel));
+
+		return new EnemigosConfiguracion(clase1Json.asInt64(), clase2Json.asInt64(), finalJson.asBool());
 	} catch (const std::exception &exc) {
 		l->error("Ocurrio un error al parsear las cantidades de enemigos para el nivel " + std::to_string(nivel));
 		throw exc;
 	}
+}
+
+void ConfiguracionParser::parsearAudioNivel(Json::Value nivelJason, char *audioNivel) {
+    strcpy(audioNivel, nivelJason["audioNivel"].asString().c_str());
 }
 
 void ConfiguracionParser::parsearFinalNivel(Json::Value nivelJSON, char* fondosJson) {
@@ -184,7 +192,9 @@ NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int
 	try {
 		    auto *enemigos = parsearEnemigos(nivelJson["enemigos"], nivel);
 		    char finNivel[LARGO_PATH];
+		    char audioNivel[LARGO_PATH];
 		    parsearFinalNivel(nivelJson, finNivel);
+		    parsearAudioNivel(nivelJson,audioNivel);
             auto velocidad = parsearVelocidadNivel(nivelJson, nivel);
             auto largo = parsearLargoNivel(nivelJson, nivel);
 
@@ -200,7 +210,7 @@ NivelConfiguracion* ConfiguracionParser::parsearNivel(Json::Value nivelJson, int
                 throw exc;
             }
 
-	    	return new NivelConfiguracion(fondos, enemigos, finNivel, velocidad, largo);
+	    	return new NivelConfiguracion(fondos, enemigos, finNivel,audioNivel, velocidad, largo);
 	    }
 	catch(const std::exception &exc) {
 	        l->error("Ocurrio un error al parsear el nivel " + std::to_string(nivel));

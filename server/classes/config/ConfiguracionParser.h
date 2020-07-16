@@ -5,8 +5,6 @@
 #include "Configuracion.h"
 #include "UsuariosConfiguracion.h"
 
-#define FIN_ARCH '\0'
-
 class ConfiguracionParser {
 public:
 	Configuracion* parsearConfiguracion(std::string rutaJsonConfig);
@@ -32,6 +30,8 @@ private:
     static FondoConfiguracion *parsearFondo(Json::Value fondoJson, int nivel);
 
     std::list<FondoConfiguracion *> parsearFondos(Json::Value fondosConfiguracionJson, int nivel);
+
+    void parsearAudioNivel(Json::Value nivelJason, char audioNivel[255]);
 };
 
 

@@ -3,36 +3,59 @@
 #include "Enemigo2.h"
 #include "Enemigo1.h"
 #include "Jugador.h"
-#include "../../../commons/utils/Log.h"
-#include "../states/EstadoInternoNivel.h"
-#include <queue>
-#include <iterator>
 #include <list>
+#include "EnemigoFinal1.h"
 #include "../../../commons/utils/Constantes.h"
 
-Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	Nivel::hud = new Hud();
-	Nivel::velocidad = nivelConfig->getVelocidad();
-	Nivel::ancho = nivelConfig->getLargo();
-    Nivel::campo = crearCampo(nivelConfig, jugadores);
-    Nivel::alto = campo->getAlto();
+Nivel::Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugadores) {
+	this->velocidad = nivelConfig->getVelocidad();
+	this->largo = nivelConfig->getLargo();
+	this->campo = crearCampo(jugadores);
+    this->alto = campo->getAlto();
+    this->jugadores = jugadores;
+
+	if (nivelConfig->getEnemigos()->isFinal()) {
+		this->extensionNivel = new ExtensionNivel(campo, jugadores);
+	} else {
+		this->extensionNivel = nullptr;
+	}
 }
 
 void Nivel::tick() {
     campo->tick();
-	hud->actualizarHI(campo->getPosicion().getX());
-	hud->tick();
+    if (extensionNivel != nullptr) extensionNivel->tick();
 	plantarSemillasEnCampo();
 }
 
 bool Nivel::termino() {
+	bool terminoBase = terminoNivelBase();
+	if (terminoBase && extensionNivel != nullptr && !extensionNivel->isIniciado()) {
+		extensionNivel->iniciar();
+	}
+
+	bool terminoExtension = extensionNivel == nullptr ? true : extensionNivel->termino();
+
+	bool termino = terminoBase && terminoExtension;
+
+	if (termino) {
+		l->debug("Fin de nivel.");
+		for(int i=0; i<this->jugadores->size(); i++){
+		    this->jugadores->at(i)->finNivel();
+		}
+	}
+
+	return termino;
+}
+
+bool Nivel::terminoNivelBase() {
 	bool verificacionPosicion = campo->verificarPosicionNivel();
 	if (verificacionPosicion) {
-		l->debug("Fin de nivel.");
+		l->debug("Fin de nivel base.");
 	}
 
 	return verificacionPosicion;
 }
+
 
 void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 	crearEnemigosDeClase(2, cantClase2);
@@ -41,23 +64,23 @@ void Nivel::crearEnemigos(int cantClase1, int cantClase2) {
 
 void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     for (int i = 0; i < cantDeEnemigos; i++) {
-        int posInicialX = campo->getAncho();
+        int posXBase = campo->getAncho();
         int posY = std::rand() % alto;
 
-        int rangoEnemigos = (int) ancho - posInicialX;
+        int rangoEnemigos = (int) largo - posXBase;
         if (rangoEnemigos <= 0) {
             l->info("Ancho de pantalla mas grande que largo del nivel");
-            rangoEnemigos = ancho;
+            rangoEnemigos = largo;
         }
-        int posXEnNivel = std::rand() % rangoEnemigos + posInicialX;
+        int posXEnNivel = std::rand() % rangoEnemigos + posXBase;
         float velocidadX = campo->getVelocidadX();
 
         Entidad* entidad;
 
         switch (tipoDeEnemigo) {
-            case 1: {entidad = new Enemigo1(posXEnNivel, posY, velocidadX);}
+            case 1: {entidad = new Enemigo1(campo->getAncho(), posY, velocidadX, jugadores, campo);}
             break;
-            case 2: {entidad = new Enemigo2(posXEnNivel, posY, velocidadX);}
+            case 2: {entidad = new Enemigo2(campo->getAncho(), posY, velocidadX, jugadores, campo);}
             break;
             // Todo después vemos
             default: {entidad = nullptr;};
@@ -74,10 +97,8 @@ void Nivel::crearEnemigosDeClase(int tipoDeEnemigo, int cantDeEnemigos){
     }
 }
 
-CampoMovil* Nivel::crearCampo(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugadores) {
-	// TODO esto quedo muuuy sucio, venia asi desde antes, mientras la pantalla no sea configurable va como piña
-	int inicioCampoEnEjeY = HUD_ALTO;
-	auto* campo = new CampoMovil(jugadores, PANTALLA_ANCHO, PANTALLA_ALTO - inicioCampoEnEjeY, inicioCampoEnEjeY, velocidad, ancho);
+CampoMovil* Nivel::crearCampo(std::map<int, Jugador*>* jugadores) {
+	auto* campo = new CampoMovil(jugadores, CAMPO_ANCHO, CAMPO_ALTO, velocidad, largo);
 
 	l->info("Se creo correctamente el nivel (Parallax)");
 	return campo;
@@ -90,14 +111,14 @@ void Nivel::plantarSemillasEnCampo() {
 		SemillaEntidad* semillaEntidad = semillasEntidades.front();
 		semillasEntidades.pop_front();
 
-		int posXEnemigo = semillaEntidad->getPosicion().getX();
-		int posicionXVentana = campo->getPosicion().getX() + campo->getAncho();
+		int posXSemillaEnemigo = semillaEntidad->getPosicion().getX();
+		int posXCampoEnNivel = campo->getPosicion().getX() + campo->getAncho();
 
-		if (posicionXVentana < posXEnemigo) {
+		if (posXCampoEnNivel < posXSemillaEnemigo) {
 			nuevasSemillasEntidades.push_back(semillaEntidad);
 		} else {
 			Entidad* entidad = semillaEntidad->getEntidad();
-			// !!!! este casteo es pa quilombo
+			// TODO este casteo es pa quilombo!!!!
 			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
 		}
 	}
@@ -107,4 +128,8 @@ void Nivel::plantarSemillasEnCampo() {
 
 EstadoInternoCampoMovil Nivel::state() {
 	return campo->state();
+}
+
+void Nivel::nuevoDisparo(Disparo *pDisparo) {
+    this->campo->nuevoDisparo(pDisparo);
 }

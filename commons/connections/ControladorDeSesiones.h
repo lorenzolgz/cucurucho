@@ -25,6 +25,7 @@ public:
     ConexionServidor *getConexionServidor() const;
 
     bool controlarConUsuariosEnJuego(std::string usuario);
+
 private:
 
     ConexionServidor* conexionServidor;
@@ -36,6 +37,7 @@ private:
 
 	bool usuarioEstaRegistrado(char* usuario, char* contrasenia);
 	void pedirCredenciales(Login *login);
+
 };
 
 

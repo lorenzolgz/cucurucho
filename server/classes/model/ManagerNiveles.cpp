@@ -2,13 +2,10 @@
 // Created by camix on 2/5/20.
 //
 
-#include <cstring>
 #include "ManagerNiveles.h"
-#include "Hud.h"
 #include "../../../commons/utils/Log.h"
-#include "../config/NivelConfiguracion.h"
 
-ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores) {
+ManagerNiveles::ManagerNiveles(Configuracion* config, std::map<int, Jugador*>* jugadores) {
     ancho = config->getAnchoPantalla();
     alto = config->getAltoPantalla();
     ManagerNiveles::jugadores = jugadores;
@@ -24,11 +21,8 @@ Nivel* ManagerNiveles::configurarNuevoNivel() {
 	NivelConfiguracion *nivelConfActual = nivelesConfiguracion.front();
 
     std::map<int, Jugador*>::iterator it;
-    int pos = 1;
-    for (it = jugadores.begin(); it != jugadores.end(); it++) {
-        it->second->resetState();
-        it->second->setPosicion(ancho / 8 * pos, alto / 2 - HUD_ALTO);
-        pos++;
+    for (it = jugadores->begin(); it != jugadores->end(); it++) {
+		it->second->reiniciarPosicion();
     }
 	Nivel *nivel = new Nivel(nivelConfActual, jugadores);
 	nivel->crearEnemigos(nivelConfActual->getEnemigos()->getEnemigosClase1(),
@@ -53,10 +47,6 @@ bool ManagerNiveles::terminoNivelActual() {
 }
 
 void ManagerNiveles::pasajeDeNivel(){
-    NivelConfiguracion* nivel = nivelesConfiguracion.front();
-
-    NivelIntermedio* nivelIntermedio = new NivelIntermedio(ancho, alto, HUD_ALTO, nivel->getFinalNivel());
-    nivelIntermedio->tick();
     l->info("Transicion de niveles");
 
     nivelActual = configurarNuevoNivel();
@@ -78,6 +68,7 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
 		}
         informacionNivel->informacionFondo = listaFondo;
         informacionNivel->velocidad = nivelConfig->getVelocidad();
+        nivelConfig->getAudioNivel(informacionNivel->audioNivel);
 		nivelConfig->getFinalNivel(informacionNivel->informacionFinNivel);
 		pasajeDeNivel();
 	}
@@ -86,5 +77,9 @@ EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informaci
 
 bool ManagerNiveles::noHayMasNiveles() {
 	return cantidadNivelesTerminados == totalNiveles;
+}
+
+void ManagerNiveles::nuevoDisparo(Disparo *disparo) {
+    this->nivelActual->nuevoDisparo(disparo);
 }
 

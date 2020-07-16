@@ -1,10 +1,6 @@
 #include "Log.h"
-
-#include "string.h"
 #include <utility>
 #include <iostream>
-#include <string.h>
-
 
 #define DEBUG nivel == "debug"
 #define INFO  DEBUG or nivel == "info"

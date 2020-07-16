@@ -3,11 +3,12 @@
 //
 
 #include "Helper.h"
+#include "../../../commons/utils/Constantes.h"
 
 
 Helper::Helper(Jugador* jugador, Vector posRelativa) {
     Helper::jugador = jugador;
-    Helper::posRelativa = posRelativa;
+    Helper::posRelativa = posRelativa + Vector(1000000, 1000) * !HELPERS_ACTIVADOS;
     Helper::posicion = posRelativa + jugador->getPosicion();
     Helper::velocidad = Vector(0, 0);
     Helper::velAngular = HELPER_VEL_ANGULAR;

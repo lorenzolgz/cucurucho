@@ -14,6 +14,7 @@
 #include "../../commons/utils/Log.h"
 #include <SDL_render.h>
 #include <SDL_image.h>
+
 using namespace std;
 
 class GeneradorDeTexturas {

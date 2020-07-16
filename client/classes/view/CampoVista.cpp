@@ -10,6 +10,7 @@ CampoVista::CampoVista(float velocidadMovilX, int numeroNivel) {
     CampoVista::numeroNivel = numeroNivel;
     posX = 0;
     ultimoTick = 0;
+    overrideTick = numeroNivel == -1;
 	l->info("La vista del Campo fue creada correctamente.");
 }
 
@@ -39,10 +40,16 @@ void CampoVista::render(EstadoTick estadoTick) {
 
     posX += velocidadNivel;
 
-    posX += ((float) ultimoTick - posX) / 120;
+    if (!overrideTick) {
+		posX += ((float) ultimoTick - posX) / 120;
+	}
 
 	// Renderizar todos los fondos
 	for (FondoVista* fondo : fondos) {
         fondo->render(posX);
 	}
+}
+
+int CampoVista::getNumeroNivel() const {
+	return numeroNivel;
 }

@@ -16,7 +16,9 @@ public:
 
     void setUsername(const std::string &username);
 
-    void render();
+	void render();
+
+	void renderFinJuego();
 
     bool terminoJuego();
 
@@ -34,8 +36,11 @@ private:
     ManagerVista* managerVista;
     EstadoLogin estadoLogin;
     std::string username;
-    Titulo* titulo;
 
+	void verificarJugadoresMuertos(const EstadoTick tick);
+
+    EfectoSonido *audioPerder;
+    Musica *audioFinDeJuego;
 };
 
 

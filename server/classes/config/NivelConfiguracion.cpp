@@ -4,9 +4,11 @@
 #include <iostream>
 #include <cstring>
 
-NivelConfiguracion::NivelConfiguracion(std::list<FondoConfiguracion *> fondos, EnemigosConfiguracion *enemigos, const char* finalNivel, float velocidad, float largo)
+NivelConfiguracion::NivelConfiguracion(std::list<FondoConfiguracion *> fondos, EnemigosConfiguracion *enemigos, const char* finalNivel,const char* audioNivel, float velocidad, float largo)
 		: fondos(fondos), enemigos(enemigos), velocidad(velocidad), largo(largo) {
     strcpy(NivelConfiguracion::finalNivel, finalNivel);
+    strcpy(NivelConfiguracion::audioNivel, audioNivel);
+
 }
 
 EnemigosConfiguracion *NivelConfiguracion::getEnemigos() const {
@@ -17,12 +19,16 @@ void NivelConfiguracion::getFinalNivel(char* final) const{
     strcpy(final, finalNivel);
 }
 
+void NivelConfiguracion::getAudioNivel(char* audio) const {
+    strcpy(audio, audioNivel);
+}
+
 const char* NivelConfiguracion::getFinalNivel() const {
     return finalNivel;
 }
 
 float NivelConfiguracion::getVelocidad() const {
-    return velocidad * (PANTALLA_ANCHO / 960.0);
+    return velocidad * (CAMPO_ANCHO / 960.0);
 }
 
 float NivelConfiguracion::getLargo() const {

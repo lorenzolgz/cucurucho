@@ -1,7 +1,6 @@
 //
 // Created by javier on 10/5/20.
 //
-
 #include "TituloVista.h"
 #include "../../../commons/utils/Vector.h"
 #include "../GeneradorDeTexturas.h"
@@ -20,6 +19,7 @@ class TituloParticula {
     Vector posicion;
     Vector velocidad;
     int contador;
+
 
 public:
     explicit TituloParticula(const Vector &posicion, const Vector &velocidad) : velocidad(velocidad), posicion(posicion), contador(0) {}
@@ -59,6 +59,9 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::contador = 0;
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
+
+    Audio* audio = Audio::getInstance();
+    TituloVista::musica = audio->generarMusica("audioPantallaInicio.mp3");
 }
 
 void TituloVista::nuevaParticula() {
@@ -129,6 +132,7 @@ void TituloVista::renderInput(std::string username, std::string password, bool s
     TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
 
     if (conexionPerdida) {
+        musica->play(50);
         TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
     }
 }

@@ -20,12 +20,14 @@
 #include "view/ManagerVista.h"
 #include "ManagerJuego.h"
 #include "config/Configuracion.h"
+#include "Audio.h"
+#include "GestorSDL.h"
 
 class Partida {
 public:
     Partida();
 
-    void play(Configuracion* configuracion, const char *ip_address, int port, bool conexionPerdida = false);
+    void iniciar(Configuracion* configuracion, const char *ip_address, int port, bool conexionPerdida = false);
 
 private:
     Titulo* pantallaPrincipal;
@@ -35,28 +37,23 @@ private:
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
+    GestorSDL* gestorSDL;
+    bool vieneDeTocarTeclaInvencible;
+    bool enviarInvencible;
 
     void conexionLoop(const Uint8 *currentKeyStates);
-
     void pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);
-
     bool eventLoop(std::string *inputText);
-
     void renderLoop();
-
+    void finJuegoLoop();
     void autenticarServidor();
-
     void comenzarHilo();
-
     void reiniciarInstanciaHilo();
-
     void hacks(const Uint8 *currentKeyStates);
-
-    void setEstadoTick(nlohmann::json mensaje);
-
-    void setInformacionNivel(nlohmann::json mensaje);
-
-    void setEstadoLogin(nlohmann::json mensaje);
+    void procesarEstadoTick(nlohmann::json mensaje);
+    void procesarInformacionNivel(nlohmann::json mensaje);
+    void procesarEstadoLogin(nlohmann::json mensaje);
+    void procesarInvencible(bool apretoTeclaInvencible);
 };
 
 

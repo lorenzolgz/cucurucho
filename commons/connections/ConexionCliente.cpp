@@ -13,7 +13,8 @@ nlohmann::json ConexionCliente::recibirMensaje() {
 
 void ConexionCliente::enviarComando(struct Comando* comando) {
 	l->debug("Cliente por mandar mensaje: " + std::to_string(comando->arriba) + " " + std::to_string(comando->abajo) +
-			 " " + std::to_string(comando->izquierda) + " " + std::to_string(comando->derecha));
+			 " " + std::to_string(comando->izquierda) + " " + std::to_string(comando->derecha) +
+			 " " + std::to_string(comando->disparo));
 
 	nlohmann::json mensajeJson = {
 			{"_t", COMANDO},
@@ -21,8 +22,10 @@ void ConexionCliente::enviarComando(struct Comando* comando) {
 			{"arriba",     comando->arriba},
 			{"abajo",      comando->abajo},
 			{"izquierda",  comando->izquierda},
-			{"derecha",    comando->derecha}
-	};
+			{"derecha",    comando->derecha},
+			{"disparo",    comando->disparo},
+			{"invencible", comando->invencible}
+    };
 
 	l->debug("enviarComando " + mensajeJson.dump());
 

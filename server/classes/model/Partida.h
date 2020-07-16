@@ -13,7 +13,7 @@ public:
 
 private:
 	int nuevoNivel;
-	std::map<int, Jugador*> jugadores;
+	std::map<int, Jugador*>* jugadores;
 	ManagerNiveles* managerNiveles;
     int nivel;
 };

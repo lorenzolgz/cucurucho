@@ -9,6 +9,7 @@
 #include <SDL_rect.h>
 #include <set>
 #include <string>
+#include "../Audio.h"
 
 class TituloParticula;
 
@@ -22,6 +23,9 @@ class TituloVista {
     bool conexionPerdida;
     SDL_Renderer* gRenderer;
     std::set<TituloParticula*> particulas;
+
+    Musica *musica;
+
 public:
     TituloVista(int ancho, int alto, bool conexionPerdida);
     void
@@ -40,6 +44,8 @@ public:
     void renderInput(std::string username, std::string password, bool seleccionadoUsuario);
 
     void renderInfo(int estado, int i);
+
+
 };
 
 

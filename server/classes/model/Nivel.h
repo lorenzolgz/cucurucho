@@ -11,10 +11,12 @@
 #include "SemillaEntidad.h"
 #include "../config/NivelConfiguracion.h"
 #include "../states/EstadoInternoNivel.h"
+#include "entities/projectiles/Disparo.h"
+#include "ExtensionNivel.h"
 
 class Nivel : public Ticker {
 public:
-	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador *> jugador);
+	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugador);
 
 	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;
@@ -22,17 +24,20 @@ public:
 	bool termino();
 	EstadoInternoCampoMovil state();
 
+    void nuevoDisparo(Disparo *pDisparo);
+
 private:
-	float ancho;
+	float largo;
 	int alto;
-	Hud* hud;
 	CampoMovil* campo;
 	std::list<SemillaEntidad*> semillasEntidades;
-    int numeroDeNivel;
+	std::map<int, Jugador*>* jugadores;
     float velocidad;
+    ExtensionNivel* extensionNivel;
 
-	CampoMovil *crearCampo(NivelConfiguracion *nivelConfig, std::map<int, Jugador *> jugador);
+	CampoMovil *crearCampo(std::map<int, Jugador*>* jugador);
 	void plantarSemillasEnCampo();
+	bool terminoNivelBase();
 };
 
 

@@ -2,51 +2,32 @@
 #include "../../../commons/utils/Utils.h"
 #include "../../../commons/utils/Log.h"
 #include "Nivel.h"
-
-const int OFFSET_A = 600;
-const int OFFSET_B = 1500;
-
 #include "../../../commons/utils/Constantes.h"
+#include "life/VidaEnemigo2.h"
+#include "ais/IAEnemigoPatron2.h"
+#include "entities/projectiles/DisparoEnemigo2.h"
 
-Enemigo2::Enemigo2(float x,float y, float velocidadX) {
-    if (random() % 2 == 0) {
-        x = -x + PANTALLA_ANCHO - ENEMIGO2_ANCHO;
+
+Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
+	if (random() % 10 < 2) {
+        x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
         velocidadX *= -1;
     }
-	Enemigo2::velocidadEscalar = 1;
-	Enemigo2::posicion = Vector(x, y);
-	Enemigo2::velocidadX = velocidadX;
-    l->info("Se creo correctamente el Enemigo 02.");
-}
-
-int Enemigo2::getAncho() {
-	return ENEMIGO2_ANCHO;
-}
-
-int Enemigo2::getAlto() {
-	return ENEMIGO2_ALTO;
+	this->posicion = Vector(x, y);
+	this->ancho = ENEMIGO2_ANCHO;
+	this->alto = ENEMIGO2_ALTO;
+	this->velocidadX = velocidadX;
+	this->vida = new VidaEnemigo2();
+	this->ia = new IAEnemigoPatron2(this, jugadores);
+	this->campo = campo;
+	l->info("Se creo correctamente el Enemigo 02.");
 }
 
 void Enemigo2::tick() {
-	posicion = Vector(posicion.getX() - velocidadX, posicion.getY());
-	l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
-}
+	ia = ia->tick();
 
-void Enemigo2::recalcularPosicion() {
-// Por si queremos mostrar como entra y sale en loop, moficando el sprite dependiendo
-// si avanza o retrocede
-//
-    if (posicion.getX() > OFFSET_A and velocidadX) {
-        posicion = posicion + Vector(-velocidadEscalar, 0);
-        if (posicion.getX() <= OFFSET_A) velocidadX = false;
-    } else{
-        posicion = posicion + Vector(velocidadEscalar, 0);
-        if (posicion.getX() >= OFFSET_B) velocidadX = true;
-    }
-}
-
-Vector Enemigo2::getPosicion() {
-	return posicion;
+    ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+    l->debug("Posicion del Enemigo 02: "+ posicion.getVector());
 }
 
 struct EstadoEnemigo Enemigo2::state() {
@@ -54,5 +35,35 @@ struct EstadoEnemigo Enemigo2::state() {
 	estado.posicionX = posicion.getX();
 	estado.posicionY = posicion.getY();
 	estado.clase = 2;
+	estado.energia = vida->getEnergia();
 	return estado;
+}
+
+int Enemigo2::getTipoEntidad() {
+	return ENTIDAD_ENEMIGO2;
+}
+
+std::list<Forma> Enemigo2::getFormas() {
+	std::list<Forma> formas;
+	Forma formaSimple = Forma(getPosicion().getX(), getPosicion().getY(), getAncho()-20, getAlto());
+	formas.emplace_back(formaSimple);
+	return formas;
+}
+
+float Enemigo2::getVelocidadX() {
+	return velocidadX;
+}
+
+void Enemigo2::setPosicion(Vector nuevaPosicion) {
+	posicion = nuevaPosicion;
+}
+
+void Enemigo2::disparar(Vector direccion) {
+    if (ticksHastaDisparo <= 0) {
+        ticksHastaDisparo = TICKS_COOLDOWN_DISPARO_ENEMIGO2;
+        DisparoEnemigo2 *disparo = new DisparoEnemigo2(posicion, direccion);
+        campo->nuevoDisparoEnemigo(disparo);
+        l->info("Se crea un nuevo disparo Enemigo 02");
+    }
+
 }

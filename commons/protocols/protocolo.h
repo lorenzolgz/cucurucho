@@ -26,11 +26,11 @@
 #define LOGIN_COMENZAR 2
 #define LOGIN_FIN 3
 
-// Tiempo entre LOGIN_COMENZAR y LOGIN_FIN
+// Tiempo en segundos entre LOGIN_COMENZAR y LOGIN_FIN
 #define TIMEOUT_LOGIN_FIN 2
 
-// Tiempo de pasaje entre niveles
-#define TIMEOUT_PROXIMO_NIVEL 1
+// Tiempo en segundos de pasaje entre niveles
+#define TIMEOUT_PROXIMO_NIVEL 5
 
 //Fin de Juego
 #define FIN_DE_JUEGO -1
@@ -44,13 +44,14 @@ enum {
     MENSAJE_PING
 };
 
-
 struct Comando {
 	int nroJugador;
 	int arriba;
 	int abajo;
 	int izquierda;
 	int derecha;
+	int disparo;
+	int invencible;
 };
 
 //para el logueo
@@ -59,26 +60,43 @@ struct Login {
     char contrasenia[LARGO_PASSWORD];
 };
 
+struct EstadoDisparo {
+  EstadoDisparo(): posicionX(-200), posicionY(-200), nroJugador(0), energia(1) {}
+  int posicionX;
+  int posicionY;
+  int nroJugador;
+  int energia;
+  int inicio;
+};
+
 struct EstadoHelper {
-    EstadoHelper(): posicionX(-200), posicionY(-200), angulo(0) {}
+    EstadoHelper(): posicionX(-1000), posicionY(-1000), angulo(0) {}
 	int posicionX;
 	int posicionY;
 	int angulo;
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-200), posicionY(-200) {}
+    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), puntosParcial(0), cantidadVidas(0), presente(0) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
 	EstadoHelper helper2;
+	char usuario[LARGO_USERNAME];
+	int energia;
+	int cantidadVidas;
+	int esInvencible;
+	int estaMuerto;
     int presente;
+	int puntos;
+	int puntosParcial;
 };
 
 struct EstadoEnemigo {
-    EstadoEnemigo(): posicionX(-200), posicionY(-200) {}
+	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0) {}
 	int posicionX;
 	int posicionY;
+	int energia;
 	int clase;
 };
 
@@ -88,6 +106,8 @@ struct EstadoTick {
 	int nuevoNivel;
 	int posX;
 	std::list<EstadoEnemigo> estadosEnemigos;
+    std::list<EstadoDisparo> estadosDisparos;
+    std::list<EstadoDisparo> estadosDisparosEnemigos;
     EstadoJugador estadosJugadores[MAX_JUGADORES];
 };
 
@@ -100,6 +120,7 @@ struct InformacionNivel {
 	int numeroNivel;
     float velocidad;
     char informacionFinNivel[LARGO_PATH];
+    char audioNivel[LARGO_PATH];
 	std::list<InformacionFondo> informacionFondo;
 };
 

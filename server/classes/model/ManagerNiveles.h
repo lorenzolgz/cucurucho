@@ -8,16 +8,16 @@
 #include "../config/Configuracion.h"
 #include "CampoMovil.h"
 #include "Nivel.h"
-#include "NivelIntermedio.h"
 #include "../states/EstadoInternoNivel.h"
 #include "../../../commons/utils/Constantes.h"
+#include "entities/projectiles/Disparo.h"
 
 #define VELOCIDAD_INICIAL 2
 #define AUMENTO_VELOCIDAD_POR_NIVEL 1.1
 
 class ManagerNiveles : public Ticker {
 public:
-    ManagerNiveles(Configuracion* config, std::map<int, Jugador*> jugadores);
+    ManagerNiveles(Configuracion* config, std::map<int, Jugador*>* jugadores);
 
     void tick() override;
     void pasajeDeNivel();
@@ -25,13 +25,14 @@ public:
 	EstadoInternoCampoMovil state(struct InformacionNivel* informacionNivel);
     Nivel *configurarNuevoNivel();
     bool noHayMasNiveles();
+    void nuevoDisparo(Disparo* disparo);
 
 private:
     std::list<NivelConfiguracion *> nivelesConfiguracion;
     Nivel* nivelActual;
     int alto;
     int ancho;
-    std::map<int, Jugador*> jugadores;
+    std::map<int, Jugador*>* jugadores;
     int nuevoNivel;
     int cantidadNivelesTerminados;
     int totalNiveles;

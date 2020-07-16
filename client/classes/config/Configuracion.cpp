@@ -3,7 +3,7 @@
 //
 
 #include "Configuracion.h"
-
+#include "../../../commons/utils/Log.h"
 
 Configuracion::Configuracion(std::string nivelLog, bool std_out, int maxCola) {
     this->nivelLog = nivelLog;
@@ -19,8 +19,6 @@ bool Configuracion::isStdOut() const {
     return std_out;
 }
 
-
 std::string Configuracion::getNivelLog() {
     return this->nivelLog;
 }
-

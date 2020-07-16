@@ -4,7 +4,7 @@
 
 #include <list>
 #include <vector>
-#include "../view/FondoVista.h"
+#include "elements/FondoVista.h"
 #include "../../../commons/protocols/protocolo.h"
 
 class CampoVista {
@@ -13,12 +13,15 @@ public:
 	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
 	void render(EstadoTick tick);
 
+	int getNumeroNivel() const;
+
 private:
 	SDL_Renderer* gRenderer;
 	float velocidadNivel;
 	float posX;
 	int ultimoTick;
 	int numeroNivel;
+	bool overrideTick;
 	std::list<FondoVista*> fondos;
 
 };

@@ -16,7 +16,7 @@
 Instalar las siguientes dependencias:
 
 ```sh
-sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev g++ nlohmann-json-dev
+sudo apt install cmake libsdl2-dev libsdl2-image-dev libjsoncpp-dev g++ nlohmann-json-dev libsdl2-mixer-dev
 sudo python3 -m pip install cpplint
 ```
 
@@ -29,7 +29,10 @@ Parámetros opcionales:
 ### Compilar proyecto
 ```sh
 # Desde el root del proyecto:
-cmake --build ./cmake-build-debug --target all -- -j 8
+mkdir cmake-build-debug
+cd cmake-build-debug
+cmake ..
+make
 ```
 
 ### Correr cliente
@@ -39,11 +42,11 @@ cd cmake-build-debug
 ./cliente
 ```
 
-### Correr conexionServidor
+### Correr servidor
 ```sh
 # Desde el root del proyecto:
 cd cmake-build-debug
-./conexionServidor
+./servidor
 ```
 
 ![Gley Lancer](assets/screenshot.png)
