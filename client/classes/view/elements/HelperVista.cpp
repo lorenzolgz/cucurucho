@@ -40,8 +40,8 @@ void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido, Colo
 	SDL_SetTextureColorMod(texturaBall, color[0], color[1], color[2]);
 
 	SDL_Rect glowsrc = {0, HELPER_SRC_ANCHO, HELPER_SRC_ANCHO, HELPER_SRC_ANCHO};
-	SDL_Rect glowdst = {(int) posicion.getX() - HELPER_BALL_SRC_RADIO,
-						(int) posicion.getY() - HELPER_BALL_SRC_RADIO,
+	SDL_Rect glowdst = {(int) posicion.getX(),
+						(int) posicion.getY(),
 						HELPER_SRC_ALTO, HELPER_SRC_ANCHO};
 
 	SDL_RenderCopy(gRenderer, texturaBall, &glowsrc, &glowdst);
@@ -50,8 +50,8 @@ void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido, Colo
 	int glow = contador % 7;
 	if (glow < 3 && recorrido.size() > 6 * (glow + 1)) {
 		glowsrc = {HELPER_SRC_ANCHO * glow, HELPER_SRC_ALTO, HELPER_SRC_ANCHO, HELPER_SRC_ALTO};
-		glowdst = {(int) recorrido[6 * (glow + 1)].getX() - HELPER_BALL_SRC_RADIO,
-				   (int) recorrido[6 * (glow + 1)].getY() - HELPER_BALL_SRC_RADIO,
+		glowdst = {(int) recorrido[6 * (glow + 1)].getX(),
+				   (int) recorrido[6 * (glow + 1)].getY(),
 				   HELPER_SRC_ANCHO, HELPER_SRC_ALTO };
 		SDL_RenderCopy(gRenderer, texturaBall, &glowsrc, &glowdst);
 	}
@@ -62,8 +62,8 @@ void HelperVista::renderGlow(Vector posicion, std::deque<Vector> recorrido, Colo
 
 void HelperVista::renderBall(Vector posicion, ColoresJugador colores) {
 	SDL_Rect ballsrc = {0, 0, HELPER_SRC_ANCHO, HELPER_SRC_ALTO};
-	SDL_Rect balldst = {(int) posicion.getX() - HELPER_BALL_SRC_RADIO,
-						(int) posicion.getY() - HELPER_BALL_SRC_RADIO,
+	SDL_Rect balldst = {(int) posicion.getX(),
+						(int) posicion.getY(),
 						HELPER_SRC_ANCHO, HELPER_SRC_ALTO};
 
 	SDL_RenderCopy(gRenderer, texturaBall, &ballsrc, &balldst);
@@ -77,8 +77,8 @@ void HelperVista::renderBall(Vector posicion, ColoresJugador colores) {
 
 
 void HelperVista::renderHelper(Vector posicion, double angulo, ColoresJugador colores) {
-	int renderPosX = (int) posicion.getX() - HELPER_BALL_SRC_RADIO + (int) (cos_d(angulo) * HELPER_SRC_DISTANCIA);
-	int renderPosY = (int) posicion.getY() - HELPER_BALL_SRC_RADIO - (int) (sin_d(angulo) * HELPER_SRC_DISTANCIA);
+	int renderPosX = (int) posicion.getX() + (int) (cos_d(angulo) * HELPER_SRC_DISTANCIA);
+	int renderPosY = (int) posicion.getY() - (int) (sin_d(angulo) * HELPER_SRC_DISTANCIA);
 
 	int angulo_trunc = ((int) angulo % 90) - 11;
 

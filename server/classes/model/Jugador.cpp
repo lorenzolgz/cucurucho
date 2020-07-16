@@ -3,6 +3,7 @@
 #include "../../../commons/utils/Log.h"
 #include "CampoMovil.h"
 #include "life/VidaJugadorInvencible.h"
+#include "../../../commons/utils/Constantes.h"
 
 Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->config = config;
@@ -69,16 +70,20 @@ bool Jugador::puedeDisparar() {
 	return ticksHastaDisparo <= 0;
 }
 
-Disparo* Jugador::disparar() {
-	if (estaMuerto()) {
-		return nullptr;
-	}
-	if (!this->puedeDisparar()) {
-		return nullptr;
+std::list<Disparo*> Jugador::disparar() {
+	std::list<Disparo*> disparos;
+	if (estaMuerto() || !this->puedeDisparar()) {
+		return disparos;
 	}
 
 	ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
-	return new Disparo(getPosicion().getX(), getPosicion().getY(), this);
+	disparos.push_back(new Disparo(getPosicion().getX(), getPosicion().getY(), this));
+
+	if (HELPERS_ACTIVADOS) {
+		disparos.push_back(helperAbove->disparar());
+		disparos.push_back(helperBelow->disparar());
+	}
+	return disparos;
 }
 
 void Jugador::tick() {

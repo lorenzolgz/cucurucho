@@ -12,22 +12,29 @@
 #include "../../Jugador.h"
 #include "EntidadDisparo.h"
 
+#define ANCHO_DISPARO_JUGADOR 96
+#define ALTO_DISPARO_JUGADOR 24
+#define VELOCIDAD_DISPARO_JUGADOR 13
+
 class Jugador;
 
 class Disparo : public EntidadDisparo {
 public:
     Disparo(float x, float y, Jugador* jugador);
 
+	Disparo(Vector posicion, Vector velocidad, int ancho, int alto, Jugador *jugador);
+
 	EstadoDisparo state();
-	float getVelocidad();
+	Vector getVelocidad();
     void tick() override;
 	int getTipoEntidad() override;
 	void matoEntidad(int tipoEntidad);
 
 private:
-	float velocidad;
+	Vector velocidad;
 	Jugador* jugador;
     Vector inicio;
+    int helper;
 };
 
 

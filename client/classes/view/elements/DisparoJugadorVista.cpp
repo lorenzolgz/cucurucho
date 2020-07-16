@@ -34,18 +34,18 @@ void DisparoJugadorVista::render(EstadoDisparo disparo) {
 
 
     int contador = (int) posicion.getX();
-    std::array<int, 3> color = COLORES_JUGADOR_ARR[disparo.nroJugador].getColorGlow(contador / 3);
+    std::array<int, 3> color = COLORES_JUGADOR_ARR[(disparo.nroJugador & 3)].getColorGlow(contador / 3);
     SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     if (contador % 2 == 0) {
         flip = SDL_FLIP_VERTICAL;
     }
-    SDL_RenderCopyEx(gRenderer, textura, &srcrect, &dstrect, 0, nullptr, flip);
+    SDL_RenderCopyEx(gRenderer, textura, &srcrect, &dstrect, - (disparo.nroJugador / 16), nullptr, flip);
 
     SDL_SetTextureColorMod(textura, 255, 255, 255);
     srcrect.x += DISPARO_JUGADOR_SRC_ANCHO;
-    SDL_RenderCopyEx(gRenderer, textura, &srcrect, &dstrect, 0, nullptr, flip);
+    SDL_RenderCopyEx(gRenderer, textura, &srcrect, &dstrect, - (disparo.nroJugador / 16), nullptr, flip);
     l->debug("Vista del disparo del jugador: "+ posicion.getVector());
 }
 

@@ -19,7 +19,8 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     enemigo1Vista = new Enemigo1Vista();
 	enemigo2Vista = new Enemigo2Vista();
 	enemigoFinal1Vista = new EnemigoFinal1Vista();
-    disparoJugadorVista = new DisparoJugadorVista();
+	disparoJugadorVista = new DisparoJugadorVista();
+	disparoHelperVista = new DisparoHelperVista();
     disparoEnemigoVista = new DisparoEnemigoVista();
     primerNivel = true;
 
@@ -112,7 +113,11 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
 
 void ManagerVista::renderDisparos(std::list<EstadoDisparo> estadosDisparos) {
     for (EstadoDisparo estadoDisparo: estadosDisparos) {
-      disparoJugadorVista->render(estadoDisparo);
+    	if ((estadoDisparo.nroJugador & 8)) {
+			disparoHelperVista->render(estadoDisparo);
+    	} else {
+			disparoJugadorVista->render(estadoDisparo);
+    	}
     }
 }
 
