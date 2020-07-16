@@ -15,7 +15,7 @@ DisparoJugadorVista::DisparoJugadorVista() {
     DisparoJugadorVista::textura = generadorDeTexturas->generarTextura("fx.png");
 
 //  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
-    Audio *audio = new Audio();
+    Audio *audio = Audio::getInstance();
     DisparoJugadorVista::audiodisparo = audio->generarEfecto("sfx-01.wav");
     DisparoJugadorVista::audioexplosion = audio->generarEfecto("sfx-25.wav");
 

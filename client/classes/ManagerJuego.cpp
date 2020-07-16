@@ -14,7 +14,7 @@ ManagerJuego::ManagerJuego() {
     ManagerJuego::estadoTick.numeroNivel = 0;
     ManagerJuego::estadoTick.nuevoNivel = 0;
 
-    Audio *audio = new Audio();
+    Audio *audio = Audio::getInstance();
     ManagerJuego::audioPerder = audio->generarEfecto("sfx-37.wav");
 
 }

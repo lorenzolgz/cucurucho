@@ -9,11 +9,11 @@
 
 Audio* Audio::instance=NULL;
 
-Audio *Audio::getInstante() {
+Audio *Audio::getInstance() {
 
     if (instance==NULL) {
         instance = new Audio();
-        l->error("Creando Audio");
+        l->info("Creando Audio");
     }
     return instance;
 

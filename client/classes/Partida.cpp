@@ -24,7 +24,7 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
-    Audio* audio = new Audio();
+    Audio* audio = Audio::getInstance();
     Musica * intro = audio->generarMusica("audioPantallaInicio.mp3");
     intro->play(10);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");

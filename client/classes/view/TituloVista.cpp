@@ -60,7 +60,7 @@ TituloVista::TituloVista(int ancho, int alto, bool conexionPerdida) {
     TituloVista::contadorActivada = 0;
     TituloVista::gRenderer = GraphicRenderer::getInstance();
 
-    Audio* audio = new Audio();
+    Audio* audio = Audio::getInstance();
     TituloVista::musica = audio->generarMusica("audioPantallaInicio.mp3");
 }
 

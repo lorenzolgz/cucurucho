@@ -18,7 +18,7 @@ Titulo::Titulo(int ancho, int alto, bool conexionPerdida) {
     autoCompletar = false;
     autoCompletarIndice = 0;
 
-    Audio *audio = new Audio();
+    Audio *audio = Audio::getInstance();
     audioInicioPartida = audio->generarEfecto("sfx-29.wav");
     audioErrorUsuario = audio->generarEfecto("sfx-30.wav");
 

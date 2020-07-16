@@ -20,7 +20,7 @@ public:
 
     Audio();
 
-    static Audio *getInstante();
+    static Audio *getInstance();
 
     Musica *generarMusica(std::string audio);
 
