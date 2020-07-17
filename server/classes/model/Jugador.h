@@ -18,7 +18,7 @@ class Disparo;
 
 const int JUGADOR_ANCHO = 96;
 const int JUGADOR_ALTO = 48;
-const int TICKS_COOLDOWN_DISPARO = 18;
+const int TICKS_COOLDOWN_DISPARO = 10;
 const double JUGADOR_VELOCIDAD_ESCALAR = 5.75;
 
 class Jugador : public Entidad {
