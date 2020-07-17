@@ -33,8 +33,10 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
         c->render();
     }
 
-    TextoVista::eRender(username, Vector(528, 24), estadoLogin.nroJugador, ALINEACION_CENTRO);
-    TextoVista::eRender(std::string({VIDA_NAVE_IZQ, VIDA_NAVE_DER}), Vector(792, 24), estadoLogin.nroJugador, true);
+	struct TextoVistaParams params = TextoVistaParams(Vector(528, 24), estadoLogin.nroJugador, ALINEACION_CENTRO);
+    TextoVista::eRender(username, params);
+    params = TextoVistaParams(Vector(792, 24), estadoLogin.nroJugador, ALINEACION_IZQUIERDA);
+    TextoVista::eRender(std::string({VIDA_NAVE_IZQ, VIDA_NAVE_DER}), params);
 
     if (toast != nullptr) {
         toast->render();
@@ -42,7 +44,11 @@ void HudVista::render(EstadoLogin estadoLogin, std::string username) {
 }
 
 void HudVista::nuevoTexto(std::string* texto, Vector posicion, int color, int alineacionIzq) {
-	textos.emplace_back(new TextoVista(texto, posicion, color, alineacionIzq));
+	struct TextoVistaParams params;
+	params.posicion = posicion;
+	params.color = color;
+	params.alineacion = alineacionIzq;
+	textos.emplace_back(new TextoVista(texto, params));
 }
 
 void HudVista::setCantidadVidasEnergiaPuntos(int cantidadVidas, int energia, int puntos) {

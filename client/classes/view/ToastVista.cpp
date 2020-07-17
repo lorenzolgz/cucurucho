@@ -53,18 +53,19 @@ void ToastVista::setTexto(std::string texto, int tiempo, int color) {
 
     size_t pos = 0;
     int n = 0;
+    struct TextoVistaParams textoParams = TextoVistaParams(Vector(0, 0), color, ALINEACION_CENTRO);
     textoMaximo = 0;
     std::string* token;
     while ((pos = texto.find('\n')) != std::string::npos) {
         token = new std::string(texto.substr(0, pos));
-        textos.push_back(new TextoVista(token, Vector(0, 0), color, ALINEACION_CENTRO));
+        textos.push_back(new TextoVista(token, textoParams));
         texto.erase(0, pos + 1);
         if (pos > textoMaximo) {
             textoMaximo = pos;
         }
         n++;
     }
-    textos.push_back(new TextoVista(new std::string(texto), Vector(0, 0), color, ALINEACION_CENTRO));
+    textos.push_back(new TextoVista(new std::string(texto), textoParams));
     if (texto.size() > textoMaximo) {
         textoMaximo = texto.size();
     }

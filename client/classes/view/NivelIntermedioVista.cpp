@@ -65,14 +65,12 @@ void NivelIntermedioVista::renderComun() {
 	campoVista->render(estadoTick);
 }
 
-void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto, int estaMuerto) {
-	Vector posicionJugadorBase = Vector(ancho / 3, alto * 1 / 12);
-	Vector posicionNombreBase = Vector(ancho * 7 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-	struct EstadoJugador estado = generarEstadoJugador(posicionJugadorBase + offset);
+void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector posicionJugador, struct TextoVistaParams params, int estaMuerto) {
+	struct EstadoJugador estado = generarEstadoJugador(posicionJugador);
 
 	if (strlen(nombre) > 0) {
 		estado.presente = !estaMuerto;
-		TextoVista::eRender(std::string(nombre), posicionNombreBase + offset, colorTexto, ALINEACION_IZQUIERDA);
+		TextoVista::eRender(std::string(nombre), params);
 	} else {
 		estado.presente = false;
 	}
@@ -82,15 +80,20 @@ void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nomb
 void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
 	renderComun();
 
+	struct TextoVistaParams params;
 	for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {
-		Vector offset = Vector(0, alto * 7 / 12) / estadoLogin.cantidadJugadores * i;
-		renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], offset, i + 1, false);
+		Vector posicionJugador = Vector(ancho / 3, alto * 1 / 12 + alto * 2 / 3 / estadoLogin.cantidadJugadores * i);
+		Vector posicionNombre = posicionJugador + Vector(ancho * 2 / 15, JUGADOR_SRC_ALTO / 3);
+		params = TextoVistaParams(posicionNombre, i + 1, ALINEACION_IZQUIERDA);
+		renderEsperaJugador((*jugadores)[i], estadoLogin.jugadores[i], posicionJugador, params, false);
 	}
 
+	params = TextoVistaParams(Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
 	if (estadoLogin.estadoLogin == LOGIN_ESPERAR) {
-		TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
+		TextoVista::eRender(std::string("ESPERANDO JUGADORES..."), params);
 	} else if (estadoLogin.estadoLogin == LOGIN_COMENZAR) {
-		TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
+		params.color = TEXTO_COLOR_VERDE;
+		TextoVista::eRender(std::string("COMENZANDO PARTIDA..."), params);
 	}
 }
 
@@ -98,12 +101,12 @@ void NivelIntermedioVista::actualizarEstadoTick(struct EstadoTick tick) {
 	if (tick.numeroNivel != estadoTick.numeroNivel) {
 		estadoTick = tick;
 		for (auto & estadoJugador : estadoTick.estadosJugadores) {
-			estadoJugador.puntos -= estadoJugador.puntosParcial;
+			estadoJugador.puntos -= 0;
 		}
 	}
 
 	for (int i = 0; i < MAX_JUGADORES; i++) {
-		estadoTick.estadosJugadores[i].puntos += estadoTick.estadosJugadores[i].puntosParcial / (TIMEOUT_PROXIMO_NIVEL / 3 * 60);
+		estadoTick.estadosJugadores[i].puntos += estadoTick.estadosJugadores[i].puntos / (TIMEOUT_PROXIMO_NIVEL / 3 * 60);
 		if (tick.estadosJugadores[i].puntos < estadoTick.estadosJugadores[i].puntos) {
 			estadoTick.estadosJugadores[i].puntos = tick.estadosJugadores[i].puntos;
 		}
@@ -123,20 +126,36 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 
 	for (int i = 0; i < cantidadJugadores; i++) {
 		EstadoJugador estado = estadoTick.estadosJugadores[i];
-		Vector offset = Vector(0, alto * 8 / 12) / cantidadJugadores * i - Vector(ancho / 5, 0);
-		renderEsperaJugador((*jugadores)[i], estado.usuario, offset, i + 1, estado.estaMuerto);
+		Vector posicionJugador = Vector( -JUGADOR_SRC_ANCHO / 2, alto / 5);
+		if (cantidadJugadores % 2 != 0) {
+			posicionJugador = posicionJugador + Vector(ancho  * (i + 1) / (cantidadJugadores + 1), 0);
+		} else {
+			posicionJugador = posicionJugador + Vector(ancho  * (2 * i + 1) / (cantidadJugadores * 2), 0);
+		}
+		Vector posicionTexto = posicionJugador + Vector(JUGADOR_SRC_ANCHO / 2 - LETRA_ANCHO / 2, JUGADOR_SRC_ALTO * 3 / 2);
 
-		Vector posicionPuntajeBase = Vector(ancho * 14 / 15, alto * 1 / 12 + JUGADOR_SRC_ALTO / 3);
-		TextoVista::eRender(" +" + std::to_string(estado.puntosParcial),
-							posicionPuntajeBase + offset - Vector(0, LETRA_ALTO / 2), TEXTO_COLOR_NARANJA, ALINEACION_DERECHA);
+		struct TextoVistaParams params = TextoVistaParams(posicionTexto, i + 1, ALINEACION_CENTRO);
+		renderEsperaJugador((*jugadores)[i], estado.usuario, posicionJugador, params, estado.estaMuerto);
 
-		TextoVista::eRender(std::to_string(estado.puntos),
-							posicionPuntajeBase + offset + Vector(0, LETRA_ALTO), TEXTO_COLOR_ROJO, ALINEACION_DERECHA);
+		params.posicion = params.posicion + Vector(0, LETRA_ALTO);
+		params.color = TEXTO_COLOR_NARANJA;
+		for (int j = 0; j < 3; j++) {
+			params.posicion = params.posicion + Vector(0, LETRA_ALTO * 3 / 2);
+			estado.puntosParcial = 34567890;
+			params.size = TEXTO_SIZE_SMALL;
+			TextoVista::eRender(std::to_string(estado.puntosParcial), params);
+		}
+
+		params.posicion = params.posicion + Vector(0, LETRA_ALTO * 2);
+		params.color = TEXTO_COLOR_ROJO;
+		TextoVista::eRender(std::to_string(estado.puntos), params);
 	}
 
 	std::string texto = "COMENZANDO PROXIMO NIVEL...";
 	if (estadoTick.numeroNivel == -1) {
 		texto = "JUEGO FINALIZADO!";
 	}
-	TextoVista::eRender(texto, Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
+
+	struct TextoVistaParams params = TextoVistaParams(Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
+	TextoVista::eRender(texto, params);
 }

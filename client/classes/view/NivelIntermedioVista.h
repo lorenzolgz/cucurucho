@@ -27,7 +27,7 @@ private:
 	int ancho;
     int alto;
 
-	void renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offset, int colorTexto, int estaMuerto);
+	void renderEsperaJugador(JugadorVista* jugador, char* nombre, Vector offsetJugador, struct TextoVistaParams params, int estaMuerto);
 
 	void renderComun();
 

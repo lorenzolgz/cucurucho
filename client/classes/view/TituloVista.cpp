@@ -88,13 +88,19 @@ void TituloVista::renderParticulas() {
 }
 
 void TituloVista::renderTextos(bool activa) {
+	struct TextoVistaParams params = TextoVistaParams(Vector(ancho / 2, alto * 2 / 3), TEXTO_COLOR_AZUL, ALINEACION_CENTRO);
     if (contador % (120 - (activa * 100)) < 60 - (activa * 50)) {
-        TextoVista::eRender(std::string("PRESS ENTER"), Vector(ancho / 2, alto * 2 / 3), TEXTO_COLOR_AZUL, ALINEACION_CENTRO);
+        TextoVista::eRender(std::string("PRESS ENTER"), params);
     }
 
-    TextoVista::eRender(std::string("TALLER DE PROGRAMACION I"), Vector(ancho / 2, alto * 5 / 6), TEXTO_COLOR_AZUL, ALINEACION_CENTRO);
-    TextoVista::eRender(std::string("2020 1C            "), Vector(ancho / 2, alto * 9 / 10), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
-    TextoVista::eRender(std::string("        CUCURUCHO++"), Vector(ancho / 2, alto * 9 / 10), TEXTO_COLOR_NARANJA, ALINEACION_CENTRO);
+    params.posicion = params.posicion + Vector(0, alto * 1 / 6);
+    TextoVista::eRender(std::string("TALLER DE PROGRAMACION I"), params);
+
+    params.color = TEXTO_COLOR_ROJO;
+    params.posicion = params.posicion + Vector(0, alto * 1 / 15);
+    TextoVista::eRender(std::string("2020 1C            "), params);
+    params.color = TEXTO_COLOR_NARANJA;
+    TextoVista::eRender(std::string("        CUCURUCHO++"), params);
 }
 
 void TituloVista::renderTitulo() {
@@ -117,23 +123,26 @@ void TituloVista::renderFadeout(bool activada) {
 
 void TituloVista::renderInput(std::string username, std::string password, bool seleccionadoUsuario) {
     Vector posicionUserLabel = Vector(ancho * 8 / 19, alto * 8 / 12);
-    Vector posicionPassLabel = Vector(ancho * 8 / 19, alto * 9 / 12);
+	struct TextoVistaParams labelParams = TextoVistaParams(posicionUserLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
 
     Vector posicionUserInput = Vector(ancho * 9 / 19, alto * 8 / 12);
-    Vector posicionPassInput = Vector(ancho * 9 / 19, alto * 9 / 12);
+	struct TextoVistaParams inputParams = TextoVistaParams(posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
 
     std::string passwordInput = "";
+
     for (int i = 0; i < password.length(); i++) passwordInput += "*";
 
-    TextoVista::eRender("USUARIO:", posicionUserLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
-    TextoVista::eRender("PASSWORD:", posicionPassLabel, TEXTO_COLOR_AZUL, ALINEACION_DERECHA);
+    TextoVista::eRender("USUARIO:", labelParams);
+    labelParams.posicion = labelParams.posicion + Vector(0, alto * 1 / 12);
+    TextoVista::eRender("PASSWORD:", labelParams);
 
-    TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, posicionUserInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
-    TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, posicionPassInput, TEXTO_COLOR_ROJO, ALINEACION_IZQUIERDA);
+    TextoVista::eRender(seleccionadoUsuario ? username + " <" : username, inputParams);
+    inputParams.posicion = inputParams.posicion + Vector(0, alto * 1 / 12);
+    TextoVista::eRender(!seleccionadoUsuario ? passwordInput + " <" : passwordInput, inputParams);
 
     if (conexionPerdida) {
         musica->play(50);
-        TextoVista::eRender(std::string("CONEXION PERDIDA"), Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
+        TextoVista::eRender(std::string("CONEXION PERDIDA"), {Vector(ancho / 2, alto / 2), TEXTO_COLOR_ROJO, ALINEACION_CENTRO});
     }
 }
 
@@ -155,7 +164,7 @@ void TituloVista::renderInfo(int estado, int estadoLogin) {
     } else if (estadoLogin > 0) {
         texto = "INICIANDO JUEGO";
     }
-    TextoVista::eRender(texto, posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO);
+    TextoVista::eRender(texto, {posicion, TEXTO_COLOR_ROJO, ALINEACION_CENTRO});
 }
 
 void
