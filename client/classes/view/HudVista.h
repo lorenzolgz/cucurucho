@@ -9,21 +9,17 @@
 #include "ToastVista.h"
 
 const int HUD_SRC_ANCHO = 960;
-const int HUD_SRC_ALTO = 72;
+const int HUD_SRC_ALTO = 96;
 
 class HudVista {
 public:
 	HudVista();
-	void render(struct EstadoLogin estadoLogin, std::string username);
-	void nuevoTexto(std::string* texto, Vector posicion, int color, int alineacionIzq);
-	void setCantidadVidasEnergiaPuntos(int cantidadVidas, int energia, int puntos);
+	void render(struct EstadoTick estadoTick, struct EstadoLogin estadoLogin, std::string username);
+	void renderInfoJugador(struct EstadoJugador estado, Vector posicion, int nroJugador, bool esCliente);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
-	std::vector<TextoVista*> textos;
-	std::string* puntaje;
-    std::string* vidas;
 };
 
 extern ToastVista* toast;

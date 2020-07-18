@@ -195,6 +195,5 @@ void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std
 		}
 	}
 
-	hud->setCantidadVidasEnergiaPuntos(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia, estadoJugadorPropio.puntos);
-	hud->render(estadoLogin, username);
+	hud->render(estadoTick, estadoLogin, username);
 }
