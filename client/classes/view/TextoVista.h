@@ -33,7 +33,7 @@ const int ASCII_OFFSET = 30;
 
 const int LETRA_SMALL_ALTO = 21;
 const int LETRA_SMALL_ANCHO = 15;
-const int ASCII_SMALL_OFFSET = 47;
+const int ASCII_SMALL_OFFSET = 43;
 
 struct TextoVistaParams {
 	TextoVistaParams(): alineacion(ALINEACION_IZQUIERDA), color(TEXTO_COLOR_AZUL), size(TEXTO_SIZE_NORMAL) {}

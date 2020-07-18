@@ -77,7 +77,7 @@ struct EstadoHelper {
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), puntosParcial(0), cantidadVidas(0), presente(0) {}
+    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), cantidadVidas(0), presente(0) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
@@ -89,7 +89,7 @@ struct EstadoJugador {
 	int estaMuerto;
     int presente;
 	int puntos;
-	int puntosParcial;
+	std::list<int> puntosParciales;
 };
 
 struct EstadoEnemigo {

@@ -45,7 +45,7 @@ private:
 	Configuracion* config;
 	int nroJugador;
 	int puntos;
-	int puntosParcial;
+	std::list<int> puntosParcial;
     Vector velocidad;
     double velocidadEscalar;
     int ticksHastaDisparo;

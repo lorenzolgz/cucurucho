@@ -101,12 +101,12 @@ void NivelIntermedioVista::actualizarEstadoTick(struct EstadoTick tick) {
 	if (tick.numeroNivel != estadoTick.numeroNivel) {
 		estadoTick = tick;
 		for (auto & estadoJugador : estadoTick.estadosJugadores) {
-			estadoJugador.puntos -= 0;
+			estadoJugador.puntos = 0;
 		}
 	}
 
 	for (int i = 0; i < MAX_JUGADORES; i++) {
-		estadoTick.estadosJugadores[i].puntos += estadoTick.estadosJugadores[i].puntos / (TIMEOUT_PROXIMO_NIVEL / 3 * 60);
+		estadoTick.estadosJugadores[i].puntos += tick.estadosJugadores[i].puntos / (TIMEOUT_PROXIMO_NIVEL / 3 * 60);
 		if (tick.estadosJugadores[i].puntos < estadoTick.estadosJugadores[i].puntos) {
 			estadoTick.estadosJugadores[i].puntos = tick.estadosJugadores[i].puntos;
 		}
@@ -126,7 +126,7 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 
 	for (int i = 0; i < cantidadJugadores; i++) {
 		EstadoJugador estado = estadoTick.estadosJugadores[i];
-		Vector posicionJugador = Vector( -JUGADOR_SRC_ANCHO / 2, alto / 5);
+		Vector posicionJugador = Vector( -JUGADOR_SRC_ANCHO / 2, alto / 8);
 		if (cantidadJugadores % 2 != 0) {
 			posicionJugador = posicionJugador + Vector(ancho  * (i + 1) / (cantidadJugadores + 1), 0);
 		} else {
@@ -139,11 +139,10 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 
 		params.posicion = params.posicion + Vector(0, LETRA_ALTO);
 		params.color = TEXTO_COLOR_NARANJA;
-		for (int j = 0; j < 3; j++) {
+		for (int puntosParcial : estado.puntosParciales) {
 			params.posicion = params.posicion + Vector(0, LETRA_ALTO * 3 / 2);
-			estado.puntosParcial = 34567890;
 			params.size = TEXTO_SIZE_SMALL;
-			TextoVista::eRender(std::to_string(estado.puntosParcial), params);
+			TextoVista::eRender("+" + std::to_string(puntosParcial), params);
 		}
 
 		params.posicion = params.posicion + Vector(0, LETRA_ALTO * 2);

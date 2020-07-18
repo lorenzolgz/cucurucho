@@ -53,7 +53,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	mensajeJson["nuevoNivel"] = estadoTick->nuevoNivel;
 	mensajeJson["numeroNivel"] = estadoTick->numeroNivel;
 	mensajeJson["posX"] = estadoTick->posX;
-	int i = 0, j = 0;
+	int i = 0;
 
 	for (; i< MAX_JUGADORES; i++) {
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionX"] = estadoTick->estadosJugadores[i].helper1.posicionX;
@@ -70,9 +70,11 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["estaMuerto"] = estadoTick->estadosJugadores[i].estaMuerto;
 		mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
 		mensajeJson["estadosJugadores"][i]["puntos"] = estadoTick->estadosJugadores[i].puntos;
-		mensajeJson["estadosJugadores"][i]["puntosParcial"] = estadoTick->estadosJugadores[i].puntosParcial;
 		mensajeJson["estadosJugadores"][i]["usuario"] = std::string(estadoTick->estadosJugadores[i].usuario);
-    }
+		for (int puntajeParcial : estadoTick->estadosJugadores[i].puntosParciales) {
+			mensajeJson["estadosJugadores"][i]["puntosParciales"].push_back(puntajeParcial);
+		}
+	}
 	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
         nlohmann::json mensajeEnemigo = {
 				{"posicionX", estadoEnemigo.posicionX},

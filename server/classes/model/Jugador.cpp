@@ -19,7 +19,7 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 
 	this->vida = new VidaJugador();
 	this->puntos = 0;
-	this->puntosParcial = 0;
+	this->puntosParcial;
 	this->acumulado = 0;
 
     l->info("Se creo correctamente el Jugador.");
@@ -108,7 +108,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.esInvencible = vida->esInvencible();
 	estadoJugador.estaMuerto = estaMuerto();
 	estadoJugador.puntos = this->puntos;
-    estadoJugador.puntosParcial = this->puntosParcial;
+	estadoJugador.puntosParciales = this->puntosParcial;
 	return estadoJugador;
 }
 
@@ -172,7 +172,7 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
 }
 
 void Jugador::finNivel(){
-    this->puntosParcial = this->acumulado;
+    this->puntosParcial.push_back(this->acumulado);
     this->acumulado = 0;
 }
 
