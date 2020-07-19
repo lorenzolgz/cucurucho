@@ -35,6 +35,8 @@ public:
 
     void playMusic(std::string cancion);
 
+    void playEffect(std::string efecto);
+
 private:
     static Audio *instance;
     bool mute;

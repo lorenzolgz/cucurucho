@@ -56,12 +56,12 @@ Audio::Audio(){
 EfectoSonido* Audio::generarEfecto(std::string soundEffect) {
     EfectoSonido* efecto = efectos[soundEffect];
 
-    if (efecto == NULL){
+    if (efecto == nullptr){
         efectos[soundEffect] = cargarEfectosSonido(soundEffect);
         efecto = efectos[soundEffect];
     }
 
-    if (efecto == NULL){
+    if (efecto == nullptr){
         return efecto_defecto;
     }
     return efecto;
@@ -71,40 +71,52 @@ EfectoSonido* Audio::generarEfecto(std::string soundEffect) {
 Musica* Audio::generarMusica(std::string cancion) {
     Musica* musica = canciones[cancion];
 
-    if (musica == NULL){
+    if (musica == nullptr){
         canciones[cancion] = cargarMusica(cancion);
         musica = canciones[cancion];
     }
 
-    if (musica == NULL){
+    if (musica == nullptr){
         return musica_defecto;
     }
     return musica;
 }
 
 void Audio::mutear() {
-    std::map<std::string, Musica *>::iterator it;
+    std::map<std::string, Musica *>::iterator it1;
+    std::map<std::string, EfectoSonido *>::iterator it2;
+
     if (!mute) {
 
-        for (it = canciones.begin(); it != canciones.end(); it++) {
-
-            it->second->mutear();
+        for (it1 = canciones.begin(); it1 != canciones.end(); it1++) {
+            it1->second->mutear();
         }
+        for (it2 = efectos.begin(); it2 != efectos.end(); it2++) {
+            it2->second->mutear();
+        }
+
         Audio::mute = true;
+
     }
     else{
 
-        for (it = canciones.begin(); it != canciones.end(); it++) {
-            it->second->desmutear();
+        for (it1 = canciones.begin(); it1 != canciones.end(); it1++) {
+            it1->second->desmutear();
         }
+        for (it2 = efectos.begin(); it2 != efectos.end(); it2++) {
+            it2->second->desmutear();
+        }
+
         Audio::mute = false;
+
     }
 }
+
 void Audio::playMusic(std::string cancion) {
-    std::cout<<Audio::mute<<std::endl;
 
     int volumen;
-    std::map<std::string, Musica*>::iterator it = canciones.find(cancion);
+    auto it = canciones.find(cancion);
+
     if (mute) volumen = 0;
     else volumen = 100;
 
@@ -112,4 +124,18 @@ void Audio::playMusic(std::string cancion) {
         musica_defecto->play(volumen);
     else
        it->second->play(volumen);
+}
+
+void Audio::playEffect(std::string efecto) {
+
+    int volumen;
+    auto it = efectos.find(efecto);
+
+    if (mute) volumen = 0;
+    else volumen = 100;
+
+    if(it == efectos.end())
+        efecto_defecto->play(volumen);
+    else
+        it->second->play(volumen);
 }

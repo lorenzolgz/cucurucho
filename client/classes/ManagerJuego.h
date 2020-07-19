@@ -42,8 +42,8 @@ private:
 	void verificarJugadoresMuertos(const EstadoTick tick);
 
 	Audio* audio;
-    EfectoSonido *audioPerder;
-    Musica *audioFinDeJuego;
+    std::string audioPerder;
+
 };
 
 

@@ -18,3 +18,18 @@ void EfectoSonido::play(int volumen) {
 	}
 }
 
+
+void EfectoSonido::mutear() {
+
+    EfectoSonido::mute = true;
+    Mix_Volume(-1, 0);
+
+}
+
+
+void EfectoSonido::desmutear(){
+
+    EfectoSonido::mute =false;
+    Mix_Volume(-1, 100);
+
+}

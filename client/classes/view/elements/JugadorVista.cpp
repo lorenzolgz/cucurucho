@@ -15,11 +15,6 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
 
-//  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
-    Audio *audio = Audio::getInstance();
-    JugadorVista::audioPerder = audio->generarEfecto("sfx-25.wav");
-    JugadorVista::audioRevivir = audio->generarEfecto("sfx-07.wav");
-
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
 	l->info("La vista del jugador fue creada correctamente.");

@@ -54,8 +54,9 @@ private:
 
     void leerInput(std::string input, bool *validarLogin);
 
-    EfectoSonido *audioErrorUsuario;
-    EfectoSonido *audioInicioPartida;
+    Audio* audio;
+    std::string audioErrorUsuario;
+    std::string audioInicioPartida;
 };
 
 #endif //CUCURUCHO_TITULO_H

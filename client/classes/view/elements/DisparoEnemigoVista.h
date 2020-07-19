@@ -26,7 +26,8 @@ public:
 private:
     SDL_Renderer* gRenderer;
     SDL_Texture* textura;
-    EfectoSonido *audioExplosion;
+    Audio *audio;
+    std::string audioExplosion;
 };
 
 

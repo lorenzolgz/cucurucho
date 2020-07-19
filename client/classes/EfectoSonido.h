@@ -19,6 +19,9 @@ public:
 
     void play(int volumen);
 
+    void desmutear();
+
+    void mutear();
 };
 
 

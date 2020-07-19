@@ -18,9 +18,12 @@ Titulo::Titulo(int ancho, int alto, bool conexionPerdida) {
     autoCompletar = false;
     autoCompletarIndice = 0;
 
-    Audio *audio = Audio::getInstance();
-    audioInicioPartida = audio->generarEfecto("sfx-29.wav");
-    audioErrorUsuario = audio->generarEfecto("sfx-30.wav");
+    audio = Audio::getInstance();
+    audioInicioPartida = "sfx-29.wav";
+    audioErrorUsuario = "sfx-30.wav";
+
+    audio->generarEfecto(audioInicioPartida);
+    audio->generarEfecto(audioErrorUsuario);
 
 
     l->info("La pantalla incial fue creada correctamente.");
@@ -65,7 +68,7 @@ void Titulo::estaActivada(bool enter) {
         seleccionadoUsuario = true;
 
 
-        audioInicioPartida->play(200);
+        audio->playEffect(audioInicioPartida);
         l->info("Pantalla de inicio activada.");
     }
 }
@@ -87,6 +90,6 @@ void Titulo::setAutoCompletar() {
 }
 
 void Titulo::reiniciarPassword() {
-    audioErrorUsuario->play(200);
+    audio->playEffect(audioErrorUsuario);
     password = "";
 }

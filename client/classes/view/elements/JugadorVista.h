@@ -42,9 +42,6 @@ private:
 
     int contadorVelocidadY;
 
-    EfectoSonido *audioPerder;
-    EfectoSonido *audioRevivir;
-
     bool deberiaRenderizar(EstadoJugador estadoJugador);
 
     void setColores(EstadoJugador jugador);
