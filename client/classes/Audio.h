@@ -31,8 +31,13 @@ public:
     Musica *cargarMusica(std::string stringAudio);
 
 
+    void mutear();
+
+    void playMusic(std::string cancion);
+
 private:
     static Audio *instance;
+    bool mute;
     Mix_Music *mixAudio;
     Mix_Chunk *mixSoundEffect;
     std::map<std::string, EfectoSonido *> efectos;

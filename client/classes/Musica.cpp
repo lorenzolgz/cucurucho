@@ -7,26 +7,28 @@
 
 Musica::Musica(Mix_Music* audio) {
     Musica::audio = audio;
-    Musica::mute = !SONIDO_ACTIVADO;
+    Musica::mute = false;
 }
 
 void Musica::play(int volumen) {
 
-    if (mute) return;
     Mix_PlayMusic(audio, -1);
-    Mix_VolumeMusic(volumen);
+
+    if (mute) Mix_VolumeMusic(0);
+    else Mix_VolumeMusic(volumen);
+
 }
 
 void Musica::mutear() {
 
-    if (!mute) {
-        Mix_HaltMusic();
-        mute = true;
-    }else {
-        mute = false;
-        play(90);
-    }
+    mute = true;
+    Mix_VolumeMusic(0);
 
 }
 
 
+void Musica::desmutear(){
+    Musica::mute =false;
+    Mix_VolumeMusic(90);
+
+}

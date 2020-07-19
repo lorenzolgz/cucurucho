@@ -24,9 +24,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
-    Audio* audio = Audio::getInstance();
-    Musica * intro = audio->generarMusica("audioPantallaInicio.mp3");
-    intro->play(10);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     try{
@@ -240,7 +237,7 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
     }
 
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
-        gestorSDL->mutear();
+        manager->mutear();
     }
 
 }

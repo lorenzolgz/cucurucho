@@ -65,3 +65,7 @@ void ManagerJuego::setEstadoTick(const EstadoTick &tick) {
 void ManagerJuego::setEstadoLogin(const EstadoLogin &estadoLogin) {
     ManagerJuego::estadoLogin = estadoLogin;
 }
+
+void ManagerJuego::mutear() {
+    managerVista->mutear();
+}

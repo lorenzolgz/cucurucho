@@ -26,6 +26,9 @@ public:
 
 	void renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
 
+
+    void mutear();
+
 private:
     struct InformacionNivel informacionNivel;
     HudVista* hud;
@@ -44,6 +47,7 @@ private:
     int alto;
     int ancho;
     float velocidadNivel;
+    Audio* audio;
 
     void renderEnemigos(std::list<EstadoEnemigo> pEnemigo);
 

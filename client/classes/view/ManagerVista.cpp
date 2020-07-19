@@ -22,11 +22,16 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     disparoJugadorVista = new DisparoJugadorVista();
     disparoEnemigoVista = new DisparoEnemigoVista();
     primerNivel = true;
+    audio = Audio::getInstance();
+
 
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 		jugadores->push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
 	}
 	nivelIntermedioVista = new NivelIntermedioVista(jugadores, ancho, alto);
+
+    Musica* musica = audio->generarMusica("audioPantallaInicio.mp3");
+    audio->playMusic("audioPantallaInicio.mp3");
 
 }
 
@@ -82,6 +87,9 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
+    std::string cancion = informacionNivel.audioNivel;
+    audio->generarMusica(cancion);
+    audio->playMusic(cancion);
 }
 
 
@@ -197,4 +205,8 @@ void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std
 
 	hud->setCantidadVidasEnergiaPuntos(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia, estadoJugadorPropio.puntos);
 	hud->render(estadoLogin, username);
+}
+
+void ManagerVista::mutear() {
+    audio->mutear();
 }

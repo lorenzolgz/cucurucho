@@ -108,10 +108,11 @@ bool GestorSDL::event(std::string* inputText) {
 
 bool GestorSDL::reproducirMusica(std::string stringAudio) {
 
-    l->error("Reproduciendo audio " + stringAudio);
-    Audio* audio = Audio::getInstance();
-    Musica* musica = audio->generarMusica(stringAudio);
-    musica->play(80);
+//    l->error("Reproduciendo audio " + stringAudio);
+//    Audio* audio = Audio::getInstance();
+//    Musica* musica = audio->generarMusica(stringAudio);
+//    musica->play(80);
+
 }
 
 void GestorSDL::mutear() {
