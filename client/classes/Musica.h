@@ -11,7 +11,6 @@
 class Musica {
 private:
     Mix_Music *audio;
-    bool mute;
 
 public:
 
