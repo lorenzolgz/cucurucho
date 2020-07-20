@@ -16,7 +16,8 @@ enum {
     ENTIDAD_DISPARO_JUGADOR,
     ENTIDAD_DISPARO_ENEMIGO1,
     ENTIDAD_DISPARO_ENEMIGO2,
-    ENTIDAD_ENEMIGO_FINAL1
+	ENTIDAD_ENEMIGO_FINAL1,
+	ENTIDAD_ENEMIGO_FINAL1EXT
 };
 
 class Entidad : public Ticker {
@@ -32,6 +33,7 @@ public:
 
 protected:
 	Vector posicion;
+	Vector posicionRelativa;
 	float ancho;
 	float alto;
 	VidaEntidad* vida;

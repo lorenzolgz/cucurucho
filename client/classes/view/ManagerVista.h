@@ -16,6 +16,7 @@
 #include "elements/EnemigoFinal1Vista.h"
 #include "elements/ExplosionVista.h"
 #include "NivelIntermedioVista.h"
+#include "elements/EnemigoFinal1ExtVista.h"
 
 class ManagerVista {
 public:
