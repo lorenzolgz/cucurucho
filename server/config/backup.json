@@ -16,7 +16,7 @@
                "final": true
             },
             "velocidad": 2,
-            "largo": 600
+            "largo": 50
          },
          {
             "archivoFondos": "fondos/fondos2.json",

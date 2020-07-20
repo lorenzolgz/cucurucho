@@ -9,6 +9,7 @@
 #include "../../../commons/utils/Constantes.h"
 #include "elements/EnemigoFinal1Vista.h"
 #include "elements/ExplosionVista.h"
+#include "elements/EnemigoFinal1ExtVista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)

@@ -94,7 +94,7 @@ add_executable(cliente
         client/classes/config/Configuracion.h
         client/classes/view/elements/DisparoJugadorVista.cpp
         client/classes/view/elements/DisparoJugadorVista.h client/classes/view/elements/DisparoEnemigoVista.cpp client/classes/view/elements/DisparoEnemigoVista.h
-        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h)
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h client/classes/view/elements/EnemigoFinal1ExtVista.cpp client/classes/view/elements/EnemigoFinal1ExtVista.h)
 
 add_executable(servidor
         server/main.cpp

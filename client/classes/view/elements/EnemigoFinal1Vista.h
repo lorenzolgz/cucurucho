@@ -4,6 +4,7 @@
 
 #include <SDL_render.h>
 #include "../../../../commons/protocols/protocolo.h"
+#include "EnemigoFinal1ExtVista.h"
 
 const int ENEMIGO_FINAL1_SRC_ANCHO = 375;
 const int ENEMIGO_FINAL1_SRC_ALTO = 288;
@@ -16,6 +17,12 @@ public:
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+	int contador;
+	std::list<EnemigoFinal1ExtVista*> extensiones;
+
+	void renderGlow(SDL_Rect srcrect, SDL_Rect dstrect);
+
+	void renderExtensiones(EstadoEnemigo estadoEnemigo, Vector vector);
 };
 
 
