@@ -20,6 +20,7 @@ public:
 	float getVelocidadX() override;
 	void setPosicion(Vector nuevaPosicion) override;
 	void tick() override;
+	std::list<Forma> getFormas() override;
 	int getTipoEntidad() override;
 	void disparar(Vector vector) override;
 
@@ -28,6 +29,7 @@ private:
 	EnemigoFinal1* padre;
 	int ticksHastaDisparo;
 	CampoMovil *campo;
+	std::deque<Vector> posiciones;
 };
 
 

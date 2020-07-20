@@ -31,9 +31,7 @@ void EnemigoFinal1ExtVista::render(EstadoEnemigo estadoEnemigo, Vector lock) {
 	}
 
 	posiciones.push_front(posicion);
-	if (posiciones.size() > CANT_POSICIONES) {
-		posiciones.pop_back();
-	}
+	posiciones.pop_back();
 
 	if (estadoEnemigo.energia <= 0 && contador % 4 >= 2) return;
 
@@ -45,14 +43,13 @@ void EnemigoFinal1ExtVista::render(EstadoEnemigo estadoEnemigo, Vector lock) {
 }
 
 void EnemigoFinal1ExtVista::renderModulo(int i) {
-	Vector posicion = posiciones[i * CANT_POSICIONES / CANT_MODULOS];
-
-	posicion = posicion - (posicion - lock) / CANT_MODULOS * i;
+	Vector posicionModulo = posiciones[i * CANT_POSICIONES / CANT_MODULOS];
+	posicionModulo = posicionModulo - (posicionModulo - lock) / CANT_MODULOS * i;
 
 	if (i > 2) i = 2;
 
 	SDL_Rect srcrect = {ENEMIGO_FINAL1_EXT_SRC_ANCHO * i, 0, ENEMIGO_FINAL1_EXT_SRC_ANCHO, ENEMIGO_FINAL1_EXT_SRC_ALTO};
-	SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), ENEMIGO_FINAL1_EXT_SRC_ANCHO, ENEMIGO_FINAL1_EXT_SRC_ALTO};
+	SDL_Rect dstrect = {(int) posicionModulo.getX(), (int) posicionModulo.getY(), ENEMIGO_FINAL1_EXT_SRC_ANCHO, ENEMIGO_FINAL1_EXT_SRC_ALTO};
 
 	if (i == 0) {
 		srcrect.y += ENEMIGO_FINAL1_EXT_SRC_ALTO * (contador % 60 >= 30);

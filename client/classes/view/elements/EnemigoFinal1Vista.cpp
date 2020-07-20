@@ -96,21 +96,21 @@ ExplosionVista * EnemigoFinal1Vista::nuevaExplosionExt(Vector vector) {
 }
 
 std::list<ExplosionVista*> EnemigoFinal1Vista::nuevasExplosiones(Vector vector) {
-	Vector offset = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2, ENEMIGO_FINAL1_SRC_ANCHO / 2);
+	Vector offset = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2, ENEMIGO_FINAL1_SRC_ALTO / 2);
 	std::list<ExplosionVista*> explosiones;
 
 	explosiones.push_back(new ExplosionVista(vector + offset, EXPLOSION_GRANDE));
 
 	for (int i = 0; i < 10; i++) {
-		Vector randomPos = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2 - rand() % ENEMIGO_FINAL1_SRC_ANCHO,
-								  ENEMIGO_FINAL1_SRC_ANCHO / 2 - rand() % ENEMIGO_FINAL1_SRC_ANCHO);
-		explosiones.push_back(new ExplosionVista(vector + offset, EXPLOSION_GRANDE, - 20 * i));
+		Vector randomPos = offset / 2 - Vector(rand() % (ENEMIGO_FINAL1_SRC_ANCHO / 3),
+								  rand() % (ENEMIGO_FINAL1_SRC_ALTO / 3));
+		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_GRANDE, -20*i));
 	}
 
-	for (int i = 0; i < 20; i++) {
-		Vector randomPos = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2 - rand() % ENEMIGO_FINAL1_SRC_ANCHO,
-								  ENEMIGO_FINAL1_SRC_ANCHO / 2 - rand() % ENEMIGO_FINAL1_SRC_ANCHO);
-		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_MEDIANA, i * - 12));
+	for (int i = 0; i < 40; i++) {
+		Vector randomPos = offset - Vector(rand() % ENEMIGO_FINAL1_SRC_ANCHO,
+								  rand() % ENEMIGO_FINAL1_SRC_ALTO);
+		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_MEDIANA,  -6*i));
 	}
 	return explosiones;
 }

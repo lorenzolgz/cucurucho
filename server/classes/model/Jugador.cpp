@@ -165,8 +165,8 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
             break;
         }
         case ENTIDAD_ENEMIGO_FINAL1EXT: {
-			this->puntos += 500;
-			this->acumulado += 500;
+			this->puntos += 0;
+			this->acumulado += 0;
 			break;
         }
         default: {
