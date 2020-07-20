@@ -14,8 +14,9 @@ ManagerJuego::ManagerJuego() {
     ManagerJuego::estadoTick.numeroNivel = 0;
 	ManagerJuego::estadoTick.nuevoNivel = 0;
 
-	for (auto & estadosJugadore : ManagerJuego::estadoTick.estadosJugadores) {
-		estadosJugadore.usuario[0] = '\0';
+	for (auto & estado : ManagerJuego::estadoTick.estadosJugadores) {
+		estado.usuario[0] = '\0';
+		estado.estaMuerto = true;
 	}
 
 	Audio *audio = Audio::getInstance();
@@ -32,7 +33,7 @@ void ManagerJuego::renderFinJuego(){
 }
 
 bool ManagerJuego::terminoJuego() {
-    return estadoTick.nuevoNivel == FIN_DE_JUEGO || estadoTick.numeroNivel == FIN_DE_JUEGO;
+    return estadoTick.nuevoNivel <= FIN_DE_JUEGO || estadoTick.numeroNivel <= FIN_DE_JUEGO;
 }
 
 // TODO: che tampoco da

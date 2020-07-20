@@ -25,7 +25,7 @@ void ToastVista::render() {
 
 	// Rectangulo para mostrar un cuadrado negro sobre el largo del HUD
     SDL_Rect rect = { (int) LETRA_ANCHO, (int) posicion.getY() - LETRA_ALTO / 2,
-                      HUD_SRC_ANCHO - LETRA_ANCHO * 2, (int) (textos.size() + 1) * LETRA_ALTO - 3 };
+                      HUD_SRC_ANCHO - LETRA_ANCHO * 2, 3 * LETRA_ALTO - 3 };
 	SDL_SetRenderDrawColor(GraphicRenderer::getInstance(), 0, 0, 0, 255);
     SDL_RenderFillRect(GraphicRenderer::getInstance(), &rect);
 

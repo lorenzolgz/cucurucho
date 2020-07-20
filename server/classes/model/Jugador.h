@@ -49,7 +49,7 @@ private:
     Vector velocidad;
     double velocidadEscalar;
     int ticksHastaDisparo;
-
+	bool agregarPuntajeParcial;
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;

@@ -27,13 +27,19 @@
 #define LOGIN_FIN 3
 
 // Tiempo en segundos entre LOGIN_COMENZAR y LOGIN_FIN
-#define TIMEOUT_LOGIN_FIN 0
+#define TIMEOUT_LOGIN_FIN 2
 
 // Tiempo en segundos de pasaje entre niveles
 #define TIMEOUT_PROXIMO_NIVEL 5
 
+// Ticks hasta que se cierre el servidor por no tener clientes conectados
+#define TICKS_FIN_DESCONEXION 10 * 60
+
 //Fin de Juego
 #define FIN_DE_JUEGO -1
+
+//Fin de Juego
+#define FIN_DE_JUEGO_DESCONEXION -2
 
 // Tipos de mensajes
 enum {

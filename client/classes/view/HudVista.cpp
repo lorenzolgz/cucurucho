@@ -24,6 +24,12 @@ void HudVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::strin
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
+	if (estadoLogin.cantidadJugadores == 0) {
+		for (EstadoJugador estadoJugador : estadoTick.estadosJugadores) {
+			if (strlen(estadoJugador.usuario) > 0) estadoLogin.cantidadJugadores++;
+		}
+	}
+
 	if (estadoLogin.cantidadJugadores > 2) {
 		renderInfoSinNombres(estadoTick, estadoLogin);
 	} else {

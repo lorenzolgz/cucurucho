@@ -37,7 +37,7 @@ void EnemigoFinal1Vista::render(EstadoEnemigo estadoEnemigo, std::list<EstadoEne
 void EnemigoFinal1Vista::renderMuerte() {
 	if (ultimoEstado.clase == -1) return;
 	std::list<EstadoEnemigo> estadoExtensiones;
-	Uint8 colorMod = contadorMuerte <= 255 ? contadorMuerte : 255;
+	Uint8 colorMod = contadorMuerte <= 200 ? contadorMuerte : 200;
 	SDL_SetTextureColorMod(textura, 255 - colorMod, 255 - colorMod, 255 - colorMod);
 	render(ultimoEstado, estadoExtensiones);
 	contadorMuerte++;
@@ -82,7 +82,10 @@ void EnemigoFinal1Vista::renderExtensiones(Vector posicion, std::list<EstadoEnem
 void EnemigoFinal1Vista::renderGlow(SDL_Rect srcrect, SDL_Rect dstrect) {
 
 	std::array<int, 3> color = COLORES_VERDE.getColorGlow(contador / 4);
-	SDL_SetTextureColorMod(textura, color[0], color[1], color[2]);
+	Uint8 colorMod = contadorMuerte == 0;
+	SDL_SetTextureColorMod(textura, color[0] * colorMod,
+			color[1] * colorMod,
+			color[2] * colorMod);
 
 	srcrect.x += ENEMIGO_FINAL1_SRC_ANCHO;
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);

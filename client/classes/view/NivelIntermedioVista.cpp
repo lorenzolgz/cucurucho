@@ -135,13 +135,13 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 		Vector posicionTexto = posicionJugador + Vector(JUGADOR_SRC_ANCHO / 2 - LETRA_ANCHO / 2, JUGADOR_SRC_ALTO * 3 / 2);
 
 		struct TextoVistaParams params = TextoVistaParams(posicionTexto, i + 1, ALINEACION_CENTRO);
-		renderEsperaJugador((*jugadores)[i], estado.usuario, posicionJugador, params, estado.estaMuerto);
+		renderEsperaJugador((*jugadores)[i], estado.usuario, posicionJugador, params, estado.estaMuerto || !estado.presente);
 
 		params.posicion = params.posicion + Vector(0, LETRA_ALTO);
 		params.color = TEXTO_COLOR_NARANJA;
+		params.size = TEXTO_SIZE_SMALL;
 		for (int puntosParcial : estado.puntosParciales) {
 			params.posicion = params.posicion + Vector(0, LETRA_ALTO * 3 / 2);
-			params.size = TEXTO_SIZE_SMALL;
 			TextoVista::eRender("+" + std::to_string(puntosParcial), params);
 		}
 
@@ -150,11 +150,14 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 		TextoVista::eRender(std::to_string(estado.puntos), params);
 	}
 
+	struct TextoVistaParams params = TextoVistaParams(Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
 	std::string texto = "COMENZANDO PROXIMO NIVEL...";
-	if (estadoTick.numeroNivel == -1) {
+	if (estadoTick.numeroNivel == FIN_DE_JUEGO) {
 		texto = "JUEGO FINALIZADO!";
+	} else if (estadoTick.numeroNivel == FIN_DE_JUEGO_DESCONEXION) {
+		texto = "JUGADORES SIN VIDAS...";
+		params.color = TEXTO_COLOR_ROJO;
 	}
 
-	struct TextoVistaParams params = TextoVistaParams(Vector(ancho / 2, alto * 5 / 7), TEXTO_COLOR_VERDE, ALINEACION_CENTRO);
 	TextoVista::eRender(texto, params);
 }

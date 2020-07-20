@@ -20,7 +20,11 @@ private:
     std::list<HiloConexionServidor*>* hilosConexionesServidores;
 	AceptadorConexiones* aceptadorConexiones;
 	bool quit;
+	int ticksGameOver;
     Configuracion *config;
+
+	bool processData(Partida *partida, Comando *comandos, EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+					 std::list<HiloConexionServidor *> *conexiones, int *nuevoNivel);
 };
 
 

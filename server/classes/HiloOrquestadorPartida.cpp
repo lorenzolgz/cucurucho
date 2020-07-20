@@ -1,8 +1,6 @@
 #include "HiloOrquestadorPartida.h"
 #include "HiloConexionServidor.h"
 
-bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
-                 std::list<HiloConexionServidor *> *pList, int* nuevoNivel);
 int esperarConexiones(int puerto, Configuracion* config);
 
 
@@ -12,6 +10,7 @@ HiloOrquestadorPartida::HiloOrquestadorPartida(Configuracion *config, std::list<
 	this->hilosConexionesServidores = hilosConexionesServidores;
 	this->aceptadorConexiones = aceptadorConexiones;
 	this->quit = false;
+	this->ticksGameOver = 0;
 }
 
 
@@ -42,6 +41,11 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
                         l->error("HiloOrquestadorPartida. Recibiendo mensaje invalido");
                     }
                 }
+            } else {
+            	// Set invencible por estar desconectado
+				int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
+				struct Comando comando = {nroJugador, false, false, false, false, false, true};
+				comandos[nroJugador - 1] = comando;
             }
         }
     }
@@ -56,7 +60,7 @@ void sendData(std::list<HiloConexionServidor*>* hilosConexionesServidores, struc
     if (*nuevoNivel) {
 		l->debug("Nuevo nivel enviando : " + std::to_string(informacionNivel->numeroNivel));
 		*nuevoNivel = false;
-		if (estadoTick->numeroNivel != FIN_DE_JUEGO) {
+		if (estadoTick->numeroNivel > FIN_DE_JUEGO) {
 			for (auto *hiloConexionServidor : *(hilosConexionesServidores)) {
 				hiloConexionServidor->enviarInformacionNivel(informacionNivel);
 			}
@@ -148,7 +152,7 @@ bool HiloOrquestadorPartida::termino() {
 	return quit;
 }
 
-bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
+bool HiloOrquestadorPartida::processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, InformacionNivel *informacionNivel,
                  std::list<HiloConexionServidor *> *conexiones, int* nuevoNivel) {
 
 	EstadoInternoNivel estadoInternoNivel = partida->state(informacionNivel);
@@ -167,9 +171,15 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 		i++;
 	}
 
+	ticksGameOver++;
 	for (HiloConexionServidor* h : *conexiones) {
 	    estadoTick->estadosJugadores[h->jugador - 1].presente = h->activo;
 		strcpy(estadoTick->estadosJugadores[h->jugador - 1].usuario, h->username.c_str());
+
+		// Si hay al menos un jugador vivo y conectado, no cerrar
+		if (h->activo && !estadoTick->estadosJugadores[h->jugador - 1].estaMuerto) {
+			ticksGameOver = 0;
+		}
 	}
 
 	estadoTick->estadosEnemigos = estadoCampoMovil.estadosEnemigos;
@@ -179,6 +189,10 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	if (partida->termino()) {
 		estadoTick->nuevoNivel = FIN_DE_JUEGO; estadoTick->numeroNivel = FIN_DE_JUEGO;
 		l->info("La partida finalizo");
+		return true;
+	} else if (ticksGameOver > TICKS_FIN_DESCONEXION) {
+		estadoTick->nuevoNivel = FIN_DE_JUEGO_DESCONEXION; estadoTick->numeroNivel = FIN_DE_JUEGO_DESCONEXION;
+		l->info("La partida finalizo por no tener jugadores vivos y conectados");
 		return true;
 	}
 	partida->tick(comandos);

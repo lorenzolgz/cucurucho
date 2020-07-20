@@ -19,7 +19,8 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 
 	this->vida = new VidaJugador();
 	this->puntos = 0;
-	this->puntosParcial;
+	this->puntosParcial.push_back(0);
+	this->agregarPuntajeParcial = false;
 	this->acumulado = 0;
 
     l->info("Se creo correctamente el Jugador.");
@@ -94,6 +95,11 @@ void Jugador::tick() {
 		reiniciarPosicion();
 	}
 	vida->tick();
+
+	if (agregarPuntajeParcial) {
+		this->puntosParcial.push_back(this->acumulado);
+		agregarPuntajeParcial = false;
+	}
     l->debug("Posicion del Jugador: "+ posicion.getVector());
 }
 
@@ -174,10 +180,12 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
             this->acumulado = -1;
         }
     }
+	this->puntosParcial.pop_back();
+	this->puntosParcial.push_back(this->acumulado);
 }
 
 void Jugador::finNivel(){
-    this->puntosParcial.push_back(this->acumulado);
+	this->agregarPuntajeParcial = true;
     this->acumulado = 0;
 }
 

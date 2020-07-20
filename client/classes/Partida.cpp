@@ -46,7 +46,7 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
                     nlohmann::json json = colaMensajes->pop();
                     // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
                     // TODO: quiero llorar
-                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
+                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] <= FIN_DE_JUEGO) {
                         colaMensajes->push_back(json);
                         break;
                     }
