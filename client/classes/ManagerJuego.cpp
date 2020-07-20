@@ -12,9 +12,13 @@ ManagerJuego::ManagerJuego() {
     ManagerJuego::managerVista = new ManagerVista({}, 0, PANTALLA_ANCHO, PANTALLA_ALTO);
     ManagerJuego::estadoLogin = {LOGIN_PENDIENTE};
     ManagerJuego::estadoTick.numeroNivel = 0;
-    ManagerJuego::estadoTick.nuevoNivel = 0;
+	ManagerJuego::estadoTick.nuevoNivel = 0;
 
-    Audio *audio = Audio::getInstance();
+	for (auto & estadosJugadore : ManagerJuego::estadoTick.estadosJugadores) {
+		estadosJugadore.usuario[0] = '\0';
+	}
+
+	Audio *audio = Audio::getInstance();
     ManagerJuego::audioPerder = audio->generarEfecto("sfx-37.wav");
 
 }

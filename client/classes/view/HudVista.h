@@ -7,6 +7,7 @@
 #include "../../../commons/utils/Vector.h"
 #include "TextoVista.h"
 #include "ToastVista.h"
+#include "../../../commons/protocols/protocolo.h"
 
 const int HUD_SRC_ANCHO = 960;
 const int HUD_SRC_ALTO = 96;
@@ -20,6 +21,10 @@ public:
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
+
+	void renderInfoConNombres(EstadoTick estadoTick, EstadoLogin estadoLogin);
+
+	void renderInfoSinNombres(EstadoTick estadoTick, EstadoLogin estadoLogin);
 };
 
 extern ToastVista* toast;

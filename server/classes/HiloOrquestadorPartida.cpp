@@ -163,6 +163,7 @@ bool processData(Partida *partida, Comando comandos[], EstadoTick *estadoTick, I
 	int i = 0;
 	for (EstadoJugador estadoJugador : estadoCampoMovil.estadosJugadores) {
 		estadoTick->estadosJugadores[i] = estadoJugador;
+		strcpy(estadoTick->estadosJugadores[i].usuario, "");
 		i++;
 	}
 

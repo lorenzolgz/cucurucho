@@ -24,12 +24,42 @@ void HudVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::strin
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
+	if (estadoLogin.cantidadJugadores > 2) {
+		renderInfoSinNombres(estadoTick, estadoLogin);
+	} else {
+		renderInfoConNombres(estadoTick, estadoLogin);
+	}
+
+    if (toast != nullptr) {
+        toast->render();
+    }
+}
+
+// Este deberia llamarse si hay solo uno o dos jugadores
+void HudVista::renderInfoConNombres(EstadoTick estadoTick, EstadoLogin estadoLogin) {
 	Vector yOffset;
-	if (estadoLogin.cantidadJugadores <= 2) {
+	if (estadoLogin.cantidadJugadores <= 1) {
 		yOffset = Vector(0, HUD_SRC_ALTO / 2 - LETRA_ANCHO / 2);
 	} else {
 		yOffset = Vector(0, HUD_SRC_ALTO / 6);
 	}
+	for (int i = 0; i < estadoLogin.cantidadJugadores; i++) {
+		Vector posicion = yOffset + Vector(HUD_SRC_ANCHO * 3 / 7, LETRA_ALTO * 3 / 2 * i);
+		renderInfoJugador(estadoTick.estadosJugadores[i],
+				posicion,
+				i + 1,
+				false);
+
+		posicion = posicion + Vector(HUD_SRC_ANCHO / 8, 0);
+		struct TextoVistaParams params = {posicion, i + 1, ALINEACION_IZQUIERDA};
+		TextoVista::eRender(std::string(estadoTick.estadosJugadores[i].usuario), params);
+	}
+}
+
+
+// Este deberia llamarse si hay mas de dos jugadores
+void HudVista::renderInfoSinNombres(EstadoTick estadoTick, EstadoLogin estadoLogin) {
+	Vector yOffset = Vector(0, HUD_SRC_ALTO / 6);
 	for (int i = 0; i < estadoLogin.cantidadJugadores; i++) {
 		Vector posicion = yOffset + Vector(0, LETRA_ALTO * 3 / 2 * ((int) (i / 2)));
 		if (i % 2 == 0) {
@@ -38,14 +68,10 @@ void HudVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::strin
 			posicion = posicion + Vector(HUD_SRC_ANCHO * 5 / 6, 0);
 		}
 		renderInfoJugador(estadoTick.estadosJugadores[i],
-				posicion,
-				i + 1,
-				estadoLogin.nroJugador == i + 1 && HUD_DISTINTO);
+						  posicion,
+						  i + 1,
+						  estadoLogin.nroJugador == i + 1 && HUD_DISTINTO);
 	}
-
-    if (toast != nullptr) {
-        toast->render();
-    }
 }
 
 
