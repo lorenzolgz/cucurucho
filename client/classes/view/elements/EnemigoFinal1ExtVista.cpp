@@ -14,18 +14,20 @@ EnemigoFinal1ExtVista::EnemigoFinal1ExtVista() {
 	GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	this->textura = generadorDeTexturas->generarTextura("boss-ext.png");
 	this->contador = 0;
-
+	this->posicion = Vector(0, 0);
 
 	l->info("La vista de la extension del Enemigo Final 1 fue creada correctamente.");
 }
 
 
 void EnemigoFinal1ExtVista::render(EstadoEnemigo estadoEnemigo, Vector lock) {
-	Vector posicion = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
+	contador++;
+
+	posicion = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
 	this->lock = lock;
 
 	if (posiciones.empty()) {
-		inicializarPosiciones(posicion);
+		inicializarPosiciones();
 	}
 
 	posiciones.push_front(posicion);
@@ -33,15 +35,16 @@ void EnemigoFinal1ExtVista::render(EstadoEnemigo estadoEnemigo, Vector lock) {
 		posiciones.pop_back();
 	}
 
+	if (estadoEnemigo.energia <= 0 && contador % 4 >= 2) return;
+
 	for (int i = 0; i < CANT_MODULOS; i++) {
-		renderModulo(posicion, i);
+		renderModulo(i);
 	}
 
-	contador++;
 	l->debug("Vista de la extension del Enemigo Final 1: "+ posicion.getVector());
 }
 
-void EnemigoFinal1ExtVista::renderModulo(Vector posicionEstado, int i) {
+void EnemigoFinal1ExtVista::renderModulo(int i) {
 	Vector posicion = posiciones[i * CANT_POSICIONES / CANT_MODULOS];
 
 	posicion = posicion - (posicion - lock) / CANT_MODULOS * i;
@@ -57,8 +60,16 @@ void EnemigoFinal1ExtVista::renderModulo(Vector posicionEstado, int i) {
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 }
 
-void EnemigoFinal1ExtVista::inicializarPosiciones(Vector posicion) {
+void EnemigoFinal1ExtVista::inicializarPosiciones() {
 	for (int i = 0; i < CANT_POSICIONES; i++) {
 		posiciones.push_back(posicion);
 	}
+}
+
+bool EnemigoFinal1ExtVista::estadoEnRango(EstadoEnemigo estadoEnemigo) {
+	// Si la posicion es nulas, aun no tiene estado asociado
+	if (posicion.esNulo()) return true;
+
+	Vector posicionEstado = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
+	return (posicion - posicionEstado).modulo() <= 30;
 }

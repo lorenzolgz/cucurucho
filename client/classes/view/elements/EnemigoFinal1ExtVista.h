@@ -18,16 +18,18 @@ class EnemigoFinal1ExtVista {
 public:
 	EnemigoFinal1ExtVista();
 	void render(EstadoEnemigo estadoEnemigo, Vector lock);
+	bool estadoEnRango(EstadoEnemigo estadoEnemigo);
 
 private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
 	std::deque<Vector> posiciones;
 	Vector lock;
+	Vector posicion;
 	int contador;
 
-	void renderModulo(Vector posicion, int i);
-	void inicializarPosiciones(Vector posicion);
+	void renderModulo(int i);
+	void inicializarPosiciones();
 };
 
 

@@ -83,6 +83,7 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
+	enemigoFinal1Vista = new EnemigoFinal1Vista();
 }
 
 
@@ -95,7 +96,10 @@ void ManagerVista::renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin esta
 
 
 void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
+	EstadoEnemigo enemigoFinal;
+	enemigoFinal.clase = -1;
 
+	std::list<EstadoEnemigo> extensionesEnemigoFinal;
     for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
         switch (estadoEnemigo.clase) {
             case 1:
@@ -104,9 +108,21 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
             case 2:
                 enemigo2Vista->render(estadoEnemigo);
 				break;
-        	case 3:
-				enemigoFinal1Vista->render(estadoEnemigo);
+
+			// El Enemigo Final necesita recibir sus extensiones
+			case 3:
+				enemigoFinal = estadoEnemigo;
+				break;
+			case 4:
+				extensionesEnemigoFinal.push_back(estadoEnemigo);
+				break;
         }
+    }
+
+    if (enemigoFinal.clase != -1) {
+		enemigoFinal1Vista->render(enemigoFinal, extensionesEnemigoFinal);
+    } else {
+		enemigoFinal1Vista->renderMuerte();
     }
 }
 
@@ -153,9 +169,15 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
             case 1:
                 explosiones.push_back(enemigo1Vista->nuevaExplosion(pos));
                 break;
-            case 2:
-                explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
-                break;
+			case 2:
+				explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
+				break;
+			case 3:
+				explosiones.splice(explosiones.end(), enemigoFinal1Vista->nuevasExplosiones(pos));
+				break;
+			case 4:
+				explosiones.push_back(enemigoFinal1Vista->nuevaExplosionExt(pos));
+				break;
         }
     }
 

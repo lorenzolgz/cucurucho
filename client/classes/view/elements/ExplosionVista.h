@@ -21,7 +21,7 @@ enum {
 
 class ExplosionVista {
 public:
-    ExplosionVista(Vector centro, int tipo);
+    ExplosionVista(Vector centro, int tipo, int contador = 0);
 
     bool activa();
     void render();

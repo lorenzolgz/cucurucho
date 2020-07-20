@@ -5,12 +5,15 @@ ExtensionNivel::ExtensionNivel(CampoMovil* campo, std::map<int, Jugador*>* jugad
 	this->ticksPostMuerteEnemigoFinal = 0;
 	this->maxTicksPostMuerteEnemigoFinal = 300;
 	this->campo = campo;
-	this->enemigoFinal = new EnemigoFinal1(campo->getAncho(), 125, campo->getVelocidadX(), jugadores);
+	this->enemigoFinal = new EnemigoFinal1(campo->getAncho() + 200, 125, campo->getVelocidadX(), jugadores, campo);
 }
 
 void ExtensionNivel::iniciar() {
 	iniciado = true;
 	campo->agregarEntidadEnemigo(enemigoFinal);
+	for (EntidadEnemigo* enemigo : enemigoFinal->getExtensiones()) {
+		campo->agregarEntidadEnemigo(enemigo);
+	}
 }
 
 bool ExtensionNivel::termino() {

@@ -5,8 +5,9 @@
 #include "ExplosionVista.h"
 #include "../../GeneradorDeTexturas.h"
 
-ExplosionVista::ExplosionVista(Vector centro, int tipo) {
+ExplosionVista::ExplosionVista(Vector centro, int tipo, int contador) {
     // TODO: Reproducir sonido
+    this->contador = contador;
     switch (tipo) {
         case EXPLOSION_CHICA:
             inicializarValores(centro, "explosion-small.png", EXPLOSION_CHICA_SRC);
@@ -25,7 +26,6 @@ void ExplosionVista::inicializarValores(Vector centro, std::string path, int tam
     this->posicion = centro - Vector(tam / 2, tam / 2);
     this->textura = GeneradorDeTexturas::getInstance()->generarTextura(path);
     this->size = tam;
-    this->contador = 0;
     l->debug("Nueva explosion en " + this->posicion.getVector());
 }
 
