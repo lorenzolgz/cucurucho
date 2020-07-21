@@ -54,11 +54,13 @@ private:
 
 	void renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos);
 
-    void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo);
+	void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador,
+							std::list<EstadoDisparo> disparosEnemigo, EstadoJugador estadoJugadores[MAX_JUGADORES]);
 
     void renderExplosiones();
 
 	void renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
+
 };
 
 

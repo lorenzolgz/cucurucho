@@ -8,6 +8,7 @@
 #include "HelperVista.h"
 #include "../../../../commons/protocols/protocolo.h"
 #include "../../Audio.h"
+#include "ExplosionVista.h"
 
 
 const int JUGADOR_SRC_ANCHO = 96;
@@ -22,6 +23,9 @@ class JugadorVista {
 public:
     JugadorVista(ColoresJugador jugador);
     void render(struct EstadoJugador estadoJugador);
+	std::list<ExplosionVista *> nuevasExplosiones(Vector vector, int i);
+
+	bool isMuerteDefinitiva() const;
 
 private:
 	SDL_Renderer* gRenderer;
@@ -33,6 +37,9 @@ private:
 	ColoresJugador coloresRender = COLORES_GRIS;
 	int contador;
 	Vector posicion;
+	Vector posicionMuerte;
+	int contadorMuerte;
+	int muerteDefinitiva;
 
 	void renderGlow(SDL_Rect srcrect, SDL_Rect dstrect);
     void renderShip(SDL_Rect srcrect, SDL_Rect dstrect);
@@ -48,6 +55,8 @@ private:
     bool deberiaRenderizar(EstadoJugador estadoJugador);
 
     void setColores(EstadoJugador jugador);
+
+	void renderMuerte();
 };
 
 

@@ -80,7 +80,8 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 				{"posicionX", estadoEnemigo.posicionX},
 				{"posicionY", estadoEnemigo.posicionY},
 				{"energia", estadoEnemigo.energia},
-				{"clase", estadoEnemigo.clase}
+				{"clase", estadoEnemigo.clase},
+				{"anguloDir", estadoEnemigo.anguloDir}
         };
         mensajeJson["estadosEnemigos"].push_back(mensajeEnemigo);
 

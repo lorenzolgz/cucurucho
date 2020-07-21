@@ -83,7 +83,7 @@ struct EstadoHelper {
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), cantidadVidas(0), presente(0) {}
+    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), cantidadVidas(0), presente(0), estaMuerto(0), energia(100) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
@@ -99,11 +99,12 @@ struct EstadoJugador {
 };
 
 struct EstadoEnemigo {
-	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0) {}
+	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0), anguloDir(0) {}
 	int posicionX;
 	int posicionY;
 	int energia;
 	int clase;
+	int anguloDir;
 };
 
 struct EstadoTick {

@@ -8,7 +8,6 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->config = config;
 	this->nroJugador = nroJugador;
 	this->velocidadEscalar = JUGADOR_VELOCIDAD_ESCALAR;
-	this->posicion = calcularPosicionInicial();
 	this->ancho = JUGADOR_ANCHO;
 	this->alto = JUGADOR_ALTO;
 	this->velocidad = Vector(0, 0);
@@ -18,6 +17,7 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->helperBelow = new Helper(this, Vector(JUGADOR_ANCHO / 2, JUGADOR_ALTO * 2));
 
 	this->vida = new VidaJugador();
+	this->posicion = calcularPosicionInicial();
 	this->puntos = 0;
 	this->puntosParcial.push_back(0);
 	this->agregarPuntajeParcial = false;
@@ -109,7 +109,7 @@ struct EstadoJugador Jugador::state() {
 	estadoJugador.posicionY = posicion.getY();
 	estadoJugador.helper1 = helperAbove->state();
 	estadoJugador.helper2 = helperBelow->state();
-	estadoJugador.energia = vida->getEnergia();
+	estadoJugador.energia = !vida->isAcabaDePerderUnaVida() * vida->getEnergia();
 	estadoJugador.cantidadVidas = vida->getCantidadVidas();
 	estadoJugador.esInvencible = vida->esInvencible();
 	estadoJugador.estaMuerto = estaMuerto();
@@ -130,7 +130,7 @@ void Jugador::reiniciarPosicion() {
     helperAbove->setAngulo(0);
     helperBelow->setAngulo(0);
     posicion = calcularPosicionInicial();
-    vida->nacer();
+	vida->nacer();
 }
 
 int Jugador::getTipoEntidad() {
@@ -146,6 +146,9 @@ void Jugador::cambiarInvencible(bool invencible) {
 }
 
 Vector Jugador::calcularPosicionInicial() {
+	if (this->estaMuerto()) {
+		return Vector(-10000, -10000);
+	}
 	return Vector(config->getAnchoPantalla() / 8 * (nroJugador + 1), config->getAltoPantalla() / 2);
 }
 

@@ -58,7 +58,9 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
     renderJugadores(estadoTick, estadoLogin);
 
-    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos, estadoTick.estadosDisparosEnemigos);
+    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos, estadoTick.estadosDisparosEnemigos,
+    		estadoTick.estadosJugadores);
+
     renderExplosiones();
 
     posCampo = { 0, 0, ancho, alto };
@@ -161,7 +163,9 @@ void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogi
 }
 
 
-void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo) {
+void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador,
+		std::list<EstadoDisparo> disparosEnemigo, EstadoJugador estadoJugadores[MAX_JUGADORES]) {
+
     for (EstadoEnemigo e : enemigos) {
         if (e.energia > 0) continue;
         Vector pos = Vector(e.posicionX, e.posicionY);
@@ -191,6 +195,13 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
 		if (d.energia > 0) continue;
 		Vector pos = Vector(d.posicionX, d.posicionY);
 		explosiones.push_back(disparoEnemigoVista->nuevaExplosion(pos));
+	}
+
+	for (int i = 0; i < 2; i++) {
+		Vector pos = Vector(estadoJugadores[i].posicionX, estadoJugadores[i].posicionY);
+		if (estadoJugadores[i].energia > 0) continue;
+		if (estadoJugadores[i].posicionX < 100) continue;
+		explosiones.splice(explosiones.end(), (*jugadores)[i]->nuevasExplosiones(pos, estadoJugadores[i].estaMuerto));
 	}
 }
 

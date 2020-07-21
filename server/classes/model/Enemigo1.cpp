@@ -14,6 +14,8 @@ Enemigo1::Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* 
         velocidadX *= -1;
     }
 	this->posicion = Vector(x, y);
+	this->ultimaPosicion = this->posicion;
+	this->ultimoAngulo = 0;
 	this->ancho = ENEMIGO1_ANCHO;
 	this->alto = ENEMIGO1_ALTO;
 	this->velocidadX = velocidadX; // Posición 2 de sprite
@@ -33,10 +35,18 @@ void Enemigo1::tick() {
 
 struct EstadoEnemigo Enemigo1::state() {
 	struct EstadoEnemigo estado;
+	Vector velocidad = posicion - ultimaPosicion;
+
+	if (velocidad.modulo() > 2) {
+		ultimoAngulo = velocidad.arg();
+		ultimaPosicion = posicion;
+	}
+
 	estado.posicionX = posicion.getX();
 	estado.posicionY = posicion.getY();
     estado.clase = 1;
     estado.energia = vida->getEnergia();
+    estado.anguloDir = ultimoAngulo;
 	return estado;
 }
 

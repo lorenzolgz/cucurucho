@@ -28,6 +28,8 @@ public:
 private:
 	float velocidadX;
     int ticksHastaDisparo;
+    Vector ultimaPosicion;
+    int ultimoAngulo;
     CampoMovil* campo;
 };
 

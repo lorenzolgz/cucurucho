@@ -13,15 +13,22 @@ Enemigo1Vista::Enemigo1Vista() {
 }
 
 void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {
-    Vector posicion = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
-    int velocidadX = 2;
-	SDL_Rect srcrect = {0 + ENEMIGO1_SRC_ANCHO * (velocidadX < 10) * (velocidadX > 5)
-						+ ENEMIGO1_SRC_ANCHO * 2 * (velocidadX > 10) * (velocidadX < 15)
-						+ ENEMIGO1_SRC_ANCHO * 3 * (velocidadX > 15),
-						0 , ENEMIGO1_SRC_ANCHO, ENEMIGO1_SRC_ALTO};
-	SDL_Rect dstrect = {(int) posicion.getX(), (int) posicion.getY(), ENEMIGO1_SRC_ANCHO, ENEMIGO1_SRC_ALTO};
 
-	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
+	int renderPosX = estadoEnemigo.posicionX;
+	int renderPosY = estadoEnemigo.posicionY;
+
+	int angulo_trunc = ((int) estadoEnemigo.anguloDir % 90) - 11;
+
+	SDL_Rect srcrect = {ENEMIGO1_SRC_ANCHO * (angulo_trunc >= 11)
+						  + ENEMIGO1_SRC_ANCHO * (angulo_trunc >= 33)
+						  + ENEMIGO1_SRC_ANCHO * (angulo_trunc >= 56)
+						  - ENEMIGO1_SRC_ANCHO * 3 * (angulo_trunc >= 78),
+						  0, ENEMIGO1_SRC_ANCHO, ENEMIGO1_SRC_ALTO};
+	SDL_Rect dstrect = {renderPosX,
+						  renderPosY,
+						  ENEMIGO1_SRC_ANCHO, ENEMIGO1_SRC_ALTO};
+
+	SDL_RenderCopyEx(gRenderer, textura, &srcrect, &dstrect, -(int) (estadoEnemigo.anguloDir / 90) * 90, nullptr, SDL_FLIP_NONE);
 }
 
 ExplosionVista * Enemigo1Vista::nuevaExplosion(Vector vector) {
