@@ -238,6 +238,7 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
 
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
         manager->mutear();
+
     }
 
 }
@@ -315,7 +316,6 @@ void Partida::procesarInformacionNivel(nlohmann::json mensaje) {
         info.informacionFondo.push_back(informacionFondoJson);
     }
     manager->setInformacionNivel(info);
-    gestorSDL->reproducirMusica(info.audioNivel);
 }
 
 void Partida::procesarEstadoLogin(nlohmann::json mensaje) {

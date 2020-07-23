@@ -32,7 +32,7 @@ private:
 
     std::string audiodisparo;
 
-    std::string audioexplosion;
+    std::string  audioExplosion;
 };
 
 

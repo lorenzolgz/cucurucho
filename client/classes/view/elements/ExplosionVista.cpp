@@ -6,16 +6,22 @@
 #include "../../GeneradorDeTexturas.h"
 
 ExplosionVista::ExplosionVista(Vector centro, int tipo) {
-    // TODO: Reproducir sonido
+    ExplosionVista::audio = Audio::getInstance();
+    ExplosionVista::audio_explosion = "sfx-25.wav";
     switch (tipo) {
         case EXPLOSION_CHICA:
             inicializarValores(centro, "explosion-small.png", EXPLOSION_CHICA_SRC);
+
             return;
         case EXPLOSION_MEDIANA:
             inicializarValores(centro, "explosion-med.png", EXPLOSION_MEDIANA_SRC);
+            ExplosionVista::audio_explosion = "sfx-25.wav";
+
             return;
         case EXPLOSION_GRANDE:
             inicializarValores(centro, "explosion-big.png", EXPLOSION_GRANDE_SRC);
+            ExplosionVista::audio_explosion = "sfx-25.wav";
+
             return;
     }
     this->contador = 100;

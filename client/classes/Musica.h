@@ -7,6 +7,7 @@
 
 
 #include <SDL_mixer.h>
+#include <SDL_system.h>
 
 class Musica {
 private:
@@ -21,6 +22,10 @@ public:
     void mutear();
 
     void desmutear();
+
+    const Uint8 *currentKeyStates;
+
+    bool mute;
 };
 
 

@@ -106,17 +106,3 @@ bool GestorSDL::event(std::string* inputText) {
     return quit;
 }
 
-bool GestorSDL::reproducirMusica(std::string stringAudio) {
-
-//    l->error("Reproduciendo audio " + stringAudio);
-//    Audio* audio = Audio::getInstance();
-//    Musica* musica = audio->generarMusica(stringAudio);
-//    musica->play(80);
-
-}
-
-void GestorSDL::mutear() {
-//    musica->mutear();
-
-}
-

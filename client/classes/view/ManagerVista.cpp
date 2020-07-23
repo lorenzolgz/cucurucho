@@ -30,7 +30,7 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
 	}
 	nivelIntermedioVista = new NivelIntermedioVista(jugadores, ancho, alto);
 
-    Musica* musica = audio->generarMusica("audioPantallaInicio.mp3");
+    audio->generarMusica("audioPantallaInicio.mp3");
     audio->playMusic("audioPantallaInicio.mp3");
 
 }

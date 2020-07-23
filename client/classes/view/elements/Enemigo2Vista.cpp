@@ -6,10 +6,18 @@
 #include "../../GraphicRenderer.h"
 
 Enemigo2Vista::Enemigo2Vista() {
-	Enemigo2Vista::gRenderer = GraphicRenderer::getInstance();
+
+    Enemigo2Vista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
     Enemigo2Vista::textura = generadorDeTexturas->generarTextura("enemy03.png");
+
+    Enemigo2Vista::audio = Audio::getInstance();
+    Enemigo2Vista::audioExplosion = "sfx-36.wav";
+
+    audio->generarEfecto(audioExplosion);
+
     l->info("La vista del Enemigo 2 fue creada correctamente.");
+
 }
 
 
@@ -32,6 +40,7 @@ void Enemigo2Vista::render(EstadoEnemigo estadoEnemigo) {
 }
 
 ExplosionVista * Enemigo2Vista::nuevaExplosion(Vector vector) {
+    audio->playEffect(audioExplosion);
 	Vector offset = Vector(ENEMIGO2_SRC_ANCHO / 2, ENEMIGO2_SRC_ALTO / 2);
 	return new ExplosionVista(vector + offset, EXPLOSION_GRANDE);
 }

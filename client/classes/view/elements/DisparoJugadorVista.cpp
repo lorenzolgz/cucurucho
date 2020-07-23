@@ -17,10 +17,10 @@ DisparoJugadorVista::DisparoJugadorVista() {
 //  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
     DisparoJugadorVista::audio = Audio::getInstance();
     DisparoJugadorVista::audiodisparo = "sfx-01.wav";
-    DisparoJugadorVista::audioexplosion = "sfx-25.wav";
+    DisparoJugadorVista::audioExplosion = "sfx-28.wav";
 
     audio->generarEfecto(audiodisparo);
-    audio->generarEfecto(audioexplosion);
+    audio->generarEfecto(audioExplosion);
 
 
     l->info("La vista del disparo del jugador fue creada correctamente.");
@@ -54,7 +54,7 @@ void DisparoJugadorVista::render(EstadoDisparo disparo) {
 
 ExplosionVista * DisparoJugadorVista::nuevaExplosion(Vector vector) {
 
-    audio->playEffect(audioexplosion);
+    audio->playEffect(audioExplosion);
     Vector offset = Vector(DISPARO_JUGADOR_SRC_ANCHO * 4 / 5, DISPARO_JUGADOR_SRC_ALTO / 2);
 	return new ExplosionVista(vector + offset, EXPLOSION_CHICA);
 }

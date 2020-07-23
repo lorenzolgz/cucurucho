@@ -6,10 +6,17 @@
 #include "../../GraphicRenderer.h"
 
 Enemigo1Vista::Enemigo1Vista() {
+
 	Enemigo1Vista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	Enemigo1Vista::textura = generadorDeTexturas->generarTextura("enemy01.png");
-	l->info("La vista del Enemigo 1 fue creada correctamente.");
+
+    Enemigo1Vista::audio = Audio::getInstance();
+    Enemigo1Vista::audioExplosion = "sfx-28.wav";
+
+    audio->generarEfecto(audioExplosion);
+
+    l->info("La vista del Enemigo 1 fue creada correctamente.");
 }
 
 void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {
@@ -25,6 +32,7 @@ void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {
 }
 
 ExplosionVista * Enemigo1Vista::nuevaExplosion(Vector vector) {
+    audio->playEffect(audioExplosion);
 	Vector offset = Vector(ENEMIGO1_SRC_ANCHO / 2, ENEMIGO1_SRC_ALTO / 2);
 	return new ExplosionVista(vector + offset, EXPLOSION_MEDIANA);
 }

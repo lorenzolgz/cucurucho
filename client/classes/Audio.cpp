@@ -5,7 +5,9 @@
 #include <SDL_mixer.h>
 #include "Audio.h"
 #include "EfectoSonido.h"
-
+#define VOLUMEN_MUSICA 60
+#define VOLUMEN_EFECTO 100
+#define VOLUMEN_MUTE 0
 
 Audio* Audio::instance=NULL;
 
@@ -119,8 +121,8 @@ void Audio::playMusic(std::string cancion) {
     int volumen;
     auto it = canciones.find(cancion);
 
-    if (mute) volumen = 0;
-    else volumen = 100;
+    if (mute) volumen = VOLUMEN_MUSICA;
+    else volumen = VOLUMEN_MUTE;
 
     if(it == canciones.end())
         musica_defecto->play(volumen);
@@ -133,8 +135,8 @@ void Audio::playEffect(std::string efecto) {
     int volumen;
     auto it = efectos.find(efecto);
 
-    if (mute) volumen = 0;
-    else volumen = 100;
+    if (mute) volumen = VOLUMEN_EFECTO;
+    else volumen = VOLUMEN_MUTE;
 
     if(it == efectos.end())
         efecto_defecto->play(volumen);
