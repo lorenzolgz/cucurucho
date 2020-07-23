@@ -22,6 +22,7 @@ Jugador::Jugador(Configuracion* config, int nroJugador) {
 	this->puntosParcial.push_back(0);
 	this->agregarPuntajeParcial = false;
 	this->acumulado = 0;
+	this->desconectado = false;
 
     l->info("Se creo correctamente el Jugador.");
 }
@@ -194,4 +195,12 @@ void Jugador::finNivel(){
 
 int Jugador::getNroJugador() {
 	return nroJugador;
+}
+
+void Jugador::setDesconectado(bool nuevoDesconectado) {
+    this->desconectado = nuevoDesconectado;
+}
+
+bool Jugador::estaDesconectado() {
+    return this->desconectado;
 }

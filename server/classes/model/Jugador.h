@@ -37,6 +37,8 @@ public:
     void reiniciarPosicion();
 	void cambiarInvencible(bool invencible);
 	bool estaMuerto();
+	void setDesconectado(bool nuevoDesconectado);
+	bool estaDesconectado();
     void sumarPuntosPorDestruirA(int entidadEnemigo);
     int getNroJugador();
     void finNivel();
@@ -54,6 +56,7 @@ private:
 	Helper* helperAbove;
 	Helper* helperBelow;
 	VidaJugador* vida;
+    bool desconectado;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 	bool puedeDisparar();

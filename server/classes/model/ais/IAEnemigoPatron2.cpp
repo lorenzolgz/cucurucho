@@ -26,8 +26,8 @@ IAEnemigo* IAEnemigoPatron2::tick() {
 
 	std::map<int, Jugador *>::iterator it;
 	for (it = jugadores->begin(); it != jugadores->end(); it++) {
-        // Solo itero a traves de los que estan vivos
-        if(it->second->estaMuerto())
+        // Solo itero a traves de los que estan vivos y conectados
+        if(it->second->estaMuerto() || it->second->estaDesconectado())
             continue;
         desplazamiento = it->second->getPosicion() - entidadEnemigo->getPosicion();
         desplazamientoHor = desplazamiento.getX();

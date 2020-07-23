@@ -32,6 +32,8 @@ void Partida::tick(struct Comando comandos[]) {
 											   comando.izquierda,
 											   comando.derecha);
 
+		jugadorActual->setDesconectado(comando.desconectado);
+
 		if (comandos[i].disparo) {
 			Disparo* disparo = jugadorActual->disparar();
 			if (disparo == nullptr) {

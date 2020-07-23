@@ -43,8 +43,9 @@ void receiveData(std::list<HiloConexionServidor *> *hilosConexionesServidores, C
                 }
             } else {
             	// Set invencible por estar desconectado
+            	// Set desconectado por estar desconectado
 				int nroJugador = hiloConexionServidor->conexionServidor->getNroJugador();
-				struct Comando comando = {nroJugador, false, false, false, false, false, true};
+				struct Comando comando = {nroJugador, false, false, false, false, false, true, true};
 				comandos[nroJugador - 1] = comando;
             }
         }
