@@ -149,7 +149,8 @@ void CampoMovil::removerDisparosMuertos() {
 void CampoMovil::procesarTodasLasColisiones() {
 	for (auto it = jugadores->begin(); it != jugadores->end(); it++) {
 		Jugador *jugador = it->second;
-		if (jugador->estaMuerto()) {
+		// Ignoramos a los jugadores muertos y a los desconectados
+		if (jugador->estaMuerto() || jugador->estaDesconectado()) {
 			continue;
 		}
 		for (auto *entidadEnemigo : entidadesEnemigos) {
