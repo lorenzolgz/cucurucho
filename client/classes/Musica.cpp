@@ -6,8 +6,6 @@
 
 Musica::Musica(Mix_Music* audio) {
     Musica::audio = audio;
-    Musica::currentKeyStates = SDL_GetKeyboardState(NULL);
-    Musica::mute = false;
 
 }
 
@@ -20,19 +18,13 @@ void Musica::play(int volumen) {
 
 void Musica::mutear() {
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M] && !mute) {
-        Mix_VolumeMusic(0);
-        Musica::mute = true;
-    }
+    Mix_VolumeMusic(VOLUMEN_MUTE);
 
 }
 
 
 void Musica::desmutear(){
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M] && mute) {
-        Mix_VolumeMusic(90);
-        Musica::mute = false;
-    }
+    Mix_VolumeMusic(VOLUMEN_MUSICA);
 
 }

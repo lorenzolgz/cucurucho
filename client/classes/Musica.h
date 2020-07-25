@@ -9,6 +9,10 @@
 #include <SDL_mixer.h>
 #include <SDL_system.h>
 
+#define VOLUMEN_MUSICA 60
+#define VOLUMEN_MUTE 0
+
+
 class Musica {
 private:
     Mix_Music *audio;
@@ -23,9 +27,6 @@ public:
 
     void desmutear();
 
-    const Uint8 *currentKeyStates;
-
-    bool mute;
 };
 
 

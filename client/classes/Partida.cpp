@@ -10,6 +10,7 @@ Partida::Partida() {}
 
 void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int port, bool conexionPerdida) {
     bool quit = false;
+    muteToggle = false;
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
@@ -223,22 +224,26 @@ void Partida::reiniciarInstanciaHilo() {
 
 
 void Partida::hacks(const Uint8 *currentKeyStates) {
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]) {
         l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
         hiloConexionCliente->cerrarConexion();
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]) {
         SDL_Delay(1000);
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]) {
         pantallaPrincipal->setAutoCompletar();
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
-        manager->mutear();
-
+    if (currentKeyStates[SDL_SCANCODE_M]){
+        if (muteToggle == false) {
+            manager->mutear();
+            muteToggle = true;
+        }
+    }else{
+        muteToggle = false;
     }
 
 }

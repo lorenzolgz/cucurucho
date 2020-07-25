@@ -5,8 +5,10 @@
 #ifndef CUCURUCHO_EFECTOSONIDO_H
 #define CUCURUCHO_EFECTOSONIDO_H
 
-
 #include <SDL_mixer.h>
+
+#define VOLUMEN_EFECTO 100
+#define VOLUMEN_MUTE 0
 
 class EfectoSonido {
 private:

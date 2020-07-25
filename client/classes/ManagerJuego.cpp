@@ -70,3 +70,4 @@ void ManagerJuego::setEstadoLogin(const EstadoLogin &estadoLogin) {
 void ManagerJuego::mutear() {
     managerVista->mutear();
 }
+

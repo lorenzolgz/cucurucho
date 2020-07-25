@@ -5,9 +5,6 @@
 #include <SDL_mixer.h>
 #include "Audio.h"
 #include "EfectoSonido.h"
-#define VOLUMEN_MUSICA 60
-#define VOLUMEN_EFECTO 100
-#define VOLUMEN_MUTE 0
 
 Audio* Audio::instance=NULL;
 
@@ -52,7 +49,7 @@ Audio::Audio(){
 
     efecto_defecto = cargarEfectosSonido("sfx-01.wav");
     musica_defecto = cargarMusica("rainonme.mpeg");
-    Audio::mute = SONIDO_ACTIVADO;;
+    Audio::mute = !SONIDO_ACTIVADO;;
 
     l->info("Creacion de instancia GeneradorDeTexturas");
 }
@@ -87,22 +84,9 @@ Musica* Audio::generarMusica(std::string cancion) {
 }
 
 void Audio::mutear() {
-    std::map<std::string, Musica *>::iterator it1;
-    std::map<std::string, EfectoSonido *>::iterator it2;
-
-    if (!mute) {
-
-        for (it1 = canciones.begin(); it1 != canciones.end(); it1++) {
-            it1->second->mutear();
-        }
-        for (it2 = efectos.begin(); it2 != efectos.end(); it2++) {
-            it2->second->mutear();
-        }
-
-        Audio::mute = true;
-
-    }
-    else{
+    if (mute) {
+        std::map<std::string, Musica *>::iterator it1;
+        std::map<std::string, EfectoSonido *>::iterator it2;
 
         for (it1 = canciones.begin(); it1 != canciones.end(); it1++) {
             it1->second->desmutear();
@@ -112,16 +96,29 @@ void Audio::mutear() {
         }
 
         Audio::mute = false;
+    }
+    else{
+        std::map<std::string, Musica *>::iterator it1;
+        std::map<std::string, EfectoSonido *>::iterator it2;
 
+        for (it1 = canciones.begin(); it1 != canciones.end(); it1++) {
+            it1->second->mutear();
+        }
+        for (it2 = efectos.begin(); it2 != efectos.end(); it2++) {
+            it2->second->mutear();
+        }
+
+        Audio::mute = true;
     }
 }
+
 
 void Audio::playMusic(std::string cancion) {
 
     int volumen;
     auto it = canciones.find(cancion);
 
-    if (mute) volumen = VOLUMEN_MUSICA;
+    if (!mute) volumen = VOLUMEN_MUSICA;
     else volumen = VOLUMEN_MUTE;
 
     if(it == canciones.end())
@@ -135,7 +132,7 @@ void Audio::playEffect(std::string efecto) {
     int volumen;
     auto it = efectos.find(efecto);
 
-    if (mute) volumen = VOLUMEN_EFECTO;
+    if (!mute) volumen = VOLUMEN_EFECTO;
     else volumen = VOLUMEN_MUTE;
 
     if(it == efectos.end())
@@ -143,3 +140,4 @@ void Audio::playEffect(std::string efecto) {
     else
         it->second->play(volumen);
 }
+

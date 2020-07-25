@@ -16,6 +16,7 @@
 #include <iostream>
 #include "../../commons/utils/Constantes.h"
 
+
 class Audio {
 public:
 
@@ -37,6 +38,7 @@ public:
     void playMusic(std::string cancion);
 
     void playEffect(std::string efecto);
+
 
 private:
     static Audio *instance;

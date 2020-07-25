@@ -14,6 +14,12 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::contador = 0;
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
+    JugadorVista::vidas = 2;
+
+    JugadorVista::audio = Audio::getInstance();
+    JugadorVista::audiorevivir = "sfx-37.wav";
+
+    audio->generarEfecto(audiorevivir);
 
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
@@ -37,6 +43,10 @@ void JugadorVista::render(struct EstadoJugador estadoJugador) {
     contador++;
 
     if (!deberiaRenderizar(estadoJugador)) return;
+    if (vidas > estadoJugador.cantidadVidas){
+        vidas = estadoJugador.cantidadVidas -1 ;
+        audio->playEffect(audiorevivir);
+    }
 
     calcularVelocidadY(Vector(estadoJugador.posicionX, estadoJugador.posicionY));
     setColores(estadoJugador);

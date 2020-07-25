@@ -13,7 +13,7 @@ DisparoEnemigoVista::DisparoEnemigoVista() {
     DisparoEnemigoVista::textura = generadorDeTexturas->generarTextura("fx.png");
 
     DisparoEnemigoVista::audio = Audio::getInstance();
-    DisparoEnemigoVista::audioExplosion = "sfx-11.wav";
+    DisparoEnemigoVista::audioExplosion = "sfx-36.wav";
     audio->generarEfecto(audioExplosion);
 
     l->info("La vista del disparo fue creada correctamente.");

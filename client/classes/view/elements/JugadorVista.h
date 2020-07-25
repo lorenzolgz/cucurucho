@@ -45,6 +45,13 @@ private:
     bool deberiaRenderizar(EstadoJugador estadoJugador);
 
     void setColores(EstadoJugador jugador);
+
+    int vidas;
+
+    Audio* audio;
+
+    std::string audiorevivir;
+
 };
 
 

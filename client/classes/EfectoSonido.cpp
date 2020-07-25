@@ -19,13 +19,13 @@ void EfectoSonido::play(int volumen) {
 
 void EfectoSonido::mutear() {
 
-    Mix_Volume(-1, 0);
+    Mix_Volume(-1, VOLUMEN_MUTE);
 
 }
 
 
 void EfectoSonido::desmutear(){
 
-    Mix_Volume(-1, 100);
+    Mix_Volume(-1, VOLUMEN_EFECTO);
 
 }
