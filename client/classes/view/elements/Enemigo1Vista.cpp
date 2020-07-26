@@ -12,7 +12,7 @@ Enemigo1Vista::Enemigo1Vista() {
 	Enemigo1Vista::textura = generadorDeTexturas->generarTextura("enemy01.png");
 
     Enemigo1Vista::audio = Audio::getInstance();
-    Enemigo1Vista::audioExplosion = "sfx-28.wav";
+    Enemigo1Vista::audioExplosion = "sfx-11.wav";
 
     audio->generarEfecto(audioExplosion);
 

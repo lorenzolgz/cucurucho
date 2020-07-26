@@ -237,7 +237,7 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
         pantallaPrincipal->setAutoCompletar();
     }
 
-    if (currentKeyStates[SDL_SCANCODE_M]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
         if (muteToggle == false) {
             manager->mutear();
             muteToggle = true;
