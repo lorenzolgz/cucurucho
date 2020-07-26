@@ -54,33 +54,23 @@ Audio::Audio(){
     l->info("Creacion de instancia GeneradorDeTexturas");
 }
 
-EfectoSonido* Audio::generarEfecto(std::string soundEffect) {
+void Audio::generarEfecto(std::string soundEffect) {
     EfectoSonido* efecto = efectos[soundEffect];
 
     if (efecto == nullptr){
         efectos[soundEffect] = cargarEfectosSonido(soundEffect);
-        efecto = efectos[soundEffect];
     }
 
-    if (efecto == nullptr){
-        return efecto_defecto;
-    }
-    return efecto;
 }
 
 
-Musica* Audio::generarMusica(std::string cancion) {
+void Audio::generarMusica(std::string cancion) {
     Musica* musica = canciones[cancion];
 
     if (musica == nullptr){
         canciones[cancion] = cargarMusica(cancion);
-        musica = canciones[cancion];
     }
 
-    if (musica == nullptr){
-        return musica_defecto;
-    }
-    return musica;
 }
 
 void Audio::mutear() {

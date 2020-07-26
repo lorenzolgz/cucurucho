@@ -24,14 +24,13 @@ public:
 
     static Audio *getInstance();
 
-    Musica *generarMusica(std::string audio);
+    Musica *cargarMusica(std::string stringAudio);
+
+    void generarMusica(std::string audio);
 
     EfectoSonido *cargarEfectosSonido(std::string stringSoundEffect);
 
-    EfectoSonido* generarEfecto(std::string soundEffect);
-
-    Musica *cargarMusica(std::string stringAudio);
-
+    void generarEfecto(std::string soundEffect);
 
     void mutear();
 
