@@ -105,16 +105,20 @@ void Audio::mutear() {
 
 void Audio::playMusic(std::string cancion) {
 
-    int volumen;
-    auto it = canciones.find(cancion);
+	int volumen;
+	auto it = canciones.find(cancion);
 
-    if (!mute) volumen = VOLUMEN_MUSICA;
-    else volumen = VOLUMEN_MUTE;
+	if (!mute) volumen = VOLUMEN_MUSICA;
+	else volumen = VOLUMEN_MUTE;
 
-    if(it == canciones.end())
-        musica_defecto->play(volumen);
-    else
-       it->second->play(volumen);
+	if(it == canciones.end())
+		musica_defecto->play(volumen);
+	else
+		it->second->play(volumen);
+}
+
+void Audio::stopMusic() {
+	Mix_HaltMusic();
 }
 
 void Audio::playEffect(std::string efecto) {

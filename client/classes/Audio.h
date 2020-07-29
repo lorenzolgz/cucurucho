@@ -34,7 +34,9 @@ public:
 
     void mutear();
 
-    void playMusic(std::string cancion);
+	void playMusic(std::string cancion);
+
+	void stopMusic();
 
     void playEffect(std::string efecto);
 
