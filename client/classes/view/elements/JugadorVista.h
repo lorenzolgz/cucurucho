@@ -40,6 +40,8 @@ private:
 	Vector posicionMuerte;
 	int contadorMuerte;
 	int muerteDefinitiva;
+	Audio* audio;
+	std::string audiorevivir;
 
 	void renderGlow(SDL_Rect srcrect, SDL_Rect dstrect);
     void renderShip(SDL_Rect srcrect, SDL_Rect dstrect);
@@ -49,14 +51,12 @@ private:
 
     int contadorVelocidadY;
 
-    EfectoSonido *audioPerder;
-    EfectoSonido *audioRevivir;
-
     bool deberiaRenderizar(EstadoJugador estadoJugador);
 
     void setColores(EstadoJugador jugador);
 
 	void renderMuerte();
+
 };
 
 

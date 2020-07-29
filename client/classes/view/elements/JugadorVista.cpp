@@ -16,10 +16,10 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
 
-//  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
-    Audio *audio = Audio::getInstance();
-    JugadorVista::audioPerder = audio->generarEfecto("sfx-25.wav");
-    JugadorVista::audioRevivir = audio->generarEfecto("sfx-07.wav");
+    JugadorVista::audio = Audio::getInstance();
+    JugadorVista::audiorevivir = "sfx-09.wav";
+
+    audio->generarEfecto(audiorevivir);
 
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
@@ -152,6 +152,7 @@ std::list<ExplosionVista *> JugadorVista::nuevasExplosiones(Vector vector, int m
 	posicionMuerte = vector;
 	muerteDefinitiva = muerte;
 
+	audio->playEffect(audiorevivir);
 	return explosiones;
 }
 

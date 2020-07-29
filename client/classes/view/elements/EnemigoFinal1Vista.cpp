@@ -15,6 +15,10 @@ EnemigoFinal1Vista::EnemigoFinal1Vista() {
 	this->contadorMuerte = 0;
 	this->ultimoEstado.clase = -1;
 
+	this->audio = Audio::getInstance();
+	this->audioExplosion = "sfx-14.wav";
+	this->audio->generarEfecto(audioExplosion);
+
 	l->info("La vista del Enemigo Final 1 fue creada correctamente.");
 }
 
@@ -99,21 +103,28 @@ ExplosionVista * EnemigoFinal1Vista::nuevaExplosionExt(Vector vector) {
 }
 
 std::list<ExplosionVista*> EnemigoFinal1Vista::nuevasExplosiones(Vector vector) {
+	audio->playEffect(audioExplosion);
 	Vector offset = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2, ENEMIGO_FINAL1_SRC_ALTO / 2);
 	std::list<ExplosionVista*> explosiones;
 
 	explosiones.push_back(new ExplosionVista(vector + offset, EXPLOSION_GRANDE));
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 5; i++) {
 		Vector randomPos = offset / 2 - Vector(rand() % (ENEMIGO_FINAL1_SRC_ANCHO / 3),
-								  rand() % (ENEMIGO_FINAL1_SRC_ALTO / 3));
-		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_GRANDE, -20*i));
+											   rand() % (ENEMIGO_FINAL1_SRC_ALTO / 3));
+		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_GRANDE, -6*i));
 	}
 
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 5; i++) {
+		Vector randomPos = offset / 2 - Vector(rand() % (ENEMIGO_FINAL1_SRC_ANCHO / 3),
+											   rand() % (ENEMIGO_FINAL1_SRC_ALTO / 3));
+		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_GRANDE, -60 -i*15));
+	}
+
+	for (int i = 0; i < 15; i++) {
 		Vector randomPos = offset - Vector(rand() % ENEMIGO_FINAL1_SRC_ANCHO,
 								  rand() % ENEMIGO_FINAL1_SRC_ALTO);
-		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_MEDIANA,  -6*i));
+		explosiones.push_back(new ExplosionVista(vector + offset + randomPos, EXPLOSION_MEDIANA,  -16*i));
 	}
 	return explosiones;
 }

@@ -8,15 +8,23 @@
 ExplosionVista::ExplosionVista(Vector centro, int tipo, int contador) {
     // TODO: Reproducir sonido
     this->contador = contador;
+	ExplosionVista::audio = Audio::getInstance();
+
     switch (tipo) {
         case EXPLOSION_CHICA:
-            inicializarValores(centro, "explosion-small.png", EXPLOSION_CHICA_SRC);
+			ExplosionVista::audio_explosion = "sfx-28.wav";
+			inicializarValores(centro, "explosion-small.png", EXPLOSION_CHICA_SRC);
+
             return;
         case EXPLOSION_MEDIANA:
-            inicializarValores(centro, "explosion-med.png", EXPLOSION_MEDIANA_SRC);
+			ExplosionVista::audio_explosion = "sfx-11.wav";
+			inicializarValores(centro, "explosion-med.png", EXPLOSION_MEDIANA_SRC);
+
             return;
         case EXPLOSION_GRANDE:
-            inicializarValores(centro, "explosion-big.png", EXPLOSION_GRANDE_SRC);
+			ExplosionVista::audio_explosion = "sfx-12.wav";
+			inicializarValores(centro, "explosion-big.png", EXPLOSION_GRANDE_SRC);
+
             return;
     }
     this->contador = 100;
@@ -26,6 +34,10 @@ void ExplosionVista::inicializarValores(Vector centro, std::string path, int tam
     this->posicion = centro - Vector(tam / 2, tam / 2);
     this->textura = GeneradorDeTexturas::getInstance()->generarTextura(path);
     this->size = tam;
+	audio->generarEfecto(audio_explosion);
+	if (contador == 0) {
+		audio->playEffect(audio_explosion);
+	}
     l->debug("Nueva explosion en " + this->posicion.getVector());
 }
 

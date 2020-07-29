@@ -24,6 +24,7 @@ private:
 	SDL_Renderer *gRenderer;
 	CampoVista* campoVista;
 	EstadoTick estadoTick;
+	EstadoLogin estadoLogin;
 	int ancho;
     int alto;
 
@@ -32,6 +33,8 @@ private:
 	void renderComun();
 
 	void actualizarEstadoTick(struct EstadoTick tick);
+
+	void actualizarEstadoLogin(struct EstadoLogin login);
 };
 
 

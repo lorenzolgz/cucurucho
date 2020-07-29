@@ -30,6 +30,8 @@ public:
 
     void setEstadoLogin(const EstadoLogin &estadoLogin);
 
+    void mutear();
+
 private:
     InformacionNivel informacionNivel;
     EstadoTick estadoTick;
@@ -39,8 +41,9 @@ private:
 
 	void verificarJugadoresMuertos(const EstadoTick tick);
 
-    EfectoSonido *audioPerder;
-    Musica *audioFinDeJuego;
+	Audio* audio;
+    std::string audioPerder;
+
 };
 
 

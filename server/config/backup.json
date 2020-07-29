@@ -9,7 +9,7 @@
          {
             "archivoFondos": "fondos/fondos1.json",
             "fin": "cleared_con_nave1.png",
-            "audioNivel": "rainonme.mpeg",
+            "audioNivel": "audioNivel1.mp3",
             "enemigos": {
                "clase1": 8,
                "clase2": 2,
@@ -21,7 +21,7 @@
          {
             "archivoFondos": "fondos/fondos2.json",
             "fin": "cleared_con_nave2.png",
-            "audioNivel": "audioNivel1.mp3",
+            "audioNivel": "audioNivel2.mp3",
             "enemigos": {
                "clase1": 5,
                "clase2": 2,
@@ -33,7 +33,7 @@
          {
             "archivoFondos": "fondos/fondos3.json",
             "fin": "cleared_con_nave3.png",
-            "audioNivel": "audioNivel2.mp3",
+            "audioNivel": "audioNivel3.mp3",
             "enemigos": {
                "clase1": 5,
                "clase2": 2,

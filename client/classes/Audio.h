@@ -14,6 +14,8 @@
 #include <string.h>
 #include <map>
 #include <iostream>
+#include "../../commons/utils/Constantes.h"
+
 
 class Audio {
 public:
@@ -22,17 +24,24 @@ public:
 
     static Audio *getInstance();
 
-    Musica *generarMusica(std::string audio);
+    Musica *cargarMusica(std::string stringAudio);
+
+    void generarMusica(std::string audio);
 
     EfectoSonido *cargarEfectosSonido(std::string stringSoundEffect);
 
-    EfectoSonido* generarEfecto(std::string soundEffect);
+    void generarEfecto(std::string soundEffect);
 
-    Musica *cargarMusica(std::string stringAudio);
+    void mutear();
+
+    void playMusic(std::string cancion);
+
+    void playEffect(std::string efecto);
 
 
 private:
     static Audio *instance;
+    bool mute;
     Mix_Music *mixAudio;
     Mix_Chunk *mixSoundEffect;
     std::map<std::string, EfectoSonido *> efectos;

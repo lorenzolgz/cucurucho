@@ -77,8 +77,31 @@ void NivelIntermedioVista::renderEsperaJugador(JugadorVista* jugador, char* nomb
 	jugador->render(estado);
 }
 
+void NivelIntermedioVista::actualizarEstadoLogin(struct EstadoLogin login) {
+	std::string audioNuevoJugador = "sfx-35.wav";
+	std::string audioComenzar = "sfx-37.wav";
+
+	if (estadoLogin.cantidadJugadores == 0) {
+		estadoLogin = login;
+	}
+
+	if (estadoLogin.estadoLogin != LOGIN_COMENZAR && login.estadoLogin == LOGIN_COMENZAR) {
+		Audio::getInstance()->playEffect(audioComenzar);
+		estadoLogin = login;
+		return;
+	}
+
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+		if (strcmp(estadoLogin.jugadores[i], login.jugadores[i]) != 0) {
+			Audio::getInstance()->playEffect(audioNuevoJugador);
+			break;
+		}
+	}
+	estadoLogin = login;
+}
 void NivelIntermedioVista::renderEstadoLogin(struct EstadoLogin estadoLogin) {
 	renderComun();
+	actualizarEstadoLogin(estadoLogin);
 
 	struct TextoVistaParams params;
 	for (int i = 0; i < estadoLogin.cantidadJugadores ; i++) {

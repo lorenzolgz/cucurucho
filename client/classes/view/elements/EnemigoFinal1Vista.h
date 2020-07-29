@@ -30,6 +30,9 @@ private:
 	void renderGlow(SDL_Rect srcrect, SDL_Rect dstrect);
 
 	void renderExtensiones(Vector posicion, std::list<EstadoEnemigo> estadoExtensiones);
+
+	Audio *audio;
+	std::string audioExplosion;
 };
 
 

@@ -10,6 +10,7 @@ Partida::Partida() {}
 
 void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int port, bool conexionPerdida) {
     bool quit = false;
+    muteToggle = false;
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
@@ -24,9 +25,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
-    Audio* audio = Audio::getInstance();
-    Musica * intro = audio->generarMusica("audioPantallaInicio.mp3");
-    intro->play(10);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     try{
@@ -226,21 +224,26 @@ void Partida::reiniciarInstanciaHilo() {
 
 
 void Partida::hacks(const Uint8 *currentKeyStates) {
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]) {
         l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
         hiloConexionCliente->cerrarConexion();
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]) {
         SDL_Delay(1000);
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]) {
         pantallaPrincipal->setAutoCompletar();
     }
 
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
-        gestorSDL->mutear();
+        if (muteToggle == false) {
+            manager->mutear();
+            muteToggle = true;
+        }
+    }else{
+        muteToggle = false;
     }
 
 }
@@ -319,7 +322,6 @@ void Partida::procesarInformacionNivel(nlohmann::json mensaje) {
         info.informacionFondo.push_back(informacionFondoJson);
     }
     manager->setInformacionNivel(info);
-    gestorSDL->reproducirMusica(info.audioNivel);
 }
 
 void Partida::procesarEstadoLogin(nlohmann::json mensaje) {

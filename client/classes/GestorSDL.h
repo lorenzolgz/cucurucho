@@ -13,14 +13,9 @@ public:
 
     bool event(std::string* inputText);
 
-    bool reproducirMusica(std::string stringAudio);
-
-    void mutear();
-
 private:
 	SDL_Window* gWindow = nullptr;
-//    Musica* musica;
-    char cancion[100];
+
 };
 
 

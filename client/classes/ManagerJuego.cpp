@@ -19,8 +19,9 @@ ManagerJuego::ManagerJuego() {
 		estado.estaMuerto = true;
 	}
 
-	Audio *audio = Audio::getInstance();
-    ManagerJuego::audioPerder = audio->generarEfecto("sfx-37.wav");
+    ManagerJuego::audio = Audio::getInstance();
+    ManagerJuego::audioPerder = "sfx-37.wav";
+    audio->generarEfecto(audioPerder);
 
 }
 
@@ -53,7 +54,7 @@ void ManagerJuego::setUsername(const std::string &username) {
 void ManagerJuego::verificarJugadoresMuertos(const EstadoTick tick) {
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 		if (tick.estadosJugadores[i].estaMuerto && !estadoTick.estadosJugadores[i].estaMuerto) {
-		    audioPerder->play(100);
+		    audio->playEffect(audioPerder);
 			toast->setTexto("NAVE " + std::string(tick.estadosJugadores[i].usuario) + " SIN VIDAS", 5, i + 1);
 		}
 	}
@@ -70,3 +71,8 @@ void ManagerJuego::setEstadoTick(const EstadoTick &tick) {
 void ManagerJuego::setEstadoLogin(const EstadoLogin &estadoLogin) {
     ManagerJuego::estadoLogin = estadoLogin;
 }
+
+void ManagerJuego::mutear() {
+    managerVista->mutear();
+}
+

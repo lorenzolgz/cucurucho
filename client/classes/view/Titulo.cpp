@@ -18,9 +18,14 @@ Titulo::Titulo(int ancho, int alto, bool conexionPerdida) {
     autoCompletar = false;
     autoCompletarIndice = 0;
 
-    Audio *audio = Audio::getInstance();
-    audioInicioPartida = audio->generarEfecto("sfx-29.wav");
-    audioErrorUsuario = audio->generarEfecto("sfx-30.wav");
+    audio = Audio::getInstance();
+    audioInicioPartida = "sfx-29.wav";
+	audioErrorUsuario = "sfx-30.wav";
+	audioInput = "sfx-40.wav";
+
+    audio->generarEfecto(audioInicioPartida);
+	audio->generarEfecto(audioErrorUsuario);
+	audio->generarEfecto(audioInput);
 
 
     l->info("La pantalla incial fue creada correctamente.");
@@ -42,6 +47,7 @@ void Titulo::leerInput(std::string input, bool *validarLogin) {
             } else if (c == 9 || c == 10 || (c == 11 && contador > 15)) {
                 if (!seleccionadoUsuario && c == 11) *validarLogin = true;
                 seleccionadoUsuario = !seleccionadoUsuario;
+//                audio->playEffect(audioInput);
             }
         }
     }
@@ -65,7 +71,7 @@ void Titulo::estaActivada(bool enter) {
         seleccionadoUsuario = true;
 
 
-        audioInicioPartida->play(200);
+        audio->playEffect(audioInicioPartida);
         l->info("Pantalla de inicio activada.");
     }
 }
@@ -87,6 +93,6 @@ void Titulo::setAutoCompletar() {
 }
 
 void Titulo::reiniciarPassword() {
-    audioErrorUsuario->play(200);
+    audio->playEffect(audioErrorUsuario);
     password = "";
 }

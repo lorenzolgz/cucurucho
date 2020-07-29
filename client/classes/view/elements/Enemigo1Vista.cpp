@@ -6,10 +6,12 @@
 #include "../../GraphicRenderer.h"
 
 Enemigo1Vista::Enemigo1Vista() {
+
 	Enemigo1Vista::gRenderer = GraphicRenderer::getInstance();
     GeneradorDeTexturas *generadorDeTexturas = GeneradorDeTexturas::getInstance();
 	Enemigo1Vista::textura = generadorDeTexturas->generarTextura("enemy01.png");
-	l->info("La vista del Enemigo 1 fue creada correctamente.");
+
+    l->info("La vista del Enemigo 1 fue creada correctamente.");
 }
 
 void Enemigo1Vista::render(EstadoEnemigo estadoEnemigo) {

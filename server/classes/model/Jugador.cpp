@@ -184,6 +184,7 @@ void Jugador::sumarPuntosPorDestruirA(int entidadEnemigo){
             this->acumulado = -1;
         }
     }
+
 	this->puntosParcial.pop_back();
 	this->puntosParcial.push_back(this->acumulado);
 }
