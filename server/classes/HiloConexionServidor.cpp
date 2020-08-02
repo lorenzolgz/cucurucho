@@ -17,9 +17,9 @@ void HiloConexionServidor::run() {
 
 	try{
         while (continuarLoopeando || !colaEnviadora->empty()) {
-            nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-            l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-            colaReceptora->push(mensajeRecibido);
+			nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+			l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
+			colaReceptora->push(mensajeRecibido);
 
             while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
                 nlohmann::json json = colaEnviadora->pop();

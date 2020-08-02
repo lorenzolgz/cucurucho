@@ -132,6 +132,7 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
     if (enemigoFinal.clase != -1) {
 		enemigoFinal1Vista->render(enemigoFinal, extensionesEnemigoFinal);
     } else {
+		explosiones.splice(explosiones.end(), enemigoFinal1Vista->nuevasExplosiones());
 		enemigoFinal1Vista->renderMuerte();
     }
 }
@@ -185,7 +186,7 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
 				explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
 				break;
 			case 3:
-				explosiones.splice(explosiones.end(), enemigoFinal1Vista->nuevasExplosiones(pos));
+				// Explosion de enemigo final se agrega en renderEnemigos()
 				break;
 			case 4:
 				explosiones.push_back(enemigoFinal1Vista->nuevaExplosionExt(pos));

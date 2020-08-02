@@ -68,5 +68,5 @@ bool EnemigoFinal1ExtVista::estadoEnRango(EstadoEnemigo estadoEnemigo) {
 	if (posicion.esNulo()) return true;
 
 	Vector posicionEstado = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
-	return (posicion - posicionEstado).modulo() <= 30;
+	return (posicion - posicionEstado).modulo() <= 70;
 }

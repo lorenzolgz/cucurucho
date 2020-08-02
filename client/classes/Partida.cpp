@@ -87,7 +87,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
         }
 
         if (manager->terminoJuego()) {
-            renderLoop();
             l->info("Finalizo el juego.");
         } else {
             l->error("Se interrumpio el juego: " + std::string(exc.what()));

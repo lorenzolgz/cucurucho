@@ -144,6 +144,7 @@ void HiloOrquestadorPartida::run() {
 	}
 	l->info("Terminaron todos los hilosConexionesServidores.");
 
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     aceptadorConexiones->shutdownSocket();
 
 	l->info("Terminando de correr HiloOrquestadorPartida.");
