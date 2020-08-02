@@ -17,7 +17,7 @@ public:
 	void renderMuerte();
 
 	ExplosionVista* nuevaExplosionExt(Vector vector);
-	std::list<ExplosionVista*> nuevasExplosiones(Vector vector);
+	std::list<ExplosionVista *> nuevasExplosiones();
 
 private:
 	SDL_Renderer* gRenderer;

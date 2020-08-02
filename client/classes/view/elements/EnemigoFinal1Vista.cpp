@@ -102,10 +102,13 @@ ExplosionVista * EnemigoFinal1Vista::nuevaExplosionExt(Vector vector) {
 	return new ExplosionVista(vector + offset, EXPLOSION_MEDIANA);
 }
 
-std::list<ExplosionVista*> EnemigoFinal1Vista::nuevasExplosiones(Vector vector) {
+std::list<ExplosionVista *> EnemigoFinal1Vista::nuevasExplosiones() {
+	std::list<ExplosionVista*> explosiones;
+	if (contadorMuerte != 1) return explosiones;
+
 	audio->playEffect(audioExplosion);
 	Vector offset = Vector(ENEMIGO_FINAL1_SRC_ANCHO / 2, ENEMIGO_FINAL1_SRC_ALTO / 2);
-	std::list<ExplosionVista*> explosiones;
+	Vector vector = Vector(ultimoEstado.posicionX, ultimoEstado.posicionY);
 
 	explosiones.push_back(new ExplosionVista(vector + offset, EXPLOSION_GRANDE));
 

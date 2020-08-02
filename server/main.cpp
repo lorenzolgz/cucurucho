@@ -63,12 +63,12 @@ int main(int argc , char *argv[]) {
     }
 
     l = new Log("server");
-
     Configuracion* config = parsearConfiguracion(archivoConfig);
     if (nivelLog == "") nivelLog = config->getNivelLog();
     l->set_stdout(config->isStdOut());
     l->setConf(nivelLog);
     l->info("Iniciando el conexionServidor.");
+	srand(time(nullptr));
 
     return esperarConexiones(port, config);
 }
