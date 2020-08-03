@@ -28,7 +28,7 @@ public:
 	void renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
 
 
-    void mutear();
+    bool mutear();
 
 private:
     struct InformacionNivel informacionNivel;

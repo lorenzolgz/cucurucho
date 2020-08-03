@@ -237,6 +237,6 @@ void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std
 	hud->render(estadoTick, estadoLogin, username);
 }
 
-void ManagerVista::mutear() {
-    audio->mutear();
+bool ManagerVista::mutear() {
+    return audio->mutear();
 }

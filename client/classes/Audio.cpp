@@ -78,7 +78,7 @@ void Audio::generarMusica(std::string cancion) {
 
 }
 
-void Audio::mutear() {
+bool Audio::mutear() {
     if (mute) {
         std::map<std::string, Musica *>::iterator it1;
         std::map<std::string, EfectoSonido *>::iterator it2;
@@ -105,6 +105,8 @@ void Audio::mutear() {
 
         Audio::mute = true;
     }
+
+    return Audio::mute;
 }
 
 

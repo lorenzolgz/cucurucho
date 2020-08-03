@@ -34,6 +34,7 @@ private:
     ManagerJuego* manager;
     HiloConexionCliente* hiloConexionCliente;
     IniciadorComunicacion* iniciadorComunicacion;
+	IndicadorSonidoVista* indicadorSonidoVista;
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
