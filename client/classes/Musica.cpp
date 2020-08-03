@@ -3,6 +3,7 @@
 //
 
 #include "Musica.h"
+#include "../../commons/utils/Log.h"
 
 Musica::Musica(Mix_Music* audio) {
     Musica::audio = audio;
@@ -10,7 +11,7 @@ Musica::Musica(Mix_Music* audio) {
 }
 
 void Musica::play(int volumen) {
-
+	Mix_HaltMusic();
     Mix_PlayMusic(audio, -1);
     Mix_VolumeMusic(volumen);
 
@@ -27,4 +28,8 @@ void Musica::desmutear(){
 
     Mix_VolumeMusic(VOLUMEN_MUSICA);
 
+}
+
+Musica::~Musica() {
+	Mix_FreeMusic(audio);
 }

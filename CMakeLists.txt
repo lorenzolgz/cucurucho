@@ -5,6 +5,10 @@ project(cucurucho)
 find_package(PkgConfig REQUIRED)
 find_package(SDL2 REQUIRED)
 
+add_compile_options(
+        "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
+)
+
 pkg_check_modules(SDL2 REQUIRED sdl2)
 pkg_check_modules(JSONCPP jsoncpp)
 

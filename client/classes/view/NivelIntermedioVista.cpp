@@ -14,9 +14,9 @@ NivelIntermedioVista::NivelIntermedioVista(std::vector<JugadorVista*>* jugadores
 	NivelIntermedioVista::ancho = ancho;
 	NivelIntermedioVista::alto = alto;
 	NivelIntermedioVista::campoVista = new CampoVista(2, -1);
-	campoVista->nuevoFondo("dungeon_3.png", 0, 0, 3.5);
-	campoVista->nuevoFondo("dungeon_5.png", 0, 0, 4.75);
-	campoVista->nuevoFondo("dungeon_4.png", 0, 0, 5.5);
+	campoVista->nuevoFondo("lobby_3.png", 0, 0, 3.5);
+	campoVista->nuevoFondo("lobby_5.png", 0, 0, 4.75);
+	campoVista->nuevoFondo("lobby_4.png", 0, 0, 5.5);
 
     l->info("La vista del Nivel Intermedio fue creada correctamente.");
 }
@@ -183,4 +183,8 @@ void NivelIntermedioVista::renderNivelIntermedio(struct EstadoTick nuevoTick) {
 	}
 
 	TextoVista::eRender(texto, params);
+}
+
+NivelIntermedioVista::~NivelIntermedioVista() {
+	delete campoVista;
 }

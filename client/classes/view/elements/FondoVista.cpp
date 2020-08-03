@@ -21,6 +21,7 @@ FondoVista::FondoVista(const std::string &fileName, float xOffset, int y, float 
     float escala = (float) (PANTALLA_ALTO - HUD_SRC_ALTO) / height;
     width = width * escala;
     height = height * escala;
+	FondoVista::fileName = fileName;
 	FondoVista::y = y;
 	FondoVista::xOffset = xOffset;
 	FondoVista::x1 = PANTALLA_ANCHO / 2 - (float) width / 2;
@@ -64,4 +65,8 @@ SDL_Rect FondoVista::calcularCoords(float x, int y, int width, int height, float
 	}
 
 	return { (int) x - (int) xOffset, y, width, height };
+}
+
+FondoVista::~FondoVista() {
+	GeneradorDeTexturas::getInstance()->liberarTextura(fileName);
 }

@@ -115,6 +115,10 @@ void CampoMovil::removerEntidadesEnemigosMuertas() {
 	while (it != entidadesEnemigos.end()) {
 		EntidadEnemigo* entidadEnemigo = *it;
 		if (entidadEnemigo->getVidaEntidad()->estaMuerto()) {
+			if (entidadEnemigo->getTipoEntidad() != ENTIDAD_ENEMIGO_FINAL1 &&
+				entidadEnemigo->getTipoEntidad() != ENTIDAD_ENEMIGO_FINAL1EXT) {
+				delete (*it);
+			}
 			it = entidadesEnemigos.erase(it);
 		} else {
 			++it;

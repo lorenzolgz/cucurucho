@@ -30,7 +30,7 @@
 #define TIMEOUT_LOGIN_FIN 3
 
 // Tiempo en segundos de pasaje entre niveles
-#define TIMEOUT_PROXIMO_NIVEL 8
+#define TIMEOUT_PROXIMO_NIVEL 6
 
 // Ticks hasta que se cierre el servidor por no tener clientes conectados
 #define TICKS_FIN_DESCONEXION 10 * 60

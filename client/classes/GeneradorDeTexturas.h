@@ -22,6 +22,8 @@ public:
     static GeneradorDeTexturas *getInstance();
     SDL_Texture* generarTextura(string entidadDelJuego);
 
+	void liberarTextura(string basicString);
+
 private:
     GeneradorDeTexturas();
 	static GeneradorDeTexturas *instance;

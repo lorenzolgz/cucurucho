@@ -53,3 +53,10 @@ SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
     }
     return textura;
 }
+
+void GeneradorDeTexturas::liberarTextura(string fileName) {
+    if (texturas.count(fileName) == 0) return;
+
+    SDL_DestroyTexture(texturas[fileName]);
+    texturas.erase(fileName);
+}

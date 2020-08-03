@@ -81,6 +81,8 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
     ManagerVista::informacionNivel = informacionNivel;
 
     velocidadNivel = informacionNivel.velocidad;
+
+    delete campoVista;
     campoVista = new CampoVista(velocidadNivel, informacionNivel.numeroNivel);
 
     for (InformacionFondo f : informacionNivel.informacionFondo) {
@@ -90,7 +92,10 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
+
+    delete enemigoFinal1Vista;
 	enemigoFinal1Vista = new EnemigoFinal1Vista();
+
     std::string cancion = informacionNivel.audioNivel;
     audio->generarMusica(cancion);
     audio->playMusic(cancion);
@@ -206,7 +211,7 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
 		explosiones.push_back(disparoEnemigoVista->nuevaExplosion(pos));
 	}
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < MAX_JUGADORES; i++) {
 		Vector pos = Vector(estadoJugadores[i].posicionX, estadoJugadores[i].posicionY);
 		if (estadoJugadores[i].energia > 0) continue;
 		if (estadoJugadores[i].posicionX < 100) continue;

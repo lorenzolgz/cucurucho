@@ -48,8 +48,8 @@ EfectoSonido *Audio::cargarEfectosSonido(std::string stringSoundEffect){
 Audio::Audio(){
 
     efecto_defecto = cargarEfectosSonido("sfx-01.wav");
-    musica_defecto = cargarMusica("rainonme.mpeg");
-    Audio::mute = !SONIDO_ACTIVADO;;
+    musica_defecto = cargarMusica("blank.mp3");
+    Audio::mute = !SONIDO_ACTIVADO;
 
     l->info("Creacion de instancia GeneradorDeTexturas");
 }
@@ -67,7 +67,12 @@ void Audio::generarEfecto(std::string soundEffect) {
 void Audio::generarMusica(std::string cancion) {
     Musica* musica = canciones[cancion];
 
-    if (musica == nullptr){
+    if (musica == nullptr) {
+		if (!canciones.empty()) {
+			auto it = canciones.begin();
+			delete it->second;
+			canciones.erase(it);
+		}
         canciones[cancion] = cargarMusica(cancion);
     }
 
