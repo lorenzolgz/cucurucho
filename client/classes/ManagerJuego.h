@@ -9,6 +9,7 @@
 #include "../../libraries/json/json.hpp"
 #include "view/ManagerVista.h"
 #include "view/Titulo.h"
+#include "view/IndicadorSonidoVista.h"
 
 class ManagerJuego {
 public:

@@ -17,6 +17,7 @@ const int ENEMIGO_FINAL1_EXT_SRC_ALTO = 42;
 class EnemigoFinal1ExtVista {
 public:
 	EnemigoFinal1ExtVista();
+	~EnemigoFinal1ExtVista();
 	void render(EstadoEnemigo estadoEnemigo, Vector lock);
 	bool estadoEnRango(EstadoEnemigo estadoEnemigo);
 

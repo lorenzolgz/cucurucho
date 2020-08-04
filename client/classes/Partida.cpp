@@ -14,6 +14,7 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
+    indicadorSonidoVista = new IndicadorSonidoVista();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
     GestorSDL* gestorSDL;
@@ -152,7 +153,6 @@ void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
     }
 
     pantallaPrincipal->tick(inputText, estadoLogin.estadoLogin, &validarLogin);
-	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
@@ -184,9 +184,12 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 }
 
 void Partida::renderLoop() {
-	if (estadoLogin.estadoLogin <= 0) return;
+	indicadorSonidoVista->render();
 
-	manager->render();
+	if (estadoLogin.estadoLogin > 0) {
+		manager->render();
+	}
+
 	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
@@ -204,6 +207,7 @@ void Partida::finJuegoLoop() {
 		SDL_RenderClear(GraphicRenderer::getInstance());
 		quit = eventLoop(&input);
 		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+		hacks(currentKeyStates);
 		quit |= currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_ESCAPE];
 		manager->renderFinJuego();
 		SDL_RenderPresent(GraphicRenderer::getInstance());
@@ -238,7 +242,8 @@ void Partida::hacks(const Uint8 *currentKeyStates) {
 
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
         if (muteToggle == false) {
-            manager->mutear();
+        	bool resultado = Audio::getInstance()->mutear();
+			indicadorSonidoVista->setMuteado(resultado);
             muteToggle = true;
         }
     }else{

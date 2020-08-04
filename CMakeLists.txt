@@ -5,6 +5,10 @@ project(cucurucho)
 find_package(PkgConfig REQUIRED)
 find_package(SDL2 REQUIRED)
 
+add_compile_options(
+        "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
+)
+
 pkg_check_modules(SDL2 REQUIRED sdl2)
 pkg_check_modules(JSONCPP jsoncpp)
 
@@ -94,7 +98,7 @@ add_executable(cliente
         client/classes/config/Configuracion.h
         client/classes/view/elements/DisparoJugadorVista.cpp
         client/classes/view/elements/DisparoJugadorVista.h client/classes/view/elements/DisparoEnemigoVista.cpp client/classes/view/elements/DisparoEnemigoVista.h
-        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h client/classes/view/elements/EnemigoFinal1ExtVista.cpp client/classes/view/elements/EnemigoFinal1ExtVista.h)
+        client/classes/Audio.cpp client/classes/Audio.h client/classes/Musica.cpp client/classes/Musica.h client/classes/EfectoSonido.cpp client/classes/EfectoSonido.h client/classes/view/elements/EnemigoFinal1Vista.cpp client/classes/view/elements/EnemigoFinal1Vista.h client/classes/view/elements/ExplosionVista.cpp client/classes/view/elements/ExplosionVista.h client/classes/view/elements/EnemigoFinal1ExtVista.cpp client/classes/view/elements/EnemigoFinal1ExtVista.h client/classes/view/IndicadorSonidoVista.cpp client/classes/view/IndicadorSonidoVista.h)
 
 add_executable(servidor
         server/main.cpp

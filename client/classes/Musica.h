@@ -21,6 +21,8 @@ public:
 
     Musica(Mix_Music* audio);
 
+    ~Musica();
+
     void play(int volumen);
 
     void mutear();

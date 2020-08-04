@@ -70,3 +70,7 @@ bool EnemigoFinal1ExtVista::estadoEnRango(EstadoEnemigo estadoEnemigo) {
 	Vector posicionEstado = Vector(estadoEnemigo.posicionX, estadoEnemigo.posicionY);
 	return (posicion - posicionEstado).modulo() <= 70;
 }
+
+EnemigoFinal1ExtVista::~EnemigoFinal1ExtVista() {
+
+}

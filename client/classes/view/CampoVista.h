@@ -10,7 +10,9 @@
 class CampoVista {
 public:
 	CampoVista(float velocidadMovilX, int numeroNivel);
+	~CampoVista();
 	FondoVista * nuevoFondo(const std::string &fileName, float xOffset, int yFondo, float modVelocidad);
+
 	void render(EstadoTick tick);
 
 	int getNumeroNivel() const;

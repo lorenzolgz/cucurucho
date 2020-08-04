@@ -13,6 +13,7 @@
 class FondoVista {
 public:
     FondoVista(const std::string &fileName, float xOffset, int y, float modVelocidad);
+    ~FondoVista();
     void render(float posX);
     int getY() const;
     int getWidth() const;
@@ -26,6 +27,7 @@ private:
     float modVelocidad;
     int width;
     int height;
+    std::string fileName;
     SDL_Texture* textura;
 	SDL_Renderer* gRenderer;
 

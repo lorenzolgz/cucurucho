@@ -53,3 +53,9 @@ void CampoVista::render(EstadoTick estadoTick) {
 int CampoVista::getNumeroNivel() const {
 	return numeroNivel;
 }
+
+CampoVista::~CampoVista() {
+	for (FondoVista* fondo : fondos) {
+		delete fondo;
+	}
+}

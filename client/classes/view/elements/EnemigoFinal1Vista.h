@@ -13,6 +13,7 @@ const int ENEMIGO_FINAL1_SRC_ALTO = 288;
 class EnemigoFinal1Vista {
 public:
 	EnemigoFinal1Vista();
+	~EnemigoFinal1Vista();
 	void render(EstadoEnemigo estadoEnemigo, std::list<EstadoEnemigo> list);
 	void renderMuerte();
 

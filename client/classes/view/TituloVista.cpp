@@ -80,6 +80,7 @@ void TituloVista::renderParticulas() {
     for (auto it = particulas.begin(); it != particulas.end(); ) {
         (*it)->render(gRenderer, texturaParticulas);
         if ((*it)->fueraDePantalla(ancho, alto)) {
+			delete (*it);
             it = particulas.erase(it);
         } else {
             ++it;

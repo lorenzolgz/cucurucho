@@ -32,7 +32,7 @@ public:
 
     void generarEfecto(std::string soundEffect);
 
-    void mutear();
+    bool mutear();
 
 	void playMusic(std::string cancion);
 

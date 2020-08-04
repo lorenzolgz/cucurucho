@@ -131,3 +131,9 @@ std::list<ExplosionVista *> EnemigoFinal1Vista::nuevasExplosiones() {
 	}
 	return explosiones;
 }
+
+EnemigoFinal1Vista::~EnemigoFinal1Vista() {
+	for (auto* extension : extensiones) {
+		delete extension;
+	}
+}

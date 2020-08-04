@@ -14,6 +14,7 @@
 class NivelIntermedioVista {
 public:
 	NivelIntermedioVista(std::vector<JugadorVista*>* jugadores, int ancho, int alto);
+	~NivelIntermedioVista();
 
 	void renderNivelIntermedio(struct EstadoTick estadoTick);
 
