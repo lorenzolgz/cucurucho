@@ -5,6 +5,9 @@
 #include "default/IAHorizontal2.h"
 #include "../../../../commons/utils/Constantes.h"
 
+#define RANGO_DISPARO_MIN 400
+#define RANGO_DISPARO_MAX 700
+
 IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador *> *jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
 	this->jugadores = jugadores;
@@ -36,5 +39,19 @@ IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemig
 
 IAEnemigo *IARotativaDesdeIzquierda::tick() {
 	innerIa = innerIa->tick();
+
+	// Ver a quien disparar.
+	std::map<int, Jugador *>::iterator it;
+	for (it = jugadores->begin(); it != jugadores->end(); it++) {
+		// Solo itero a traves de los que estan vivos y conectados
+		if(it->second->estaMuerto() || it->second->estaDesconectado())
+			continue;
+
+		Vector direccion = entidadEnemigo->getCentroDeMasa() - it->second->getCentroDeMasa();
+		if (direccion.modulo() > RANGO_DISPARO_MIN && direccion.modulo() < RANGO_DISPARO_MAX) {
+			entidadEnemigo->disparar(direccion);
+		}
+	}
+
 	return this;
 }
