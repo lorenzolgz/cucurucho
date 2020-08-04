@@ -8,7 +8,7 @@
 
 class IACircular : public IAEnemigo {
 public:
-	IACircular(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores, Vector factor, float radio);
+	IACircular(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores, int anguloInicialGrados, bool sentidoHorario, Vector factor, float radio);
 
 	IAEnemigo* tick() override;
 
@@ -17,9 +17,13 @@ private:
 	std::map<int, Jugador*>* jugadores;
 	bool primerTick;
 	int ticks;
-	Vector eje;
+	Vector centro;
+	int anguloInicialGrados;
+	bool sentidoHorario;
 	float radio;
-	Vector factor;
+	Vector factorModificadorPosicion;
+
+	Vector calcularDeltaPosicion(int anguloGrados);
 };
 
 
