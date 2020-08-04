@@ -11,7 +11,6 @@ VidaEnemigoFinal1Ext::VidaEnemigoFinal1Ext() : VidaEntidad(ENEMIGO_FINAL1_EXT_EN
 }
 
 int VidaEnemigoFinal1Ext::danioColisionJugador() {
-	// TODO probablemente cambiar a 0 o no tal vez no
 	return DANIO_TOTAL;
 }
 
