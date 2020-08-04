@@ -24,7 +24,7 @@ IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemig
 	Vector posDondeEmpiezaARotarPrimerCirculo = Vector(posXDondeEmpiezaARotarPrimerCirculo, posYDondeEmpiezaARotarPrimerCirculo);
 
 	// Inicializar posicion de la entidad (se podria pasar a tick idealmente).
-	entidadEnemigo->setPosicion(Vector(0, posDondeEmpiezaARotarPrimerCirculo.getY()));
+	entidadEnemigo->setPosicion(Vector(-entidadEnemigo->getAncho(), posDondeEmpiezaARotarPrimerCirculo.getY()));
 
 	float posXDondeEmpiezaARotarSegundoCirculo = margenDerecho + 2 * radio;
 
@@ -48,7 +48,7 @@ IAEnemigo *IARotativaDesdeIzquierda::tick() {
 			continue;
 
 		Vector direccion = entidadEnemigo->getCentroDeMasa() - it->second->getCentroDeMasa();
-		if (direccion.modulo() > RANGO_DISPARO_MIN && direccion.modulo() < RANGO_DISPARO_MAX) {
+		if (direccion.modulo() > RANGO_DISPARO_MIN && direccion.modulo() < RANGO_DISPARO_MAX && (rand() % 10) == 0) {
 			entidadEnemigo->disparar(direccion);
 		}
 	}
