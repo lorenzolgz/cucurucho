@@ -10,10 +10,6 @@
 
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
-	if (random() % 10 < 2) {
-        x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
-        velocidadX *= -1;
-    }
 	this->posicion = Vector(x, y);
 	this->ancho = ENEMIGO2_ANCHO;
 	this->alto = ENEMIGO2_ALTO;
