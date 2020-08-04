@@ -1,3 +1,4 @@
+#include "math.h"
 #include "IARotativaDesdeIzquierda.h"
 #include "default/IACircular.h"
 #include "default/IAHorizontal.h"
@@ -11,16 +12,20 @@ IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemig
 	this->primerTick = true;
 	this->ticks = 0;
 
-	float posXDondeEmpiezaARotar = 600;
-	// float posYDondeEmpiezaARotar = CAMPO_ALTO/2 + entidadEnemigo->getAlto()/2;
-	float posYDondeEmpiezaARotar = 400;
+	float minimoMargenY = 20 + random() % 30;
+	float factodModificadorRadioY = 0.40 + random() % 15 / 100; // !!!! random
+	float margenDerecho = 50 + random() % 200; // !!!! random
+	float radio = 120 + random() % 20; // !!!! random
+	float posXDondeEmpiezaARotar = CAMPO_ANCHO - margenDerecho - entidadEnemigo->getAncho();
+	float posYDondeEmpiezaARotar = (minimoMargenY + radio * factodModificadorRadioY) +
+			random() % (long) (floor(1.0 * CAMPO_ALTO - entidadEnemigo->getAlto() - 2 * radio * factodModificadorRadioY - minimoMargenY)); // !!!! random
 	Vector posDondeEmpiezaARotar = Vector(posXDondeEmpiezaARotar, posYDondeEmpiezaARotar);
 	l->error("!!!! posDondeEmpiezaARotar " + std::to_string(posDondeEmpiezaARotar.getX()) + " - " + std::to_string(posDondeEmpiezaARotar.getY()));
 
-	// !!!!
+	// Inicializar posicion de la entidad (se podria pasar a tick idealmente).
 	entidadEnemigo->setPosicion(Vector(0, posDondeEmpiezaARotar.getY()));
 
-	IAEnemigo* iaCircular = new IACircular(entidadEnemigo, jugadores, 180, false, Vector(0.45, 1), 120);
+	IAEnemigo* iaCircular = new IACircular(entidadEnemigo, jugadores, 0, false, Vector(1, factodModificadorRadioY), radio);
 	IAEnemigo* iaHorizontal = new IAHorizontal2(entidadEnemigo, jugadores, true, posDondeEmpiezaARotar.getX(), iaCircular);
 
 	this->innerIa = iaHorizontal;
