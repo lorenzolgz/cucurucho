@@ -11,8 +11,9 @@ IAHorizontal2::IAHorizontal2(EntidadEnemigo* entidadEnemigo, std::map<int, Jugad
 }
 
 IAEnemigo* IAHorizontal2::tick() {
-	if (entidadEnemigo->getPosicion().getX() >= posXFinal) {
-		l->error("!!!! pasaje");
+	if ((sentidoXPositivo && entidadEnemigo->getPosicion().getX() >= posXFinal) ||
+			!sentidoXPositivo && entidadEnemigo->getPosicion().getX() <= posXFinal) {
+		next->inicializar();
 		return next;
 	}
 
@@ -20,7 +21,6 @@ IAEnemigo* IAHorizontal2::tick() {
 
 	int factorModificadorSentido = sentidoXPositivo ? 1 : -1;
 	Vector nuevaPosicion = entidadEnemigo->getPosicion() + Vector(factorModificadorSentido * std::abs(entidadEnemigo->getVelocidadX()), 0);
-	l->error("!!!! posicion " + std::to_string(nuevaPosicion.getX()) + " - " + std::to_string(nuevaPosicion.getY()));
 	entidadEnemigo->setPosicion(nuevaPosicion);
 
 	return this;
