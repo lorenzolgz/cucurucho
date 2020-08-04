@@ -18,13 +18,12 @@ IAEnemigo *IACircular::tick() {
 		Vector posicionInicial = this->entidadEnemigo->getPosicion();
 		Vector deltaPosInicial = calcularDeltaPosicion(anguloInicialGrados);
 		this->centro = posicionInicial - deltaPosInicial;
-		// this->centro = posicionInicial + Vector(Vector(radio * factorModificadorPosicion.getX(), 0 * factorModificadorPosicion.getY()));
 		primerTick = false;
 	}
 
 	ticks = ticks + 1;
 
-	int factorModificadorRotacion = sentidoHorario ? -1 : 1;
+	int factorModificadorRotacion = sentidoHorario ? 1 : -1;
 	int anguloGrados = anguloInicialGrados + (ticks * factorModificadorRotacion);
 	Vector deltaPos = calcularDeltaPosicion(anguloGrados);
 	entidadEnemigo->setPosicion(centro + deltaPos);

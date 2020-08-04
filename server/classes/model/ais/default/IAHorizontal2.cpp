@@ -11,7 +11,7 @@ IAHorizontal2::IAHorizontal2(EntidadEnemigo* entidadEnemigo, std::map<int, Jugad
 }
 
 IAEnemigo* IAHorizontal2::tick() {
-	if (entidadEnemigo->getPosicion().getX() == posXFinal) {
+	if (entidadEnemigo->getPosicion().getX() >= posXFinal) {
 		l->error("!!!! pasaje");
 		return next;
 	}
