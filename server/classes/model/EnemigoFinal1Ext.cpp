@@ -8,6 +8,7 @@
 #include "life/VidaEnemigoFinal1Ext.h"
 #include "entities/projectiles/DisparoEnemigo1.h"
 #include "CampoMovil.h"
+#include "entities/projectiles/DisparoEnemigo2.h"
 
 #define TICKS_COOLDOWN_DISPARO 80
 
@@ -77,7 +78,7 @@ int EnemigoFinal1Ext::getTipoEntidad() {
 void EnemigoFinal1Ext::disparar(Vector vector) {
 	if (ticksHastaDisparo <= 0) {
 		ticksHastaDisparo = TICKS_COOLDOWN_DISPARO;
-		DisparoEnemigo1 *disparo = new DisparoEnemigo1(posicion, vector);
+		DisparoEnemigo2 *disparo = new DisparoEnemigo2(posicion, vector);
 		campo->nuevoDisparoEnemigo(disparo);
 		l->info("Se crea un nuevo disparo Enemigo 01");
 	}
