@@ -1,7 +1,7 @@
 {
    "configuracion": {
       "log": {
-         "nivel": "info",
+         "nivel": "error",
          "std_out": true
       },
       "cantidadJugadores": 1,
@@ -11,7 +11,7 @@
             "fin": "cleared_con_nave1.png",
             "audioNivel": "audioNivel1.mp3",
             "enemigos": {
-               "clase1": 8,
+               "clase1": 1,
                "clase2": 2,
                "final": true
             },
@@ -25,7 +25,7 @@
             "enemigos": {
                "clase1": 5,
                "clase2": 2,
-               "final": false
+               "final": true
             },
             "velocidad": 3,
             "largo": 1000

@@ -6,16 +6,17 @@
 #include "../../Jugador.h"
 #include "../../EntidadEnemigo.h"
 
+// Viene de derecha a izquierda, hasta dejar un margen a la derecha entre donde termina la entidadEnemigo y el fin del campo.
 class IAHorizontal : public IAEnemigo {
 public:
-	IAHorizontal(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores, float paddingIzquierdo, IAEnemigo* next);
+	IAHorizontal(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores, float margenDerecho, IAEnemigo* next);
 
 	IAEnemigo* tick() override;
 
 private:
 	EntidadEnemigo* entidadEnemigo;
 	std::map<int, Jugador*>* jugadores;
-	float paddingIzquierdo;
+	float margenDerecho;
 	IAEnemigo* next;
 };
 

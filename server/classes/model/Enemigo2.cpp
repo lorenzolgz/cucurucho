@@ -6,6 +6,7 @@
 #include "life/VidaEnemigo2.h"
 #include "ais/IAEnemigoPatron2.h"
 #include "entities/projectiles/DisparoEnemigo2.h"
+#include "ais/IARotativaDesdeIzquierda.h"
 
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
@@ -18,7 +19,9 @@ Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* j
 	this->alto = ENEMIGO2_ALTO;
 	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
-	this->ia = new IAEnemigoPatron2(this, jugadores);
+	// !!!!!
+	// this->ia = new IAEnemigoPatron2(this, jugadores);
+	this->ia = new IARotativaDesdeIzquierda(this, jugadores);
 	this->campo = campo;
 	l->info("Se creo correctamente el Enemigo 02.");
 }
