@@ -13,7 +13,7 @@
             "enemigos": {
                "clase1": 9,
                "clase2": 6,
-               "final": false
+               "final": true
             },
             "velocidad": 2,
             "largo": 2500

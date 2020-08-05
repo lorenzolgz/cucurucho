@@ -77,3 +77,9 @@ Vector Vector::escalar(double d) {
 	Vector v = Vector(- d * cos_d(arg()), d * sin_d(arg()));
 	return v;
 }
+
+
+Vector Vector::polares(double mod, double a) {
+	Vector v = Vector(mod * cos_d(a), - mod * sin_d(a));
+	return v;
+}
