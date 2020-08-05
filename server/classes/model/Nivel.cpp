@@ -120,6 +120,7 @@ void Nivel::plantarSemillasEnCampo() {
 			Entidad* entidad = semillaEntidad->getEntidad();
 			// TODO este casteo es pa quilombo!!!!
 			campo->agregarEntidadEnemigo((EntidadEnemigo*) entidad);
+			delete semillaEntidad;
 		}
 	}
 
@@ -132,4 +133,12 @@ EstadoInternoCampoMovil Nivel::state() {
 
 void Nivel::nuevoDisparo(Disparo *pDisparo) {
     this->campo->nuevoDisparo(pDisparo);
+}
+
+Nivel::~Nivel() {
+	for (auto* semilla : semillasEntidades) {
+		delete semilla->getEntidad();
+		delete semilla;
+	}
+	delete campo;
 }

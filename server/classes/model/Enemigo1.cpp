@@ -70,3 +70,8 @@ void Enemigo1::disparar(Vector direccion) {
     }
 
 }
+
+Enemigo1::~Enemigo1() {
+	delete this->vida;
+	delete this->ia;
+}

@@ -17,7 +17,8 @@
 
 class DisparoEnemigo2: public EntidadDisparo {
 public:
-    DisparoEnemigo2(Vector posicion, Vector direccion);
+	DisparoEnemigo2(Vector posicion, Vector direccion);
+	~DisparoEnemigo2();
 
     EstadoDisparo state();
     float getVelocidad();

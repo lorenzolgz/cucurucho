@@ -12,7 +12,8 @@
 
 class EntidadDisparo: public Entidad {
 public:
-    virtual struct EstadoDisparo state() = 0;
+	virtual struct EstadoDisparo state() = 0;
+	virtual ~EntidadDisparo() {};
 
 protected:
 

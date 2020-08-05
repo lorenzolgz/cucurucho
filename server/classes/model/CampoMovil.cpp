@@ -225,3 +225,15 @@ void CampoMovil::removerDisparosFueraDePantalla() {
     }
 }
 
+CampoMovil::~CampoMovil() {
+	for (auto* disparo : disparosEnemigos) {
+		delete disparo;
+	}
+	for (auto* disparo : disparosJugador) {
+		delete disparo;
+	}
+	for (auto* enemigo : entidadesEnemigos) {
+		delete enemigo;
+	}
+}
+

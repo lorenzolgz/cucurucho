@@ -49,8 +49,9 @@ bool ManagerNiveles::terminoNivelActual() {
 void ManagerNiveles::pasajeDeNivel(){
     l->info("Transicion de niveles");
 
+    delete nivelActual;
     nivelActual = configurarNuevoNivel();
-    nivelesConfiguracion.pop_front();
+    if (nivelesConfiguracion.size() > 1) nivelesConfiguracion.pop_front();
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {

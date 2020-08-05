@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "HiloOrquestadorPartida.h"
 #include "HiloConexionServidor.h"
 
@@ -97,6 +98,7 @@ void HiloOrquestadorPartida::run() {
 	try {
 		while (!quit) {
 
+			malloc_trim(0);
 			t2 = clock();
 			if ((t2 - t1) > 1000 * 1000 / 60) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
 			} else {

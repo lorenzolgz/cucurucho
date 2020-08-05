@@ -26,7 +26,7 @@ IAEnemigo* IAEnemigoPatron1::tick() {
 			if (jugadorMasCercano == nullptr) {
 				jugadorMasCercano = it->second;
 			} else {
-				Vector direccionMasCercano = entidadEnemigo->getCentroDeMasa() - it->second->getCentroDeMasa();
+				Vector direccionMasCercano = entidadEnemigo->getCentroDeMasa() - jugadorMasCercano->getCentroDeMasa();
 				if (direccionMasCercano.modulo() > direccion.modulo()) {
 					jugadorMasCercano = it->second;
 				}

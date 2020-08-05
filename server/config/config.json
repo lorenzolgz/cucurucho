@@ -16,11 +16,11 @@
             "audioNivel": "audioNivel1.mp3",
             "enemigos": {
                "clase1": 105,
-               "clase2": 75,
-               "final": true
+               "clase2": 25,
+               "final": false
             },
             "velocidad": 2,
-            "largo": 20000
+            "largo": 17000
          },
          {
             "archivoFondos": "fondos/fondos2.json",
@@ -28,31 +28,31 @@
             "audioNivel": "audioNivel2.mp3",
             "enemigos": {
                "clase1": 135,
-               "clase2": 45,
-               "final": true
+               "clase2": 35,
+               "final": false
             },
             "velocidad": 3,
-            "largo": 25000
+            "largo": 26000
          },
          {
             "archivoFondos": "fondos/fondos4.json",
             "fin": "cleared_con_nave3.png",
             "audioNivel": "audioNivel3.mp3",
             "enemigos": {
-               "clase1": 40,
-               "clase2": 90,
+               "clase1": 150,
+               "clase2": 35,
                "final": true
             },
             "velocidad": 3.5,
-            "largo": 25000
+            "largo": 30000
          }
       ],
       "usuarios": {
-         "cami": "dvorkin",
-         "ailu": "garcia",
-         "lolo": "gimenez",
-         "rodri": "souto",
-         "javi": "di santo"
+         "cami": "12",
+         "ailu": "12",
+         "lolo": "12",
+         "rodri": "12",
+         "javi": "12"
       }
    }
 }

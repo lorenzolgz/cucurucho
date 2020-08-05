@@ -17,6 +17,7 @@
 class Nivel : public Ticker {
 public:
 	Nivel(NivelConfiguracion* nivelConfig, std::map<int, Jugador*>* jugador);
+	~Nivel();
 
 	void crearEnemigos(int cantClase1, int cantClase2);
 	void tick() override;

@@ -4,6 +4,7 @@
 #include "Partida.h"
 #include "GestorSDL.h"
 #include <SDL_mixer.h>
+#include <malloc.h>
 #include "../../commons/connections/ConexionExcepcion.h"
 
 Partida::Partida() {}
@@ -40,6 +41,7 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
             std::string inputText;
             quit = quit || eventLoop(&inputText);
 
+			malloc_trim(0);
             if (!colaMensajes->empty()) {
                 while (colaMensajes->size() > configuracion->getMaxCola()){
                     nlohmann::json json = colaMensajes->pop();

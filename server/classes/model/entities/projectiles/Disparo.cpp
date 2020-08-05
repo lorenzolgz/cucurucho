@@ -49,3 +49,7 @@ int Disparo::getTipoEntidad() {
 void Disparo::matoEntidad(int tipoEntidad) {
 	jugador->sumarPuntosPorDestruirA(tipoEntidad);
 }
+
+Disparo::~Disparo() {
+	delete vida;
+}

@@ -14,6 +14,7 @@ const int ENEMIGO2_ALTO = 63;
 class Enemigo2 : public EntidadEnemigo {
 public:
     Enemigo2(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo);
+    ~Enemigo2();
 
 	void tick() override;
 	struct EstadoEnemigo state() override;

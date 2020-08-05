@@ -26,6 +26,7 @@ void HiloAceptadorConexiones::run() {
 																				 false);
         if (!controladorDeSesiones->iniciarSesion()) { // Si entró un usuario no registrado
             std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            delete conexionServidor;
         } else {
             conexionesServidores->push_back(conexionServidor);
             l->info("Usuario " + std::to_string(conexionesServidores->size()) + " conectado");
@@ -44,6 +45,7 @@ void HiloAceptadorConexiones::run() {
                 notificarEstadoConexion(conexionesServidores, LOGIN_ESPERAR);
             }
         }
+        delete controladorDeSesiones;
     }
 
     notificarEstadoConexion(conexionesServidores, LOGIN_FIN);
@@ -99,6 +101,7 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
 				conexionesServidores->size() + 1,
 				true);
         if (!controladorDeSesiones->iniciarSesion()) { // Si entró un usuario no registrado
+			delete controladorDeSesiones;
             continue;
         }
 
@@ -118,6 +121,7 @@ void HiloAceptadorConexiones::aceptarPosiblesReconexiones(HiloOrquestadorPartida
                 h->conexionServidor->setClientSocket(conexionServidor->getClientSocket());
             }
         }
+        delete controladorDeSesiones;
     }
 }
 

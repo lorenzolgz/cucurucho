@@ -141,6 +141,9 @@ void HiloConexionServidor::cicloReconectar() {
     	if (!continuarLoopeando) {
 			return;
     	}
+		while (this->colaEnviadora->size() != 0) {
+			this->colaEnviadora->pop();
+		}
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
 
