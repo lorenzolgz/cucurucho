@@ -8,6 +8,7 @@ class Thread {
 public:
 	void start();
 	void join();
+	void detach();
 	virtual void run() = 0;
 
 private:

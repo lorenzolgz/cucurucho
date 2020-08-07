@@ -68,3 +68,11 @@ EstadoInternoNivel Partida::state(struct InformacionNivel* informacionNivel) {
 bool Partida::termino() {
 	return managerNiveles->noHayMasNiveles();
 }
+
+Partida::~Partida() {
+	for (int i = 0; i < jugadores->size(); i++) {
+		delete jugadores->at(i);
+	}
+	delete jugadores;
+	delete managerNiveles;
+}

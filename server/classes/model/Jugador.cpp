@@ -205,3 +205,9 @@ void Jugador::setDesconectado(bool nuevoDesconectado) {
 bool Jugador::estaDesconectado() {
     return this->desconectado;
 }
+
+Jugador::~Jugador() {
+	delete vida;
+	delete helperAbove;
+	delete helperBelow;
+}

@@ -51,7 +51,7 @@ void ManagerNiveles::pasajeDeNivel(){
 
     delete nivelActual;
     nivelActual = configurarNuevoNivel();
-    if (nivelesConfiguracion.size() > 1) nivelesConfiguracion.pop_front();
+    nivelesConfiguracion.pop_front();
 }
 
 EstadoInternoCampoMovil ManagerNiveles::state(struct InformacionNivel* informacionNivel) {
@@ -82,5 +82,9 @@ bool ManagerNiveles::noHayMasNiveles() {
 
 void ManagerNiveles::nuevoDisparo(Disparo *disparo) {
     this->nivelActual->nuevoDisparo(disparo);
+}
+
+ManagerNiveles::~ManagerNiveles() {
+	delete nivelActual;
 }
 

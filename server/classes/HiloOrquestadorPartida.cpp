@@ -98,7 +98,6 @@ void HiloOrquestadorPartida::run() {
 	try {
 		while (!quit) {
 
-			malloc_trim(0);
 			t2 = clock();
 			if ((t2 - t1) > 1000 * 1000 / 60) { // TODO jugar con estos valores afecta la performance, yo toco el ultimo nro para que sea divisor de 1 tick cada 60 sec.
 			} else {
@@ -141,13 +140,12 @@ void HiloOrquestadorPartida::run() {
 		hiloConexionServidor->terminar();
 	}
 
-	for (auto* hiloConexionServidor : *(hilosConexionesServidores)) {
-		hiloConexionServidor->join();
-	}
+	delete partida;
+
 	l->info("Terminaron todos los hilosConexionesServidores.");
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-    aceptadorConexiones->shutdownSocket();
+	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	aceptadorConexiones->shutdownSocket();
 
 	l->info("Terminando de correr HiloOrquestadorPartida.");
 }

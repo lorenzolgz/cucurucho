@@ -23,7 +23,8 @@ const double JUGADOR_VELOCIDAD_ESCALAR = 5.75;
 
 class Jugador : public Entidad {
 public:
-    Jugador(Configuracion* config, int nroJugador);
+	Jugador(Configuracion* config, int nroJugador);
+	~Jugador();
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 	struct EstadoJugador state();

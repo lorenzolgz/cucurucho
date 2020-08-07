@@ -19,6 +19,9 @@ void HiloConexionServidor::run() {
         while (continuarLoopeando || !colaEnviadora->empty()) {
 			nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
 			l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
+			while (colaReceptora->size() > config->getMaxColaReceptora()) {
+				colaReceptora->pop();
+			}
 			colaReceptora->push(mensajeRecibido);
 
             while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
@@ -36,6 +39,9 @@ void HiloConexionServidor::run() {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
                 conexionServidor->enviarMensaje(mensajeAEnviar);
                 l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
+                if (mensajeAEnviar["tipoMensaje"] == ESTADO_TICK && mensajeAEnviar["numeroNivel"] == FIN_DE_JUEGO) {
+                    break;
+                }
             }
         }
     } catch (...) { // !!!! catcheo y logueo
@@ -43,6 +49,16 @@ void HiloConexionServidor::run() {
 	    cicloReconectar();
 	}
 
+	while (!colaReceptora->empty()) {
+		colaReceptora->pop();
+	}
+
+	delete colaReceptora;
+	delete colaEnviadora;
+	conexionServidor->cerrar();
+	delete conexionServidor;
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 	l->info("Se termino el HiloConexionServidor.");
 }
 
