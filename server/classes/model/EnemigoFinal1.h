@@ -10,6 +10,7 @@ const int ENEMIGO_FINAL1_ALTO = 288;
 class EnemigoFinal1 : public EntidadEnemigo {
 public:
 	EnemigoFinal1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo);
+	virtual ~EnemigoFinal1();
 
 	EstadoEnemigo state() override;
 	float getVelocidadX() override;

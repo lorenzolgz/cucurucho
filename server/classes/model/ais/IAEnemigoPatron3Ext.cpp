@@ -35,3 +35,7 @@ IAEnemigo *IAEnemigoPatron3Ext::tick() {
 	}
 	return this;
 }
+
+IAEnemigoPatron3Ext::~IAEnemigoPatron3Ext() {
+	delete this->iaMovimiento;
+}

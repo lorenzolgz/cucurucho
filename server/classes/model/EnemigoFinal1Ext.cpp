@@ -83,3 +83,8 @@ void EnemigoFinal1Ext::disparar(Vector vector) {
 		l->info("Se crea un nuevo disparo Enemigo 01");
 	}
 }
+
+EnemigoFinal1Ext::~EnemigoFinal1Ext() {
+	delete this->vida;
+	delete this->ia;
+}

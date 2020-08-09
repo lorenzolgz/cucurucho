@@ -15,6 +15,7 @@ class EnemigoFinal1Ext : public EntidadEnemigo {
 public:
 	EnemigoFinal1Ext(std::map<int, Jugador *> *jugadores, CampoMovil* campo, EnemigoFinal1 *padre,
 			Vector posRelativa, Vector inferior, Vector superior);
+	virtual ~EnemigoFinal1Ext();
 
 	EstadoEnemigo state() override;
 	float getVelocidadX() override;
