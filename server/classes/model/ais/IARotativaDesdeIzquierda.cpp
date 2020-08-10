@@ -11,7 +11,6 @@
 IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador *> *jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
 	this->jugadores = jugadores;
-	this->primerTick = true;
 	this->ticks = 0;
 
 	float minimoMargenY = 20 + random() % 30;
@@ -28,10 +27,10 @@ IARotativaDesdeIzquierda::IARotativaDesdeIzquierda(EntidadEnemigo *entidadEnemig
 
 	float posXDondeEmpiezaARotarSegundoCirculo = margenDerecho + 2 * radio;
 
-	IACircular* iaCircular2 = new IACircular(entidadEnemigo, jugadores, 0, false, Vector(1, factodModificadorRadioY), radio, 720, nullptr);
-	IAEnemigo* iaHorizontalHaciaIzquierda = new IAHorizontal2(entidadEnemigo, jugadores, false, posXDondeEmpiezaARotarSegundoCirculo, iaCircular2);
-	IAEnemigo* iaCircular1 = new IACircular(entidadEnemigo, jugadores, 0, false, Vector(1, factodModificadorRadioY), radio, 540, iaHorizontalHaciaIzquierda);
-	IAEnemigo* iaHorizontalHaciaDerecha = new IAHorizontal2(entidadEnemigo, jugadores, true, posDondeEmpiezaARotarPrimerCirculo.getX(), iaCircular1);
+	this->iaCircular2 = new IACircular(entidadEnemigo, jugadores, 0, false, Vector(1, factodModificadorRadioY), radio, 720, nullptr);
+	this->iaHorizontalHaciaIzquierda = new IAHorizontal2(entidadEnemigo, jugadores, false, posXDondeEmpiezaARotarSegundoCirculo, iaCircular2);
+	this->iaCircular1 = new IACircular(entidadEnemigo, jugadores, 0, false, Vector(1, factodModificadorRadioY), radio, 540, iaHorizontalHaciaIzquierda);
+	this->iaHorizontalHaciaDerecha = new IAHorizontal2(entidadEnemigo, jugadores, true, posDondeEmpiezaARotarPrimerCirculo.getX(), iaCircular1);
 	iaCircular2->setNext(iaHorizontalHaciaDerecha);
 
 	this->innerIa = iaHorizontalHaciaDerecha;
@@ -54,4 +53,11 @@ IAEnemigo *IARotativaDesdeIzquierda::tick() {
 	}
 
 	return this;
+}
+
+IARotativaDesdeIzquierda::~IARotativaDesdeIzquierda() {
+	delete this->iaCircular2;
+	delete this->iaHorizontalHaciaIzquierda;
+	delete this->iaCircular1;
+	delete this->iaHorizontalHaciaDerecha;
 }

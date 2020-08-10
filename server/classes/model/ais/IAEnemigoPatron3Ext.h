@@ -13,6 +13,7 @@ class IAEnemigoPatron3Ext : public IAEnemigo {
 public:
 	IAEnemigoPatron3Ext(EntidadEnemigo *entidadEnemigo, std::map<int, Jugador *> *jugadores, EntidadEnemigo *padre,
 			Vector posRelativa, Vector inferior, Vector superior);
+	virtual ~IAEnemigoPatron3Ext();
 
 	IAEnemigo* tick() override;
 

@@ -90,3 +90,12 @@ int EnemigoFinal1::getTipoEntidad() {
 void EnemigoFinal1::disparar(Vector vector) {
 	// pass
 }
+
+EnemigoFinal1::~EnemigoFinal1() {
+	delete this->vida;
+	delete this->ia;
+
+	for (auto* extension : this->extensiones) {
+		delete extension;
+	}
+}
