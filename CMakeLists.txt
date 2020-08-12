@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 3.7)
 project(cucurucho)
 
 find_package(PkgConfig REQUIRED)
-find_package(SDL2 REQUIRED)
+find_package(SDL2)
 
 add_compile_options(
         "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
 )
 
-pkg_check_modules(SDL2 REQUIRED sdl2)
+pkg_check_modules(SDL2 sdl2)
 pkg_check_modules(JSONCPP jsoncpp)
 
 link_libraries(${JSONCPP_LIBRARIES})

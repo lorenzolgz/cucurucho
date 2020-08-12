@@ -22,9 +22,7 @@ sudo python3 -m pip install cpplint
 
 
 ### Parámetros opcionales
-Parámetros opcionales:
-- `-l`: Nivel de log (`debug`, `info` o `error`)
-- `-c`: Ruta del archivo de configuración. En el caso de no encontrarlo, se levantará un archivo de configuración por defecto.
+- Ver parámetro `--help` del cliente y del servidor
 
 ### Compilar proyecto
 ```sh
@@ -49,4 +47,12 @@ cd cmake-build-debug
 ./servidor
 ```
 
-![Gley Lancer](assets/screenshot.png)
+
+### Correr el servidor en docker
+```sh
+# Desde el root del proyecto:
+docker build -t ubuntu-cucurucho .
+docker container run ubuntu-cucurucho
+```
+
+![Gley Lancer](client/assets/screenshot.png)
