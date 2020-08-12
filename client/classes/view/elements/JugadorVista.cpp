@@ -96,7 +96,7 @@ void JugadorVista::renderLifebar(int energia) {
                         (int) posicion.getY() + JUGADOR_SRC_ALTO + BARRA_VIDA_SRC_ALTO,
                         BARRA_VIDA_SRC_ANCHO * energia / 100, BARRA_VIDA_SRC_ALTO};
 
-    std::array<int, 3> color = coloresRender.base[0];
+    std::array<int, 3> color = COLORES_VERDE.base[0];
     SDL_SetTextureColorMod(texturaEnergia, color[0], color[1], color[2]);
 
     SDL_RenderCopy(gRenderer, texturaEnergia, &srcrect, &dstrect);

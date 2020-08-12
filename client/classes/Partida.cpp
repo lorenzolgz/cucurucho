@@ -41,7 +41,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
             std::string inputText;
             quit = quit || eventLoop(&inputText);
 
-			malloc_trim(0);
             if (!colaMensajes->empty()) {
                 while (colaMensajes->size() > configuracion->getMaxCola()){
                     nlohmann::json json = colaMensajes->pop();
@@ -186,11 +185,10 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 }
 
 void Partida::renderLoop() {
-	indicadorSonidoVista->render();
-
 	if (estadoLogin.estadoLogin > 0) {
 		manager->render();
 	}
+	indicadorSonidoVista->render();
 
 	SDL_RenderPresent(GraphicRenderer::getInstance());
 }

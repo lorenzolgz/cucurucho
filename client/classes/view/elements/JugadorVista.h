@@ -15,7 +15,7 @@ const int JUGADOR_SRC_ANCHO = 96;
 const int JUGADOR_SRC_ALTO = 48;
 
 const int BARRA_VIDA_SRC_ANCHO = 69;
-const int BARRA_VIDA_SRC_ALTO = 6;
+const int BARRA_VIDA_SRC_ALTO = 9;
 
 class HelperVista;
 

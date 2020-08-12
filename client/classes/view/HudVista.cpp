@@ -24,6 +24,61 @@ void HudVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::strin
 	SDL_Rect dstrect = {0, 0, HUD_SRC_ANCHO, HUD_SRC_ALTO};
 	SDL_RenderCopy(gRenderer, textura, &srcrect, &dstrect);
 
+	renderInfo(estadoTick, estadoLogin);
+
+	if (toast != nullptr) {
+		toast->render();
+	}
+}
+
+
+void HudVista::renderInfo(EstadoTick estadoTick, EstadoLogin estadoLogin) {
+	if (estadoLogin.cantidadJugadores == 0) {
+		for (EstadoJugador estadoJugador : estadoTick.estadosJugadores) {
+			if (strlen(estadoJugador.usuario) > 0) estadoLogin.cantidadJugadores++;
+		}
+	}
+
+	Vector yOffset = Vector(0, LETRA_ALTO * 19 / 24);
+
+	struct TextoVistaParams params = {yOffset + Vector(HUD_SRC_ANCHO / 25, 0),
+			TEXTO_COLOR_NARANJA,
+			ALINEACION_IZQUIERDA};
+	TextoVista::eRender("VIDAS: ", params);
+	params.posicion = params.posicion + Vector(0, LETRA_ALTO * 5 / 4);
+	TextoVista::eRender("PUNTOS: ", params);
+
+	for (int i = 0; i < estadoLogin.cantidadJugadores; i++) {
+		Vector posicion = yOffset + Vector(HUD_SRC_ANCHO * (2 + i) / (4 + estadoLogin.cantidadJugadores / 2), 0);
+		renderInfoJugadorVertical(estadoTick.estadosJugadores[i],
+						  posicion,
+						  i + 1,
+						  estadoLogin.nroJugador == i + 1 && HUD_DISTINTO);
+	}
+}
+
+void HudVista::renderInfoJugadorVertical(EstadoJugador estado, Vector posicion, int nroJugador, bool esCliente) {
+	std::string vidas = " 0" + std::to_string(estado.cantidadVidas);
+	std::string puntos = std::to_string(estado.puntos);
+
+	struct TextoVistaParams params = {posicion, nroJugador, ALINEACION_DERECHA};
+	std::string vidaString = {VIDA_NAVE_IZQ, VIDA_NAVE_DER, ' '};
+	if (esCliente) vidaString = '>' + vidaString;
+	TextoVista::eRender(vidaString, params);
+
+	params = {posicion + Vector(0, LETRA_ALTO - LETRA_SMALL_ALTO) / 2,
+		   TEXTO_COLOR_NARANJA, ALINEACION_IZQUIERDA, TEXTO_SIZE_SMALL};
+	if (!esCliente) {
+		params.color = TEXTO_COLOR_GRIS;
+	}
+	TextoVista::eRender(vidas, params);
+
+	params.posicion = params.posicion + Vector(0, LETRA_ALTO * 5 / 4);
+	params.alineacion = ALINEACION_CENTRO;
+	TextoVista::eRender(puntos, params);
+}
+
+void HudVista::renderInfoLegacy(EstadoTick estadoTick, EstadoLogin estadoLogin) {
 	if (estadoLogin.cantidadJugadores == 0) {
 		for (EstadoJugador estadoJugador : estadoTick.estadosJugadores) {
 			if (strlen(estadoJugador.usuario) > 0) estadoLogin.cantidadJugadores++;
@@ -35,11 +90,8 @@ void HudVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::strin
 	} else {
 		renderInfoConNombres(estadoTick, estadoLogin);
 	}
-
-    if (toast != nullptr) {
-        toast->render();
-    }
 }
+
 
 // Este deberia llamarse si hay solo uno o dos jugadores
 void HudVista::renderInfoConNombres(EstadoTick estadoTick, EstadoLogin estadoLogin) {

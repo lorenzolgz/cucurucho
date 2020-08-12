@@ -63,7 +63,7 @@ bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
 }
 
 bool CampoMovil::verificarPosicionNivel() {
-    return posicion.getX() > (largoNivel + ancho);
+    return posicion.getX() > (largoNivel + ancho * (1 - 1/velocidadX));
 }
 
 EstadoInternoCampoMovil CampoMovil::state() {

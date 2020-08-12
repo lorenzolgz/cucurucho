@@ -22,9 +22,15 @@ private:
 	SDL_Renderer* gRenderer;
 	SDL_Texture* textura;
 
+	void renderInfoLegacy(EstadoTick estadoTick, EstadoLogin estadoLogin);
+
+	void renderInfoJugadorVertical(EstadoJugador jugador, Vector posicion, int nroJugador, bool esCliente);
+
 	void renderInfoConNombres(EstadoTick estadoTick, EstadoLogin estadoLogin);
 
 	void renderInfoSinNombres(EstadoTick estadoTick, EstadoLogin estadoLogin);
+
+	void renderInfo(EstadoTick tick, EstadoLogin login);
 };
 
 extern ToastVista* toast;

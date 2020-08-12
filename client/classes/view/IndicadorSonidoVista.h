@@ -8,8 +8,8 @@
 
 #include <SDL_render.h>
 
-#define INDICADOR_ANCHO 72
-#define INDICADOR_ALTO 51
+#define INDICADOR_ANCHO 78
+#define INDICADOR_ALTO 57
 
 class IndicadorSonidoVista {
 public:

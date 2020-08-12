@@ -55,10 +55,10 @@ void HiloConexionServidor::run() {
 
 	delete colaReceptora;
 	delete colaEnviadora;
-	conexionServidor->cerrar();
 	delete conexionServidor;
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+	conexionServidor->cerrar();
 	l->info("Se termino el HiloConexionServidor.");
 }
 
