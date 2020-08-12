@@ -19,6 +19,8 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
     }
 
     SDL_FreeSurface(loadedSurface);
+
+	l->info("La textura " + path + " fue creada");
     return textura;
 }
 
@@ -59,4 +61,5 @@ void GeneradorDeTexturas::liberarTextura(string fileName) {
 
     SDL_DestroyTexture(texturas[fileName]);
     texturas.erase(fileName);
+	l->info("La textura " + fileName + " fue destruida");
 }

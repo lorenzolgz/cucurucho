@@ -29,6 +29,7 @@ Musica *Audio::cargarMusica(std::string stringAudio) {
     }
 
     Musica *audio = new Musica(mixAudio);
+	l->info("La musica " + stringAudio + " fue fue creada");
     return audio;
 
 }
@@ -71,6 +72,7 @@ void Audio::generarMusica(std::string cancion) {
 		if (!canciones.empty()) {
 			auto it = canciones.begin();
 			delete it->second;
+			l->info("La musica " + it->first + " fue destruida");
 			canciones.erase(it);
 		}
         canciones[cancion] = cargarMusica(cancion);
