@@ -8,6 +8,7 @@
 
 #include <SDL_render.h>
 #include "../../../../commons/utils/Vector.h"
+#include "../../Audio.h"
 
 #define EXPLOSION_CHICA_SRC 30
 #define EXPLOSION_MEDIANA_SRC 96
@@ -21,7 +22,7 @@ enum {
 
 class ExplosionVista {
 public:
-    ExplosionVista(Vector centro, int tipo);
+    ExplosionVista(Vector centro, int tipo, int contador = 0);
 
     bool activa();
     void render();
@@ -33,6 +34,8 @@ private:
     int size;
     int contador;
 
+    Audio *audio;
+    std::string audio_explosion;
 };
 
 

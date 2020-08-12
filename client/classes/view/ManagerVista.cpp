@@ -9,6 +9,7 @@
 #include "../../../commons/utils/Constantes.h"
 #include "elements/EnemigoFinal1Vista.h"
 #include "elements/ExplosionVista.h"
+#include "elements/EnemigoFinal1ExtVista.h"
 #include <utility>
 
 ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, int ancho, int alto)
@@ -22,11 +23,16 @@ ManagerVista::ManagerVista(struct InformacionNivel infoNivel, int nivelActual, i
     disparoJugadorVista = new DisparoJugadorVista();
     disparoEnemigoVista = new DisparoEnemigoVista();
     primerNivel = true;
+    audio = Audio::getInstance();
+
 
 	for (int i = 0; i < MAX_JUGADORES; i++) {
 		jugadores->push_back(new JugadorVista(COLORES_JUGADOR_ARR[i]));
 	}
 	nivelIntermedioVista = new NivelIntermedioVista(jugadores, ancho, alto);
+
+//    audio->generarMusica("audioPantallaInicio.mp3");
+//    audio->playMusic("audioPantallaInicio.mp3");
 
 }
 
@@ -57,7 +63,9 @@ void ManagerVista::render(EstadoTick estadoTick, EstadoLogin estadoLogin, std::s
 
     renderJugadores(estadoTick, estadoLogin);
 
-    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos, estadoTick.estadosDisparosEnemigos);
+    agregarExplosiones(estadoTick.estadosEnemigos, estadoTick.estadosDisparos, estadoTick.estadosDisparosEnemigos,
+    		estadoTick.estadosJugadores);
+
     renderExplosiones();
 
     posCampo = { 0, 0, ancho, alto };
@@ -73,6 +81,8 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
     ManagerVista::informacionNivel = informacionNivel;
 
     velocidadNivel = informacionNivel.velocidad;
+
+    delete campoVista;
     campoVista = new CampoVista(velocidadNivel, informacionNivel.numeroNivel);
 
     for (InformacionFondo f : informacionNivel.informacionFondo) {
@@ -82,6 +92,13 @@ void ManagerVista::setInformacionNivel(InformacionNivel informacionNivel, Estado
         }
         campoVista->nuevoFondo(f.pFondo, 0, 0, f.pVelocidad);
     }
+
+    delete enemigoFinal1Vista;
+	enemigoFinal1Vista = new EnemigoFinal1Vista();
+
+    std::string cancion = informacionNivel.audioNivel;
+    audio->generarMusica(cancion);
+    audio->playMusic(cancion);
 }
 
 
@@ -94,7 +111,10 @@ void ManagerVista::renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin esta
 
 
 void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
+	EstadoEnemigo enemigoFinal;
+	enemigoFinal.clase = -1;
 
+	std::list<EstadoEnemigo> extensionesEnemigoFinal;
     for (EstadoEnemigo estadoEnemigo: estadosEnemigos) {
         switch (estadoEnemigo.clase) {
             case 1:
@@ -103,9 +123,22 @@ void ManagerVista::renderEnemigos(std::list<EstadoEnemigo> estadosEnemigos) {
             case 2:
                 enemigo2Vista->render(estadoEnemigo);
 				break;
-        	case 3:
-				enemigoFinal1Vista->render(estadoEnemigo);
+
+			// El Enemigo Final necesita recibir sus extensiones
+			case 3:
+				enemigoFinal = estadoEnemigo;
+				break;
+			case 4:
+				extensionesEnemigoFinal.push_back(estadoEnemigo);
+				break;
         }
+    }
+
+    if (enemigoFinal.clase != -1) {
+		enemigoFinal1Vista->render(enemigoFinal, extensionesEnemigoFinal);
+    } else {
+		explosiones.splice(explosiones.end(), enemigoFinal1Vista->nuevasExplosiones());
+		enemigoFinal1Vista->renderMuerte();
     }
 }
 
@@ -144,7 +177,9 @@ void ManagerVista::renderJugadores(EstadoTick estadoTick, EstadoLogin estadoLogi
 }
 
 
-void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo) {
+void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador,
+		std::list<EstadoDisparo> disparosEnemigo, EstadoJugador estadoJugadores[MAX_JUGADORES]) {
+
     for (EstadoEnemigo e : enemigos) {
         if (e.energia > 0) continue;
         Vector pos = Vector(e.posicionX, e.posicionY);
@@ -152,9 +187,15 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
             case 1:
                 explosiones.push_back(enemigo1Vista->nuevaExplosion(pos));
                 break;
-            case 2:
-                explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
-                break;
+			case 2:
+				explosiones.push_back(enemigo2Vista->nuevaExplosion(pos));
+				break;
+			case 3:
+				// Explosion de enemigo final se agrega en renderEnemigos()
+				break;
+			case 4:
+				explosiones.push_back(enemigoFinal1Vista->nuevaExplosionExt(pos));
+				break;
         }
     }
 
@@ -168,6 +209,13 @@ void ManagerVista::agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::li
 		if (d.energia > 0) continue;
 		Vector pos = Vector(d.posicionX, d.posicionY);
 		explosiones.push_back(disparoEnemigoVista->nuevaExplosion(pos));
+	}
+
+	for (int i = 0; i < MAX_JUGADORES; i++) {
+		Vector pos = Vector(estadoJugadores[i].posicionX, estadoJugadores[i].posicionY);
+		if (estadoJugadores[i].energia > 0) continue;
+		if (estadoJugadores[i].posicionX < 100) continue;
+		explosiones.splice(explosiones.end(), (*jugadores)[i]->nuevasExplosiones(pos, estadoJugadores[i].estaMuerto));
 	}
 }
 
@@ -186,15 +234,9 @@ void ManagerVista::renderExplosiones() {
 }
 
 void ManagerVista::renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username) {
-	struct EstadoJugador estadoJugadorPropio;
-	for (int i = 0; i < MAX_JUGADORES; i++) {
-		EstadoJugador estadoJugador = estadoTick.estadosJugadores[i];
-		if (i == estadoLogin.nroJugador - 1) {
-			estadoJugadorPropio = estadoJugador;
-			break;
-		}
-	}
+	hud->render(estadoTick, estadoLogin, username);
+}
 
-	hud->setCantidadVidasEnergiaPuntos(estadoJugadorPropio.cantidadVidas, estadoJugadorPropio.energia, estadoJugadorPropio.puntos);
-	hud->render(estadoLogin, username);
+bool ManagerVista::mutear() {
+    return audio->mutear();
 }

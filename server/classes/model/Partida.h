@@ -7,6 +7,7 @@
 class Partida {
 public:
 	Partida(Configuracion* config);
+	~Partida();
 	void tick(struct Comando comandos[]);
     EstadoInternoNivel state(struct InformacionNivel* informacionNivel);
     bool termino();

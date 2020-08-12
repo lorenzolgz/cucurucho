@@ -49,6 +49,7 @@ bool ManagerNiveles::terminoNivelActual() {
 void ManagerNiveles::pasajeDeNivel(){
     l->info("Transicion de niveles");
 
+    delete nivelActual;
     nivelActual = configurarNuevoNivel();
     nivelesConfiguracion.pop_front();
 }
@@ -81,5 +82,9 @@ bool ManagerNiveles::noHayMasNiveles() {
 
 void ManagerNiveles::nuevoDisparo(Disparo *disparo) {
     this->nivelActual->nuevoDisparo(disparo);
+}
+
+ManagerNiveles::~ManagerNiveles() {
+	delete nivelActual;
 }
 

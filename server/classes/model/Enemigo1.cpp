@@ -6,19 +6,18 @@
 #include "life/VidaEnemigo1.h"
 #include "ais/IAEnemigoPatron1.h"
 #include "entities/projectiles/DisparoEnemigo1.h"
+#include "ais/IARotativaDesdeIzquierda.h"
 
 
 Enemigo1::Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
-		if (random() % 10 < 2) {
-        x = -x + CAMPO_ANCHO - ENEMIGO1_ANCHO;
-        velocidadX *= -1;
-    }
 	this->posicion = Vector(x, y);
+	this->ultimaPosicion = this->posicion;
+	this->ultimoAngulo = 0;
 	this->ancho = ENEMIGO1_ANCHO;
 	this->alto = ENEMIGO1_ALTO;
 	this->velocidadX = velocidadX; // Posición 2 de sprite
-    this->ticksHastaDisparo = 0;
-    this->campo = campo;
+	this->ticksHastaDisparo = 0;
+	this->campo = campo;
 	this->vida = new VidaEnemigo1();
 	this->ia = new IAEnemigoPatron1(this, jugadores);
 	l->info("Se creo correctamente el Enemigo 01.");
@@ -26,17 +25,25 @@ Enemigo1::Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* 
 
 void Enemigo1::tick() {
 	ia = ia->tick();
-    ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
+	ticksHastaDisparo > 0 ? ticksHastaDisparo-- : ticksHastaDisparo = 0;
 
     l->debug("Posicion del Enemigo 01: "+ posicion.getVector());
 }
 
 struct EstadoEnemigo Enemigo1::state() {
 	struct EstadoEnemigo estado;
+	Vector velocidad = posicion - ultimaPosicion;
+
+	if (velocidad.modulo() > 2) {
+		ultimoAngulo = velocidad.arg();
+		ultimaPosicion = posicion;
+	}
+
 	estado.posicionX = posicion.getX();
 	estado.posicionY = posicion.getY();
     estado.clase = 1;
     estado.energia = vida->getEnergia();
+    estado.anguloDir = ultimoAngulo;
 	return estado;
 }
 
@@ -62,4 +69,9 @@ void Enemigo1::disparar(Vector direccion) {
         l->info("Se crea un nuevo disparo Enemigo 01");
     }
 
+}
+
+Enemigo1::~Enemigo1() {
+	delete this->vida;
+	delete this->ia;
 }

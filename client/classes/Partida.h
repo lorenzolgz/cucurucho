@@ -34,12 +34,14 @@ private:
     ManagerJuego* manager;
     HiloConexionCliente* hiloConexionCliente;
     IniciadorComunicacion* iniciadorComunicacion;
+	IndicadorSonidoVista* indicadorSonidoVista;
     ColaBloqueante<nlohmann::json>* colaMensajes;
     struct EstadoLogin estadoLogin;
     bool validarLogin;
     GestorSDL* gestorSDL;
     bool vieneDeTocarTeclaInvencible;
     bool enviarInvencible;
+    bool muteToggle;
 
     void conexionLoop(const Uint8 *currentKeyStates);
     void pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyStates);

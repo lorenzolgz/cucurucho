@@ -17,6 +17,7 @@ class Jugador;
 class Disparo : public EntidadDisparo {
 public:
     Disparo(float x, float y, Jugador* jugador);
+    ~Disparo();
 
 	EstadoDisparo state();
 	float getVelocidad();

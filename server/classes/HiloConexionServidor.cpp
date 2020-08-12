@@ -17,9 +17,12 @@ void HiloConexionServidor::run() {
 
 	try{
         while (continuarLoopeando || !colaEnviadora->empty()) {
-            nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
-            l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
-            colaReceptora->push(mensajeRecibido);
+			nlohmann::json mensajeRecibido = conexionServidor->recibirMensaje();
+			l->debug("recHiloConexionServidor " + mensajeRecibido.dump());
+			while (colaReceptora->size() > config->getMaxColaReceptora()) {
+				colaReceptora->pop();
+			}
+			colaReceptora->push(mensajeRecibido);
 
             while (colaEnviadora->size() > config->getMaxColaEmisora() && continuarLoopeando) {
                 nlohmann::json json = colaEnviadora->pop();
@@ -36,6 +39,9 @@ void HiloConexionServidor::run() {
                 nlohmann::json mensajeAEnviar = colaEnviadora->pop();
                 conexionServidor->enviarMensaje(mensajeAEnviar);
                 l->debug("envHiloConexionServidor " + mensajeAEnviar.dump());
+                if (mensajeAEnviar["tipoMensaje"] == ESTADO_TICK && mensajeAEnviar["numeroNivel"] == FIN_DE_JUEGO) {
+                    break;
+                }
             }
         }
     } catch (...) { // !!!! catcheo y logueo
@@ -43,6 +49,16 @@ void HiloConexionServidor::run() {
 	    cicloReconectar();
 	}
 
+	while (!colaReceptora->empty()) {
+		colaReceptora->pop();
+	}
+
+	delete colaReceptora;
+	delete colaEnviadora;
+	delete conexionServidor;
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+	conexionServidor->cerrar();
 	l->info("Se termino el HiloConexionServidor.");
 }
 
@@ -53,7 +69,7 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 	mensajeJson["nuevoNivel"] = estadoTick->nuevoNivel;
 	mensajeJson["numeroNivel"] = estadoTick->numeroNivel;
 	mensajeJson["posX"] = estadoTick->posX;
-	int i = 0, j = 0;
+	int i = 0;
 
 	for (; i< MAX_JUGADORES; i++) {
 		mensajeJson["estadosJugadores"][i]["helper1"]["posicionX"] = estadoTick->estadosJugadores[i].helper1.posicionX;
@@ -70,15 +86,18 @@ void HiloConexionServidor::enviarEstadoTick(struct EstadoTick* estadoTick) {
 		mensajeJson["estadosJugadores"][i]["estaMuerto"] = estadoTick->estadosJugadores[i].estaMuerto;
 		mensajeJson["estadosJugadores"][i]["presente"] = estadoTick->estadosJugadores[i].presente;
 		mensajeJson["estadosJugadores"][i]["puntos"] = estadoTick->estadosJugadores[i].puntos;
-		mensajeJson["estadosJugadores"][i]["puntosParcial"] = estadoTick->estadosJugadores[i].puntosParcial;
 		mensajeJson["estadosJugadores"][i]["usuario"] = std::string(estadoTick->estadosJugadores[i].usuario);
-    }
+		for (int puntajeParcial : estadoTick->estadosJugadores[i].puntosParciales) {
+			mensajeJson["estadosJugadores"][i]["puntosParciales"].push_back(puntajeParcial);
+		}
+	}
 	for (EstadoEnemigo estadoEnemigo : estadoTick->estadosEnemigos) {
         nlohmann::json mensajeEnemigo = {
 				{"posicionX", estadoEnemigo.posicionX},
 				{"posicionY", estadoEnemigo.posicionY},
 				{"energia", estadoEnemigo.energia},
-				{"clase", estadoEnemigo.clase}
+				{"clase", estadoEnemigo.clase},
+				{"anguloDir", estadoEnemigo.anguloDir}
         };
         mensajeJson["estadosEnemigos"].push_back(mensajeEnemigo);
 
@@ -138,6 +157,9 @@ void HiloConexionServidor::cicloReconectar() {
     	if (!continuarLoopeando) {
 			return;
     	}
+		while (this->colaEnviadora->size() != 0) {
+			this->colaEnviadora->pop();
+		}
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
 

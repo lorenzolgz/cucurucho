@@ -16,6 +16,7 @@
 #include "elements/EnemigoFinal1Vista.h"
 #include "elements/ExplosionVista.h"
 #include "NivelIntermedioVista.h"
+#include "elements/EnemigoFinal1ExtVista.h"
 
 class ManagerVista {
 public:
@@ -25,6 +26,9 @@ public:
     void setInformacionNivel(InformacionNivel informacionNivel, EstadoTick tick);
 
 	void renderNivelIntermedio(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
+
+
+    bool mutear();
 
 private:
     struct InformacionNivel informacionNivel;
@@ -44,6 +48,7 @@ private:
     int alto;
     int ancho;
     float velocidadNivel;
+    Audio* audio;
 
     void renderEnemigos(std::list<EstadoEnemigo> pEnemigo);
 
@@ -53,11 +58,13 @@ private:
 
 	void renderDisparosEnemigos(std::list<EstadoDisparo> disparosEnemigos);
 
-    void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador, std::list<EstadoDisparo> disparosEnemigo);
+	void agregarExplosiones(std::list<EstadoEnemigo> enemigos, std::list<EstadoDisparo> disparosJugador,
+							std::list<EstadoDisparo> disparosEnemigo, EstadoJugador estadoJugadores[MAX_JUGADORES]);
 
     void renderExplosiones();
 
 	void renderHud(EstadoTick estadoTick, EstadoLogin estadoLogin, std::string username);
+
 };
 
 

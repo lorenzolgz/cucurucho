@@ -33,7 +33,7 @@ bool GestorSDL::init(int anchoPantalla, int altoPantalla) {
 	}
 
     //Initialize SDL_mixer
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 1, 2048 ) < 0 )
     {
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
@@ -104,18 +104,5 @@ bool GestorSDL::event(std::string* inputText) {
     }
 
     return quit;
-}
-
-bool GestorSDL::reproducirMusica(std::string stringAudio) {
-
-    l->error("Reproduciendo audio " + stringAudio);
-    Audio* audio = Audio::getInstance();
-    Musica* musica = audio->generarMusica(stringAudio);
-    musica->play(80);
-}
-
-void GestorSDL::mutear() {
-//    musica->mutear();
-
 }
 

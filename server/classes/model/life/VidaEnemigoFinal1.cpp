@@ -6,8 +6,7 @@ VidaEnemigoFinal1::VidaEnemigoFinal1() : VidaEntidad(ENEMIGO_FINAL1_ENERGIA_INIC
 }
 
 int VidaEnemigoFinal1::danioColisionJugador() {
-	// TODO probablemente cambiar a 0
-	return DANIO_TOTAL;
+	return 0;
 }
 
 int VidaEnemigoFinal1::danioColisionDisparoJugador() {

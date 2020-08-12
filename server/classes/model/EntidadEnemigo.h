@@ -10,6 +10,7 @@
 class EntidadEnemigo : public Entidad {
 public:
 	virtual struct EstadoEnemigo state() = 0;
+	virtual ~EntidadEnemigo() {};
 	virtual float getVelocidadX() = 0;
 	virtual void setPosicion(Vector nuevaPosicion) = 0;
     virtual void disparar(Vector vector) = 0;

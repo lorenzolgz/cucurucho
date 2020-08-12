@@ -4,7 +4,6 @@
 #include "../../GeneradorDeTexturas.h"
 #include "../../GraphicRenderer.h"
 #include "HelperVista.h"
-#include "../../Audio.h"
 
 JugadorVista::JugadorVista(ColoresJugador colores) {
 	JugadorVista::gRenderer = GraphicRenderer::getInstance();
@@ -12,13 +11,15 @@ JugadorVista::JugadorVista(ColoresJugador colores) {
     JugadorVista::textura = generadorDeTexturas->generarTextura("player.png");
     JugadorVista::texturaEnergia = generadorDeTexturas->generarTextura("lifebar.png");
 	JugadorVista::contador = 0;
+	JugadorVista::contadorMuerte = 40;
+	JugadorVista::muerteDefinitiva = 0;
 	JugadorVista::contadorVelocidadY = 0;
     JugadorVista::colores = colores;
 
-//  USO EFECTOS DE SONIDO: Creo instancia de efecto que quiero y cuando la necesito audio->play(volumen)
-    Audio *audio = Audio::getInstance();
-    JugadorVista::audioPerder = audio->generarEfecto("sfx-25.wav");
-    JugadorVista::audioRevivir = audio->generarEfecto("sfx-07.wav");
+    JugadorVista::audio = Audio::getInstance();
+    JugadorVista::audiorevivir = "sfx-09.wav";
+
+    audio->generarEfecto(audiorevivir);
 
     helperAbove = new HelperVista();
     helperBelow = new HelperVista();
@@ -40,6 +41,9 @@ void JugadorVista::calcularVelocidadY(Vector nuevaPosicion) {
 
 void JugadorVista::render(struct EstadoJugador estadoJugador) {
     contador++;
+    contadorMuerte++;
+
+    renderMuerte();
 
     if (!deberiaRenderizar(estadoJugador)) return;
 
@@ -92,7 +96,7 @@ void JugadorVista::renderLifebar(int energia) {
                         (int) posicion.getY() + JUGADOR_SRC_ALTO + BARRA_VIDA_SRC_ALTO,
                         BARRA_VIDA_SRC_ANCHO * energia / 100, BARRA_VIDA_SRC_ALTO};
 
-    std::array<int, 3> color = coloresRender.base[0];
+    std::array<int, 3> color = COLORES_VERDE.base[0];
     SDL_SetTextureColorMod(texturaEnergia, color[0], color[1], color[2]);
 
     SDL_RenderCopy(gRenderer, texturaEnergia, &srcrect, &dstrect);
@@ -118,4 +122,54 @@ void JugadorVista::setColores(EstadoJugador estadoJugador) {
         coloresRender = COLORES_GRIS;
         JugadorVista::textura = GeneradorDeTexturas::getInstance()->generarTextura("player-g.png");
     }
+}
+
+std::list<ExplosionVista *> JugadorVista::nuevasExplosiones(Vector vector, int muerte) {
+	Vector center = vector + Vector(JUGADOR_SRC_ANCHO / 2, JUGADOR_SRC_ALTO / 2);
+	std::list<ExplosionVista*> explosiones;
+
+	for (int i = 0; i < 3; i++) {
+		Vector offset = Vector(-JUGADOR_SRC_ANCHO, 0) * i;
+		explosiones.push_back(new ExplosionVista(center + offset, EXPLOSION_MEDIANA, -9*i));
+	}
+
+	for (int i = 1; i < 4; i++) {
+		Vector offset = Vector(-JUGADOR_SRC_ANCHO * 2 / 3, -JUGADOR_SRC_ALTO * 2 / 3) * i;
+		explosiones.push_back(new ExplosionVista(center + offset, EXPLOSION_CHICA, -9*i));
+	}
+
+	for (int i = 1; i < 4; i++) {
+		Vector offset = Vector(-JUGADOR_SRC_ANCHO * 2 / 5, -JUGADOR_SRC_ALTO) * i;
+		explosiones.push_back(new ExplosionVista(center + offset, EXPLOSION_CHICA, -9*i));
+	}
+
+	for (int i = 1; i < 4; i++) {
+		Vector offset = Vector(-JUGADOR_SRC_ANCHO * 2 / 5, JUGADOR_SRC_ALTO) * i;
+		explosiones.push_back(new ExplosionVista(center + offset, EXPLOSION_CHICA, -9*i));
+	}
+
+	contadorMuerte = 0;
+	posicionMuerte = vector;
+	muerteDefinitiva = muerte;
+
+	audio->playEffect(audiorevivir);
+	return explosiones;
+}
+
+void JugadorVista::renderMuerte() {
+	if  (contadorMuerte >= 40) {
+		return;
+	}
+
+	SDL_Rect srcrect = {JUGADOR_SRC_ANCHO, 0, JUGADOR_SRC_ANCHO, JUGADOR_SRC_ALTO};
+
+	SDL_Rect dstrect = {(int) posicionMuerte.getX(),
+						(int) posicionMuerte.getY(),
+						JUGADOR_SRC_ANCHO,
+						JUGADOR_SRC_ALTO};
+	renderGlow(srcrect, dstrect);
+}
+
+bool JugadorVista::isMuerteDefinitiva() const {
+	return muerteDefinitiva != 0;
 }

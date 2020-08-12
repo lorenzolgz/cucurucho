@@ -5,6 +5,11 @@
 class IAEnemigo {
 public:
 	virtual IAEnemigo* tick() = 0;
+	virtual ~IAEnemigo() {};
+
+	virtual void inicializar() {
+		return;
+	}
 };
 
 

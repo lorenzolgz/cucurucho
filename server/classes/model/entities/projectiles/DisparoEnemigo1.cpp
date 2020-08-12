@@ -39,4 +39,8 @@ int DisparoEnemigo1::getTipoEntidad() {
     return ENTIDAD_DISPARO_ENEMIGO1;
 }
 
+DisparoEnemigo1::~DisparoEnemigo1() {
+	delete vida;
+}
+
 

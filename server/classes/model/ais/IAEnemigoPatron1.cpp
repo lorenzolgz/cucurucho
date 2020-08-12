@@ -1,11 +1,10 @@
 #include "IAEnemigoPatron1.h"
 
-#define ATENUADOR_IA_ENEMIGO_PATRON_1 0.65
-#define DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 250
-#define DISTANCIA_DESACTIVADORA_DERECHA_IA_ENEMIGO_PATRON_1 150
-#define DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1 80
-#define JUGADORES_NO_VIVOS 99999
-#define RANGO_DISPARO 400
+#define RANGO_DISPARO_MIN 400
+#define RANGO_DISPARO_MAX 700
+#define RANGO_PERSEGUIR 400
+#define RANGO_PERSEGUIR_LENTO 200
+#define RANGO_PERSEGUIR_LENTO_MINIMO 100
 
 IAEnemigoPatron1::IAEnemigoPatron1(EntidadEnemigo* entidadEnemigo, std::map<int, Jugador*>* jugadores) {
 	this->entidadEnemigo = entidadEnemigo;
@@ -13,59 +12,47 @@ IAEnemigoPatron1::IAEnemigoPatron1(EntidadEnemigo* entidadEnemigo, std::map<int,
 }
 
 IAEnemigo* IAEnemigoPatron1::tick() {
-	Vector desplazamiento;
-	float desplazamientoHor = JUGADORES_NO_VIVOS;
-	float desplazamientoVer = JUGADORES_NO_VIVOS;
-	float distanciaMinima = JUGADORES_NO_VIVOS;
-	bool jugadorPorDerecha;
-	bool jugadorPorArriba;
 
-	desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
-	desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
+	Jugador* jugadorMasCercano = nullptr;
 
 	std::map<int, Jugador *>::iterator it;
 	for (it = jugadores->begin(); it != jugadores->end(); it++) {
-        // Solo itero a traves de los que estan vivos
-        if(it->second->estaMuerto())
+        // Solo itero a traves de los que estan vivos y conectados
+        if(it->second->estaMuerto() || it->second->estaDesconectado())
             continue;
-		desplazamiento = it->second->getPosicion() - entidadEnemigo->getPosicion();
-		desplazamientoHor = desplazamiento.getX();
-		desplazamientoVer = desplazamiento.getY();
-		float distancia = desplazamiento.modulo();
-		if(distancia < distanciaMinima){
-			distanciaMinima = distancia;
-			desplazamientoHor < 0 ? jugadorPorDerecha = true : jugadorPorDerecha = false;
-			desplazamientoVer < 0 ? jugadorPorArriba = true : jugadorPorArriba = false;
-		}
 
 		Vector direccion = entidadEnemigo->getCentroDeMasa() - it->second->getCentroDeMasa();
-		if (direccion.modulo() > RANGO_DISPARO) {
-			entidadEnemigo->disparar(direccion);
+		if (direccion.modulo() < RANGO_PERSEGUIR) {
+			if (jugadorMasCercano == nullptr) {
+				jugadorMasCercano = it->second;
+			} else {
+				Vector direccionMasCercano = entidadEnemigo->getCentroDeMasa() - jugadorMasCercano->getCentroDeMasa();
+				if (direccionMasCercano.modulo() > direccion.modulo()) {
+					jugadorMasCercano = it->second;
+				}
+			}
 		}
 	}
 
-	if(distanciaMinima == JUGADORES_NO_VIVOS){
-        // Si no hay jugador vivo para perseguir solo tickean
-        entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() - entidadEnemigo->getVelocidadX(), entidadEnemigo->getPosicion().getY()));
-    }
-	else if((!jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 && distanciaMinima > DISTANCIA_DESACTIVADORA_IZQUIERDA_IA_ENEMIGO_PATRON_1) ||
-	   (jugadorPorDerecha && distanciaMinima <= DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1 && distanciaMinima > DISTANCIA_DESACTIVADORA_DERECHA_IA_ENEMIGO_PATRON_1)) {
-
-		float velocidadHorizontal = std::abs(entidadEnemigo->getVelocidadX()) * ATENUADOR_IA_ENEMIGO_PATRON_1;
-		float velocidadVertical = std::abs(entidadEnemigo->getVelocidadX()) * ATENUADOR_IA_ENEMIGO_PATRON_1;
-
-		if (jugadorPorDerecha)
-			velocidadHorizontal = - velocidadHorizontal;
-
-		if (jugadorPorArriba)
-			velocidadVertical = - velocidadVertical;
-
-		entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() + velocidadHorizontal, entidadEnemigo->getPosicion().getY() + velocidadVertical));
-
-	} else if (distanciaMinima > DISTANCIA_ACTIVADORA_IA_ENEMIGO_PATRON_1) {
-		// Si ya se alejo lo suficiente tickeo como venia hasta encontrar otro jugador
-		entidadEnemigo->setPosicion(Vector(entidadEnemigo->getPosicion().getX() - entidadEnemigo->getVelocidadX(), entidadEnemigo->getPosicion().getY()));
+	if (jugadorMasCercano == nullptr) {
+        // Si no hay jugador vivo cercano para perseguir solo tickean
+        entidadEnemigo->setPosicion(entidadEnemigo->getPosicion() - Vector(entidadEnemigo->getVelocidadX(), 0));
+        return this;
 	}
+
+	Vector direccion = jugadorMasCercano->getCentroDeMasa() - entidadEnemigo->getCentroDeMasa();
+	Vector velocidad = direccion.escalar(entidadEnemigo->getVelocidadX());
+	if (direccion.modulo() < RANGO_PERSEGUIR_LENTO) {
+		// Para darle al jugador una posibilidad de escapar, se reduce la velocidad del enemigo
+		if (direccion.modulo() < RANGO_PERSEGUIR_LENTO_MINIMO) {
+			velocidad = velocidad / 2;
+		} else {
+			velocidad = velocidad * (direccion.modulo() / 2 + RANGO_PERSEGUIR_LENTO / 2 - RANGO_PERSEGUIR_LENTO_MINIMO);
+			velocidad = velocidad / (RANGO_PERSEGUIR_LENTO - RANGO_PERSEGUIR_LENTO_MINIMO);
+		}
+	}
+	entidadEnemigo->setPosicion(entidadEnemigo->getPosicion() - velocidad);
+	entidadEnemigo->disparar(direccion * -1);
 
 	return this;
 }

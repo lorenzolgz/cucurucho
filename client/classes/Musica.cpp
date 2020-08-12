@@ -3,30 +3,33 @@
 //
 
 #include "Musica.h"
-#include "../../commons/utils/Constantes.h"
+#include "../../commons/utils/Log.h"
 
 Musica::Musica(Mix_Music* audio) {
     Musica::audio = audio;
-    Musica::mute = !SONIDO_ACTIVADO;
+
 }
 
 void Musica::play(int volumen) {
-
-    if (mute) return;
+	Mix_HaltMusic();
     Mix_PlayMusic(audio, -1);
     Mix_VolumeMusic(volumen);
+
 }
 
 void Musica::mutear() {
 
-    if (!mute) {
-        Mix_HaltMusic();
-        mute = true;
-    }else {
-        mute = false;
-        play(90);
-    }
+    Mix_VolumeMusic(VOLUMEN_MUTE);
 
 }
 
 
+void Musica::desmutear(){
+
+    Mix_VolumeMusic(VOLUMEN_MUSICA);
+
+}
+
+Musica::~Musica() {
+	Mix_FreeMusic(audio);
+}

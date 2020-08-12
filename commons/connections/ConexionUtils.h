@@ -62,7 +62,7 @@ int _recibirData(int *client_socket, T *data, int bytesTotalesARecibir) {
 		}
 	}
 
-	return bytes_receive;
+	return total_bytes_receive;
 }
 
 template <class T>
@@ -109,7 +109,7 @@ int _enviarData(int* client_socket, T* data, int bytesTotalesAEnviar) {
 		}
 	}
 
-	return bytes_written;
+	return total_bytes_written;
 }
 
 #endif //CUCURUCHO_CONEXIONUTILS_H

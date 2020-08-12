@@ -17,6 +17,7 @@ const int TICKS_COOLDOWN_DISPARO_ENEMIGO1 = 280;
 class Enemigo1 : public EntidadEnemigo {
 public:
 	Enemigo1(float x, float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo);
+	~Enemigo1();
 
 	void tick() override;
 	struct EstadoEnemigo state() override;
@@ -28,6 +29,8 @@ public:
 private:
 	float velocidadX;
     int ticksHastaDisparo;
+    Vector ultimaPosicion;
+    int ultimoAngulo;
     CampoMovil* campo;
 };
 

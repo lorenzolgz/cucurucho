@@ -4,9 +4,9 @@
 #include <list>
 #define LARGO_PATH 255
 #define MAX_JUGADORES 4
-#define LARGO_USERNAME 16
-#define LARGO_PASSWORD 16
-#define TIMEOUT_MENSAJES 4
+#define LARGO_USERNAME 11
+#define LARGO_PASSWORD 11
+#define TIMEOUT_MENSAJES 10
 
 // Parametros para controlar la cantidad maxima de elementos de
 // las colas del cliente y del servidor
@@ -27,13 +27,19 @@
 #define LOGIN_FIN 3
 
 // Tiempo en segundos entre LOGIN_COMENZAR y LOGIN_FIN
-#define TIMEOUT_LOGIN_FIN 2
+#define TIMEOUT_LOGIN_FIN 3
 
 // Tiempo en segundos de pasaje entre niveles
-#define TIMEOUT_PROXIMO_NIVEL 5
+#define TIMEOUT_PROXIMO_NIVEL 6
+
+// Ticks hasta que se cierre el servidor por no tener clientes conectados
+#define TICKS_FIN_DESCONEXION 10 * 60
 
 //Fin de Juego
 #define FIN_DE_JUEGO -1
+
+//Fin de Juego
+#define FIN_DE_JUEGO_DESCONEXION -2
 
 // Tipos de mensajes
 enum {
@@ -52,6 +58,7 @@ struct Comando {
 	int derecha;
 	int disparo;
 	int invencible;
+	int desconectado;
 };
 
 //para el logueo
@@ -77,7 +84,7 @@ struct EstadoHelper {
 };
 
 struct EstadoJugador {
-    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), puntosParcial(0), cantidadVidas(0), presente(0) {}
+    EstadoJugador(): posicionX(-1000), posicionY(-1000), puntos(0), cantidadVidas(0), presente(0), estaMuerto(0), energia(100) {}
 	int posicionX;
 	int posicionY;
 	EstadoHelper helper1;
@@ -89,15 +96,16 @@ struct EstadoJugador {
 	int estaMuerto;
     int presente;
 	int puntos;
-	int puntosParcial;
+	std::list<int> puntosParciales;
 };
 
 struct EstadoEnemigo {
-	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0) {}
+	EstadoEnemigo(): posicionX(-200), posicionY(-200), energia(0), anguloDir(0) {}
 	int posicionX;
 	int posicionY;
 	int energia;
 	int clase;
+	int anguloDir;
 };
 
 struct EstadoTick {

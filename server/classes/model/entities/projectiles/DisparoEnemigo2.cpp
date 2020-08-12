@@ -36,3 +36,7 @@ void DisparoEnemigo2::tick() {
 int DisparoEnemigo2::getTipoEntidad() {
     return ENTIDAD_DISPARO_ENEMIGO2;
 }
+
+DisparoEnemigo2::~DisparoEnemigo2() {
+	delete this->vida;
+}

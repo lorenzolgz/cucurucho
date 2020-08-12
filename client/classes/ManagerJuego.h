@@ -9,6 +9,7 @@
 #include "../../libraries/json/json.hpp"
 #include "view/ManagerVista.h"
 #include "view/Titulo.h"
+#include "view/IndicadorSonidoVista.h"
 
 class ManagerJuego {
 public:
@@ -30,6 +31,8 @@ public:
 
     void setEstadoLogin(const EstadoLogin &estadoLogin);
 
+    void mutear();
+
 private:
     InformacionNivel informacionNivel;
     EstadoTick estadoTick;
@@ -39,8 +42,9 @@ private:
 
 	void verificarJugadoresMuertos(const EstadoTick tick);
 
-    EfectoSonido *audioPerder;
-    Musica *audioFinDeJuego;
+	Audio* audio;
+    std::string audioPerder;
+
 };
 
 

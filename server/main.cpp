@@ -19,7 +19,7 @@ bool validarParametroSimple(int argc, char *argv[], std::string parametro, int p
 
 int main(int argc , char *argv[]) {
 
-    // TODO: Recibir los parametros se dejo en el cliente y nunca se trajo al server
+    // TODO: Recibir los parametros se dejo en el cliente y nunca se trajo al server !!!!
     // Faltan traer nivel de log y archivo de configuracion
     std::string archivoConfig;
     std::string nivelLog = "";
@@ -28,7 +28,7 @@ int main(int argc , char *argv[]) {
     for (int i = 1; i < argc; i ++) {
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--h") == 0) {
             std::string help = "Gley Lancer (servidor) en C++ by Cucurucho++\nCatedra Azcurra, Taller de Programacion I, Facultad de Ingenieria, UBA\n";
-            // TODO: Ver si falta actualizar el help
+            // TODO: Ver si falta actualizar el help !!!!
             std::string opciones = std::string("Opciones:\n\t")
                                    + "-l\tSetea el nivel de log\n\t"
                                    + "-c\tEspecifica ruta del archivo de configuracion (las rutas de imagenes que se utilicen son relativas a la carpeta \"assets/sprites\" del proyecto)\n\t"
@@ -63,12 +63,12 @@ int main(int argc , char *argv[]) {
     }
 
     l = new Log("server");
-
     Configuracion* config = parsearConfiguracion(archivoConfig);
     if (nivelLog == "") nivelLog = config->getNivelLog();
     l->set_stdout(config->isStdOut());
     l->setConf(nivelLog);
     l->info("Iniciando el conexionServidor.");
+	srand(time(nullptr));
 
     return esperarConexiones(port, config);
 }

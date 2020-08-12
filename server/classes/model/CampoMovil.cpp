@@ -3,6 +3,8 @@
 #include <string>
 #include "../../../commons/utils/Log.h"
 
+const int OFFSET_CAMPO = 100;
+
 CampoMovil::CampoMovil(std::map<int, Jugador*>* jugadores, int ancho, int alto, float velocidadNivel, float largoNivel) {
 	this->posicion = Vector(0, 0);
 	this->velocidadX = velocidadNivel;
@@ -54,12 +56,14 @@ void CampoMovil::agregarEntidadEnemigo(EntidadEnemigo *entidad) {
 }
 
 bool CampoMovil::entidadEstaDentroDelCampo(Entidad *entidad) {
-	return (entidad->getPosicion().getX() + entidad->getAncho() <= ancho) && (entidad->getPosicion().getY() + entidad->getAlto() <= alto) &&
-			(entidad->getPosicion().getX() >= 0) && (entidad->getPosicion().getY() >= 0);
+	return (entidad->getPosicion().getX() + entidad->getAncho() <= ancho)
+		&& (entidad->getPosicion().getY() + entidad->getAlto() <= alto)
+		&& (entidad->getPosicion().getX() >= 0)
+		&& (entidad->getPosicion().getY() >= 0);
 }
 
 bool CampoMovil::verificarPosicionNivel() {
-    return posicion.getX() > (largoNivel + ancho);
+    return posicion.getX() > (largoNivel + ancho * (1 - 1/velocidadX));
 }
 
 EstadoInternoCampoMovil CampoMovil::state() {
@@ -102,7 +106,8 @@ bool CampoMovil::verificarEntidadEstaDentroDelCampo(Entidad* entidad) {
 	int posY = entidad->getPosicion().getY();
 	int ancho_e = entidad->getAncho();
 	int alto_e = entidad->getAlto();
-	return !(posX + ancho_e < 0 || posX - ancho_e > ancho || posY + alto_e < 0 || posY - alto_e > alto);
+	return !(posX + ancho_e < -OFFSET_CAMPO || posX - ancho_e > ancho + OFFSET_CAMPO
+		|| posY + alto_e < -OFFSET_CAMPO || posY - alto_e > alto + OFFSET_CAMPO);
 }
 
 void CampoMovil::removerEntidadesEnemigosMuertas() {
@@ -110,6 +115,10 @@ void CampoMovil::removerEntidadesEnemigosMuertas() {
 	while (it != entidadesEnemigos.end()) {
 		EntidadEnemigo* entidadEnemigo = *it;
 		if (entidadEnemigo->getVidaEntidad()->estaMuerto()) {
+			if (entidadEnemigo->getTipoEntidad() != ENTIDAD_ENEMIGO_FINAL1 &&
+				entidadEnemigo->getTipoEntidad() != ENTIDAD_ENEMIGO_FINAL1EXT) {
+				delete (*it);
+			}
 			it = entidadesEnemigos.erase(it);
 		} else {
 			++it;
@@ -144,7 +153,8 @@ void CampoMovil::removerDisparosMuertos() {
 void CampoMovil::procesarTodasLasColisiones() {
 	for (auto it = jugadores->begin(); it != jugadores->end(); it++) {
 		Jugador *jugador = it->second;
-		if (jugador->estaMuerto()) {
+		// Ignoramos a los jugadores muertos y a los desconectados
+		if (jugador->estaMuerto() || jugador->estaDesconectado()) {
 			continue;
 		}
 		for (auto *entidadEnemigo : entidadesEnemigos) {
@@ -213,5 +223,17 @@ void CampoMovil::removerDisparosFueraDePantalla() {
             itde++;
         }
     }
+}
+
+CampoMovil::~CampoMovil() {
+	for (auto* disparo : disparosEnemigos) {
+		delete disparo;
+	}
+	for (auto* disparo : disparosJugador) {
+		delete disparo;
+	}
+	for (auto* enemigo : entidadesEnemigos) {
+		delete enemigo;
+	}
 }
 

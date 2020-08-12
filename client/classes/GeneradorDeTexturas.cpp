@@ -19,6 +19,8 @@ SDL_Texture * GeneradorDeTexturas::cargarTextura(SDL_Renderer* gRenderer, const 
     }
 
     SDL_FreeSurface(loadedSurface);
+
+	l->info("La textura " + path + " fue creada");
     return textura;
 }
 
@@ -52,4 +54,12 @@ SDL_Texture* GeneradorDeTexturas::generarTextura(string entidadDelJuego) {
         return textura_defecto;
     }
     return textura;
+}
+
+void GeneradorDeTexturas::liberarTextura(string fileName) {
+    if (texturas.count(fileName) == 0) return;
+
+    SDL_DestroyTexture(texturas[fileName]);
+    texturas.erase(fileName);
+	l->info("La textura " + fileName + " fue destruida");
 }

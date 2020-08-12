@@ -6,19 +6,16 @@
 #include "life/VidaEnemigo2.h"
 #include "ais/IAEnemigoPatron2.h"
 #include "entities/projectiles/DisparoEnemigo2.h"
+#include "ais/IARotativaDesdeIzquierda.h"
 
 
 Enemigo2::Enemigo2(float x,float y, float velocidadX, std::map<int, Jugador*>* jugadores, CampoMovil* campo) {
-	if (random() % 10 < 2) {
-        x = -x + CAMPO_ANCHO - ENEMIGO2_ANCHO;
-        velocidadX *= -1;
-    }
 	this->posicion = Vector(x, y);
 	this->ancho = ENEMIGO2_ANCHO;
 	this->alto = ENEMIGO2_ALTO;
 	this->velocidadX = velocidadX;
 	this->vida = new VidaEnemigo2();
-	this->ia = new IAEnemigoPatron2(this, jugadores);
+	this->ia = new IARotativaDesdeIzquierda(this, jugadores);
 	this->campo = campo;
 	l->info("Se creo correctamente el Enemigo 02.");
 }
@@ -66,4 +63,9 @@ void Enemigo2::disparar(Vector direccion) {
         l->info("Se crea un nuevo disparo Enemigo 02");
     }
 
+}
+
+Enemigo2::~Enemigo2() {
+	delete this->vida;
+	delete this->ia;
 }

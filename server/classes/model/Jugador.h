@@ -23,7 +23,8 @@ const double JUGADOR_VELOCIDAD_ESCALAR = 5.75;
 
 class Jugador : public Entidad {
 public:
-    Jugador(Configuracion* config, int nroJugador);
+	Jugador(Configuracion* config, int nroJugador);
+	~Jugador();
 	void calcularVectorVelocidad(bool arriba, bool abajo, bool izquierda, bool derecha);
 	void tick();
 	struct EstadoJugador state();
@@ -37,6 +38,8 @@ public:
     void reiniciarPosicion();
 	void cambiarInvencible(bool invencible);
 	bool estaMuerto();
+	void setDesconectado(bool nuevoDesconectado);
+	bool estaDesconectado();
     void sumarPuntosPorDestruirA(int entidadEnemigo);
     int getNroJugador();
     void finNivel();
@@ -45,15 +48,16 @@ private:
 	Configuracion* config;
 	int nroJugador;
 	int puntos;
-	int puntosParcial;
+	std::list<int> puntosParcial;
     Vector velocidad;
     double velocidadEscalar;
     int ticksHastaDisparo;
-
+	bool agregarPuntajeParcial;
 	CampoMovil* campo;
 	Helper* helperAbove;
 	Helper* helperBelow;
 	VidaJugador* vida;
+    bool desconectado;
 
 	Vector actualizarPosicion(Vector posicionNueva);
 	bool puedeDisparar();

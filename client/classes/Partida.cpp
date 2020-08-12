@@ -4,15 +4,18 @@
 #include "Partida.h"
 #include "GestorSDL.h"
 #include <SDL_mixer.h>
+#include <malloc.h>
 #include "../../commons/connections/ConexionExcepcion.h"
 
 Partida::Partida() {}
 
 void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int port, bool conexionPerdida) {
     bool quit = false;
+    muteToggle = false;
 
     pantallaPrincipal = new Titulo(PANTALLA_ANCHO, PANTALLA_ALTO, conexionPerdida);
     manager = new ManagerJuego();
+    indicadorSonidoVista = new IndicadorSonidoVista();
     estadoLogin = {LOGIN_PENDIENTE};
     validarLogin = false;
     GestorSDL* gestorSDL;
@@ -24,9 +27,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
     iniciadorComunicacion = new IniciadorComunicacion(ip_address, port);
     hiloConexionCliente = new HiloConexionCliente(colaMensajes, iniciadorComunicacion);
 
-    Audio* audio = Audio::getInstance();
-    Musica * intro = audio->generarMusica("audioPantallaInicio.mp3");
-    intro->play(10);
     l->info("Los objetos fueron inicializados correctamente a partir de los datos de la configuracion inicial");
 
     try{
@@ -46,7 +46,7 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
                     nlohmann::json json = colaMensajes->pop();
                     // Solo se deberian matar los mensajes de ESTADO_TICK que no indican fin del juego
                     // TODO: quiero llorar
-                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] == FIN_DE_JUEGO) {
+                    if (json["tipoMensaje"] != ESTADO_TICK || json["numeroNivel"] <= FIN_DE_JUEGO) {
                         colaMensajes->push_back(json);
                         break;
                     }
@@ -89,7 +89,6 @@ void Partida::iniciar(Configuracion* configuracion, const char* ip_address, int 
         }
 
         if (manager->terminoJuego()) {
-            renderLoop();
             l->info("Finalizo el juego.");
         } else {
             l->error("Se interrumpio el juego: " + std::string(exc.what()));
@@ -155,7 +154,6 @@ void Partida::pantallaInicioLoop(std::string inputText, const Uint8 *currentKeyS
     }
 
     pantallaPrincipal->tick(inputText, estadoLogin.estadoLogin, &validarLogin);
-	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
 // Comunicacion con el cliente. Envia la secuencia de teclas presionada
@@ -187,9 +185,11 @@ void Partida::conexionLoop(const Uint8 *currentKeyStates) {
 }
 
 void Partida::renderLoop() {
-	if (estadoLogin.estadoLogin <= 0) return;
+	if (estadoLogin.estadoLogin > 0) {
+		manager->render();
+	}
+	indicadorSonidoVista->render();
 
-	manager->render();
 	SDL_RenderPresent(GraphicRenderer::getInstance());
 }
 
@@ -207,6 +207,7 @@ void Partida::finJuegoLoop() {
 		SDL_RenderClear(GraphicRenderer::getInstance());
 		quit = eventLoop(&input);
 		const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+		hacks(currentKeyStates);
 		quit |= currentKeyStates[SDL_SCANCODE_RETURN] || currentKeyStates[SDL_SCANCODE_ESCAPE];
 		manager->renderFinJuego();
 		SDL_RenderPresent(GraphicRenderer::getInstance());
@@ -226,21 +227,27 @@ void Partida::reiniciarInstanciaHilo() {
 
 
 void Partida::hacks(const Uint8 *currentKeyStates) {
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_X]) {
         l->info("Apretaste CTRL+X. Cerrando conexion de cliente"); // TODO: dejar log? seee aguanten los logs vieja no me importa nada
         hiloConexionCliente->cerrarConexion();
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_P]) {
         SDL_Delay(1000);
     }
 
-    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]){
+    if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_D]) {
         pantallaPrincipal->setAutoCompletar();
     }
 
     if (currentKeyStates[SDL_SCANCODE_LCTRL] && currentKeyStates[SDL_SCANCODE_M]){
-        gestorSDL->mutear();
+        if (muteToggle == false) {
+        	bool resultado = Audio::getInstance()->mutear();
+			indicadorSonidoVista->setMuteado(resultado);
+            muteToggle = true;
+        }
+    }else{
+        muteToggle = false;
     }
 
 }
@@ -268,7 +275,9 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
 		estadoTick.estadosJugadores[i].estaMuerto = mensaje["estadosJugadores"][i]["estaMuerto"];
 		estadoTick.estadosJugadores[i].presente = mensaje["estadosJugadores"][i]["presente"];
 		estadoTick.estadosJugadores[i].puntos = mensaje["estadosJugadores"][i]["puntos"];
-		estadoTick.estadosJugadores[i].puntosParcial = mensaje["estadosJugadores"][i]["puntosParcial"];
+		for (int puntajeParcial : mensaje["estadosJugadores"][i]["puntosParciales"]) {
+			estadoTick.estadosJugadores[i].puntosParciales.push_back(puntajeParcial);
+		}
 		strcpy(estadoTick.estadosJugadores[i].usuario, std::string(mensaje["estadosJugadores"][i]["usuario"]).c_str());
     }
     for (nlohmann::json informacionJson : mensaje["estadosEnemigos"]){
@@ -277,6 +286,7 @@ void Partida::procesarEstadoTick(nlohmann::json mensaje) {
         estadoEnemigo.posicionY = informacionJson["posicionY"];
         estadoEnemigo.clase = informacionJson["clase"];
         estadoEnemigo.energia = informacionJson["energia"];
+		estadoEnemigo.anguloDir = informacionJson["anguloDir"];
         estadoTick.estadosEnemigos.push_back(estadoEnemigo);
     }
     for (nlohmann::json informacionJson : mensaje["estadosDisparos"]){
@@ -316,7 +326,6 @@ void Partida::procesarInformacionNivel(nlohmann::json mensaje) {
         info.informacionFondo.push_back(informacionFondoJson);
     }
     manager->setInformacionNivel(info);
-    gestorSDL->reproducirMusica(info.audioNivel);
 }
 
 void Partida::procesarEstadoLogin(nlohmann::json mensaje) {
