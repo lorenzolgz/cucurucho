@@ -36,6 +36,8 @@ public:
 	Vector escalar(double d);
 
     float modulo();
+
+    Vector polares(double mod, double a);
 };
 
 

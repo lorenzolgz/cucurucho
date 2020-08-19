@@ -3,6 +3,7 @@
 //
 
 #include "VidaEnemigoFinal1Ext.h"
+#include "../../../../commons/utils/Constantes.h"
 
 #define ENEMIGO_FINAL1_EXT_ENERGIA_INICIAL 250
 
@@ -15,5 +16,5 @@ int VidaEnemigoFinal1Ext::danioColisionJugador() {
 }
 
 int VidaEnemigoFinal1Ext::danioColisionDisparoJugador() {
-	return 50;
+	return 50 - HELPERS_ACTIVADOS * 25;
 }

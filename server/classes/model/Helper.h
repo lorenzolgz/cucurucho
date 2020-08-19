@@ -11,6 +11,7 @@
 #include "../../../commons/protocols/protocolo.h"
 #include "../../../commons/utils/Vector.h"
 #include "Jugador.h"
+#include "entities/projectiles/Disparo.h"
 
 class Jugador;
 class HelperVista;
@@ -24,6 +25,8 @@ const double HELPER_ACELERACION = 0.2;
 const int HELPER_ANCHO = 48;
 const int HELPER_ALTO = 48;
 
+class Disparo;
+
 class Helper {
 public:
     Helper(Jugador* jugador, Vector posRelativa);
@@ -31,6 +34,8 @@ public:
 	struct EstadoHelper state();
 
     void setAngulo(double angulo);
+
+	Disparo* disparar();
 
 private:
     Vector posicion;

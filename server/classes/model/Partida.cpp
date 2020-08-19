@@ -4,10 +4,6 @@
 #include "../../../commons/utils/Log.h"
 #include "../config/FondoConfiguracion.h"
 
-#define ANCHO_DISPARO_JUGADOR 10
-#define ALTO_DISPARO_JUGADOR 10
-#define VELOCIDAD_DISPARO_JUGADOR 7
-
 Partida::Partida(Configuracion* config) {
 	this->nuevoNivel = 1;
 	this->nivel = 1;
@@ -35,12 +31,14 @@ void Partida::tick(struct Comando comandos[]) {
 		jugadorActual->setDesconectado(comando.desconectado);
 
 		if (comandos[i].disparo) {
-			Disparo* disparo = jugadorActual->disparar();
-			if (disparo == nullptr) {
+			std::list<Disparo*> disparos = jugadorActual->disparar();
+			if (disparos.empty()) {
 				l->debug("El jugador " + std::to_string(i) + " no disparó. Puede que este en cooldown o este muerto.");
 			} else {
+				for (Disparo* disparo : disparos) {
+					managerNiveles->nuevoDisparo(disparo);
+				}
 				l->debug("El jugador " + std::to_string(i) + " disparó");
-				managerNiveles->nuevoDisparo(disparo);
 			}
 		}
 

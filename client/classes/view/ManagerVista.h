@@ -17,6 +17,7 @@
 #include "elements/ExplosionVista.h"
 #include "NivelIntermedioVista.h"
 #include "elements/EnemigoFinal1ExtVista.h"
+#include "elements/DisparoHelperVista.h"
 
 class ManagerVista {
 public:
@@ -38,6 +39,7 @@ private:
     Enemigo2Vista* enemigo2Vista;
 	EnemigoFinal1Vista* enemigoFinal1Vista;
 	DisparoJugadorVista* disparoJugadorVista;
+	DisparoHelperVista* disparoHelperVista;
 	DisparoEnemigoVista* disparoEnemigoVista;
 	NivelIntermedioVista* nivelIntermedioVista;
     std::vector<JugadorVista*>* jugadores = new std::vector<JugadorVista*>();

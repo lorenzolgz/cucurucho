@@ -8,7 +8,7 @@
 
 Helper::Helper(Jugador* jugador, Vector posRelativa) {
     Helper::jugador = jugador;
-    Helper::posRelativa = posRelativa + Vector(1000000, 1000) * !HELPERS_ACTIVADOS;
+    Helper::posRelativa = posRelativa - Vector(HELPER_BALL_RADIO, HELPER_BALL_RADIO)+ Vector(1000000, 1000) * !HELPERS_ACTIVADOS;
     Helper::posicion = posRelativa + jugador->getPosicion();
     Helper::velocidad = Vector(0, 0);
     Helper::velAngular = HELPER_VEL_ANGULAR;
@@ -56,4 +56,13 @@ struct EstadoHelper Helper::state() {
 
 void Helper::setAngulo(double angulo) {
     Helper::angulo = angulo;
+}
+
+Disparo* Helper::disparar() {
+	Vector velocidad_d = Vector().polares(VELOCIDAD_DISPARO_JUGADOR, angulo);
+	Vector posicion_d = posicion
+			+ Vector(HELPER_BALL_RADIO / 5, HELPER_BALL_RADIO / 5)
+			- velocidad_d.escalar(HELPER_BALL_RADIO);
+	Disparo* disparo = new Disparo(posicion_d, velocidad_d, HELPER_BALL_RADIO * 14 / 8, HELPER_BALL_RADIO * 14 / 8, this->jugador);
+	return disparo;
 }
