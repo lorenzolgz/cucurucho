@@ -34,7 +34,7 @@ public:
 
     const Vector getVelocidad() const;
     void setCampo(CampoMovil* campo);
-    Disparo* disparar();
+	std::list<Disparo*> disparar();
     void reiniciarPosicion();
 	void cambiarInvencible(bool invencible);
 	bool estaMuerto();
